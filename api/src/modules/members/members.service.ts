@@ -37,12 +37,24 @@ export class MembersService {
         throw new NotFoundException('User must register before they can be invited');
       }
 
-      return await this.prisma.organizationMember.create({
-        data: {
+      return await this.prisma.organizationMember.upsert({
+        where: {
+          org_uuid_user_uuid: {
+            org_uuid: organization.uuid,
+            user_uuid: user.uuid,
+          },
+        },
+        create: {
           org_uuid: organization.uuid,
           user_uuid: user.uuid,
           role_uuid: role.uuid,
-          status: OrganizationMemberStatus.INVITED,
+          status: OrganizationMemberStatus.ACTIVE,
+          joined_at: new Date(),
+        },
+        update: {
+          role_uuid: role.uuid,
+          status: OrganizationMemberStatus.ACTIVE,
+          joined_at: new Date(),
         },
         include: { role: true, user: true },
       });

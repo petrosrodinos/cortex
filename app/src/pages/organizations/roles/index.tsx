@@ -6,78 +6,78 @@ import type { OrganizationRole } from '@/features/roles/interfaces/role.interfac
 import { useOrganizationStore } from '@/stores/organization';
 
 export default function RolesPage() {
-  const current_organization = useOrganizationStore((state) => state.current_organization);
-  const [name, set_name] = useState('');
-  const [editing_role_uuid, set_editing_role_uuid] = useState<string | null>(null);
-  const [editing_role_name, set_editing_role_name] = useState('');
-  const roles_query = useGetRoles(current_organization?.uuid);
-  const permissions_query = useGetPermissions();
-  const create_role_mutation = useCreateRole(current_organization?.uuid);
-  const update_role_mutation = useUpdateRole(current_organization?.uuid);
-  const set_role_permissions_mutation = useSetRolePermissions(current_organization?.uuid);
-  const delete_role_mutation = useDeleteRole();
-  const roles = roles_query.data ?? [];
-  const permissions = permissions_query.data ?? [];
+  const currentOrganization = useOrganizationStore((state) => state.current_organization);
+  const [name, setName] = useState('');
+  const [editingRoleUuid, setEditingRoleUuid] = useState<string | null>(null);
+  const [editingRoleName, setEditingRoleName] = useState('');
+  const rolesQuery = useGetRoles(currentOrganization?.uuid);
+  const permissionsQuery = useGetPermissions();
+  const createRoleMutation = useCreateRole(currentOrganization?.uuid);
+  const updateRoleMutation = useUpdateRole(currentOrganization?.uuid);
+  const setRolePermissionsMutation = useSetRolePermissions(currentOrganization?.uuid);
+  const deleteRoleMutation = useDeleteRole();
+  const roles = rolesQuery.data ?? [];
+  const permissions = permissionsQuery.data ?? [];
   const loading =
-    roles_query.isLoading ||
-    permissions_query.isLoading ||
-    create_role_mutation.isPending ||
-    update_role_mutation.isPending ||
-    set_role_permissions_mutation.isPending ||
-    delete_role_mutation.isPending;
-  const error = roles_query.error?.message ?? permissions_query.error?.message ?? null;
+    rolesQuery.isLoading ||
+    permissionsQuery.isLoading ||
+    createRoleMutation.isPending ||
+    updateRoleMutation.isPending ||
+    setRolePermissionsMutation.isPending ||
+    deleteRoleMutation.isPending;
+  const error = rolesQuery.error?.message ?? permissionsQuery.error?.message ?? null;
 
   async function createRole(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!current_organization || !name.trim()) return;
+    if (!currentOrganization || !name.trim()) return;
 
     try {
-      await create_role_mutation.mutateAsync({
+      await createRoleMutation.mutateAsync({
         name: name.trim(),
         permission_keys: [],
       });
-      set_name('');
+      setName('');
     } catch {
       return;
     }
   }
 
   function startEditingRole(role: OrganizationRole) {
-    set_editing_role_uuid(role.uuid);
-    set_editing_role_name(role.name);
+    setEditingRoleUuid(role.uuid);
+    setEditingRoleName(role.name);
   }
 
   async function saveRoleName(role: OrganizationRole) {
-    if (!current_organization || !editing_role_name.trim()) return;
+    if (!currentOrganization || !editingRoleName.trim()) return;
 
     try {
-      await update_role_mutation.mutateAsync({
+      await updateRoleMutation.mutateAsync({
         organization_role_uuid: role.uuid,
-        payload: { name: editing_role_name.trim() },
+        payload: { name: editingRoleName.trim() },
       });
-      set_editing_role_uuid(null);
-      set_editing_role_name('');
+      setEditingRoleUuid(null);
+      setEditingRoleName('');
     } catch {
       return;
     }
   }
 
-  async function toggleRolePermission(role: OrganizationRole, permission_key: string) {
-    if (!current_organization || role.is_system) return;
+  async function toggleRolePermission(role: OrganizationRole, permissionKey: string) {
+    if (!currentOrganization || role.is_system) return;
     const keys = role.permissions?.map((item) => item.permission.key) ?? [];
-    const next_keys = keys.includes(permission_key) ? keys.filter((key) => key !== permission_key) : [...keys, permission_key];
-    await set_role_permissions_mutation.mutateAsync({ organization_role_uuid: role.uuid, permission_keys: next_keys });
+    const nextKeys = keys.includes(permissionKey) ? keys.filter((key) => key !== permissionKey) : [...keys, permissionKey];
+    await setRolePermissionsMutation.mutateAsync({ organization_role_uuid: role.uuid, permission_keys: nextKeys });
   }
 
   async function deleteRole(organization_role_uuid: string) {
-    if (!current_organization) return;
-    await delete_role_mutation.mutateAsync({
-      organization_uuid: current_organization.uuid,
+    if (!currentOrganization) return;
+    await deleteRoleMutation.mutateAsync({
+      organization_uuid: currentOrganization.uuid,
       organization_role_uuid: organization_role_uuid,
     });
   }
 
-  if (!current_organization) {
+  if (!currentOrganization) {
     return (
       <div className="rounded-lg border border-border bg-surface p-6">
         <h1 className="text-lg font-semibold text-foreground">No organization selected</h1>
@@ -90,14 +90,14 @@ export default function RolesPage() {
     <div className="mx-auto flex max-w-6xl flex-col gap-5">
       <header>
         <h1 className="text-xl font-semibold text-foreground">Roles</h1>
-        <p className="text-sm text-muted">{current_organization.name}</p>
+        <p className="text-sm text-muted">{currentOrganization.name}</p>
       </header>
 
       <form onSubmit={createRole} className="rounded-lg border border-border bg-surface p-4">
         <div className="flex flex-col gap-3 md:flex-row">
           <input
             value={name}
-            onChange={(event) => set_name(event.target.value)}
+            onChange={(event) => setName(event.target.value)}
             placeholder="Custom role name"
             className="h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
           />
@@ -116,41 +116,41 @@ export default function RolesPage() {
 
       <div className="grid gap-3">
         {roles.map((role) => {
-          const role_permission_keys = role.permissions?.map((item) => item.permission.key) ?? [];
+          const rolePermissionKeys = role.permissions?.map((item) => item.permission.key) ?? [];
 
           return (
             <section key={role.uuid} className="rounded-lg border border-border bg-surface p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
-                  {editing_role_uuid === role.uuid ? (
+                  {editingRoleUuid === role.uuid ? (
                     <input
-                      value={editing_role_name}
-                      onChange={(event) => set_editing_role_name(event.target.value)}
+                      value={editingRoleName}
+                      onChange={(event) => setEditingRoleName(event.target.value)}
                       className="h-9 w-full max-w-sm rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
                     />
                   ) : (
                     <h2 className="text-sm font-semibold text-foreground">{role.name}</h2>
                   )}
-                  <p className="text-xs text-muted">{role.is_system ? 'System role' : `${role_permission_keys.length} permissions`}</p>
+                  <p className="text-xs text-muted">{role.is_system ? 'System role' : `${rolePermissionKeys.length} permissions`}</p>
                 </div>
                 {!role.is_system && (
                   <div className="flex shrink-0 items-center gap-1">
-                    {editing_role_uuid === role.uuid ? (
+                    {editingRoleUuid === role.uuid ? (
                       <>
                         <button
                           type="button"
                           onClick={() => saveRoleName(role)}
                           title="Save role"
                           className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
-                          disabled={loading || !editing_role_name.trim()}
+                          disabled={loading || !editingRoleName.trim()}
                         >
                           <Check className="h-4 w-4" />
                         </button>
                         <button
                           type="button"
                           onClick={() => {
-                            set_editing_role_uuid(null);
-                            set_editing_role_name('');
+                            setEditingRoleUuid(null);
+                            setEditingRoleName('');
                           }}
                           title="Cancel edit"
                           className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-surface-secondary hover:text-foreground"
@@ -191,7 +191,7 @@ export default function RolesPage() {
                   >
                     <input
                       type="checkbox"
-                      checked={role_permission_keys.includes(permission.key)}
+                      checked={rolePermissionKeys.includes(permission.key)}
                       disabled={role.is_system}
                       onChange={() => toggleRolePermission(role, permission.key)}
                       className="h-4 w-4 accent-[var(--accent)]"

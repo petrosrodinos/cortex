@@ -9,21 +9,21 @@ import {
 } from '@/features/members/interfaces/member.interfaces';
 
 export default function MembersPage() {
-  const current_organization = useOrganizationStore((state) => state.current_organization);
-  const [email, set_email] = useState('');
-  const [organization_role_uuid, set_organization_role_uuid] = useState('');
-  const members_query = useGetMembers(current_organization?.uuid);
-  const roles_query = useGetRoles(current_organization?.uuid);
-  const invite_member_mutation = useInviteMember(current_organization?.uuid);
-  const update_member_mutation = useUpdateMember(current_organization?.uuid);
-  const delete_member_mutation = useDeleteMember();
-  const members = members_query.data ?? [];
-  const roles = roles_query.data ?? [];
-  const loading = members_query.isLoading || roles_query.isLoading || invite_member_mutation.isPending || update_member_mutation.isPending || delete_member_mutation.isPending;
-  const error = members_query.error?.message ?? roles_query.error?.message ?? null;
+  const currentOrganization = useOrganizationStore((state) => state.current_organization);
+  const [email, setEmail] = useState('');
+  const [organizationRoleUuid, setOrganizationRoleUuid] = useState('');
+  const membersQuery = useGetMembers(currentOrganization?.uuid);
+  const rolesQuery = useGetRoles(currentOrganization?.uuid);
+  const inviteMemberMutation = useInviteMember(currentOrganization?.uuid);
+  const updateMemberMutation = useUpdateMember(currentOrganization?.uuid);
+  const deleteMemberMutation = useDeleteMember();
+  const members = membersQuery.data ?? [];
+  const roles = rolesQuery.data ?? [];
+  const loading = membersQuery.isLoading || rolesQuery.isLoading || inviteMemberMutation.isPending || updateMemberMutation.isPending || deleteMemberMutation.isPending;
+  const error = membersQuery.error?.message ?? rolesQuery.error?.message ?? null;
 
   useEffect(() => {
-    set_organization_role_uuid((current) => {
+    setOrganizationRoleUuid((current) => {
       if (roles.some((role) => role.uuid === current)) return current;
       return roles.find((role) => role.name === 'Employee')?.uuid ?? roles[0]?.uuid ?? '';
     });
@@ -31,36 +31,36 @@ export default function MembersPage() {
 
   async function invite(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!current_organization || !email.trim() || !organization_role_uuid) return;
+    if (!currentOrganization || !email.trim() || !organizationRoleUuid) return;
 
     try {
-      await invite_member_mutation.mutateAsync({ email: email.trim(), organization_role_uuid: organization_role_uuid });
-      set_email('');
+      await inviteMemberMutation.mutateAsync({ email: email.trim(), organization_role_uuid: organizationRoleUuid });
+      setEmail('');
     } catch {
       return;
     }
   }
 
-  async function updateMember(member: OrganizationMember, next_organization_role_uuid?: string, nextStatus?: OrganizationMember['status']) {
-    if (!current_organization) return;
-    await update_member_mutation.mutateAsync({
+  async function updateMember(member: OrganizationMember, nextOrganizationRoleUuid?: string, nextStatus?: OrganizationMember['status']) {
+    if (!currentOrganization) return;
+    await updateMemberMutation.mutateAsync({
       organization_member_uuid: member.uuid,
       payload: {
-        organization_role_uuid: next_organization_role_uuid,
+        organization_role_uuid: nextOrganizationRoleUuid,
         status: nextStatus,
       },
     });
   }
 
   async function removeMember(organization_member_uuid: string) {
-    if (!current_organization) return;
-    await delete_member_mutation.mutateAsync({
-      organization_uuid: current_organization.uuid,
+    if (!currentOrganization) return;
+    await deleteMemberMutation.mutateAsync({
+      organization_uuid: currentOrganization.uuid,
       organization_member_uuid: organization_member_uuid,
     });
   }
 
-  if (!current_organization) {
+  if (!currentOrganization) {
     return <EmptyState title="No organization selected" body="Create or select an organization from the sidebar." />;
   }
 
@@ -68,20 +68,20 @@ export default function MembersPage() {
     <div className="mx-auto flex max-w-6xl flex-col gap-5">
       <header>
         <h1 className="text-xl font-semibold text-foreground">Members</h1>
-        <p className="text-sm text-muted">{current_organization.name}</p>
+        <p className="text-sm text-muted">{currentOrganization.name}</p>
       </header>
 
       <form onSubmit={invite} className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 md:flex-row">
         <input
           value={email}
-          onChange={(event) => set_email(event.target.value)}
+          onChange={(event) => setEmail(event.target.value)}
           type="email"
           placeholder="person@example.com"
           className="h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
         />
         <select
-          value={organization_role_uuid}
-          onChange={(event) => set_organization_role_uuid(event.target.value)}
+          value={organizationRoleUuid}
+          onChange={(event) => setOrganizationRoleUuid(event.target.value)}
           className="h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
         >
           {roles.map((role) => (
@@ -92,7 +92,7 @@ export default function MembersPage() {
         </select>
         <button
           type="submit"
-          disabled={loading || !email.trim() || !organization_role_uuid}
+          disabled={loading || !email.trim() || !organizationRoleUuid}
           className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-accent px-4 text-sm font-medium text-accent-foreground disabled:opacity-50"
         >
           <UserPlus className="h-4 w-4" />

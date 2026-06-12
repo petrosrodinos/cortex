@@ -5,9 +5,9 @@ import type { Organization } from '@/features/organizations/interfaces/organizat
 interface OrganizationStore {
   current_organization: Organization | null;
   organizations: Organization[];
-  set_organizations(organizations: Organization[]): void;
-  set_current_organization(organization: Organization | null): void;
-  clear_organizations(): void;
+  setOrganizations(organizations: Organization[]): void;
+  setCurrentOrganization(organization: Organization | null): void;
+  clearOrganizations(): void;
 }
 
 export const useOrganizationStore = create<OrganizationStore>()(
@@ -16,7 +16,7 @@ export const useOrganizationStore = create<OrganizationStore>()(
       (set) => ({
         current_organization: null,
         organizations: [],
-        set_organizations: (organizations) =>
+        setOrganizations: (organizations) =>
           set((state) => ({
             organizations,
             current_organization:
@@ -24,8 +24,8 @@ export const useOrganizationStore = create<OrganizationStore>()(
               organizations[0] ??
               null,
           })),
-        set_current_organization: (organization) => set({ current_organization: organization }),
-        clear_organizations: () => set({ current_organization: null, organizations: [] }),
+        setCurrentOrganization: (organization) => set({ current_organization: organization }),
+        clearOrganizations: () => set({ current_organization: null, organizations: [] }),
       }),
       { name: 'organization' },
     ),

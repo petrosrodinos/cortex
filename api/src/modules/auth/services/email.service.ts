@@ -75,6 +75,7 @@ export class EmailAuthService {
                 throw new UnauthorizedException('Invalid credentials');
             }
 
+
             const token = await this.jwt_service.signToken({
                 uuid: user.uuid,
                 role: user.role,
