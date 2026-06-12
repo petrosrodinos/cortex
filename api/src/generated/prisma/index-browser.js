@@ -131,9 +131,82 @@ exports.Prisma.UserScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.OrganizationScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  name: 'name',
+  slug: 'slug',
+  logo_url: 'logo_url',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.OrganizationMemberScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  org_uuid: 'org_uuid',
+  user_uuid: 'user_uuid',
+  role_uuid: 'role_uuid',
+  status: 'status',
+  invited_at: 'invited_at',
+  joined_at: 'joined_at'
+};
+
+exports.Prisma.OrganizationRoleScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  org_uuid: 'org_uuid',
+  name: 'name',
+  is_system: 'is_system'
+};
+
+exports.Prisma.PermissionScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  key: 'key',
+  label: 'label',
+  group: 'group'
+};
+
+exports.Prisma.RolePermissionScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  role_uuid: 'role_uuid',
+  permission_uuid: 'permission_uuid'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  org_uuid: 'org_uuid',
+  user_uuid: 'user_uuid',
+  action: 'action',
+  resource_type: 'resource_type',
+  resource_id: 'resource_id',
+  metadata: 'metadata',
+  created_at: 'created_at'
+};
+
+exports.Prisma.DocumentScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  user_uuid: 'user_uuid',
+  filename: 'filename',
+  mimetype: 'mimetype',
+  size: 'size',
+  url: 'url',
+  path: 'path',
+  type: 'type',
+  created_at: 'created_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -145,6 +218,12 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
 exports.AuthRole = exports.$Enums.AuthRole = {
   USER: 'USER',
   ADMIN: 'ADMIN',
@@ -152,8 +231,32 @@ exports.AuthRole = exports.$Enums.AuthRole = {
   SUPPORT: 'SUPPORT'
 };
 
+exports.OrganizationMemberStatus = exports.$Enums.OrganizationMemberStatus = {
+  ACTIVE: 'ACTIVE',
+  INVITED: 'INVITED',
+  SUSPENDED: 'SUSPENDED'
+};
+
+exports.DocumentType = exports.$Enums.DocumentType = {
+  LOGO: 'LOGO',
+  BANNER: 'BANNER',
+  IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO',
+  AUDIO: 'AUDIO',
+  PDF: 'PDF',
+  DOCUMENT: 'DOCUMENT',
+  OTHER: 'OTHER'
+};
+
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  Organization: 'Organization',
+  OrganizationMember: 'OrganizationMember',
+  OrganizationRole: 'OrganizationRole',
+  Permission: 'Permission',
+  RolePermission: 'RolePermission',
+  AuditLog: 'AuditLog',
+  Document: 'Document'
 };
 
 /**

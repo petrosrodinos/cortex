@@ -64,7 +64,7 @@ Allow organizations to connect their own databases. The platform should introspe
   - Before any query: refresh `schema_cache` if `last_schema_sync` > 1 hour ago
 
 - [ ] `DatabaseIntegrationsService`
-  - `create(orgId, dto)`: encrypt connection string, create `Integration` + `DatabaseIntegration`, run initial schema sync
+  - `create(organizationUuid, dto)`: encrypt connection string, create `Integration` + `DatabaseIntegration`, run initial schema sync
   - `syncSchema(id)`: refresh schema_cache and `last_schema_sync`
   - `testConnection(id)`: adapter.testConnection()
 

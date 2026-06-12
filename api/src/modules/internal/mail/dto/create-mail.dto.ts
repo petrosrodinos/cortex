@@ -27,7 +27,7 @@ export class CreateMailDto {
     bcc?: string[];
 
     @IsOptional()
-    replyTo?: string;
+    reply_to?: string;
 
 
     @IsOptional()

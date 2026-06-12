@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { environments } from '@/config/environments';
 import SidebarContent from '@/components/layout/sidebar-content';
 import UserMenuPopover from '@/components/layout/user-menu-popover';
+import OrganizationSwitcher from '@/components/layout/organization-switcher';
 
 const STORAGE_KEY = 'sidebar_collapsed';
 
@@ -87,8 +88,8 @@ export default function Sidebar() {
         <SidebarContent collapsed={collapsed} />
       </nav>
 
-      {/* User menu */}
-      <div className="shrink-0 p-2 border-t border-border">
+      <div className="shrink-0 space-y-2 p-2 border-t border-border">
+        <OrganizationSwitcher collapsed={collapsed} />
         <UserMenuPopover collapsed={collapsed} placement="top" />
       </div>
     </aside>

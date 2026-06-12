@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard } from 'lucide-react';
+import { LayoutDashboard, Shield, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Routes } from '@/routes/routes';
 
@@ -10,6 +10,8 @@ interface SidebarContentProps {
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: Routes.dashboard.root, end: true },
+  { label: 'Members', icon: Users, href: Routes.dashboard.organization_members, end: true },
+  { label: 'Roles', icon: Shield, href: Routes.dashboard.organization_roles, end: true },
 ];
 
 function NavItem({

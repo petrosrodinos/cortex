@@ -44,12 +44,12 @@ Build the abstract integration framework: base class/interface every integration
   - Map of `provider → IIntegration instance`
   - `register(integration: IIntegration)`: called from each integration module's `onModuleInit`
   - `getByProvider(provider)`: resolve handler
-  - `getAllTools(orgId)`: aggregate enabled tools across all active integrations for an org
+  - `getAllTools(organizationUuid)`: aggregate enabled tools across all active integrations for an org
 
 - [ ] `IntegrationsModule` + `IntegrationsService` + `IntegrationsController`
-  - `integrationsService.create(orgId, dto)`: encrypt config, persist, seed actions
+  - `integrationsService.create(organizationUuid, dto)`: encrypt config, persist, seed actions
   - `integrationsService.testConnection(id)`: delegate to registry handler
-  - `integrationsService.getEnabledTools(orgId)`: for AI agent use
+  - `integrationsService.getEnabledTools(organizationUuid)`: for AI agent use
   - Controller routes: see plan.md API design `/integrations` section
   - Guard with `@OrgPermission('org:integrations:manage')` on mutating routes
 
@@ -80,4 +80,4 @@ Build the abstract integration framework: base class/interface every integration
 - [ ] `testConnection` endpoint returns success/failure without exposing credentials
 - [ ] Actions are auto-seeded on integration creation
 - [ ] Toggling an action updates DB and agent cannot call disabled actions
-- [ ] `IntegrationRegistry.getAllTools(orgId)` returns only tools from ACTIVE integrations with enabled actions
+- [ ] `IntegrationRegistry.getAllTools(organizationUuid)` returns only tools from ACTIVE integrations with enabled actions

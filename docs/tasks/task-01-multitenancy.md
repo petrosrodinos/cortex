@@ -1,12 +1,12 @@
 # Task: Multi-Tenancy Foundation — Organizations, Members & RBAC
 
 ## Objective
-Implement multi-tenant architecture: organizations, org membership, org-level RBAC with system and custom roles, and org-context switching in the JWT auth flow.
+Implement multi-tenant architecture: organizations, organization membership, organization-level RBAC with system and custom roles, and organization-context switching in the JWT auth flow.
 
 ## Requirements
 - A user can belong to multiple orgs with different roles in each
 - Org data is strictly isolated — every query must scope to `org_id`
-- JWT must carry `orgId` and the user's role/permissions for that org
+- JWT must carry `organizationUuid` and the user's role/permissions for that organization
 - Switching org reissues a scoped JWT without requiring re-login
 - System roles: Owner, Admin, Manager, Employee (non-deletable)
 - Custom roles with arbitrary permission keys per org
@@ -36,21 +36,21 @@ Implement multi-tenant architecture: organizations, org membership, org-level RB
 
 - [ ] Implement `MembersModule` (`api/src/modules/members/`)
   - `members.service.ts`: invite (create with INVITED status), update role/status, remove
-  - `members.controller.ts`: routes under `/organizations/:orgId/members`
+  - `members.controller.ts`: routes under `/organizations/:organizationUuid/members`
 
 - [ ] Implement `RolesModule` (`api/src/modules/roles/`)
   - `roles.service.ts`: CRUD for custom roles, bulk-set permissions on a role
   - Seed system roles (Owner/Admin/Manager/Employee) when an org is created
-  - `roles.controller.ts`: routes under `/organizations/:orgId/roles`
+  - `roles.controller.ts`: routes under `/organizations/:organizationUuid/roles`
 
 - [ ] Extend JWT strategy
-  - Add `orgId`, `orgRole`, `orgPermissions[]` to JWT payload when `POST /auth/switch-org` is called
-  - `switch-org.dto.ts`: `{ orgId: string }`
+  - Add `organizationUuid`, `organizationRole`, `organizationPermissions[]` to JWT payload when `POST /auth/switch-organization` is called
+  - `switch-organization.dto.ts`: `{ organizationUuid: string }`
   - Validate user is an ACTIVE member of the requested org before issuing token
 
 - [ ] Implement `OrgGuard`
   - Decorator `@OrgPermission('integrations:github:read_repos')`
-  - Guard reads `orgPermissions` from JWT and checks presence of required key
+  - Guard reads `organizationPermissions` from JWT and checks presence of required key
   - Returns 403 if missing
 
 - [ ] Register all new modules in `AppModule`
@@ -60,7 +60,7 @@ Implement multi-tenant architecture: organizations, org membership, org-level RB
 - [ ] Add `Organization` and `OrganizationMember` TypeScript interfaces in `app/src/interfaces/`
 - [ ] Create `organizations.service.ts` in `app/src/services/` (API calls)
 - [ ] Zustand store: `app/src/stores/organization/` — current org, user's orgs list
-- [ ] Org switcher component: sidebar bottom section showing current org name + avatar, dropdown of accessible orgs, calls `POST /auth/switch-org` and refreshes JWT
+- [ ] Organization switcher component: sidebar bottom section showing current organization name + avatar, dropdown of accessible organizations, calls `POST /auth/switch-organization` and refreshes JWT
 - [ ] Members management page: `app/src/pages/organizations/members/`
 - [ ] Roles management page: `app/src/pages/organizations/roles/`
 
@@ -74,7 +74,7 @@ Implement multi-tenant architecture: organizations, org membership, org-level RB
 ## Acceptance Criteria
 - [ ] User can create an org and is automatically the Owner
 - [ ] User can invite another user by email; invited user appears with INVITED status
-- [ ] User can switch orgs; new JWT contains correct `orgId` and permissions
+- [ ] User can switch organizations; new JWT contains correct `organizationUuid` and permissions
 - [ ] Admin can create custom role, assign permissions, assign role to member
 - [ ] All org endpoints return 403 if user is not a member of the org
 - [ ] System roles cannot be deleted

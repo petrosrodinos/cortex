@@ -8,6 +8,9 @@ import { RedisModule } from './core/databases/redis/redis.module';
 import { RedisCacheModule } from './modules/internal/redis-cache/redis-cache.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from './shared/config/env/env.module';
+import { OrganizationsModule } from './modules/organizations/organizations.module';
+import { MembersModule } from './modules/members/members.module';
+import { RolesModule } from './modules/roles/roles.module';
 
 @Module({
   imports: [
@@ -19,6 +22,9 @@ import { ConfigModule } from './shared/config/env/env.module';
     RedisCacheModule,
     // GraphQLModule,
     AuthModule,
+    OrganizationsModule,
+    MembersModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

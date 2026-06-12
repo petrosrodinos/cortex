@@ -27,10 +27,10 @@ Build the AI agent system that accepts user messages, determines which integrati
   - `openai-provider.ts`: wraps `@openai/agents` Agent
   - `claude-provider.ts`: wraps Vercel AI SDK `@ai-sdk/anthropic` with tool calling
   - `grok-provider.ts`: wraps Vercel AI SDK with xAI base URL
-  - `ai-provider-factory.service.ts`: given `orgId`, loads the org's default `AiProvider`, decrypts API key, instantiates correct adapter
+  - `ai-provider-factory.service.ts`: given `organizationUuid`, loads the org's default `AiProvider`, decrypts API key, instantiates correct adapter
 
 - [ ] Tool dispatcher (`api/src/modules/ai/agents/tool-dispatcher.service.ts`)
-  - `dispatch(orgId, toolName, input, executionId)`:
+  - `dispatch(organizationUuid, toolName, input, executionId)`:
     1. Look up integration by tool name prefix
     2. Validate action is enabled + user has permission
     3. Call `IntegrationRegistry.executeTool()`
@@ -38,9 +38,9 @@ Build the AI agent system that accepts user messages, determines which integrati
     5. Return result or structured error
 
 - [ ] Agent runner (`api/src/modules/ai/agents/agent-runner.service.ts`)
-  - `run(orgId, userId, conversationId, userMessage, executionId)`:
+  - `run(organizationUuid, userId, conversationId, userMessage, executionId)`:
     1. Load org's AI provider via factory
-    2. Load enabled tools from `IntegrationRegistry.getAllTools(orgId)`
+    2. Load enabled tools from `IntegrationRegistry.getAllTools(organizationUuid)`
     3. Inject Code Interpreter tool from `@openai/agents/sandbox`
     4. Build system prompt (include database schemas for DB integrations)
     5. Run agent loop via `@openai/agents` runner
@@ -52,7 +52,7 @@ Build the AI agent system that accepts user messages, determines which integrati
 - [ ] Conversations & Messages module (`api/src/modules/conversations/`)
   - `conversations.service.ts`: CRUD, ensure org isolation
   - `messages.service.ts`:
-    - `sendMessage(orgId, userId, conversationId, content)`:
+    - `sendMessage(organizationUuid, userId, conversationId, content)`:
       1. Persist USER message
       2. Create `AgentExecution` row (PENDING)
       3. Enqueue BullMQ job `agent-run` with executionId
@@ -70,7 +70,7 @@ Build the AI agent system that accepts user messages, determines which integrati
 
 - [ ] WebSocket gateway integration
   - Existing `websocket-provider.tsx` in frontend connects to Socket.io
-  - Backend emits to room `org:<orgId>:execution:<executionId>`:
+  - Backend emits to room `org:<organizationUuid>:execution:<executionId>`:
     - `tool:start` — `{ toolName, input }`
     - `tool:complete` — `{ toolName, result, durationMs }`
     - `agent:complete` — `{ content, files[], executionId }`
@@ -78,8 +78,8 @@ Build the AI agent system that accepts user messages, determines which integrati
     - `agent:approval_required` — `{ toolName, input, executionId }`
 
 - [ ] Human approval endpoint
-  - `POST /organizations/:orgId/executions/:id/approve` — resumes paused BullMQ job
-  - `POST /organizations/:orgId/executions/:id/reject` — cancels with rejection message
+  - `POST /organizations/:organizationUuid/executions/:id/approve` — resumes paused BullMQ job
+  - `POST /organizations/:organizationUuid/executions/:id/reject` — cancels with rejection message
 
 - [ ] Output type detector (`api/src/modules/ai/agents/output-detector.ts`)
   - Analyzes agent's final response intent and sets `metadata.outputType`

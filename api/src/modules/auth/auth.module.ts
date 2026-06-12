@@ -1,6 +1,7 @@
 import { Logger, Module } from '@nestjs/common';
 import { EmailAuthService } from './services/email.service';
 import { EmailAuthController } from './controllers/email.controller';
+import { AuthController } from './controllers/auth.controller';
 import { PrismaModule } from '@/core/databases/prisma/prisma.module';
 import { CreateJwtServiceModule } from '@/shared/utils/jwt/jwt.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -13,6 +14,6 @@ import { SendgridModule } from '@/integrations/notifications/sendgrid/sendgrid.m
     SendgridModule,
   ],
   providers: [EmailAuthService, JwtStrategy, Logger],
-  controllers: [EmailAuthController],
+  controllers: [EmailAuthController, AuthController],
 })
 export class AuthModule { }

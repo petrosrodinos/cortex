@@ -54,7 +54,7 @@ Allow organizations to connect any external API by providing an OpenAPI/Swagger 
     6. Return response data
 
 - [ ] `OpenApiIntegrationsService`
-  - `create(orgId, dto)`: parse spec → generate tools → encrypt auth config → persist
+  - `create(organizationUuid, dto)`: parse spec → generate tools → encrypt auth config → persist
   - `regenerateTools(id)`: re-parse spec and overwrite `generated_tools` + actions
   - `testConnection(id)`: hit the spec URL or a health endpoint from the spec
 

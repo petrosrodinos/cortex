@@ -10,7 +10,10 @@ export class MailService {
   ) { }
 
   create(createMailDto: CreateMailDto) {
-    return this.mailService.sendEmail(createMailDto);
+    return this.mailService.sendEmail({
+      ...createMailDto,
+      replyTo: createMailDto.reply_to,
+    });
   }
 
 

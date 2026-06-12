@@ -5,6 +5,7 @@ import Sidebar from '@/components/layout/sidebar';
 import DashboardNavbar from '@/components/layout/dashboard-navbar';
 import SidebarContent from '@/components/layout/sidebar-content';
 import UserMenuPopover from '@/components/layout/user-menu-popover';
+import OrganizationSwitcher from '@/components/layout/organization-switcher';
 import { environments } from '@/config/environments';
 
 export default function DashboardLayout() {
@@ -53,7 +54,8 @@ export default function DashboardLayout() {
 
             <Drawer.Body className="px-2 pt-2.5 pb-2 flex flex-col gap-0">
               <SidebarContent collapsed={false} onNavigate={drawerState.close} />
-              <div className="mt-4 pt-2 border-t border-border">
+              <div className="mt-4 space-y-2 pt-2 border-t border-border">
+                <OrganizationSwitcher />
                 <UserMenuPopover collapsed={false} placement="top" />
               </div>
             </Drawer.Body>

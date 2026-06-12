@@ -38,19 +38,19 @@ Build all frontend screens and components for the Cortex platform, wiring them t
 ### Global Layout
 
 - [ ] Update `sidebar.tsx`:
-  - Top: Cortex logo + current org name + avatar
-  - Bottom: org switcher dropdown (list of user's orgs, "Create Org" option)
+  - Top: Cortex logo + current organization name + avatar
+  - Bottom: organization switcher dropdown (list of user's organizations, "Create Organization" option)
   - Nav links: Conversations, Integrations, Files, Settings
   - Collapse/expand on mobile
 - [ ] `dashboard-navbar.tsx`: breadcrumb + user menu (existing, extend with org context)
 - [ ] Protected route checks: org JWT required for all `/settings/*` and org-scoped pages
 
-### Auth & Org Switcher
+### Auth & Organization Switcher
 
 - [ ] `useAuth` hook: extend to hold current org from JWT claims
-- [ ] `org.store.ts` (Zustand): `currentOrg`, `userOrgs`, `setCurrentOrg`
-- [ ] Org switcher: clicking an org calls `POST /auth/switch-org`, updates JWT in storage, refreshes org store, navigates to `/conversations`
-- [ ] "Create organization" modal: name input → `POST /organizations` → auto-switch to new org
+- [ ] `organization.store.ts` (Zustand): `currentOrganizationanization`, `userOrganizations`, `setCurrentOrganizationanizationanization`
+- [ ] Organization switcher: clicking an organization calls `POST /auth/switch-organization`, updates JWT in storage, refreshes organization store, navigates to `/conversations`
+- [ ] "Create organization" modal: name input → `POST /organizations` → auto-switch to new organization
 
 ### Chat Interface (`/conversations/:id`)
 
@@ -76,7 +76,7 @@ Build all frontend screens and components for the Cortex platform, wiring them t
   - Attach files button (future)
 
 - [ ] `useExecution` hook
-  - Subscribes to Socket.io room `org-${orgId}-exec-${executionId}`
+  - Subscribes to Socket.io room `organization-${organizationUuid}-exec-${executionId}`
   - Events: `tool:start`, `tool:complete`, `agent:complete`, `agent:error`, `agent:approval_required`
   - Updates local state for the active execution
 

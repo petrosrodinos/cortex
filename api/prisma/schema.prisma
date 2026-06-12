@@ -31,16 +31,25 @@ enum DocumentType {
   OTHER
 }
 
-model User {
-  id                  Int                 @id @default(autoincrement())
-  uuid                String              @unique @default(uuid())
-  email     String   @unique
-  phone     String?   @unique
-  password  String
+enum OrganizationMemberStatus {
+  ACTIVE
+  INVITED
+  SUSPENDED
+}
 
-  role      AuthRole
+model User {
+  id       Int     @id @default(autoincrement())
+  uuid     String  @unique @default(uuid())
+  email    String  @unique
+  phone    String? @unique
+  password String
+
+  role       AuthRole
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  organization_members OrganizationMember[]
+  audit_logs           AuditLog[]
 
   @@index([email])
   @@index([phone])
@@ -48,22 +57,123 @@ model User {
   @@map("users")
 }
 
+model Organization {
+  id         Int      @id @default(autoincrement())
+  uuid       String   @unique @default(uuid())
+  name       String
+  slug       String   @unique
+  logo_url   String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  members    OrganizationMember[]
+  roles      OrganizationRole[]
+  audit_logs AuditLog[]
+
+  @@index([uuid])
+  @@index([slug])
+  @@map("organizations")
+}
+
+model OrganizationMember {
+  id         Int                      @id @default(autoincrement())
+  uuid       String                   @unique @default(uuid())
+  org_uuid   String
+  user_uuid  String
+  role_uuid  String
+  status     OrganizationMemberStatus @default(INVITED)
+  invited_at DateTime                 @default(now())
+  joined_at  DateTime?
+
+  organization Organization     @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+  user         User             @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade)
+  role         OrganizationRole @relation(fields: [role_uuid], references: [uuid])
+
+  @@unique([org_uuid, user_uuid])
+  @@index([org_uuid])
+  @@index([user_uuid])
+  @@index([role_uuid])
+  @@map("organization_members")
+}
+
+model OrganizationRole {
+  id        Int     @id @default(autoincrement())
+  uuid      String  @unique @default(uuid())
+  org_uuid  String
+  name      String
+  is_system Boolean @default(false)
+
+  organization Organization         @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+  members      OrganizationMember[]
+  permissions  RolePermission[]
+
+  @@unique([org_uuid, name])
+  @@index([org_uuid])
+  @@map("organization_roles")
+}
+
+model Permission {
+  id    Int    @id @default(autoincrement())
+  uuid  String @unique @default(uuid())
+  key   String @unique
+  label String
+  group String
+
+  roles RolePermission[]
+
+  @@index([key])
+  @@index([group])
+  @@map("permissions")
+}
+
+model RolePermission {
+  id              Int    @id @default(autoincrement())
+  uuid            String @unique @default(uuid())
+  role_uuid       String
+  permission_uuid String
+
+  role       OrganizationRole @relation(fields: [role_uuid], references: [uuid], onDelete: Cascade)
+  permission Permission       @relation(fields: [permission_uuid], references: [uuid], onDelete: Cascade)
+
+  @@unique([role_uuid, permission_uuid])
+  @@index([role_uuid])
+  @@index([permission_uuid])
+  @@map("role_permissions")
+}
+
+model AuditLog {
+  id            Int      @id @default(autoincrement())
+  uuid          String   @unique @default(uuid())
+  org_uuid      String
+  user_uuid     String
+  action        String
+  resource_type String
+  resource_id   String?
+  metadata      Json
+  created_at    DateTime @default(now())
+
+  organization Organization @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+  user         User         @relation(fields: [user_uuid], references: [uuid])
+
+  @@index([org_uuid])
+  @@index([user_uuid])
+  @@index([created_at])
+  @@map("audit_logs")
+}
+
 model Document {
-  id                 Int           @id @default(autoincrement())
-  uuid               String        @unique @default(uuid())
-  user_uuid          String
-  filename           String
-  mimetype           String
-  size               Int
-  url                String
-  path               String
-  type               DocumentType  @default(LOGO)
-  created_at         DateTime      @default(now())
+  id         Int          @id @default(autoincrement())
+  uuid       String       @unique @default(uuid())
+  user_uuid  String
+  filename   String
+  mimetype   String
+  size       Int
+  url        String
+  path       String
+  type       DocumentType @default(LOGO)
+  created_at DateTime     @default(now())
 
   @@index([user_uuid])
   @@index([uuid])
   @@map("documents")
 }
-
-
-

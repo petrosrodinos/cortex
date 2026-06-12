@@ -25,18 +25,18 @@ export class CreateAiDto {
 
     @IsOptional()
     @IsNumber()
-    maxTokens?: number;
+    max_tokens?: number;
 
     @IsOptional()
     @IsNumber()
-    topP?: number;
+    top_p?: number;
 
     @IsOptional()
     @IsNumber()
-    frequencyPenalty?: number;
+    frequency_penalty?: number;
 
     @IsOptional()
     @IsNumber()
-    presencePenalty?: number;
+    presence_penalty?: number;
 }
 

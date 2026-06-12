@@ -66,7 +66,7 @@
 
 ### Auth System
 - Email/password with JWT (access + refresh tokens)
-- Organization context embedded in JWT claims (`orgId`, `orgRole`)
+- Organization context embedded in JWT claims (`organizationUuid`, `organizationRole`)
 - Guard checks both platform role and org-level permissions
 - Switching org issues a new org-scoped token
 
@@ -268,7 +268,7 @@ metadata: Json, ip_address: String, created_at
 
 ## 4. API DESIGN
 
-All routes are REST under `/api/v1`. Organization-scoped routes carry `orgId` resolved from JWT or path param.
+All routes are REST under `/api/v1`. Organization-scoped routes carry `organizationUuid` resolved from JWT or path param.
 
 ### Auth
 ```
@@ -276,85 +276,85 @@ POST   /auth/register
 POST   /auth/login
 POST   /auth/refresh
 POST   /auth/logout
-POST   /auth/switch-org        # issue new org-scoped JWT
+POST   /auth/switch-organization        # issue new organization-scoped JWT
 ```
 
 ### Organizations
 ```
 GET    /organizations                        # orgs user belongs to
 POST   /organizations                        # create org
-GET    /organizations/:orgId
-PATCH  /organizations/:orgId
-DELETE /organizations/:orgId
+GET    /organizations/:organizationUuid
+PATCH  /organizations/:organizationUuid
+DELETE /organizations/:organizationUuid
 ```
 
 ### Members
 ```
-GET    /organizations/:orgId/members
-POST   /organizations/:orgId/members/invite
-PATCH  /organizations/:orgId/members/:memberId
-DELETE /organizations/:orgId/members/:memberId
+GET    /organizations/:organizationUuid/members
+POST   /organizations/:organizationUuid/members/invite
+PATCH  /organizations/:organizationUuid/members/:organizationMemberUuid
+DELETE /organizations/:organizationUuid/members/:organizationMemberUuid
 ```
 
 ### Roles & Permissions
 ```
-GET    /organizations/:orgId/roles
-POST   /organizations/:orgId/roles
-PATCH  /organizations/:orgId/roles/:roleId
-DELETE /organizations/:orgId/roles/:roleId
-GET    /organizations/:orgId/roles/:roleId/permissions
-PUT    /organizations/:orgId/roles/:roleId/permissions   # bulk set
+GET    /organizations/:organizationUuid/roles
+POST   /organizations/:organizationUuid/roles
+PATCH  /organizations/:organizationUuid/roles/:organizationRoleUuid
+DELETE /organizations/:organizationUuid/roles/:organizationRoleUuid
+GET    /organizations/:organizationUuid/roles/:organizationRoleUuid/permissions
+PUT    /organizations/:organizationUuid/roles/:organizationRoleUuid/permissions   # bulk set
 GET    /permissions                                       # all available permissions
 ```
 
 ### Integrations
 ```
-GET    /organizations/:orgId/integrations
-POST   /organizations/:orgId/integrations
-GET    /organizations/:orgId/integrations/:id
-PATCH  /organizations/:orgId/integrations/:id
-DELETE /organizations/:orgId/integrations/:id
-POST   /organizations/:orgId/integrations/:id/test       # connectivity check
-GET    /organizations/:orgId/integrations/:id/actions
-PATCH  /organizations/:orgId/integrations/:id/actions/:actionId
-POST   /organizations/:orgId/integrations/:id/sync-schema  # DB integrations
+GET    /organizations/:organizationUuid/integrations
+POST   /organizations/:organizationUuid/integrations
+GET    /organizations/:organizationUuid/integrations/:id
+PATCH  /organizations/:organizationUuid/integrations/:id
+DELETE /organizations/:organizationUuid/integrations/:id
+POST   /organizations/:organizationUuid/integrations/:id/test       # connectivity check
+GET    /organizations/:organizationUuid/integrations/:id/actions
+PATCH  /organizations/:organizationUuid/integrations/:id/actions/:actionId
+POST   /organizations/:organizationUuid/integrations/:id/sync-schema  # DB integrations
 ```
 
 ### AI Providers
 ```
-GET    /organizations/:orgId/ai-providers
-POST   /organizations/:orgId/ai-providers
-PATCH  /organizations/:orgId/ai-providers/:id
-DELETE /organizations/:orgId/ai-providers/:id
+GET    /organizations/:organizationUuid/ai-providers
+POST   /organizations/:organizationUuid/ai-providers
+PATCH  /organizations/:organizationUuid/ai-providers/:id
+DELETE /organizations/:organizationUuid/ai-providers/:id
 ```
 
 ### Conversations & Messages
 ```
-GET    /organizations/:orgId/conversations
-POST   /organizations/:orgId/conversations
-GET    /organizations/:orgId/conversations/:id
-DELETE /organizations/:orgId/conversations/:id
-POST   /organizations/:orgId/conversations/:id/messages   # triggers agent
-GET    /organizations/:orgId/conversations/:id/messages
+GET    /organizations/:organizationUuid/conversations
+POST   /organizations/:organizationUuid/conversations
+GET    /organizations/:organizationUuid/conversations/:id
+DELETE /organizations/:organizationUuid/conversations/:id
+POST   /organizations/:organizationUuid/conversations/:id/messages   # triggers agent
+GET    /organizations/:organizationUuid/conversations/:id/messages
 ```
 
 ### Files
 ```
-GET    /organizations/:orgId/files
-GET    /organizations/:orgId/files/:id/download
-DELETE /organizations/:orgId/files/:id
+GET    /organizations/:organizationUuid/files
+GET    /organizations/:organizationUuid/files/:id/download
+DELETE /organizations/:organizationUuid/files/:id
 ```
 
 ### Audit Logs
 ```
-GET    /organizations/:orgId/audit-logs
+GET    /organizations/:organizationUuid/audit-logs
 ```
 
 ### Agent Executions
 ```
-GET    /organizations/:orgId/executions
-GET    /organizations/:orgId/executions/:id
-POST   /organizations/:orgId/executions/:id/approve    # human-in-the-loop
+GET    /organizations/:organizationUuid/executions
+GET    /organizations/:organizationUuid/executions/:id
+POST   /organizations/:organizationUuid/executions/:id/approve    # human-in-the-loop
 ```
 
 ---
@@ -402,7 +402,7 @@ POST   /organizations/:orgId/executions/:id/approve    # human-in-the-loop
 **Dependencies:** Phases 6–7
 
 ### Phase 9 — Frontend
-**Goal:** Org switcher, integrations management UI, chat interface, file viewer, settings, admin panels
+**Goal:** Organization switcher, integrations management UI, chat interface, file viewer, settings, admin panels
 **Why:** Users interact with everything through the UI
 **Dependencies:** All backend phases
 
@@ -412,7 +412,7 @@ POST   /organizations/:orgId/executions/:id/approve    # human-in-the-loop
 
 See `docs/tasks/` for individual task files:
 
-- `task-01-multitenancy.md` — Organizations, Members, RBAC, Org Switcher
+- `task-01-multitenancy.md` — Organizations, Members, RBAC, Organization Switcher
 - `task-02-integration-framework.md` — Base classes, registry, action system
 - `task-03-saas-integrations.md` — All 11 SaaS integrations
 - `task-04-database-integrations.md` — PG/MySQL/MongoDB + schema sync

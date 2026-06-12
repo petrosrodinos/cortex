@@ -5,7 +5,7 @@ Build the output generation pipeline that the AI agent invokes to produce rich d
 
 ## Requirements
 - The AI agent calls output tools the same way it calls integration tools
-- Generated files are uploaded to GCS under `orgs/<orgId>/files/<uuid>.<ext>`
+- Generated files are uploaded to GCS under `orgs/<organizationUuid>/files/<uuid>.<ext>`
 - File references are stored in `GeneratedFile` table
 - Frontend can render previews inline (charts, tables) and download files
 - PDF and Word support branding: logo, headers, footers
@@ -50,9 +50,9 @@ Build the output generation pipeline that the AI agent invokes to produce rich d
   - Supported types: bar, line, pie, doughnut, scatter, area
 
 - [ ] `OutputsService` (`api/src/modules/outputs/outputs.service.ts`)
-  - `generate(orgId, userId, executionId, type, params)`:
+  - `generate(organizationUuid, userId, executionId, type, params)`:
     1. Call appropriate generator → `Buffer`
-    2. Upload to GCS: `orgs/<orgId>/files/<uuid>.<ext>`
+    2. Upload to GCS: `orgs/<organizationUuid>/files/<uuid>.<ext>`
     3. Persist `GeneratedFile` row
     4. Return `{ fileId, filename, gcsPath, signedUrl }`
 
@@ -63,7 +63,7 @@ Build the output generation pipeline that the AI agent invokes to produce rich d
 
 - [ ] Files module (`api/src/modules/files/`)
   - `files.service.ts`: list files by org, generate signed download URL from GCS, delete
-  - `files.controller.ts`: routes `/organizations/:orgId/files`
+  - `files.controller.ts`: routes `/organizations/:organizationUuid/files`
   - `GET /files/:id/download` → redirect to signed URL (1h expiry)
 
 ### Frontend

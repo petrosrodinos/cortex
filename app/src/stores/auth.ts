@@ -6,7 +6,7 @@ import { devtools, persist } from "zustand/middleware";
 interface UserStore extends LoggedInUser {
     login(user: any): void;
     logout(): void;
-    updateUser(user: any): void;
+    update_user(user: any): void;
 }
 
 const initialValues: UserStore = {
@@ -18,9 +18,12 @@ const initialValues: UserStore = {
     access_token: null,
     expires_in: null,
     avatar: null,
+    organization_uuid: null,
+    organization_role: null,
+    organization_permissions: [],
     login: () => { },
     logout: () => { },
-    updateUser: () => { },
+    update_user: () => { },
 };
 
 const STORE_KEY = "auth";
@@ -41,7 +44,7 @@ export const useAuthStore = create<UserStore>()(
                     localStorage.removeItem(STORE_KEY);
                     window.location.href = Routes.auth.sign_in;
                 },
-                updateUser: async (user: Partial<LoggedInUser>) => {
+                update_user: async (user: Partial<LoggedInUser>) => {
                     set((state) => ({ ...state, ...user }));
                 },
             }),

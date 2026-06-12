@@ -1,5 +1,6 @@
 export const ApiRoutes = {
     auth: {
+        switch_organization: "/auth/switch-organization",
         email: {
             login: "/auth/email/login",
             register: "/auth/email/register",
@@ -17,5 +18,17 @@ export const ApiRoutes = {
     },
     google_maps: {
         timezone: "/google-maps/timezone",
+    },
+    organizations: {
+        root: "/organizations",
+        by_uuid: (organizationUuid: string) => `/organizations/${organizationUuid}`,
+        members: (organizationUuid: string) => `/organizations/${organizationUuid}/members`,
+        member: (organizationUuid: string, organizationMemberUuid: string) => `/organizations/${organizationUuid}/members/${organizationMemberUuid}`,
+        roles: (organizationUuid: string) => `/organizations/${organizationUuid}/roles`,
+        role: (organizationUuid: string, organizationRoleUuid: string) => `/organizations/${organizationUuid}/roles/${organizationRoleUuid}`,
+        rolePermissions: (organizationUuid: string, organizationRoleUuid: string) => `/organizations/${organizationUuid}/roles/${organizationRoleUuid}/permissions`,
+    },
+    permissions: {
+        root: "/permissions",
     },
 }

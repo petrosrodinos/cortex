@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { EmailAuthService } from '../services/email.service';
 import { RegisterEmailDto } from '../dto/register-email.dto';
 import { LoginEmailDto } from '../dto/login-email.dto';

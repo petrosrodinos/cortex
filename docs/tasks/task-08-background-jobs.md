@@ -31,7 +31,7 @@ Harden the platform for production: BullMQ queue configuration with real-time We
 
 - [ ] Audit log queue processor (`audit-log.processor.ts`)
   - Reads `AuditLog` job payload, persists to DB + indexes to Elasticsearch
-  - `AuditLogService.log(orgId, userId, action, resourceType, resourceId, metadata)` — enqueues (fire-and-forget)
+  - `AuditLogService.log(organizationUuid, userId, action, resourceType, resourceId, metadata)` — enqueues (fire-and-forget)
   - Call `AuditLogService.log(...)` from: org changes, member changes, integration CRUD, AI executions start/end, file generation, role changes
 
 - [ ] Schema sync processor (`schema-sync.processor.ts`)
@@ -57,12 +57,12 @@ Harden the platform for production: BullMQ queue configuration with real-time We
   - Used by `agent.processor.ts` to emit tool progress events
 
 - [ ] Audit logs API endpoint
-  - `GET /organizations/:orgId/audit-logs?page&limit&action&userId&from&to`
+  - `GET /organizations/:organizationUuid/audit-logs?page&limit&action&userId&from&to`
   - Filters passed to Elasticsearch query if ES is enabled, fallback to Prisma
 
 - [ ] Token & cost tracking API
-  - `GET /organizations/:orgId/usage?from&to` → aggregated stats
-  - `GET /organizations/:orgId/usage/conversations` → cost per conversation
+  - `GET /organizations/:organizationUuid/usage?from&to` → aggregated stats
+  - `GET /organizations/:organizationUuid/usage/conversations` → cost per conversation
   - Queries `UsageSummary` + raw `ToolCall` for recent data
 
 - [ ] Usage limit enforcement
@@ -92,7 +92,7 @@ Harden the platform for production: BullMQ queue configuration with real-time We
 - Redis connection for BullMQ must use `lazyConnect: true` + health check before processing
 - Audit logs: write to both Postgres (`AuditLog` table) and Elasticsearch for fast filter/search; Postgres is the source of truth
 - Usage rollup is idempotent: use `upsert` on `(org_id, date)` unique constraint
-- WebSocket room naming: `org-${orgId}-exec-${executionId}` — user must be member of org to join
+- WebSocket room naming: `org-${organizationUuid}-exec-${executionId}` — user must be member of org to join
 
 ## Acceptance Criteria
 - [ ] Agent runs in background; HTTP response returns immediately with `executionId`
