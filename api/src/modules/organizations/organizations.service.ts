@@ -16,7 +16,7 @@ export class OrganizationsService {
           data: {
             name: dto.name,
             logo_url: dto.logo_url,
-            slug: await this.create_unique_slug(dto.name, tx),
+            slug: await this.createUniqueSlug(dto.name, tx),
           },
         });
 
@@ -59,7 +59,7 @@ export class OrganizationsService {
         return organization;
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
@@ -83,53 +83,68 @@ export class OrganizationsService {
         orderBy: { created_at: 'asc' },
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
   async findOne(user_uuid: string, organization_uuid: string) {
     try {
-      await this.require_active_member(user_uuid, organization_uuid);
+      await this.requireActiveMember(user_uuid, organization_uuid);
 
       return await this.prisma.organization.findUnique({
         where: { uuid: organization_uuid },
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
   async update(user_uuid: string, organization_uuid: string, dto: UpdateOrganizationDto) {
     try {
-      const membership = await this.require_active_member(user_uuid, organization_uuid);
-      this.require_permission_or_owner(membership, 'org:update');
+      const membership = await this.requireActiveMember(user_uuid, organization_uuid);
+      this.requirePermissionOrOwner(membership, 'org:update');
 
       return await this.prisma.organization.update({
         where: { uuid: organization_uuid },
         data: dto,
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
   async delete(user_uuid: string, organization_uuid: string) {
     try {
-      const membership = await this.require_active_member(user_uuid, organization_uuid);
+      const membership = await this.requireActiveMember(user_uuid, organization_uuid);
 
       if (membership.role.name !== 'Owner') {
         throw new ForbiddenException('Only organization owners can delete organizations');
+      }
+
+      const active_organization_count = await this.prisma.organization.count({
+        where: {
+          members: {
+            some: {
+              user_uuid: user_uuid,
+              status: OrganizationMemberStatus.ACTIVE,
+            },
+          },
+        },
+      });
+
+      if (active_organization_count <= 1) {
+        throw new BadRequestException('You must keep at least one organization');
       }
 
       return await this.prisma.organization.delete({
         where: { uuid: organization_uuid },
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  async require_active_member(user_uuid: string, organization_uuid: string) {
+  async requireActiveMember(user_uuid: string, organization_uuid: string) {
     try {
       const membership = await this.prisma.organizationMember.findFirst({
         where: {
@@ -155,11 +170,11 @@ export class OrganizationsService {
 
       return membership;
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  private require_permission_or_owner(membership: any, permission_key: string) {
+  private requirePermissionOrOwner(membership: any, permission_key: string) {
     try {
       const permissions = membership.role.permissions?.map((role_permission) => role_permission.permission.key) ?? [];
 
@@ -167,11 +182,11 @@ export class OrganizationsService {
         throw new ForbiddenException('Missing organization permission');
       }
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  private async create_unique_slug(name: string, tx: any) {
+  private async createUniqueSlug(name: string, tx: any) {
     try {
       const base_slug = name
         .toLowerCase()
@@ -191,11 +206,11 @@ export class OrganizationsService {
 
       throw new NotFoundException('Unable to create a unique organization slug');
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  private handle_error(error: unknown): never {
+  private handleError(error: unknown): never {
     if (error instanceof HttpException) {
       throw error;
     }

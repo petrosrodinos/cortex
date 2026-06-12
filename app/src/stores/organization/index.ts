@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import type { Organization } from '@/interfaces/organization/organization.interface';
+import type { Organization } from '@/features/organizations/interfaces/organization.interfaces';
 
 interface OrganizationStore {
   current_organization: Organization | null;

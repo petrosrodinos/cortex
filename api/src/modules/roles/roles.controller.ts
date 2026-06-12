@@ -53,14 +53,14 @@ export class RolesController {
   }
 
   @Put('organizations/:organization_uuid/roles/:organization_role_uuid/permissions')
-  async set_permissions(
+  async setPermissions(
     @CurrentUser('uuid') user_uuid: string,
     @Param('organization_uuid') organization_uuid: string,
     @Param('organization_role_uuid') organization_role_uuid: string,
     @Body() dto: SetRolePermissionsDto,
   ) {
     try {
-      return await this.roles_service.set_permissions(user_uuid, organization_uuid, organization_role_uuid, dto);
+      return await this.roles_service.setPermissions(user_uuid, organization_uuid, organization_role_uuid, dto);
     } catch (error) {
       throw error;
     }

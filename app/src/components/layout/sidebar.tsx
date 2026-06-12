@@ -28,7 +28,7 @@ export default function Sidebar() {
     <aside
       className={cn(
         'hidden lg:flex flex-col shrink-0',
-        'my-3 ml-3 rounded-2xl overflow-hidden',
+        'my-3 ml-3 rounded-2xl overflow-visible',
         'bg-surface border border-border',
         'transition-all duration-300 ease-in-out',
         collapsed ? 'w-[64px]' : 'w-[220px]',
@@ -83,13 +83,16 @@ export default function Sidebar() {
         )}
       </div>
 
+      <div className="shrink-0 border-b border-border p-2">
+        <OrganizationSwitcher collapsed={collapsed} />
+      </div>
+
       {/* Nav items */}
       <nav className="flex-1 py-2.5 px-2 overflow-y-auto">
         <SidebarContent collapsed={collapsed} />
       </nav>
 
       <div className="shrink-0 space-y-2 p-2 border-t border-border">
-        <OrganizationSwitcher collapsed={collapsed} />
         <UserMenuPopover collapsed={collapsed} placement="top" />
       </div>
     </aside>

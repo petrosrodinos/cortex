@@ -10,6 +10,7 @@ import { SendgridMailService } from '@/integrations/notifications/sendgrid/servi
 import { EmailConfig } from '@/shared/constants/email';
 import { SwitchOrganizationDto } from '../dto/switch-organization.dto';
 import { OrganizationMemberStatus } from 'generated/prisma';
+import { OrganizationsService } from '@/modules/organizations/organizations.service';
 
 @Injectable()
 export class EmailAuthService {
@@ -17,6 +18,7 @@ export class EmailAuthService {
         private readonly prisma: PrismaService,
         private readonly jwt_service: CreateJwtService,
         private readonly mail_service: SendgridMailService,
+        private readonly organizations_service: OrganizationsService,
     ) { }
 
     async registerWithEmail(dto: RegisterEmailDto) {
@@ -42,16 +44,12 @@ export class EmailAuthService {
                 },
             });
 
-            const token = await this.jwt_service.signToken({
-                uuid: user.uuid,
-                role: user.role,
-            });
-
-            const expires_in = this.jwt_service.getExpirationTime(token);
+            const organization = await this.organizations_service.create(user.uuid, { name: 'Default Organisation' });
+            const scoped_auth = await this.switchOrganization(user.uuid, { organization_uuid: organization.uuid });
 
             delete user.password;
 
-            return { access_token: token, expires_in: expires_in, user: user };
+            return { ...scoped_auth, user: user };
         } catch (error) {
             console.log(error);
             throw new BadRequestException(error.message);
@@ -129,7 +127,7 @@ export class EmailAuthService {
         }
     }
 
-    async switch_organization(user_uuid: string, dto: SwitchOrganizationDto) {
+    async switchOrganization(user_uuid: string, dto: SwitchOrganizationDto) {
         try {
             const membership = await this.prisma.organizationMember.findFirst({
                 where: {
@@ -174,11 +172,11 @@ export class EmailAuthService {
                 organization_permissions,
             };
         } catch (error) {
-            this.handle_error(error);
+            this.handleError(error);
         }
     }
 
-    private handle_error(error: unknown): never {
+    private handleError(error: unknown): never {
         if (error instanceof HttpException) {
             throw error;
         }

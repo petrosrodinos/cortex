@@ -6,12 +6,14 @@ import { PrismaModule } from '@/core/databases/prisma/prisma.module';
 import { CreateJwtServiceModule } from '@/shared/utils/jwt/jwt.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { SendgridModule } from '@/integrations/notifications/sendgrid/sendgrid.module';
+import { OrganizationsModule } from '@/modules/organizations/organizations.module';
 
 @Module({
   imports: [
     PrismaModule,
     CreateJwtServiceModule,
     SendgridModule,
+    OrganizationsModule,
   ],
   providers: [EmailAuthService, JwtStrategy, Logger],
   controllers: [EmailAuthController, AuthController],

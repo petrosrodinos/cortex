@@ -29,6 +29,7 @@ describe('OrganizationsService', () => {
     organization: {
       findFirst: jest.fn(),
       findMany: jest.fn(),
+      count: jest.fn(),
       delete: jest.fn(),
     },
     organizationMember: {
@@ -75,6 +76,17 @@ describe('OrganizationsService', () => {
         status: OrganizationMemberStatus.ACTIVE,
       }),
     });
+    expect(tx.rolePermission.createMany).toHaveBeenCalledWith({
+      data: expect.arrayContaining([
+        { role_uuid: 'owner-role-uuid', permission_uuid: 'org-update-permission-uuid' },
+        { role_uuid: 'owner-role-uuid', permission_uuid: 'files-read-permission-uuid' },
+        { role_uuid: 'admin-role-uuid', permission_uuid: 'org-update-permission-uuid' },
+        { role_uuid: 'admin-role-uuid', permission_uuid: 'files-read-permission-uuid' },
+        { role_uuid: 'manager-role-uuid', permission_uuid: 'files-read-permission-uuid' },
+        { role_uuid: 'employee-role-uuid', permission_uuid: 'files-read-permission-uuid' },
+      ]),
+      skipDuplicates: true,
+    });
   });
 
   it('blocks organization deletion unless the user is Owner', async () => {
@@ -82,6 +94,15 @@ describe('OrganizationsService', () => {
     const service = new OrganizationsService(prisma);
 
     await expect(service.delete('user-uuid', 'org-uuid')).rejects.toBeInstanceOf(ForbiddenException);
+  });
+
+  it('does not delete the user final active organization', async () => {
+    prisma.organizationMember.findFirst.mockResolvedValue({ role: { name: 'Owner' } });
+    prisma.organization.count.mockResolvedValue(1);
+    const service = new OrganizationsService(prisma);
+
+    await expect(service.delete('user-uuid', 'org-uuid')).rejects.toBeInstanceOf(BadRequestException);
+    expect(prisma.organization.delete).not.toHaveBeenCalled();
   });
 
   it('wraps unexpected organization lookup failures', async () => {

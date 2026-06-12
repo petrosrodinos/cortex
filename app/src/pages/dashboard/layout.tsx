@@ -53,9 +53,11 @@ export default function DashboardLayout() {
             </Drawer.Header>
 
             <Drawer.Body className="px-2 pt-2.5 pb-2 flex flex-col gap-0">
+              <div className="mb-2 border-b border-border pb-2">
+                <OrganizationSwitcher />
+              </div>
               <SidebarContent collapsed={false} onNavigate={drawerState.close} />
               <div className="mt-4 space-y-2 pt-2 border-t border-border">
-                <OrganizationSwitcher />
                 <UserMenuPopover collapsed={false} placement="top" />
               </div>
             </Drawer.Body>

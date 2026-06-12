@@ -10,9 +10,9 @@ export class AuthController {
 
   @Post('switch-organization')
   @UseGuards(JwtGuard)
-  async switch_organization(@CurrentUser('uuid') user_uuid: string, @Body() dto: SwitchOrganizationDto) {
+  async switchOrganization(@CurrentUser('uuid') user_uuid: string, @Body() dto: SwitchOrganizationDto) {
     try {
-      return await this.auth_service.switch_organization(user_uuid, dto);
+      return await this.auth_service.switchOrganization(user_uuid, dto);
     } catch (error) {
       throw error;
     }

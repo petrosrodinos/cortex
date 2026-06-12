@@ -6,8 +6,7 @@ import SignUp from "@/pages/auth/pages/sign-up";
 import AuthLayout from "@/pages/auth/layout";
 import DashboardLayout from "@/pages/dashboard/layout";
 import DashboardHome from "@/pages/dashboard";
-import MembersPage from "@/pages/organizations/members";
-import RolesPage from "@/pages/organizations/roles";
+import OrganizationsPage from "@/pages/organizations";
 
 export default function AppRoutes() {
   return (
@@ -36,8 +35,9 @@ export default function AppRoutes() {
         }
       >
         <Route index element={<DashboardHome />} />
-        <Route path="organizations/members" element={<MembersPage />} />
-        <Route path="organizations/roles" element={<RolesPage />} />
+        <Route path="organizations" element={<OrganizationsPage />} />
+        <Route path="organizations/members" element={<Navigate to={Routes.dashboard.organizations} replace />} />
+        <Route path="organizations/roles" element={<Navigate to={Routes.dashboard.organizations} replace />} />
       </Route>
 
       {/* Default redirect */}

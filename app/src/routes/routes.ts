@@ -5,7 +5,6 @@ export const Routes = {
     },
     dashboard: {
         root: "/dashboard",
-        organization_members: "/dashboard/organizations/members",
-        organization_roles: "/dashboard/organizations/roles",
+        organizations: "/dashboard/organizations",
     },
 };

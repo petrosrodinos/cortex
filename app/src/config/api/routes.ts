@@ -1,6 +1,6 @@
 export const ApiRoutes = {
     auth: {
-        switch_organization: "/auth/switch-organization",
+        switchOrganization: "/auth/switch-organization",
         email: {
             login: "/auth/email/login",
             register: "/auth/email/register",

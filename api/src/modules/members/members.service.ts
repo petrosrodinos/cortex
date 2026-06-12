@@ -14,7 +14,7 @@ export class MembersService {
 
   async findAll(user_uuid: string, organization_uuid: string) {
     try {
-      await this.organizations_service.require_active_member(user_uuid, organization_uuid);
+      await this.organizations_service.requireActiveMember(user_uuid, organization_uuid);
 
       return await this.prisma.organizationMember.findMany({
         where: { organization: { uuid: organization_uuid } },
@@ -22,15 +22,15 @@ export class MembersService {
         orderBy: { invited_at: 'desc' },
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
   async invite(user_uuid: string, organization_uuid: string, dto: InviteMemberDto) {
     try {
-      await this.require_manager(user_uuid, organization_uuid);
-      const organization = await this.get_organization(organization_uuid);
-      const role = await this.get_organization_role(organization.uuid, dto.organization_role_uuid);
+      await this.requireManager(user_uuid, organization_uuid);
+      const organization = await this.getOrganization(organization_uuid);
+      const role = await this.getOrganizationRole(organization.uuid, dto.organization_role_uuid);
       const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
 
       if (!user) {
@@ -47,19 +47,19 @@ export class MembersService {
         include: { role: true, user: true },
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
   async update(user_uuid: string, organization_uuid: string, organization_member_uuid: string, dto: UpdateMemberDto) {
     try {
-      await this.require_manager(user_uuid, organization_uuid);
-      const organization = await this.get_organization(organization_uuid);
-      const member = await this.get_organization_member(organization.uuid, organization_member_uuid);
+      await this.requireManager(user_uuid, organization_uuid);
+      const organization = await this.getOrganization(organization_uuid);
+      const member = await this.getOrganizationMember(organization.uuid, organization_member_uuid);
       const data: any = {};
 
       if (dto.organization_role_uuid) {
-        const role = await this.get_organization_role(organization.uuid, dto.organization_role_uuid);
+        const role = await this.getOrganizationRole(organization.uuid, dto.organization_role_uuid);
         data.role_uuid = role.uuid;
       }
 
@@ -78,38 +78,42 @@ export class MembersService {
         include: { role: true, user: true },
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
   async remove(user_uuid: string, organization_uuid: string, organization_member_uuid: string) {
     try {
-      await this.require_manager(user_uuid, organization_uuid);
-      const organization = await this.get_organization(organization_uuid);
-      const member = await this.get_organization_member(organization.uuid, organization_member_uuid);
+      await this.requireManager(user_uuid, organization_uuid);
+      const organization = await this.getOrganization(organization_uuid);
+      const member = await this.getOrganizationMember(organization.uuid, organization_member_uuid);
+
+      if (member.role?.name === 'Owner') {
+        throw new ForbiddenException('Organization owners cannot be removed');
+      }
 
       return await this.prisma.organizationMember.delete({
         where: { uuid: member.uuid },
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  private async require_manager(user_uuid: string, organization_uuid: string) {
+  private async requireManager(user_uuid: string, organization_uuid: string) {
     try {
-      const membership = await this.organizations_service.require_active_member(user_uuid, organization_uuid);
+      const membership = await this.organizations_service.requireActiveMember(user_uuid, organization_uuid);
       const permissions = membership.role.permissions?.map((role_permission) => role_permission.permission.key) ?? [];
 
       if (membership.role.name !== 'Owner' && !permissions.includes('org:members:update')) {
         throw new ForbiddenException('Missing organization member permission');
       }
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  private async get_organization(organization_uuid: string) {
+  private async getOrganization(organization_uuid: string) {
     try {
       const organization = await this.prisma.organization.findUnique({ where: { uuid: organization_uuid } });
 
@@ -119,11 +123,11 @@ export class MembersService {
 
       return organization;
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  private async get_organization_role(organization_uuid: string, organization_role_uuid: string) {
+  private async getOrganizationRole(organization_uuid: string, organization_role_uuid: string) {
     try {
       const role = await this.prisma.organizationRole.findFirst({
         where: { uuid: organization_role_uuid, org_uuid: organization_uuid },
@@ -135,14 +139,15 @@ export class MembersService {
 
       return role;
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  private async get_organization_member(organization_uuid: string, organization_member_uuid: string) {
+  private async getOrganizationMember(organization_uuid: string, organization_member_uuid: string) {
     try {
       const member = await this.prisma.organizationMember.findFirst({
         where: { uuid: organization_member_uuid, org_uuid: organization_uuid },
+        include: { role: true },
       });
 
       if (!member) {
@@ -151,11 +156,11 @@ export class MembersService {
 
       return member;
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  private handle_error(error: unknown): never {
+  private handleError(error: unknown): never {
     if (error instanceof HttpException) {
       throw error;
     }

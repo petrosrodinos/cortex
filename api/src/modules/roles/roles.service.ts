@@ -11,7 +11,7 @@ export class RolesService {
 
   async findAll(user_uuid: string, organization_uuid: string) {
     try {
-      const organization = await this.require_active_member(user_uuid, organization_uuid);
+      const organization = await this.requireActiveMember(user_uuid, organization_uuid);
 
       return await this.prisma.organizationRole.findMany({
         where: { org_uuid: organization.uuid },
@@ -19,7 +19,7 @@ export class RolesService {
         orderBy: [{ is_system: 'desc' }, { name: 'asc' }],
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
@@ -27,13 +27,13 @@ export class RolesService {
     try {
       return await this.prisma.permission.findMany({ orderBy: [{ group: 'asc' }, { key: 'asc' }] });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
   async create(user_uuid: string, organization_uuid: string, dto: CreateRoleDto) {
     try {
-      const organization = await this.require_role_manager(user_uuid, organization_uuid);
+      const organization = await this.requireRoleManager(user_uuid, organization_uuid);
 
       return await this.prisma.$transaction(async (tx) => {
         const role = await tx.organizationRole.create({
@@ -45,7 +45,7 @@ export class RolesService {
         });
 
         if (dto.permission_keys?.length) {
-          await this.set_permissions_tx(tx, role.uuid, dto.permission_keys);
+          await this.setPermissionsTx(tx, role.uuid, dto.permission_keys);
         }
 
         return tx.organizationRole.findUnique({
@@ -54,14 +54,14 @@ export class RolesService {
         });
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
   async update(user_uuid: string, organization_uuid: string, organization_role_uuid: string, dto: UpdateRoleDto) {
     try {
-      const organization = await this.require_role_manager(user_uuid, organization_uuid);
-      const role = await this.get_organization_role(organization.uuid, organization_role_uuid);
+      const organization = await this.requireRoleManager(user_uuid, organization_uuid);
+      const role = await this.getOrganizationRole(organization.uuid, organization_role_uuid);
 
       if (role.is_system) {
         throw new BadRequestException('System roles cannot be updated');
@@ -73,21 +73,21 @@ export class RolesService {
         include: { permissions: { include: { permission: true } } },
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  async set_permissions(user_uuid: string, organization_uuid: string, organization_role_uuid: string, dto: SetRolePermissionsDto) {
+  async setPermissions(user_uuid: string, organization_uuid: string, organization_role_uuid: string, dto: SetRolePermissionsDto) {
     try {
-      const organization = await this.require_role_manager(user_uuid, organization_uuid);
-      const role = await this.get_organization_role(organization.uuid, organization_role_uuid);
+      const organization = await this.requireRoleManager(user_uuid, organization_uuid);
+      const role = await this.getOrganizationRole(organization.uuid, organization_role_uuid);
 
       if (role.is_system) {
         throw new BadRequestException('System role permissions cannot be modified');
       }
 
       return await this.prisma.$transaction(async (tx) => {
-        await this.set_permissions_tx(tx, role.uuid, dto.permission_keys);
+        await this.setPermissionsTx(tx, role.uuid, dto.permission_keys);
 
         return tx.organizationRole.findUnique({
           where: { uuid: role.uuid },
@@ -95,14 +95,14 @@ export class RolesService {
         });
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
   async delete(user_uuid: string, organization_uuid: string, organization_role_uuid: string) {
     try {
-      const organization = await this.require_role_manager(user_uuid, organization_uuid);
-      const role = await this.get_organization_role(organization.uuid, organization_role_uuid);
+      const organization = await this.requireRoleManager(user_uuid, organization_uuid);
+      const role = await this.getOrganizationRole(organization.uuid, organization_role_uuid);
 
       if (role.is_system) {
         throw new BadRequestException('System roles cannot be deleted');
@@ -112,11 +112,11 @@ export class RolesService {
         where: { uuid: role.uuid },
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  private async require_active_member(user_uuid: string, organization_uuid: string) {
+  private async requireActiveMember(user_uuid: string, organization_uuid: string) {
     try {
       const membership = await this.prisma.organizationMember.findFirst({
         where: {
@@ -142,11 +142,11 @@ export class RolesService {
 
       return membership.organization;
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  private async require_role_manager(user_uuid: string, organization_uuid: string) {
+  private async requireRoleManager(user_uuid: string, organization_uuid: string) {
     try {
       const membership = await this.prisma.organizationMember.findFirst({
         where: {
@@ -178,11 +178,11 @@ export class RolesService {
 
       return membership.organization;
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  private async get_organization_role(organization_uuid: string, organization_role_uuid: string) {
+  private async getOrganizationRole(organization_uuid: string, organization_role_uuid: string) {
     try {
       const role = await this.prisma.organizationRole.findFirst({
         where: { uuid: organization_role_uuid, org_uuid: organization_uuid },
@@ -194,11 +194,11 @@ export class RolesService {
 
       return role;
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  private async set_permissions_tx(tx: any, organization_role_uuid: string, permission_keys: string[]) {
+  private async setPermissionsTx(tx: any, organization_role_uuid: string, permission_keys: string[]) {
     try {
       const permissions = await tx.permission.findMany({
         where: { key: { in: permission_keys } },
@@ -214,11 +214,11 @@ export class RolesService {
         skipDuplicates: true,
       });
     } catch (error) {
-      this.handle_error(error);
+      this.handleError(error);
     }
   }
 
-  private handle_error(error: unknown): never {
+  private handleError(error: unknown): never {
     if (error instanceof HttpException) {
       throw error;
     }

@@ -1,3 +1,5 @@
+import type { OrganizationRole } from '@/features/roles/interfaces/role.interfaces';
+
 export const OrganizationMemberStatuses = {
   ACTIVE: 'ACTIVE',
   INVITED: 'INVITED',
@@ -5,25 +7,6 @@ export const OrganizationMemberStatuses = {
 } as const;
 
 export type OrganizationMemberStatus = (typeof OrganizationMemberStatuses)[keyof typeof OrganizationMemberStatuses];
-
-export interface Permission {
-  id: number;
-  uuid: string;
-  key: string;
-  label: string;
-  group: string;
-}
-
-export interface OrganizationRole {
-  id: number;
-  uuid: string;
-  org_uuid: string;
-  name: string;
-  is_system: boolean;
-  permissions?: Array<{
-    permission: Permission;
-  }>;
-}
 
 export interface OrganizationMember {
   id: number;
@@ -41,13 +24,24 @@ export interface OrganizationMember {
   };
 }
 
-export interface Organization {
-  id: number;
-  uuid: string;
-  name: string;
-  slug: string;
-  logo_url?: string | null;
-  created_at: string;
-  updated_at: string;
-  members?: OrganizationMember[];
+export interface OrganizationMembersQuery {
+  search?: string;
+  status?: OrganizationMemberStatus;
+  page?: number;
+  limit?: number;
+}
+
+export interface InviteMemberDto {
+  email: string;
+  organization_role_uuid: string;
+}
+
+export interface UpdateMemberDto {
+  organization_role_uuid?: string;
+  status?: OrganizationMemberStatus;
+}
+
+export interface DeleteMemberDto {
+  organization_uuid: string;
+  organization_member_uuid: string;
 }
