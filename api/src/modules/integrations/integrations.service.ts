@@ -2,6 +2,7 @@ import { BadRequestException, HttpException, Injectable, NotFoundException } fro
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
 import { IntegrationStatus } from 'generated/prisma';
+import { DATABASE_PROVIDERS } from './databases/database-integration.types';
 import { CreateIntegrationDto } from './dto/create-integration.dto';
 import { UpdateIntegrationDto } from './dto/update-integration.dto';
 import { IntegrationRegistry } from './framework/integration-registry.service';
@@ -16,6 +17,10 @@ export class IntegrationsService {
 
   async create(organizationUuid: string, dto: CreateIntegrationDto) {
     try {
+      if (DATABASE_PROVIDERS.includes(dto.provider as any)) {
+        throw new BadRequestException('Use the database integration endpoint to create database connections');
+      }
+
       return await this.prisma.$transaction(async (tx) => {
         const integration = await tx.integration.create({
           data: {
@@ -56,7 +61,7 @@ export class IntegrationsService {
     try {
       const integrations = await this.prisma.integration.findMany({
         where: { org_uuid: organizationUuid },
-        include: { actions: true },
+        include: { actions: true, database: true },
         orderBy: { created_at: 'desc' },
       });
 
@@ -70,7 +75,7 @@ export class IntegrationsService {
     try {
       const integration = await this.prisma.integration.findFirst({
         where: { uuid: integrationUuid, org_uuid: organizationUuid },
-        include: { actions: true },
+        include: { actions: true, database: true },
       });
 
       if (!integration) {
@@ -145,9 +150,19 @@ export class IntegrationsService {
     return integration;
   }
 
-  private sanitizeIntegration<T extends { config?: string }>(integration: T) {
-    const { config: _config, ...safe_integration } = integration;
-    return safe_integration;
+  private sanitizeIntegration<T extends { config?: string; database?: any }>(integration: T) {
+    const { config: _config, database, ...safe_integration } = integration;
+
+    if (!database) {
+      return safe_integration;
+    }
+
+    const { connection_string: _connection_string, ...safe_database } = database;
+
+    return {
+      ...safe_integration,
+      database: safe_database,
+    };
   }
 
   private handleError(error: unknown): never {

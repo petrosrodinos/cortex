@@ -54,6 +54,11 @@ export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
  */
 export type Integration = $Result.DefaultSelection<Prisma.$IntegrationPayload>
 /**
+ * Model DatabaseIntegration
+ * 
+ */
+export type DatabaseIntegration = $Result.DefaultSelection<Prisma.$DatabaseIntegrationPayload>
+/**
  * Model IntegrationAction
  * 
  */
@@ -130,6 +135,25 @@ export const IntegrationStatus: {
 
 export type IntegrationStatus = (typeof IntegrationStatus)[keyof typeof IntegrationStatus]
 
+
+export const DatabaseType: {
+  POSTGRESQL: 'POSTGRESQL',
+  MYSQL: 'MYSQL',
+  MONGODB: 'MONGODB'
+};
+
+export type DatabaseType = (typeof DatabaseType)[keyof typeof DatabaseType]
+
+
+export const DatabaseOperation: {
+  READ: 'READ',
+  INSERT: 'INSERT',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE'
+};
+
+export type DatabaseOperation = (typeof DatabaseOperation)[keyof typeof DatabaseOperation]
+
 }
 
 export type AuthRole = $Enums.AuthRole
@@ -151,6 +175,14 @@ export const IntegrationProvider: typeof $Enums.IntegrationProvider
 export type IntegrationStatus = $Enums.IntegrationStatus
 
 export const IntegrationStatus: typeof $Enums.IntegrationStatus
+
+export type DatabaseType = $Enums.DatabaseType
+
+export const DatabaseType: typeof $Enums.DatabaseType
+
+export type DatabaseOperation = $Enums.DatabaseOperation
+
+export const DatabaseOperation: typeof $Enums.DatabaseOperation
 
 /**
  * ##  Prisma Client ʲˢ
@@ -348,6 +380,16 @@ export class PrismaClient<
     * ```
     */
   get integration(): Prisma.IntegrationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.databaseIntegration`: Exposes CRUD operations for the **DatabaseIntegration** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DatabaseIntegrations
+    * const databaseIntegrations = await prisma.databaseIntegration.findMany()
+    * ```
+    */
+  get databaseIntegration(): Prisma.DatabaseIntegrationDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.integrationAction`: Exposes CRUD operations for the **IntegrationAction** model.
@@ -810,6 +852,7 @@ export namespace Prisma {
     RolePermission: 'RolePermission',
     AuditLog: 'AuditLog',
     Integration: 'Integration',
+    DatabaseIntegration: 'DatabaseIntegration',
     IntegrationAction: 'IntegrationAction',
     Document: 'Document'
   };
@@ -827,7 +870,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "integrationAction" | "document"
+      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "databaseIntegration" | "integrationAction" | "document"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1423,6 +1466,80 @@ export namespace Prisma {
           }
         }
       }
+      DatabaseIntegration: {
+        payload: Prisma.$DatabaseIntegrationPayload<ExtArgs>
+        fields: Prisma.DatabaseIntegrationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DatabaseIntegrationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DatabaseIntegrationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DatabaseIntegrationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DatabaseIntegrationPayload>
+          }
+          findFirst: {
+            args: Prisma.DatabaseIntegrationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DatabaseIntegrationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DatabaseIntegrationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DatabaseIntegrationPayload>
+          }
+          findMany: {
+            args: Prisma.DatabaseIntegrationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DatabaseIntegrationPayload>[]
+          }
+          create: {
+            args: Prisma.DatabaseIntegrationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DatabaseIntegrationPayload>
+          }
+          createMany: {
+            args: Prisma.DatabaseIntegrationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DatabaseIntegrationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DatabaseIntegrationPayload>[]
+          }
+          delete: {
+            args: Prisma.DatabaseIntegrationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DatabaseIntegrationPayload>
+          }
+          update: {
+            args: Prisma.DatabaseIntegrationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DatabaseIntegrationPayload>
+          }
+          deleteMany: {
+            args: Prisma.DatabaseIntegrationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DatabaseIntegrationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DatabaseIntegrationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DatabaseIntegrationPayload>[]
+          }
+          upsert: {
+            args: Prisma.DatabaseIntegrationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DatabaseIntegrationPayload>
+          }
+          aggregate: {
+            args: Prisma.DatabaseIntegrationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDatabaseIntegration>
+          }
+          groupBy: {
+            args: Prisma.DatabaseIntegrationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DatabaseIntegrationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DatabaseIntegrationCountArgs<ExtArgs>
+            result: $Utils.Optional<DatabaseIntegrationCountAggregateOutputType> | number
+          }
+        }
+      }
       IntegrationAction: {
         payload: Prisma.$IntegrationActionPayload<ExtArgs>
         fields: Prisma.IntegrationActionFieldRefs
@@ -1687,6 +1804,7 @@ export namespace Prisma {
     rolePermission?: RolePermissionOmit
     auditLog?: AuditLogOmit
     integration?: IntegrationOmit
+    databaseIntegration?: DatabaseIntegrationOmit
     integrationAction?: IntegrationActionOmit
     document?: DocumentOmit
   }
@@ -10233,6 +10351,7 @@ export namespace Prisma {
     updated_at?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     actions?: boolean | Integration$actionsArgs<ExtArgs>
+    database?: boolean | Integration$databaseArgs<ExtArgs>
     _count?: boolean | IntegrationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["integration"]>
 
@@ -10284,6 +10403,7 @@ export namespace Prisma {
   export type IntegrationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     actions?: boolean | Integration$actionsArgs<ExtArgs>
+    database?: boolean | Integration$databaseArgs<ExtArgs>
     _count?: boolean | IntegrationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type IntegrationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10298,6 +10418,7 @@ export namespace Prisma {
     objects: {
       organization: Prisma.$OrganizationPayload<ExtArgs>
       actions: Prisma.$IntegrationActionPayload<ExtArgs>[]
+      database: Prisma.$DatabaseIntegrationPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -10707,6 +10828,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     actions<T extends Integration$actionsArgs<ExtArgs> = {}>(args?: Subset<T, Integration$actionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IntegrationActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    database<T extends Integration$databaseArgs<ExtArgs> = {}>(args?: Subset<T, Integration$databaseArgs<ExtArgs>>): Prisma__DatabaseIntegrationClient<$Result.GetResult<Prisma.$DatabaseIntegrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11167,6 +11289,25 @@ export namespace Prisma {
   }
 
   /**
+   * Integration.database
+   */
+  export type Integration$databaseArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DatabaseIntegration
+     */
+    select?: DatabaseIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DatabaseIntegration
+     */
+    omit?: DatabaseIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DatabaseIntegrationInclude<ExtArgs> | null
+    where?: DatabaseIntegrationWhereInput
+  }
+
+  /**
    * Integration without action
    */
   export type IntegrationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11182,6 +11323,1155 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: IntegrationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DatabaseIntegration
+   */
+
+  export type AggregateDatabaseIntegration = {
+    _count: DatabaseIntegrationCountAggregateOutputType | null
+    _avg: DatabaseIntegrationAvgAggregateOutputType | null
+    _sum: DatabaseIntegrationSumAggregateOutputType | null
+    _min: DatabaseIntegrationMinAggregateOutputType | null
+    _max: DatabaseIntegrationMaxAggregateOutputType | null
+  }
+
+  export type DatabaseIntegrationAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type DatabaseIntegrationSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type DatabaseIntegrationMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    integration_uuid: string | null
+    db_type: $Enums.DatabaseType | null
+    connection_string: string | null
+    last_schema_sync: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type DatabaseIntegrationMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    integration_uuid: string | null
+    db_type: $Enums.DatabaseType | null
+    connection_string: string | null
+    last_schema_sync: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type DatabaseIntegrationCountAggregateOutputType = {
+    id: number
+    uuid: number
+    integration_uuid: number
+    db_type: number
+    connection_string: number
+    schema_cache: number
+    allowed_ops: number
+    last_schema_sync: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type DatabaseIntegrationAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type DatabaseIntegrationSumAggregateInputType = {
+    id?: true
+  }
+
+  export type DatabaseIntegrationMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    integration_uuid?: true
+    db_type?: true
+    connection_string?: true
+    last_schema_sync?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type DatabaseIntegrationMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    integration_uuid?: true
+    db_type?: true
+    connection_string?: true
+    last_schema_sync?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type DatabaseIntegrationCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    integration_uuid?: true
+    db_type?: true
+    connection_string?: true
+    schema_cache?: true
+    allowed_ops?: true
+    last_schema_sync?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type DatabaseIntegrationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DatabaseIntegration to aggregate.
+     */
+    where?: DatabaseIntegrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DatabaseIntegrations to fetch.
+     */
+    orderBy?: DatabaseIntegrationOrderByWithRelationInput | DatabaseIntegrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DatabaseIntegrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DatabaseIntegrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DatabaseIntegrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DatabaseIntegrations
+    **/
+    _count?: true | DatabaseIntegrationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DatabaseIntegrationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DatabaseIntegrationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DatabaseIntegrationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DatabaseIntegrationMaxAggregateInputType
+  }
+
+  export type GetDatabaseIntegrationAggregateType<T extends DatabaseIntegrationAggregateArgs> = {
+        [P in keyof T & keyof AggregateDatabaseIntegration]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDatabaseIntegration[P]>
+      : GetScalarType<T[P], AggregateDatabaseIntegration[P]>
+  }
+
+
+
+
+  export type DatabaseIntegrationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DatabaseIntegrationWhereInput
+    orderBy?: DatabaseIntegrationOrderByWithAggregationInput | DatabaseIntegrationOrderByWithAggregationInput[]
+    by: DatabaseIntegrationScalarFieldEnum[] | DatabaseIntegrationScalarFieldEnum
+    having?: DatabaseIntegrationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DatabaseIntegrationCountAggregateInputType | true
+    _avg?: DatabaseIntegrationAvgAggregateInputType
+    _sum?: DatabaseIntegrationSumAggregateInputType
+    _min?: DatabaseIntegrationMinAggregateInputType
+    _max?: DatabaseIntegrationMaxAggregateInputType
+  }
+
+  export type DatabaseIntegrationGroupByOutputType = {
+    id: number
+    uuid: string
+    integration_uuid: string
+    db_type: $Enums.DatabaseType
+    connection_string: string
+    schema_cache: JsonValue | null
+    allowed_ops: $Enums.DatabaseOperation[]
+    last_schema_sync: Date | null
+    created_at: Date
+    updated_at: Date
+    _count: DatabaseIntegrationCountAggregateOutputType | null
+    _avg: DatabaseIntegrationAvgAggregateOutputType | null
+    _sum: DatabaseIntegrationSumAggregateOutputType | null
+    _min: DatabaseIntegrationMinAggregateOutputType | null
+    _max: DatabaseIntegrationMaxAggregateOutputType | null
+  }
+
+  type GetDatabaseIntegrationGroupByPayload<T extends DatabaseIntegrationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DatabaseIntegrationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DatabaseIntegrationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DatabaseIntegrationGroupByOutputType[P]>
+            : GetScalarType<T[P], DatabaseIntegrationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DatabaseIntegrationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    integration_uuid?: boolean
+    db_type?: boolean
+    connection_string?: boolean
+    schema_cache?: boolean
+    allowed_ops?: boolean
+    last_schema_sync?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    integration?: boolean | IntegrationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["databaseIntegration"]>
+
+  export type DatabaseIntegrationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    integration_uuid?: boolean
+    db_type?: boolean
+    connection_string?: boolean
+    schema_cache?: boolean
+    allowed_ops?: boolean
+    last_schema_sync?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    integration?: boolean | IntegrationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["databaseIntegration"]>
+
+  export type DatabaseIntegrationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    integration_uuid?: boolean
+    db_type?: boolean
+    connection_string?: boolean
+    schema_cache?: boolean
+    allowed_ops?: boolean
+    last_schema_sync?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    integration?: boolean | IntegrationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["databaseIntegration"]>
+
+  export type DatabaseIntegrationSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    integration_uuid?: boolean
+    db_type?: boolean
+    connection_string?: boolean
+    schema_cache?: boolean
+    allowed_ops?: boolean
+    last_schema_sync?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type DatabaseIntegrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "integration_uuid" | "db_type" | "connection_string" | "schema_cache" | "allowed_ops" | "last_schema_sync" | "created_at" | "updated_at", ExtArgs["result"]["databaseIntegration"]>
+  export type DatabaseIntegrationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    integration?: boolean | IntegrationDefaultArgs<ExtArgs>
+  }
+  export type DatabaseIntegrationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    integration?: boolean | IntegrationDefaultArgs<ExtArgs>
+  }
+  export type DatabaseIntegrationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    integration?: boolean | IntegrationDefaultArgs<ExtArgs>
+  }
+
+  export type $DatabaseIntegrationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DatabaseIntegration"
+    objects: {
+      integration: Prisma.$IntegrationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      integration_uuid: string
+      db_type: $Enums.DatabaseType
+      connection_string: string
+      schema_cache: Prisma.JsonValue | null
+      allowed_ops: $Enums.DatabaseOperation[]
+      last_schema_sync: Date | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["databaseIntegration"]>
+    composites: {}
+  }
+
+  type DatabaseIntegrationGetPayload<S extends boolean | null | undefined | DatabaseIntegrationDefaultArgs> = $Result.GetResult<Prisma.$DatabaseIntegrationPayload, S>
+
+  type DatabaseIntegrationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DatabaseIntegrationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DatabaseIntegrationCountAggregateInputType | true
+    }
+
+  export interface DatabaseIntegrationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DatabaseIntegration'], meta: { name: 'DatabaseIntegration' } }
+    /**
+     * Find zero or one DatabaseIntegration that matches the filter.
+     * @param {DatabaseIntegrationFindUniqueArgs} args - Arguments to find a DatabaseIntegration
+     * @example
+     * // Get one DatabaseIntegration
+     * const databaseIntegration = await prisma.databaseIntegration.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DatabaseIntegrationFindUniqueArgs>(args: SelectSubset<T, DatabaseIntegrationFindUniqueArgs<ExtArgs>>): Prisma__DatabaseIntegrationClient<$Result.GetResult<Prisma.$DatabaseIntegrationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DatabaseIntegration that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DatabaseIntegrationFindUniqueOrThrowArgs} args - Arguments to find a DatabaseIntegration
+     * @example
+     * // Get one DatabaseIntegration
+     * const databaseIntegration = await prisma.databaseIntegration.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DatabaseIntegrationFindUniqueOrThrowArgs>(args: SelectSubset<T, DatabaseIntegrationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DatabaseIntegrationClient<$Result.GetResult<Prisma.$DatabaseIntegrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DatabaseIntegration that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DatabaseIntegrationFindFirstArgs} args - Arguments to find a DatabaseIntegration
+     * @example
+     * // Get one DatabaseIntegration
+     * const databaseIntegration = await prisma.databaseIntegration.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DatabaseIntegrationFindFirstArgs>(args?: SelectSubset<T, DatabaseIntegrationFindFirstArgs<ExtArgs>>): Prisma__DatabaseIntegrationClient<$Result.GetResult<Prisma.$DatabaseIntegrationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DatabaseIntegration that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DatabaseIntegrationFindFirstOrThrowArgs} args - Arguments to find a DatabaseIntegration
+     * @example
+     * // Get one DatabaseIntegration
+     * const databaseIntegration = await prisma.databaseIntegration.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DatabaseIntegrationFindFirstOrThrowArgs>(args?: SelectSubset<T, DatabaseIntegrationFindFirstOrThrowArgs<ExtArgs>>): Prisma__DatabaseIntegrationClient<$Result.GetResult<Prisma.$DatabaseIntegrationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DatabaseIntegrations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DatabaseIntegrationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DatabaseIntegrations
+     * const databaseIntegrations = await prisma.databaseIntegration.findMany()
+     * 
+     * // Get first 10 DatabaseIntegrations
+     * const databaseIntegrations = await prisma.databaseIntegration.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const databaseIntegrationWithIdOnly = await prisma.databaseIntegration.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DatabaseIntegrationFindManyArgs>(args?: SelectSubset<T, DatabaseIntegrationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DatabaseIntegrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DatabaseIntegration.
+     * @param {DatabaseIntegrationCreateArgs} args - Arguments to create a DatabaseIntegration.
+     * @example
+     * // Create one DatabaseIntegration
+     * const DatabaseIntegration = await prisma.databaseIntegration.create({
+     *   data: {
+     *     // ... data to create a DatabaseIntegration
+     *   }
+     * })
+     * 
+     */
+    create<T extends DatabaseIntegrationCreateArgs>(args: SelectSubset<T, DatabaseIntegrationCreateArgs<ExtArgs>>): Prisma__DatabaseIntegrationClient<$Result.GetResult<Prisma.$DatabaseIntegrationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DatabaseIntegrations.
+     * @param {DatabaseIntegrationCreateManyArgs} args - Arguments to create many DatabaseIntegrations.
+     * @example
+     * // Create many DatabaseIntegrations
+     * const databaseIntegration = await prisma.databaseIntegration.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DatabaseIntegrationCreateManyArgs>(args?: SelectSubset<T, DatabaseIntegrationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DatabaseIntegrations and returns the data saved in the database.
+     * @param {DatabaseIntegrationCreateManyAndReturnArgs} args - Arguments to create many DatabaseIntegrations.
+     * @example
+     * // Create many DatabaseIntegrations
+     * const databaseIntegration = await prisma.databaseIntegration.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DatabaseIntegrations and only return the `id`
+     * const databaseIntegrationWithIdOnly = await prisma.databaseIntegration.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DatabaseIntegrationCreateManyAndReturnArgs>(args?: SelectSubset<T, DatabaseIntegrationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DatabaseIntegrationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DatabaseIntegration.
+     * @param {DatabaseIntegrationDeleteArgs} args - Arguments to delete one DatabaseIntegration.
+     * @example
+     * // Delete one DatabaseIntegration
+     * const DatabaseIntegration = await prisma.databaseIntegration.delete({
+     *   where: {
+     *     // ... filter to delete one DatabaseIntegration
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DatabaseIntegrationDeleteArgs>(args: SelectSubset<T, DatabaseIntegrationDeleteArgs<ExtArgs>>): Prisma__DatabaseIntegrationClient<$Result.GetResult<Prisma.$DatabaseIntegrationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DatabaseIntegration.
+     * @param {DatabaseIntegrationUpdateArgs} args - Arguments to update one DatabaseIntegration.
+     * @example
+     * // Update one DatabaseIntegration
+     * const databaseIntegration = await prisma.databaseIntegration.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DatabaseIntegrationUpdateArgs>(args: SelectSubset<T, DatabaseIntegrationUpdateArgs<ExtArgs>>): Prisma__DatabaseIntegrationClient<$Result.GetResult<Prisma.$DatabaseIntegrationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DatabaseIntegrations.
+     * @param {DatabaseIntegrationDeleteManyArgs} args - Arguments to filter DatabaseIntegrations to delete.
+     * @example
+     * // Delete a few DatabaseIntegrations
+     * const { count } = await prisma.databaseIntegration.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DatabaseIntegrationDeleteManyArgs>(args?: SelectSubset<T, DatabaseIntegrationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DatabaseIntegrations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DatabaseIntegrationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DatabaseIntegrations
+     * const databaseIntegration = await prisma.databaseIntegration.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DatabaseIntegrationUpdateManyArgs>(args: SelectSubset<T, DatabaseIntegrationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DatabaseIntegrations and returns the data updated in the database.
+     * @param {DatabaseIntegrationUpdateManyAndReturnArgs} args - Arguments to update many DatabaseIntegrations.
+     * @example
+     * // Update many DatabaseIntegrations
+     * const databaseIntegration = await prisma.databaseIntegration.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DatabaseIntegrations and only return the `id`
+     * const databaseIntegrationWithIdOnly = await prisma.databaseIntegration.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DatabaseIntegrationUpdateManyAndReturnArgs>(args: SelectSubset<T, DatabaseIntegrationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DatabaseIntegrationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DatabaseIntegration.
+     * @param {DatabaseIntegrationUpsertArgs} args - Arguments to update or create a DatabaseIntegration.
+     * @example
+     * // Update or create a DatabaseIntegration
+     * const databaseIntegration = await prisma.databaseIntegration.upsert({
+     *   create: {
+     *     // ... data to create a DatabaseIntegration
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DatabaseIntegration we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DatabaseIntegrationUpsertArgs>(args: SelectSubset<T, DatabaseIntegrationUpsertArgs<ExtArgs>>): Prisma__DatabaseIntegrationClient<$Result.GetResult<Prisma.$DatabaseIntegrationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DatabaseIntegrations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DatabaseIntegrationCountArgs} args - Arguments to filter DatabaseIntegrations to count.
+     * @example
+     * // Count the number of DatabaseIntegrations
+     * const count = await prisma.databaseIntegration.count({
+     *   where: {
+     *     // ... the filter for the DatabaseIntegrations we want to count
+     *   }
+     * })
+    **/
+    count<T extends DatabaseIntegrationCountArgs>(
+      args?: Subset<T, DatabaseIntegrationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DatabaseIntegrationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DatabaseIntegration.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DatabaseIntegrationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DatabaseIntegrationAggregateArgs>(args: Subset<T, DatabaseIntegrationAggregateArgs>): Prisma.PrismaPromise<GetDatabaseIntegrationAggregateType<T>>
+
+    /**
+     * Group by DatabaseIntegration.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DatabaseIntegrationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DatabaseIntegrationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DatabaseIntegrationGroupByArgs['orderBy'] }
+        : { orderBy?: DatabaseIntegrationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DatabaseIntegrationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDatabaseIntegrationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DatabaseIntegration model
+   */
+  readonly fields: DatabaseIntegrationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DatabaseIntegration.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DatabaseIntegrationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    integration<T extends IntegrationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, IntegrationDefaultArgs<ExtArgs>>): Prisma__IntegrationClient<$Result.GetResult<Prisma.$IntegrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DatabaseIntegration model
+   */
+  interface DatabaseIntegrationFieldRefs {
+    readonly id: FieldRef<"DatabaseIntegration", 'Int'>
+    readonly uuid: FieldRef<"DatabaseIntegration", 'String'>
+    readonly integration_uuid: FieldRef<"DatabaseIntegration", 'String'>
+    readonly db_type: FieldRef<"DatabaseIntegration", 'DatabaseType'>
+    readonly connection_string: FieldRef<"DatabaseIntegration", 'String'>
+    readonly schema_cache: FieldRef<"DatabaseIntegration", 'Json'>
+    readonly allowed_ops: FieldRef<"DatabaseIntegration", 'DatabaseOperation[]'>
+    readonly last_schema_sync: FieldRef<"DatabaseIntegration", 'DateTime'>
+    readonly created_at: FieldRef<"DatabaseIntegration", 'DateTime'>
+    readonly updated_at: FieldRef<"DatabaseIntegration", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DatabaseIntegration findUnique
+   */
+  export type DatabaseIntegrationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DatabaseIntegration
+     */
+    select?: DatabaseIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DatabaseIntegration
+     */
+    omit?: DatabaseIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DatabaseIntegrationInclude<ExtArgs> | null
+    /**
+     * Filter, which DatabaseIntegration to fetch.
+     */
+    where: DatabaseIntegrationWhereUniqueInput
+  }
+
+  /**
+   * DatabaseIntegration findUniqueOrThrow
+   */
+  export type DatabaseIntegrationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DatabaseIntegration
+     */
+    select?: DatabaseIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DatabaseIntegration
+     */
+    omit?: DatabaseIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DatabaseIntegrationInclude<ExtArgs> | null
+    /**
+     * Filter, which DatabaseIntegration to fetch.
+     */
+    where: DatabaseIntegrationWhereUniqueInput
+  }
+
+  /**
+   * DatabaseIntegration findFirst
+   */
+  export type DatabaseIntegrationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DatabaseIntegration
+     */
+    select?: DatabaseIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DatabaseIntegration
+     */
+    omit?: DatabaseIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DatabaseIntegrationInclude<ExtArgs> | null
+    /**
+     * Filter, which DatabaseIntegration to fetch.
+     */
+    where?: DatabaseIntegrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DatabaseIntegrations to fetch.
+     */
+    orderBy?: DatabaseIntegrationOrderByWithRelationInput | DatabaseIntegrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DatabaseIntegrations.
+     */
+    cursor?: DatabaseIntegrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DatabaseIntegrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DatabaseIntegrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DatabaseIntegrations.
+     */
+    distinct?: DatabaseIntegrationScalarFieldEnum | DatabaseIntegrationScalarFieldEnum[]
+  }
+
+  /**
+   * DatabaseIntegration findFirstOrThrow
+   */
+  export type DatabaseIntegrationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DatabaseIntegration
+     */
+    select?: DatabaseIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DatabaseIntegration
+     */
+    omit?: DatabaseIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DatabaseIntegrationInclude<ExtArgs> | null
+    /**
+     * Filter, which DatabaseIntegration to fetch.
+     */
+    where?: DatabaseIntegrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DatabaseIntegrations to fetch.
+     */
+    orderBy?: DatabaseIntegrationOrderByWithRelationInput | DatabaseIntegrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DatabaseIntegrations.
+     */
+    cursor?: DatabaseIntegrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DatabaseIntegrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DatabaseIntegrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DatabaseIntegrations.
+     */
+    distinct?: DatabaseIntegrationScalarFieldEnum | DatabaseIntegrationScalarFieldEnum[]
+  }
+
+  /**
+   * DatabaseIntegration findMany
+   */
+  export type DatabaseIntegrationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DatabaseIntegration
+     */
+    select?: DatabaseIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DatabaseIntegration
+     */
+    omit?: DatabaseIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DatabaseIntegrationInclude<ExtArgs> | null
+    /**
+     * Filter, which DatabaseIntegrations to fetch.
+     */
+    where?: DatabaseIntegrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DatabaseIntegrations to fetch.
+     */
+    orderBy?: DatabaseIntegrationOrderByWithRelationInput | DatabaseIntegrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DatabaseIntegrations.
+     */
+    cursor?: DatabaseIntegrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DatabaseIntegrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DatabaseIntegrations.
+     */
+    skip?: number
+    distinct?: DatabaseIntegrationScalarFieldEnum | DatabaseIntegrationScalarFieldEnum[]
+  }
+
+  /**
+   * DatabaseIntegration create
+   */
+  export type DatabaseIntegrationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DatabaseIntegration
+     */
+    select?: DatabaseIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DatabaseIntegration
+     */
+    omit?: DatabaseIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DatabaseIntegrationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DatabaseIntegration.
+     */
+    data: XOR<DatabaseIntegrationCreateInput, DatabaseIntegrationUncheckedCreateInput>
+  }
+
+  /**
+   * DatabaseIntegration createMany
+   */
+  export type DatabaseIntegrationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DatabaseIntegrations.
+     */
+    data: DatabaseIntegrationCreateManyInput | DatabaseIntegrationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DatabaseIntegration createManyAndReturn
+   */
+  export type DatabaseIntegrationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DatabaseIntegration
+     */
+    select?: DatabaseIntegrationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DatabaseIntegration
+     */
+    omit?: DatabaseIntegrationOmit<ExtArgs> | null
+    /**
+     * The data used to create many DatabaseIntegrations.
+     */
+    data: DatabaseIntegrationCreateManyInput | DatabaseIntegrationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DatabaseIntegrationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DatabaseIntegration update
+   */
+  export type DatabaseIntegrationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DatabaseIntegration
+     */
+    select?: DatabaseIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DatabaseIntegration
+     */
+    omit?: DatabaseIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DatabaseIntegrationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DatabaseIntegration.
+     */
+    data: XOR<DatabaseIntegrationUpdateInput, DatabaseIntegrationUncheckedUpdateInput>
+    /**
+     * Choose, which DatabaseIntegration to update.
+     */
+    where: DatabaseIntegrationWhereUniqueInput
+  }
+
+  /**
+   * DatabaseIntegration updateMany
+   */
+  export type DatabaseIntegrationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DatabaseIntegrations.
+     */
+    data: XOR<DatabaseIntegrationUpdateManyMutationInput, DatabaseIntegrationUncheckedUpdateManyInput>
+    /**
+     * Filter which DatabaseIntegrations to update
+     */
+    where?: DatabaseIntegrationWhereInput
+    /**
+     * Limit how many DatabaseIntegrations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DatabaseIntegration updateManyAndReturn
+   */
+  export type DatabaseIntegrationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DatabaseIntegration
+     */
+    select?: DatabaseIntegrationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DatabaseIntegration
+     */
+    omit?: DatabaseIntegrationOmit<ExtArgs> | null
+    /**
+     * The data used to update DatabaseIntegrations.
+     */
+    data: XOR<DatabaseIntegrationUpdateManyMutationInput, DatabaseIntegrationUncheckedUpdateManyInput>
+    /**
+     * Filter which DatabaseIntegrations to update
+     */
+    where?: DatabaseIntegrationWhereInput
+    /**
+     * Limit how many DatabaseIntegrations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DatabaseIntegrationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DatabaseIntegration upsert
+   */
+  export type DatabaseIntegrationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DatabaseIntegration
+     */
+    select?: DatabaseIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DatabaseIntegration
+     */
+    omit?: DatabaseIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DatabaseIntegrationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DatabaseIntegration to update in case it exists.
+     */
+    where: DatabaseIntegrationWhereUniqueInput
+    /**
+     * In case the DatabaseIntegration found by the `where` argument doesn't exist, create a new DatabaseIntegration with this data.
+     */
+    create: XOR<DatabaseIntegrationCreateInput, DatabaseIntegrationUncheckedCreateInput>
+    /**
+     * In case the DatabaseIntegration was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DatabaseIntegrationUpdateInput, DatabaseIntegrationUncheckedUpdateInput>
+  }
+
+  /**
+   * DatabaseIntegration delete
+   */
+  export type DatabaseIntegrationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DatabaseIntegration
+     */
+    select?: DatabaseIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DatabaseIntegration
+     */
+    omit?: DatabaseIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DatabaseIntegrationInclude<ExtArgs> | null
+    /**
+     * Filter which DatabaseIntegration to delete.
+     */
+    where: DatabaseIntegrationWhereUniqueInput
+  }
+
+  /**
+   * DatabaseIntegration deleteMany
+   */
+  export type DatabaseIntegrationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DatabaseIntegrations to delete
+     */
+    where?: DatabaseIntegrationWhereInput
+    /**
+     * Limit how many DatabaseIntegrations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DatabaseIntegration without action
+   */
+  export type DatabaseIntegrationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DatabaseIntegration
+     */
+    select?: DatabaseIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DatabaseIntegration
+     */
+    omit?: DatabaseIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DatabaseIntegrationInclude<ExtArgs> | null
   }
 
 
@@ -13533,6 +14823,22 @@ export namespace Prisma {
   export type IntegrationScalarFieldEnum = (typeof IntegrationScalarFieldEnum)[keyof typeof IntegrationScalarFieldEnum]
 
 
+  export const DatabaseIntegrationScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    integration_uuid: 'integration_uuid',
+    db_type: 'db_type',
+    connection_string: 'connection_string',
+    schema_cache: 'schema_cache',
+    allowed_ops: 'allowed_ops',
+    last_schema_sync: 'last_schema_sync',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type DatabaseIntegrationScalarFieldEnum = (typeof DatabaseIntegrationScalarFieldEnum)[keyof typeof DatabaseIntegrationScalarFieldEnum]
+
+
   export const IntegrationActionScalarFieldEnum: {
     id: 'id',
     uuid: 'uuid',
@@ -13732,6 +15038,34 @@ export namespace Prisma {
    * Reference to a field of type 'IntegrationStatus[]'
    */
   export type ListEnumIntegrationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IntegrationStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DatabaseType'
+   */
+  export type EnumDatabaseTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DatabaseType'>
+    
+
+
+  /**
+   * Reference to a field of type 'DatabaseType[]'
+   */
+  export type ListEnumDatabaseTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DatabaseType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DatabaseOperation[]'
+   */
+  export type ListEnumDatabaseOperationFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DatabaseOperation[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DatabaseOperation'
+   */
+  export type EnumDatabaseOperationFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DatabaseOperation'>
     
 
 
@@ -14270,6 +15604,7 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"Integration"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     actions?: IntegrationActionListRelationFilter
+    database?: XOR<DatabaseIntegrationNullableScalarRelationFilter, DatabaseIntegrationWhereInput> | null
   }
 
   export type IntegrationOrderByWithRelationInput = {
@@ -14286,6 +15621,7 @@ export namespace Prisma {
     updated_at?: SortOrder
     organization?: OrganizationOrderByWithRelationInput
     actions?: IntegrationActionOrderByRelationAggregateInput
+    database?: DatabaseIntegrationOrderByWithRelationInput
   }
 
   export type IntegrationWhereUniqueInput = Prisma.AtLeast<{
@@ -14305,6 +15641,7 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"Integration"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     actions?: IntegrationActionListRelationFilter
+    database?: XOR<DatabaseIntegrationNullableScalarRelationFilter, DatabaseIntegrationWhereInput> | null
   }, "id" | "uuid">
 
   export type IntegrationOrderByWithAggregationInput = {
@@ -14341,6 +15678,88 @@ export namespace Prisma {
     metadata?: JsonNullableWithAggregatesFilter<"Integration">
     created_at?: DateTimeWithAggregatesFilter<"Integration"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Integration"> | Date | string
+  }
+
+  export type DatabaseIntegrationWhereInput = {
+    AND?: DatabaseIntegrationWhereInput | DatabaseIntegrationWhereInput[]
+    OR?: DatabaseIntegrationWhereInput[]
+    NOT?: DatabaseIntegrationWhereInput | DatabaseIntegrationWhereInput[]
+    id?: IntFilter<"DatabaseIntegration"> | number
+    uuid?: StringFilter<"DatabaseIntegration"> | string
+    integration_uuid?: StringFilter<"DatabaseIntegration"> | string
+    db_type?: EnumDatabaseTypeFilter<"DatabaseIntegration"> | $Enums.DatabaseType
+    connection_string?: StringFilter<"DatabaseIntegration"> | string
+    schema_cache?: JsonNullableFilter<"DatabaseIntegration">
+    allowed_ops?: EnumDatabaseOperationNullableListFilter<"DatabaseIntegration">
+    last_schema_sync?: DateTimeNullableFilter<"DatabaseIntegration"> | Date | string | null
+    created_at?: DateTimeFilter<"DatabaseIntegration"> | Date | string
+    updated_at?: DateTimeFilter<"DatabaseIntegration"> | Date | string
+    integration?: XOR<IntegrationScalarRelationFilter, IntegrationWhereInput>
+  }
+
+  export type DatabaseIntegrationOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    integration_uuid?: SortOrder
+    db_type?: SortOrder
+    connection_string?: SortOrder
+    schema_cache?: SortOrderInput | SortOrder
+    allowed_ops?: SortOrder
+    last_schema_sync?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    integration?: IntegrationOrderByWithRelationInput
+  }
+
+  export type DatabaseIntegrationWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    integration_uuid?: string
+    AND?: DatabaseIntegrationWhereInput | DatabaseIntegrationWhereInput[]
+    OR?: DatabaseIntegrationWhereInput[]
+    NOT?: DatabaseIntegrationWhereInput | DatabaseIntegrationWhereInput[]
+    db_type?: EnumDatabaseTypeFilter<"DatabaseIntegration"> | $Enums.DatabaseType
+    connection_string?: StringFilter<"DatabaseIntegration"> | string
+    schema_cache?: JsonNullableFilter<"DatabaseIntegration">
+    allowed_ops?: EnumDatabaseOperationNullableListFilter<"DatabaseIntegration">
+    last_schema_sync?: DateTimeNullableFilter<"DatabaseIntegration"> | Date | string | null
+    created_at?: DateTimeFilter<"DatabaseIntegration"> | Date | string
+    updated_at?: DateTimeFilter<"DatabaseIntegration"> | Date | string
+    integration?: XOR<IntegrationScalarRelationFilter, IntegrationWhereInput>
+  }, "id" | "uuid" | "integration_uuid">
+
+  export type DatabaseIntegrationOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    integration_uuid?: SortOrder
+    db_type?: SortOrder
+    connection_string?: SortOrder
+    schema_cache?: SortOrderInput | SortOrder
+    allowed_ops?: SortOrder
+    last_schema_sync?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: DatabaseIntegrationCountOrderByAggregateInput
+    _avg?: DatabaseIntegrationAvgOrderByAggregateInput
+    _max?: DatabaseIntegrationMaxOrderByAggregateInput
+    _min?: DatabaseIntegrationMinOrderByAggregateInput
+    _sum?: DatabaseIntegrationSumOrderByAggregateInput
+  }
+
+  export type DatabaseIntegrationScalarWhereWithAggregatesInput = {
+    AND?: DatabaseIntegrationScalarWhereWithAggregatesInput | DatabaseIntegrationScalarWhereWithAggregatesInput[]
+    OR?: DatabaseIntegrationScalarWhereWithAggregatesInput[]
+    NOT?: DatabaseIntegrationScalarWhereWithAggregatesInput | DatabaseIntegrationScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"DatabaseIntegration"> | number
+    uuid?: StringWithAggregatesFilter<"DatabaseIntegration"> | string
+    integration_uuid?: StringWithAggregatesFilter<"DatabaseIntegration"> | string
+    db_type?: EnumDatabaseTypeWithAggregatesFilter<"DatabaseIntegration"> | $Enums.DatabaseType
+    connection_string?: StringWithAggregatesFilter<"DatabaseIntegration"> | string
+    schema_cache?: JsonNullableWithAggregatesFilter<"DatabaseIntegration">
+    allowed_ops?: EnumDatabaseOperationNullableListFilter<"DatabaseIntegration">
+    last_schema_sync?: DateTimeNullableWithAggregatesFilter<"DatabaseIntegration"> | Date | string | null
+    created_at?: DateTimeWithAggregatesFilter<"DatabaseIntegration"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"DatabaseIntegration"> | Date | string
   }
 
   export type IntegrationActionWhereInput = {
@@ -14984,6 +16403,7 @@ export namespace Prisma {
     updated_at?: Date | string
     organization: OrganizationCreateNestedOneWithoutIntegrationsInput
     actions?: IntegrationActionCreateNestedManyWithoutIntegrationInput
+    database?: DatabaseIntegrationCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationUncheckedCreateInput = {
@@ -14999,6 +16419,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     actions?: IntegrationActionUncheckedCreateNestedManyWithoutIntegrationInput
+    database?: DatabaseIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationUpdateInput = {
@@ -15013,6 +16434,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutIntegrationsNestedInput
     actions?: IntegrationActionUpdateManyWithoutIntegrationNestedInput
+    database?: DatabaseIntegrationUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationUncheckedUpdateInput = {
@@ -15028,6 +16450,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     actions?: IntegrationActionUncheckedUpdateManyWithoutIntegrationNestedInput
+    database?: DatabaseIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationCreateManyInput = {
@@ -15066,6 +16489,93 @@ export namespace Prisma {
     status?: EnumIntegrationStatusFieldUpdateOperationsInput | $Enums.IntegrationStatus
     config?: StringFieldUpdateOperationsInput | string
     metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DatabaseIntegrationCreateInput = {
+    uuid?: string
+    db_type: $Enums.DatabaseType
+    connection_string: string
+    schema_cache?: NullableJsonNullValueInput | InputJsonValue
+    allowed_ops?: DatabaseIntegrationCreateallowed_opsInput | $Enums.DatabaseOperation[]
+    last_schema_sync?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    integration: IntegrationCreateNestedOneWithoutDatabaseInput
+  }
+
+  export type DatabaseIntegrationUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    integration_uuid: string
+    db_type: $Enums.DatabaseType
+    connection_string: string
+    schema_cache?: NullableJsonNullValueInput | InputJsonValue
+    allowed_ops?: DatabaseIntegrationCreateallowed_opsInput | $Enums.DatabaseOperation[]
+    last_schema_sync?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type DatabaseIntegrationUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    db_type?: EnumDatabaseTypeFieldUpdateOperationsInput | $Enums.DatabaseType
+    connection_string?: StringFieldUpdateOperationsInput | string
+    schema_cache?: NullableJsonNullValueInput | InputJsonValue
+    allowed_ops?: DatabaseIntegrationUpdateallowed_opsInput | $Enums.DatabaseOperation[]
+    last_schema_sync?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    integration?: IntegrationUpdateOneRequiredWithoutDatabaseNestedInput
+  }
+
+  export type DatabaseIntegrationUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    integration_uuid?: StringFieldUpdateOperationsInput | string
+    db_type?: EnumDatabaseTypeFieldUpdateOperationsInput | $Enums.DatabaseType
+    connection_string?: StringFieldUpdateOperationsInput | string
+    schema_cache?: NullableJsonNullValueInput | InputJsonValue
+    allowed_ops?: DatabaseIntegrationUpdateallowed_opsInput | $Enums.DatabaseOperation[]
+    last_schema_sync?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DatabaseIntegrationCreateManyInput = {
+    id?: number
+    uuid?: string
+    integration_uuid: string
+    db_type: $Enums.DatabaseType
+    connection_string: string
+    schema_cache?: NullableJsonNullValueInput | InputJsonValue
+    allowed_ops?: DatabaseIntegrationCreateallowed_opsInput | $Enums.DatabaseOperation[]
+    last_schema_sync?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type DatabaseIntegrationUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    db_type?: EnumDatabaseTypeFieldUpdateOperationsInput | $Enums.DatabaseType
+    connection_string?: StringFieldUpdateOperationsInput | string
+    schema_cache?: NullableJsonNullValueInput | InputJsonValue
+    allowed_ops?: DatabaseIntegrationUpdateallowed_opsInput | $Enums.DatabaseOperation[]
+    last_schema_sync?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DatabaseIntegrationUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    integration_uuid?: StringFieldUpdateOperationsInput | string
+    db_type?: EnumDatabaseTypeFieldUpdateOperationsInput | $Enums.DatabaseType
+    connection_string?: StringFieldUpdateOperationsInput | string
+    schema_cache?: NullableJsonNullValueInput | InputJsonValue
+    allowed_ops?: DatabaseIntegrationUpdateallowed_opsInput | $Enums.DatabaseOperation[]
+    last_schema_sync?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15858,6 +17368,11 @@ export namespace Prisma {
     none?: IntegrationActionWhereInput
   }
 
+  export type DatabaseIntegrationNullableScalarRelationFilter = {
+    is?: DatabaseIntegrationWhereInput | null
+    isNot?: DatabaseIntegrationWhereInput | null
+  }
+
   export type IntegrationActionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -15956,9 +17471,77 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
+  export type EnumDatabaseTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.DatabaseType | EnumDatabaseTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.DatabaseType[] | ListEnumDatabaseTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DatabaseType[] | ListEnumDatabaseTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumDatabaseTypeFilter<$PrismaModel> | $Enums.DatabaseType
+  }
+
+  export type EnumDatabaseOperationNullableListFilter<$PrismaModel = never> = {
+    equals?: $Enums.DatabaseOperation[] | ListEnumDatabaseOperationFieldRefInput<$PrismaModel> | null
+    has?: $Enums.DatabaseOperation | EnumDatabaseOperationFieldRefInput<$PrismaModel> | null
+    hasEvery?: $Enums.DatabaseOperation[] | ListEnumDatabaseOperationFieldRefInput<$PrismaModel>
+    hasSome?: $Enums.DatabaseOperation[] | ListEnumDatabaseOperationFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
   export type IntegrationScalarRelationFilter = {
     is?: IntegrationWhereInput
     isNot?: IntegrationWhereInput
+  }
+
+  export type DatabaseIntegrationCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    integration_uuid?: SortOrder
+    db_type?: SortOrder
+    connection_string?: SortOrder
+    schema_cache?: SortOrder
+    allowed_ops?: SortOrder
+    last_schema_sync?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type DatabaseIntegrationAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type DatabaseIntegrationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    integration_uuid?: SortOrder
+    db_type?: SortOrder
+    connection_string?: SortOrder
+    last_schema_sync?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type DatabaseIntegrationMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    integration_uuid?: SortOrder
+    db_type?: SortOrder
+    connection_string?: SortOrder
+    last_schema_sync?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type DatabaseIntegrationSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type EnumDatabaseTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DatabaseType | EnumDatabaseTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.DatabaseType[] | ListEnumDatabaseTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DatabaseType[] | ListEnumDatabaseTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumDatabaseTypeWithAggregatesFilter<$PrismaModel> | $Enums.DatabaseType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDatabaseTypeFilter<$PrismaModel>
+    _max?: NestedEnumDatabaseTypeFilter<$PrismaModel>
   }
 
   export type IntegrationActionIntegration_uuidKeyCompoundUniqueInput = {
@@ -16617,11 +18200,23 @@ export namespace Prisma {
     connect?: IntegrationActionWhereUniqueInput | IntegrationActionWhereUniqueInput[]
   }
 
+  export type DatabaseIntegrationCreateNestedOneWithoutIntegrationInput = {
+    create?: XOR<DatabaseIntegrationCreateWithoutIntegrationInput, DatabaseIntegrationUncheckedCreateWithoutIntegrationInput>
+    connectOrCreate?: DatabaseIntegrationCreateOrConnectWithoutIntegrationInput
+    connect?: DatabaseIntegrationWhereUniqueInput
+  }
+
   export type IntegrationActionUncheckedCreateNestedManyWithoutIntegrationInput = {
     create?: XOR<IntegrationActionCreateWithoutIntegrationInput, IntegrationActionUncheckedCreateWithoutIntegrationInput> | IntegrationActionCreateWithoutIntegrationInput[] | IntegrationActionUncheckedCreateWithoutIntegrationInput[]
     connectOrCreate?: IntegrationActionCreateOrConnectWithoutIntegrationInput | IntegrationActionCreateOrConnectWithoutIntegrationInput[]
     createMany?: IntegrationActionCreateManyIntegrationInputEnvelope
     connect?: IntegrationActionWhereUniqueInput | IntegrationActionWhereUniqueInput[]
+  }
+
+  export type DatabaseIntegrationUncheckedCreateNestedOneWithoutIntegrationInput = {
+    create?: XOR<DatabaseIntegrationCreateWithoutIntegrationInput, DatabaseIntegrationUncheckedCreateWithoutIntegrationInput>
+    connectOrCreate?: DatabaseIntegrationCreateOrConnectWithoutIntegrationInput
+    connect?: DatabaseIntegrationWhereUniqueInput
   }
 
   export type EnumIntegrationProviderFieldUpdateOperationsInput = {
@@ -16654,6 +18249,16 @@ export namespace Prisma {
     deleteMany?: IntegrationActionScalarWhereInput | IntegrationActionScalarWhereInput[]
   }
 
+  export type DatabaseIntegrationUpdateOneWithoutIntegrationNestedInput = {
+    create?: XOR<DatabaseIntegrationCreateWithoutIntegrationInput, DatabaseIntegrationUncheckedCreateWithoutIntegrationInput>
+    connectOrCreate?: DatabaseIntegrationCreateOrConnectWithoutIntegrationInput
+    upsert?: DatabaseIntegrationUpsertWithoutIntegrationInput
+    disconnect?: DatabaseIntegrationWhereInput | boolean
+    delete?: DatabaseIntegrationWhereInput | boolean
+    connect?: DatabaseIntegrationWhereUniqueInput
+    update?: XOR<XOR<DatabaseIntegrationUpdateToOneWithWhereWithoutIntegrationInput, DatabaseIntegrationUpdateWithoutIntegrationInput>, DatabaseIntegrationUncheckedUpdateWithoutIntegrationInput>
+  }
+
   export type IntegrationActionUncheckedUpdateManyWithoutIntegrationNestedInput = {
     create?: XOR<IntegrationActionCreateWithoutIntegrationInput, IntegrationActionUncheckedCreateWithoutIntegrationInput> | IntegrationActionCreateWithoutIntegrationInput[] | IntegrationActionUncheckedCreateWithoutIntegrationInput[]
     connectOrCreate?: IntegrationActionCreateOrConnectWithoutIntegrationInput | IntegrationActionCreateOrConnectWithoutIntegrationInput[]
@@ -16666,6 +18271,43 @@ export namespace Prisma {
     update?: IntegrationActionUpdateWithWhereUniqueWithoutIntegrationInput | IntegrationActionUpdateWithWhereUniqueWithoutIntegrationInput[]
     updateMany?: IntegrationActionUpdateManyWithWhereWithoutIntegrationInput | IntegrationActionUpdateManyWithWhereWithoutIntegrationInput[]
     deleteMany?: IntegrationActionScalarWhereInput | IntegrationActionScalarWhereInput[]
+  }
+
+  export type DatabaseIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput = {
+    create?: XOR<DatabaseIntegrationCreateWithoutIntegrationInput, DatabaseIntegrationUncheckedCreateWithoutIntegrationInput>
+    connectOrCreate?: DatabaseIntegrationCreateOrConnectWithoutIntegrationInput
+    upsert?: DatabaseIntegrationUpsertWithoutIntegrationInput
+    disconnect?: DatabaseIntegrationWhereInput | boolean
+    delete?: DatabaseIntegrationWhereInput | boolean
+    connect?: DatabaseIntegrationWhereUniqueInput
+    update?: XOR<XOR<DatabaseIntegrationUpdateToOneWithWhereWithoutIntegrationInput, DatabaseIntegrationUpdateWithoutIntegrationInput>, DatabaseIntegrationUncheckedUpdateWithoutIntegrationInput>
+  }
+
+  export type DatabaseIntegrationCreateallowed_opsInput = {
+    set: $Enums.DatabaseOperation[]
+  }
+
+  export type IntegrationCreateNestedOneWithoutDatabaseInput = {
+    create?: XOR<IntegrationCreateWithoutDatabaseInput, IntegrationUncheckedCreateWithoutDatabaseInput>
+    connectOrCreate?: IntegrationCreateOrConnectWithoutDatabaseInput
+    connect?: IntegrationWhereUniqueInput
+  }
+
+  export type EnumDatabaseTypeFieldUpdateOperationsInput = {
+    set?: $Enums.DatabaseType
+  }
+
+  export type DatabaseIntegrationUpdateallowed_opsInput = {
+    set?: $Enums.DatabaseOperation[]
+    push?: $Enums.DatabaseOperation | $Enums.DatabaseOperation[]
+  }
+
+  export type IntegrationUpdateOneRequiredWithoutDatabaseNestedInput = {
+    create?: XOR<IntegrationCreateWithoutDatabaseInput, IntegrationUncheckedCreateWithoutDatabaseInput>
+    connectOrCreate?: IntegrationCreateOrConnectWithoutDatabaseInput
+    upsert?: IntegrationUpsertWithoutDatabaseInput
+    connect?: IntegrationWhereUniqueInput
+    update?: XOR<XOR<IntegrationUpdateToOneWithWhereWithoutDatabaseInput, IntegrationUpdateWithoutDatabaseInput>, IntegrationUncheckedUpdateWithoutDatabaseInput>
   }
 
   export type IntegrationCreateNestedOneWithoutActionsInput = {
@@ -16974,6 +18616,23 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumDatabaseTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.DatabaseType | EnumDatabaseTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.DatabaseType[] | ListEnumDatabaseTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DatabaseType[] | ListEnumDatabaseTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumDatabaseTypeFilter<$PrismaModel> | $Enums.DatabaseType
+  }
+
+  export type NestedEnumDatabaseTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DatabaseType | EnumDatabaseTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.DatabaseType[] | ListEnumDatabaseTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DatabaseType[] | ListEnumDatabaseTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumDatabaseTypeWithAggregatesFilter<$PrismaModel> | $Enums.DatabaseType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDatabaseTypeFilter<$PrismaModel>
+    _max?: NestedEnumDatabaseTypeFilter<$PrismaModel>
+  }
+
   export type NestedEnumDocumentTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.DocumentType | EnumDocumentTypeFieldRefInput<$PrismaModel>
     in?: $Enums.DocumentType[] | ListEnumDocumentTypeFieldRefInput<$PrismaModel>
@@ -17210,6 +18869,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     actions?: IntegrationActionCreateNestedManyWithoutIntegrationInput
+    database?: DatabaseIntegrationCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationUncheckedCreateWithoutOrganizationInput = {
@@ -17224,6 +18884,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     actions?: IntegrationActionUncheckedCreateNestedManyWithoutIntegrationInput
+    database?: DatabaseIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationCreateOrConnectWithoutOrganizationInput = {
@@ -17984,6 +19645,34 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type DatabaseIntegrationCreateWithoutIntegrationInput = {
+    uuid?: string
+    db_type: $Enums.DatabaseType
+    connection_string: string
+    schema_cache?: NullableJsonNullValueInput | InputJsonValue
+    allowed_ops?: DatabaseIntegrationCreateallowed_opsInput | $Enums.DatabaseOperation[]
+    last_schema_sync?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type DatabaseIntegrationUncheckedCreateWithoutIntegrationInput = {
+    id?: number
+    uuid?: string
+    db_type: $Enums.DatabaseType
+    connection_string: string
+    schema_cache?: NullableJsonNullValueInput | InputJsonValue
+    allowed_ops?: DatabaseIntegrationCreateallowed_opsInput | $Enums.DatabaseOperation[]
+    last_schema_sync?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type DatabaseIntegrationCreateOrConnectWithoutIntegrationInput = {
+    where: DatabaseIntegrationWhereUniqueInput
+    create: XOR<DatabaseIntegrationCreateWithoutIntegrationInput, DatabaseIntegrationUncheckedCreateWithoutIntegrationInput>
+  }
+
   export type OrganizationUpsertWithoutIntegrationsInput = {
     update: XOR<OrganizationUpdateWithoutIntegrationsInput, OrganizationUncheckedUpdateWithoutIntegrationsInput>
     create: XOR<OrganizationCreateWithoutIntegrationsInput, OrganizationUncheckedCreateWithoutIntegrationsInput>
@@ -18050,6 +19739,114 @@ export namespace Prisma {
     required_permission_key?: StringNullableFilter<"IntegrationAction"> | string | null
   }
 
+  export type DatabaseIntegrationUpsertWithoutIntegrationInput = {
+    update: XOR<DatabaseIntegrationUpdateWithoutIntegrationInput, DatabaseIntegrationUncheckedUpdateWithoutIntegrationInput>
+    create: XOR<DatabaseIntegrationCreateWithoutIntegrationInput, DatabaseIntegrationUncheckedCreateWithoutIntegrationInput>
+    where?: DatabaseIntegrationWhereInput
+  }
+
+  export type DatabaseIntegrationUpdateToOneWithWhereWithoutIntegrationInput = {
+    where?: DatabaseIntegrationWhereInput
+    data: XOR<DatabaseIntegrationUpdateWithoutIntegrationInput, DatabaseIntegrationUncheckedUpdateWithoutIntegrationInput>
+  }
+
+  export type DatabaseIntegrationUpdateWithoutIntegrationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    db_type?: EnumDatabaseTypeFieldUpdateOperationsInput | $Enums.DatabaseType
+    connection_string?: StringFieldUpdateOperationsInput | string
+    schema_cache?: NullableJsonNullValueInput | InputJsonValue
+    allowed_ops?: DatabaseIntegrationUpdateallowed_opsInput | $Enums.DatabaseOperation[]
+    last_schema_sync?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DatabaseIntegrationUncheckedUpdateWithoutIntegrationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    db_type?: EnumDatabaseTypeFieldUpdateOperationsInput | $Enums.DatabaseType
+    connection_string?: StringFieldUpdateOperationsInput | string
+    schema_cache?: NullableJsonNullValueInput | InputJsonValue
+    allowed_ops?: DatabaseIntegrationUpdateallowed_opsInput | $Enums.DatabaseOperation[]
+    last_schema_sync?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IntegrationCreateWithoutDatabaseInput = {
+    uuid?: string
+    name: string
+    description?: string | null
+    provider: $Enums.IntegrationProvider
+    status?: $Enums.IntegrationStatus
+    config: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutIntegrationsInput
+    actions?: IntegrationActionCreateNestedManyWithoutIntegrationInput
+  }
+
+  export type IntegrationUncheckedCreateWithoutDatabaseInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    name: string
+    description?: string | null
+    provider: $Enums.IntegrationProvider
+    status?: $Enums.IntegrationStatus
+    config: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    updated_at?: Date | string
+    actions?: IntegrationActionUncheckedCreateNestedManyWithoutIntegrationInput
+  }
+
+  export type IntegrationCreateOrConnectWithoutDatabaseInput = {
+    where: IntegrationWhereUniqueInput
+    create: XOR<IntegrationCreateWithoutDatabaseInput, IntegrationUncheckedCreateWithoutDatabaseInput>
+  }
+
+  export type IntegrationUpsertWithoutDatabaseInput = {
+    update: XOR<IntegrationUpdateWithoutDatabaseInput, IntegrationUncheckedUpdateWithoutDatabaseInput>
+    create: XOR<IntegrationCreateWithoutDatabaseInput, IntegrationUncheckedCreateWithoutDatabaseInput>
+    where?: IntegrationWhereInput
+  }
+
+  export type IntegrationUpdateToOneWithWhereWithoutDatabaseInput = {
+    where?: IntegrationWhereInput
+    data: XOR<IntegrationUpdateWithoutDatabaseInput, IntegrationUncheckedUpdateWithoutDatabaseInput>
+  }
+
+  export type IntegrationUpdateWithoutDatabaseInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: EnumIntegrationProviderFieldUpdateOperationsInput | $Enums.IntegrationProvider
+    status?: EnumIntegrationStatusFieldUpdateOperationsInput | $Enums.IntegrationStatus
+    config?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutIntegrationsNestedInput
+    actions?: IntegrationActionUpdateManyWithoutIntegrationNestedInput
+  }
+
+  export type IntegrationUncheckedUpdateWithoutDatabaseInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: EnumIntegrationProviderFieldUpdateOperationsInput | $Enums.IntegrationProvider
+    status?: EnumIntegrationStatusFieldUpdateOperationsInput | $Enums.IntegrationStatus
+    config?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    actions?: IntegrationActionUncheckedUpdateManyWithoutIntegrationNestedInput
+  }
+
   export type IntegrationCreateWithoutActionsInput = {
     uuid?: string
     name: string
@@ -18061,6 +19858,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     organization: OrganizationCreateNestedOneWithoutIntegrationsInput
+    database?: DatabaseIntegrationCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationUncheckedCreateWithoutActionsInput = {
@@ -18075,6 +19873,7 @@ export namespace Prisma {
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: Date | string
     updated_at?: Date | string
+    database?: DatabaseIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationCreateOrConnectWithoutActionsInput = {
@@ -18104,6 +19903,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutIntegrationsNestedInput
+    database?: DatabaseIntegrationUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationUncheckedUpdateWithoutActionsInput = {
@@ -18118,6 +19918,7 @@ export namespace Prisma {
     metadata?: NullableJsonNullValueInput | InputJsonValue
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    database?: DatabaseIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
   }
 
   export type OrganizationMemberCreateManyUserInput = {
@@ -18339,6 +20140,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     actions?: IntegrationActionUpdateManyWithoutIntegrationNestedInput
+    database?: DatabaseIntegrationUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationUncheckedUpdateWithoutOrganizationInput = {
@@ -18353,6 +20155,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     actions?: IntegrationActionUncheckedUpdateManyWithoutIntegrationNestedInput
+    database?: DatabaseIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationUncheckedUpdateManyWithoutOrganizationInput = {

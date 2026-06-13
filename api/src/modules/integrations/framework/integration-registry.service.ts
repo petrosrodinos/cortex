@@ -1,6 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { IntegrationProvider, IntegrationStatus } from 'generated/prisma';
+import { DATABASE_PROVIDERS } from '../databases/database-integration.types';
 import { AiTool } from './ai-tool.interface';
 import { IIntegration } from './integration.interface';
 
@@ -25,6 +26,10 @@ export class IntegrationRegistry {
   }
 
   async executeTool(organizationUuid: string, toolName: string, input: Record<string, any>) {
+    if (toolName.startsWith('db__')) {
+      return await this.executeDatabaseTool(organizationUuid, toolName, input);
+    }
+
     const [providerKey] = toolName.split('__');
 
     if (!providerKey || providerKey === toolName) {
@@ -55,13 +60,14 @@ export class IntegrationRegistry {
         status: IntegrationStatus.ACTIVE,
       },
       include: {
+        database: true,
         actions: {
           where: { enabled: true },
         },
       },
     });
 
-    return integrations.flatMap((integration) => {
+    const tools = integrations.flatMap((integration) => {
       const handler = this.integrations.get(integration.provider);
 
       if (!handler) {
@@ -69,10 +75,61 @@ export class IntegrationRegistry {
       }
 
       const enabled_tool_names = new Set(
-        integration.actions.map((action) => `${integration.provider.toLowerCase()}__${action.key}`),
+        integration.actions.flatMap((action) => [
+          `${integration.provider.toLowerCase()}__${action.key}`,
+          ...(DATABASE_PROVIDERS.includes(integration.provider as any) ? [`db__${action.key}`] : []),
+        ]),
       );
 
       return handler.getTools(integration).filter((tool) => enabled_tool_names.has(tool.function.name));
     });
+
+    const deduped = new Map<string, AiTool>();
+
+    for (const tool of tools) {
+      if (!deduped.has(tool.function.name)) {
+        deduped.set(tool.function.name, tool);
+      }
+    }
+
+    return Array.from(deduped.values());
+  }
+
+  private async executeDatabaseTool(organizationUuid: string, toolName: string, input: Record<string, any>) {
+    const integrationUuid = input?.integration_uuid;
+    const integration = integrationUuid
+      ? await this.prisma.integration.findFirst({
+          where: {
+            uuid: integrationUuid,
+            org_uuid: organizationUuid,
+            provider: { in: [...DATABASE_PROVIDERS] },
+            status: IntegrationStatus.ACTIVE,
+          },
+        })
+      : await this.resolveOnlyActiveDatabaseIntegration(organizationUuid);
+
+    if (!integration) {
+      throw new NotFoundException('No active database integration is available');
+    }
+
+    const handler = this.getByProvider(integration.provider);
+    return await handler.executeTool(toolName, input, integration);
+  }
+
+  private async resolveOnlyActiveDatabaseIntegration(organizationUuid: string) {
+    const integrations = await this.prisma.integration.findMany({
+      where: {
+        org_uuid: organizationUuid,
+        provider: { in: [...DATABASE_PROVIDERS] },
+        status: IntegrationStatus.ACTIVE,
+      },
+      take: 2,
+    });
+
+    if (integrations.length > 1) {
+      throw new BadRequestException('integration_uuid is required when multiple database integrations are active');
+    }
+
+    return integrations[0] ?? null;
   }
 }

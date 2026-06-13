@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { DatabaseIntegrationsModule } from './databases/database-integrations.module';
 import { IntegrationFrameworkModule } from './framework/integration-framework.module';
 import { IntegrationRegistry } from './framework/integration-registry.service';
 import { IntegrationActionsService } from './integration-actions.service';
@@ -7,7 +8,7 @@ import { IntegrationsService } from './integrations.service';
 import { SaasIntegrationsModule } from './saas/saas-integrations.module';
 
 @Module({
-  imports: [IntegrationFrameworkModule, SaasIntegrationsModule],
+  imports: [IntegrationFrameworkModule, SaasIntegrationsModule, DatabaseIntegrationsModule],
   controllers: [IntegrationsController],
   providers: [IntegrationsService, IntegrationActionsService],
   exports: [IntegrationRegistry, IntegrationsService, IntegrationActionsService],

@@ -38,8 +38,8 @@ export const PROVIDER_CONFIG_FIELDS: Record<IntegrationProvider, ProviderConfigF
     { key: 'projectId', label: 'Project ID', type: 'text' },
   ],
   [IntegrationProviders.INTERCOM]: [{ key: 'accessToken', label: 'Access token', type: 'password' }],
-  [IntegrationProviders.DATABASE_PG]: [],
-  [IntegrationProviders.DATABASE_MYSQL]: [],
-  [IntegrationProviders.DATABASE_MONGO]: [],
+  [IntegrationProviders.DATABASE_PG]: [{ key: 'connectionString', label: 'Connection string', type: 'password' }],
+  [IntegrationProviders.DATABASE_MYSQL]: [{ key: 'connectionString', label: 'Connection string', type: 'password' }],
+  [IntegrationProviders.DATABASE_MONGO]: [{ key: 'connectionString', label: 'Connection string', type: 'password' }],
   [IntegrationProviders.OPENAPI]: [{ key: 'apiKey', label: 'API key', type: 'password' }],
 };

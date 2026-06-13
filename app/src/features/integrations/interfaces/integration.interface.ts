@@ -26,6 +26,51 @@ export const IntegrationStatuses = {
 
 export type IntegrationStatus = (typeof IntegrationStatuses)[keyof typeof IntegrationStatuses];
 
+export const DatabaseOperations = {
+  READ: 'READ',
+  INSERT: 'INSERT',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+} as const;
+
+export type DatabaseOperation = (typeof DatabaseOperations)[keyof typeof DatabaseOperations];
+
+export const DatabaseTypes = {
+  POSTGRESQL: 'POSTGRESQL',
+  MYSQL: 'MYSQL',
+  MONGODB: 'MONGODB',
+} as const;
+
+export type DatabaseType = (typeof DatabaseTypes)[keyof typeof DatabaseTypes];
+
+export interface DatabaseColumn {
+  name: string;
+  type: string;
+  nullable: boolean;
+  primaryKey: boolean;
+}
+
+export interface DatabaseTable {
+  name: string;
+  columns: DatabaseColumn[];
+}
+
+export interface DatabaseSchema {
+  tables: DatabaseTable[];
+}
+
+export interface DatabaseIntegrationDetails {
+  uuid: string;
+  integration_uuid: string;
+  db_type: DatabaseType;
+  schema_cache?: DatabaseSchema | null;
+  schema_text?: string;
+  allowed_ops: DatabaseOperation[];
+  last_schema_sync?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface IntegrationAction {
   id: number;
   uuid: string;
@@ -46,6 +91,7 @@ export interface Integration {
   provider: IntegrationProvider;
   status: IntegrationStatus;
   metadata?: Record<string, unknown> | null;
+  database?: DatabaseIntegrationDetails | null;
   created_at: string;
   updated_at: string;
   actions?: IntegrationAction[];
@@ -73,4 +119,23 @@ export interface ToggleIntegrationActionDto {
 
 export interface TestIntegrationResponse {
   success: boolean;
+}
+
+export interface CreateDatabaseIntegrationDto {
+  name: string;
+  description?: string;
+  provider: Extract<IntegrationProvider, 'DATABASE_PG' | 'DATABASE_MYSQL' | 'DATABASE_MONGO'>;
+  connectionString: string;
+  allowedOps: DatabaseOperation[];
+}
+
+export interface TestDatabaseConnectionDto {
+  provider: Extract<IntegrationProvider, 'DATABASE_PG' | 'DATABASE_MYSQL' | 'DATABASE_MONGO'>;
+  connectionString: string;
+}
+
+export interface TestDatabaseConnectionResponse {
+  success: boolean;
+  schema: DatabaseSchema;
+  schema_text: string;
 }

@@ -61,6 +61,19 @@ enum IntegrationStatus {
   ERROR
 }
 
+enum DatabaseType {
+  POSTGRESQL
+  MYSQL
+  MONGODB
+}
+
+enum DatabaseOperation {
+  READ
+  INSERT
+  UPDATE
+  DELETE
+}
+
 model User {
   id       Int     @id @default(autoincrement())
   uuid     String  @unique @default(uuid())
@@ -201,11 +214,31 @@ model Integration {
 
   organization Organization        @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
   actions      IntegrationAction[]
+  database     DatabaseIntegration?
 
   @@index([org_uuid])
   @@index([provider])
   @@index([status])
   @@map("integrations")
+}
+
+model DatabaseIntegration {
+  id                Int                 @id @default(autoincrement())
+  uuid              String              @unique @default(uuid())
+  integration_uuid  String              @unique
+  db_type           DatabaseType
+  connection_string String
+  schema_cache      Json?
+  allowed_ops       DatabaseOperation[] @default([READ])
+  last_schema_sync  DateTime?
+  created_at        DateTime            @default(now())
+  updated_at        DateTime            @updatedAt
+
+  integration Integration @relation(fields: [integration_uuid], references: [uuid], onDelete: Cascade)
+
+  @@index([db_type])
+  @@index([last_schema_sync])
+  @@map("database_integrations")
 }
 
 model IntegrationAction {

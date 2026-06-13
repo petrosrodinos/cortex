@@ -201,6 +201,19 @@ exports.Prisma.IntegrationScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.DatabaseIntegrationScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  integration_uuid: 'integration_uuid',
+  db_type: 'db_type',
+  connection_string: 'connection_string',
+  schema_cache: 'schema_cache',
+  allowed_ops: 'allowed_ops',
+  last_schema_sync: 'last_schema_sync',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.IntegrationActionScalarFieldEnum = {
   id: 'id',
   uuid: 'uuid',
@@ -291,6 +304,19 @@ exports.IntegrationStatus = exports.$Enums.IntegrationStatus = {
   ERROR: 'ERROR'
 };
 
+exports.DatabaseType = exports.$Enums.DatabaseType = {
+  POSTGRESQL: 'POSTGRESQL',
+  MYSQL: 'MYSQL',
+  MONGODB: 'MONGODB'
+};
+
+exports.DatabaseOperation = exports.$Enums.DatabaseOperation = {
+  READ: 'READ',
+  INSERT: 'INSERT',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE'
+};
+
 exports.DocumentType = exports.$Enums.DocumentType = {
   LOGO: 'LOGO',
   BANNER: 'BANNER',
@@ -311,6 +337,7 @@ exports.Prisma.ModelName = {
   RolePermission: 'RolePermission',
   AuditLog: 'AuditLog',
   Integration: 'Integration',
+  DatabaseIntegration: 'DatabaseIntegration',
   IntegrationAction: 'IntegrationAction',
   Document: 'Document'
 };
