@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from '@/core/databases/prisma/prisma.module';
-import { EncryptionService } from '@/shared/utils/encryption.service';
+import { IntegrationFrameworkModule } from './framework/integration-framework.module';
 import { IntegrationRegistry } from './framework/integration-registry.service';
 import { IntegrationActionsService } from './integration-actions.service';
 import { IntegrationsController } from './integrations.controller';
 import { IntegrationsService } from './integrations.service';
+import { SaasIntegrationsModule } from './saas/saas-integrations.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [IntegrationFrameworkModule, SaasIntegrationsModule],
   controllers: [IntegrationsController],
-  providers: [EncryptionService, IntegrationRegistry, IntegrationsService, IntegrationActionsService],
+  providers: [IntegrationsService, IntegrationActionsService],
   exports: [IntegrationRegistry, IntegrationsService, IntegrationActionsService],
 })
 export class IntegrationsModule {}

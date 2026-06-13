@@ -40,7 +40,7 @@ export abstract class BaseIntegration implements IIntegration {
     return action;
   }
 
-  private resolveActionKey(toolName: string) {
+  protected resolveActionKey(toolName: string) {
     const prefix = `${this.provider.toLowerCase()}__`;
     return toolName.startsWith(prefix) ? toolName.slice(prefix.length) : toolName;
   }

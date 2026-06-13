@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { PROVIDER_CONFIG_FIELDS } from '@/features/integrations/constants/provider-config-fields';
 import {
   useCreateIntegration,
   useGetIntegrationActions,
@@ -250,17 +251,21 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
     defaultValues: {
       name: '',
       description: '',
-      provider: IntegrationProviders.OPENAPI,
-      config: '{\n  "apiKey": ""\n}',
+      provider: IntegrationProviders.GITHUB,
+      config: {},
     },
   });
+  const selectedProvider = form.watch('provider') as IntegrationProvider;
+  const configFields = PROVIDER_CONFIG_FIELDS[selectedProvider] ?? [];
 
   async function submit(values: CreateIntegrationFormData) {
+    const config = buildConfig(values.config ?? {}, configFields);
+
     await createIntegrationMutation.mutateAsync({
       name: values.name,
       description: values.description,
       provider: values.provider as IntegrationProvider,
-      config: JSON.parse(values.config),
+      config,
     });
     onClose();
   }
@@ -314,8 +319,8 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
             />
 
             <FormField
-              control={form.control}
               name="provider"
+              control={form.control}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Provider</FormLabel>
@@ -336,23 +341,29 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="config"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Config JSON</FormLabel>
-                  <FormControl>
-                    <textarea
-                      {...field}
-                      rows={8}
-                      className="w-full resize-y rounded-md border border-border bg-background px-3 py-2 font-mono text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid gap-3 sm:grid-cols-2">
+              {configFields.map((configField) => (
+                <FormField
+                  key={`${selectedProvider}-${configField.key}`}
+                  control={form.control}
+                  name={`config.${configField.key}` as any}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{configField.label}</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          value={(field.value as string | number | undefined) ?? ''}
+                          type={configField.type}
+                          autoComplete="off"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
 
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <Button type="button" variant="outline" onClick={onClose} className="sm:w-auto">
@@ -367,6 +378,19 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
       </section>
     </div>
   );
+}
+
+function buildConfig(values: Record<string, unknown>, fields: { key: string; type: 'text' | 'password' | 'number' }[]) {
+  return fields.reduce<Record<string, unknown>>((config, field) => {
+    const value = values[field.key];
+
+    if (value === undefined || value === '') {
+      return config;
+    }
+
+    config[field.key] = field.type === 'number' ? Number(value) : value;
+    return config;
+  }, {});
 }
 
 function StatusBadge({ status }: { status: string }) {

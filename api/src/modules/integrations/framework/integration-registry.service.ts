@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Scope } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { IntegrationProvider, IntegrationStatus } from 'generated/prisma';
 import { AiTool } from './ai-tool.interface';
@@ -22,6 +22,30 @@ export class IntegrationRegistry {
     }
 
     return integration;
+  }
+
+  async executeTool(organizationUuid: string, toolName: string, input: Record<string, any>) {
+    const [providerKey] = toolName.split('__');
+
+    if (!providerKey || providerKey === toolName) {
+      throw new ForbiddenException('Integration tool names must be provider-prefixed');
+    }
+
+    const provider = providerKey.toUpperCase() as IntegrationProvider;
+    const handler = this.getByProvider(provider);
+    const integration = await this.prisma.integration.findFirst({
+      where: {
+        org_uuid: organizationUuid,
+        provider,
+        status: IntegrationStatus.ACTIVE,
+      },
+    });
+
+    if (!integration) {
+      throw new NotFoundException(`No active ${provider} integration is available`);
+    }
+
+    return await handler.executeTool(toolName, input, integration);
   }
 
   async getAllTools(organizationUuid: string): Promise<AiTool[]> {
