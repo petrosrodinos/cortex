@@ -8,9 +8,9 @@ const Login: FC = () => {
   return (
     <Card className="w-full max-w-md mx-auto p-8">
       <div className="flex flex-col gap-1 text-left mb-6">
-        <p className="text-2xl font-semibold">Login</p>
+        <p className="text-2xl font-semibold">Welcome back</p>
         <p className="text-sm text-muted">
-          Enter your email and password below to log into your account
+          Access your connected workspace and continue with your AI agents.
         </p>
       </div>
 

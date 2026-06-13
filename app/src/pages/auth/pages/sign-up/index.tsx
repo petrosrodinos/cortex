@@ -8,9 +8,9 @@ export default function SignUp() {
   return (
     <Card className="w-full max-w-md mx-auto p-8">
       <div className="flex flex-col gap-1 text-left mb-6">
-        <p className="text-2xl font-semibold">Create an account</p>
+        <p className="text-2xl font-semibold">Create your workspace</p>
         <p className="text-sm text-muted">
-          Fill in the details below to create your account
+          Start unifying company apps, data, documents, and knowledge.
         </p>
       </div>
 

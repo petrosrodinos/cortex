@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, Pencil, Plus, Trash2, X } from 'lucide-react';
+import { Check, ChevronDown, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { useGetPermissions } from '@/features/permissions/hooks/use-permissions';
 import { useCreateRole, useDeleteRole, useGetRoles, useSetRolePermissions, useUpdateRole } from '@/features/roles/hooks/use-roles';
 import type { OrganizationRole } from '@/features/roles/interfaces/role.interfaces';
@@ -10,6 +10,7 @@ export default function RolesPage() {
   const [name, setName] = useState('');
   const [editingRoleUuid, setEditingRoleUuid] = useState<string | null>(null);
   const [editingRoleName, setEditingRoleName] = useState('');
+  const [openRoleUuid, setOpenRoleUuid] = useState<string | null>(null);
   const rolesQuery = useGetRoles(currentOrganization?.uuid);
   const permissionsQuery = useGetPermissions();
   const createRoleMutation = useCreateRole(currentOrganization?.uuid);
@@ -63,7 +64,7 @@ export default function RolesPage() {
   }
 
   async function toggleRolePermission(role: OrganizationRole, permissionKey: string) {
-    if (!currentOrganization || role.is_system) return;
+    if (!currentOrganization) return;
     const keys = role.permissions?.map((item) => item.permission.key) ?? [];
     const nextKeys = keys.includes(permissionKey) ? keys.filter((key) => key !== permissionKey) : [...keys, permissionKey];
     await setRolePermissionsMutation.mutateAsync({ organization_role_uuid: role.uuid, permission_keys: nextKeys });
@@ -117,6 +118,7 @@ export default function RolesPage() {
       <div className="grid gap-3">
         {roles.map((role) => {
           const rolePermissionKeys = role.permissions?.map((item) => item.permission.key) ?? [];
+          const isOpen = openRoleUuid === role.uuid;
 
           return (
             <section key={role.uuid} className="rounded-lg border border-border bg-surface p-4">
@@ -133,73 +135,81 @@ export default function RolesPage() {
                   )}
                   <p className="text-xs text-muted">{role.is_system ? 'System role' : `${rolePermissionKeys.length} permissions`}</p>
                 </div>
-                {!role.is_system && (
-                  <div className="flex shrink-0 items-center gap-1">
-                    {editingRoleUuid === role.uuid ? (
-                      <>
-                        <button
-                          type="button"
-                          onClick={() => saveRoleName(role)}
-                          title="Save role"
-                          className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
-                          disabled={loading || !editingRoleName.trim()}
-                        >
-                          <Check className="h-4 w-4" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditingRoleUuid(null);
-                            setEditingRoleName('');
-                          }}
-                          title="Cancel edit"
-                          className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-surface-secondary hover:text-foreground"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          type="button"
-                          onClick={() => startEditingRole(role)}
-                          title="Edit role"
-                          className="inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs text-muted hover:bg-surface-secondary hover:text-foreground"
-                        >
-                          <Pencil className="h-4 w-4" />
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => deleteRole(role.uuid)}
-                          title="Delete role"
-                          className="inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs text-muted hover:bg-surface-secondary hover:text-foreground"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          Delete
-                        </button>
-                      </>
-                    )}
-                  </div>
-                )}
+                <div className="flex shrink-0 items-center gap-1">
+                  {editingRoleUuid === role.uuid ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => saveRoleName(role)}
+                        title="Save role"
+                        className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
+                        disabled={loading || !editingRoleName.trim()}
+                      >
+                        <Check className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingRoleUuid(null);
+                          setEditingRoleName('');
+                        }}
+                        title="Cancel edit"
+                        className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-surface-secondary hover:text-foreground"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setOpenRoleUuid((current) => (current === role.uuid ? null : role.uuid))}
+                        title={isOpen ? 'Collapse role' : 'Expand role'}
+                        className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-surface-secondary hover:text-foreground"
+                      >
+                        <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => startEditingRole(role)}
+                        title="Edit role"
+                        className="inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs text-muted hover:bg-surface-secondary hover:text-foreground"
+                      >
+                        <Pencil className="h-4 w-4" />
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deleteRole(role.uuid)}
+                        title="Delete role"
+                        className="inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs text-muted hover:bg-surface-secondary hover:text-foreground"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Delete
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
-              <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                {permissions.map((permission) => (
-                  <label
-                    key={`${role.uuid}-${permission.key}`}
-                    className="flex items-center gap-2 rounded-md border border-border/80 px-2 py-2 text-xs text-foreground"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={rolePermissionKeys.includes(permission.key)}
-                      disabled={role.is_system}
-                      onChange={() => toggleRolePermission(role, permission.key)}
-                      className="h-4 w-4 accent-[var(--accent)]"
-                    />
-                    <span className="min-w-0 truncate">{permission.label}</span>
-                  </label>
-                ))}
-              </div>
+              {isOpen && (
+                <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {permissions.map((permission) => (
+                    <label
+                      key={`${role.uuid}-${permission.key}`}
+                      className="flex items-center gap-2 rounded-md border border-border/80 px-2 py-2 text-xs text-foreground"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={rolePermissionKeys.includes(permission.key)}
+                        disabled={loading}
+                        onChange={() => toggleRolePermission(role, permission.key)}
+                        className="h-4 w-4 accent-[var(--accent)]"
+                      />
+                      <span className="min-w-0 truncate">{permission.label}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
             </section>
           );
         })}

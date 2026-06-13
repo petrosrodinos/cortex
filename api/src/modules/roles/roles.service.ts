@@ -82,10 +82,6 @@ export class RolesService {
       const organization = await this.requireRoleManager(user_uuid, organization_uuid);
       const role = await this.getOrganizationRole(organization.uuid, organization_role_uuid);
 
-      if (role.is_system) {
-        throw new BadRequestException('System role permissions cannot be modified');
-      }
-
       return await this.prisma.$transaction(async (tx) => {
         await this.setPermissionsTx(tx, role.uuid, dto.permission_keys);
 

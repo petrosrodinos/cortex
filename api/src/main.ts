@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const port = Number(process.env.PORT ?? process.env.API_PORT ?? 3001);
 
   const config = new DocumentBuilder()
     .setTitle('Appointly API')
@@ -24,6 +25,6 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Access-Control-Allow-Origin'],
   });
 
-  await app.listen(3001);
+  await app.listen(port);
 }
 bootstrap();
