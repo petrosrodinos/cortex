@@ -37,6 +37,30 @@ enum OrganizationMemberStatus {
   SUSPENDED
 }
 
+enum IntegrationProvider {
+  GITHUB
+  SLACK
+  STRIPE
+  HUBSPOT
+  LINEAR
+  NOTION
+  GOOGLE_DRIVE
+  SMTP
+  GMAIL
+  POSTHOG
+  INTERCOM
+  DATABASE_PG
+  DATABASE_MYSQL
+  DATABASE_MONGO
+  OPENAPI
+}
+
+enum IntegrationStatus {
+  ACTIVE
+  INACTIVE
+  ERROR
+}
+
 model User {
   id       Int     @id @default(autoincrement())
   uuid     String  @unique @default(uuid())
@@ -66,9 +90,10 @@ model Organization {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  members    OrganizationMember[]
-  roles      OrganizationRole[]
-  audit_logs AuditLog[]
+  members      OrganizationMember[]
+  roles        OrganizationRole[]
+  audit_logs   AuditLog[]
+  integrations Integration[]
 
   @@index([uuid])
   @@index([slug])
@@ -159,6 +184,47 @@ model AuditLog {
   @@index([user_uuid])
   @@index([created_at])
   @@map("audit_logs")
+}
+
+model Integration {
+  id          Int                 @id @default(autoincrement())
+  uuid        String              @unique @default(uuid())
+  org_uuid    String
+  name        String
+  description String?
+  provider    IntegrationProvider
+  status      IntegrationStatus   @default(ACTIVE)
+  config      String
+  metadata    Json?
+  created_at  DateTime            @default(now())
+  updated_at  DateTime            @updatedAt
+
+  organization Organization        @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+  actions      IntegrationAction[]
+
+  @@index([org_uuid])
+  @@index([provider])
+  @@index([status])
+  @@map("integrations")
+}
+
+model IntegrationAction {
+  id                      Int     @id @default(autoincrement())
+  uuid                    String  @unique @default(uuid())
+  integration_uuid        String
+  key                     String
+  label                   String
+  description             String
+  enabled                 Boolean @default(true)
+  required_permission_key String?
+
+  integration Integration @relation(fields: [integration_uuid], references: [uuid], onDelete: Cascade)
+
+  @@unique([integration_uuid, key])
+  @@unique([uuid, integration_uuid])
+  @@index([integration_uuid])
+  @@index([key])
+  @@map("integration_actions")
 }
 
 model Document {

@@ -11,6 +11,7 @@ const EnvSchema = z.object({
     CACHE_TTL_SECONDS: z.coerce.number().optional(),
     JWT_SECRET: z.string(),
     JWT_EXPIRATION_TIME: z.string().optional(),
+    ENCRYPTION_KEY: z.string().regex(/^[a-fA-F0-9]{64}$/),
     SENDGRID_API_KEY: z.string().optional(),
     TWILIO_ACCOUNT_SID: z.string().optional(),
     TWILIO_AUTH_TOKEN: z.string().optional(),

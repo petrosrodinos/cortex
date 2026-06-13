@@ -1,9 +1,11 @@
 # Task: Integration Framework — Base Architecture
 
 ## Objective
+
 Build the abstract integration framework: base class/interface every integration implements, the integration registry, action system, credential encryption, and connectivity testing — before any specific integration is added.
 
 ## Requirements
+
 - Every integration (SaaS, Database, OpenAPI) shares a common contract
 - Integration configs (credentials, connection strings) must be encrypted at rest
 - The AI agent can discover and call any enabled integration action through a unified tool-calling interface
@@ -25,12 +27,13 @@ Build the abstract integration framework: base class/interface every integration
   - Used wherever credentials are stored/retrieved from DB
 
 - [ ] Define `IIntegration` interface (`api/src/modules/integrations/framework/integration.interface.ts`)
+
   ```typescript
   interface IIntegration {
-    provider: IntegrationProvider
-    getTools(integration: Integration): AiTool[]
-    testConnection(config: Record<string, any>): Promise<boolean>
-    executeTool(toolName: string, input: Record<string, any>, integration: Integration): Promise<any>
+    provider: IntegrationProvider;
+    getTools(integration: Integration): AiTool[];
+    testConnection(config: Record<string, any>): Promise<boolean>;
+    executeTool(toolName: string, input: Record<string, any>, integration: Integration): Promise<any>;
   }
   ```
 
@@ -54,7 +57,7 @@ Build the abstract integration framework: base class/interface every integration
   - Guard with `@OrgPermission('org:integrations:manage')` on mutating routes
 
 - [ ] `IntegrationActionsService`
-  - `toggleAction(integrationId, actionId, enabled)` 
+  - `toggleAction(integrationId, actionId, enabled)`
   - `getActions(integrationId)`
 
 - [ ] Seed integration actions when integration is created
@@ -63,19 +66,21 @@ Build the abstract integration framework: base class/interface every integration
 
 ### Frontend
 
-- [ ] `Integration` TypeScript interface and enums in `app/src/interfaces/integration.interface.ts`
+- [ ] `Integration` TypeScript interface and enums in `app/src/features/integrations/interfaces/integration.interface.ts`
 - [ ] `integrations.service.ts` API client
 - [ ] Integrations list page: `app/src/pages/integrations/` — cards per connected integration, status badge
 - [ ] Add integration modal: select provider → fill credentials form → test connection → save
 - [ ] Integration detail page: list of actions with enable/disable toggles
 
 ## Technical Notes
+
 - `config` field in `Integration` must be encrypted before `prisma.integration.create` and decrypted only inside `BaseIntegration.decryptConfig` — never exposed to API responses
-- `IntegrationRegistry` is a singleton NestJS `@Injectable({ scope: Scope.DEFAULT })` 
+- `IntegrationRegistry` is a singleton NestJS `@Injectable({ scope: Scope.DEFAULT })`
 - Tools returned by `getAllTools` follow OpenAI function-calling schema: `{ type: 'function', function: { name, description, parameters } }`
 - Tool names must be globally unique across integrations — prefix with provider: `github__create_issue`, `stripe__list_customers`
 
 ## Acceptance Criteria
+
 - [ ] Can create an integration with encrypted credentials saved to DB
 - [ ] `testConnection` endpoint returns success/failure without exposing credentials
 - [ ] Actions are auto-seeded on integration creation

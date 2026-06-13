@@ -27,6 +27,11 @@ export const ApiRoutes = {
         roles: (organizationUuid: string) => `/organizations/${organizationUuid}/roles`,
         role: (organizationUuid: string, organizationRoleUuid: string) => `/organizations/${organizationUuid}/roles/${organizationRoleUuid}`,
         rolePermissions: (organizationUuid: string, organizationRoleUuid: string) => `/organizations/${organizationUuid}/roles/${organizationRoleUuid}/permissions`,
+        integrations: (organizationUuid: string) => `/organizations/${organizationUuid}/integrations`,
+        integration: (organizationUuid: string, integrationUuid: string) => `/organizations/${organizationUuid}/integrations/${integrationUuid}`,
+        integrationTest: (organizationUuid: string, integrationUuid: string) => `/organizations/${organizationUuid}/integrations/${integrationUuid}/test`,
+        integrationActions: (organizationUuid: string, integrationUuid: string) => `/organizations/${organizationUuid}/integrations/${integrationUuid}/actions`,
+        integrationAction: (organizationUuid: string, integrationUuid: string, actionUuid: string) => `/organizations/${organizationUuid}/integrations/${integrationUuid}/actions/${actionUuid}`,
     },
     permissions: {
         root: "/permissions",

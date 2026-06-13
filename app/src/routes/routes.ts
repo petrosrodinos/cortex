@@ -6,5 +6,7 @@ export const Routes = {
     dashboard: {
         root: "/dashboard",
         organizations: "/dashboard/organizations",
+        integrations: "/dashboard/integrations",
+        integration: (integrationUuid: string) => `/dashboard/integrations/${integrationUuid}`,
     },
 };

@@ -9,6 +9,7 @@ export default () => ({
     CACHE_TTL_SECONDS: process.env.CACHE_TTL_SECONDS ? Number(process.env.CACHE_TTL_SECONDS) : undefined,
     JWT_SECRET: process.env.JWT_SECRET,
     JWT_EXPIRATION_TIME: process.env.JWT_EXPIRATION_TIME,
+    ENCRYPTION_KEY: process.env.ENCRYPTION_KEY,
     SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
     TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
     TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,

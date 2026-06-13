@@ -187,6 +187,31 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.IntegrationScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  org_uuid: 'org_uuid',
+  name: 'name',
+  description: 'description',
+  provider: 'provider',
+  status: 'status',
+  config: 'config',
+  metadata: 'metadata',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.IntegrationActionScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  integration_uuid: 'integration_uuid',
+  key: 'key',
+  label: 'label',
+  description: 'description',
+  enabled: 'enabled',
+  required_permission_key: 'required_permission_key'
+};
+
 exports.Prisma.DocumentScalarFieldEnum = {
   id: 'id',
   uuid: 'uuid',
@@ -206,6 +231,11 @@ exports.Prisma.SortOrder = {
 };
 
 exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
@@ -237,6 +267,30 @@ exports.OrganizationMemberStatus = exports.$Enums.OrganizationMemberStatus = {
   SUSPENDED: 'SUSPENDED'
 };
 
+exports.IntegrationProvider = exports.$Enums.IntegrationProvider = {
+  GITHUB: 'GITHUB',
+  SLACK: 'SLACK',
+  STRIPE: 'STRIPE',
+  HUBSPOT: 'HUBSPOT',
+  LINEAR: 'LINEAR',
+  NOTION: 'NOTION',
+  GOOGLE_DRIVE: 'GOOGLE_DRIVE',
+  SMTP: 'SMTP',
+  GMAIL: 'GMAIL',
+  POSTHOG: 'POSTHOG',
+  INTERCOM: 'INTERCOM',
+  DATABASE_PG: 'DATABASE_PG',
+  DATABASE_MYSQL: 'DATABASE_MYSQL',
+  DATABASE_MONGO: 'DATABASE_MONGO',
+  OPENAPI: 'OPENAPI'
+};
+
+exports.IntegrationStatus = exports.$Enums.IntegrationStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  ERROR: 'ERROR'
+};
+
 exports.DocumentType = exports.$Enums.DocumentType = {
   LOGO: 'LOGO',
   BANNER: 'BANNER',
@@ -256,6 +310,8 @@ exports.Prisma.ModelName = {
   Permission: 'Permission',
   RolePermission: 'RolePermission',
   AuditLog: 'AuditLog',
+  Integration: 'Integration',
+  IntegrationAction: 'IntegrationAction',
   Document: 'Document'
 };
 

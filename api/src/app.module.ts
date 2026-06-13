@@ -11,6 +11,7 @@ import { ConfigModule } from './shared/config/env/env.module';
 import { OrganizationsModule } from './modules/organizations/organizations.module';
 import { MembersModule } from './modules/members/members.module';
 import { RolesModule } from './modules/roles/roles.module';
+import { IntegrationsModule } from './modules/integrations/integrations.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { RolesModule } from './modules/roles/roles.module';
     OrganizationsModule,
     MembersModule,
     RolesModule,
+    IntegrationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
