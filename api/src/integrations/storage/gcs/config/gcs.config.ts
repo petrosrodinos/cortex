@@ -18,7 +18,8 @@ export class GcsConfig {
             const projectId = this.configService.get('GCS_PROJECT_ID');
             const bucketName = this.configService.get('GCS_BUCKET_NAME');
             const credentialsPath = this.configService.get('GCS_CREDENTIALS_PATH');
-            const credentials = this.configService.get('GCS_CREDENTIALS');
+            const credentialsBase64 = this.configService.get('GCS_CREDENTIALS_BASE64');
+            const credentialsJson = this.configService.get('GCS_CREDENTIALS');
             const folderName = this.configService.get('GCS_FOLDER_NAME');
 
             if (!projectId || !bucketName) {
@@ -26,15 +27,17 @@ export class GcsConfig {
                 return;
             }
 
+            const credentials = this.resolveCredentials(credentialsBase64, credentialsJson);
+
             this.config = {
                 project_id: projectId,
                 bucket_name: bucketName,
                 credentials_path: credentialsPath,
-                credentials: credentials ? JSON.parse(credentials) : undefined,
+                credentials,
                 folder_name: folderName || 'documents'
             };
 
-            const storageOptions: any = {
+            const storageOptions: Record<string, unknown> = {
                 projectId: this.config.project_id
             };
 
@@ -49,6 +52,21 @@ export class GcsConfig {
         } catch (error) {
             this.logger.error('Error initializing Google Cloud Storage', error);
         }
+    }
+
+    private resolveCredentials(
+        credentialsBase64?: string,
+        credentialsJson?: string,
+    ): object | undefined {
+        if (credentialsBase64) {
+            return JSON.parse(Buffer.from(credentialsBase64, 'base64').toString('utf8'));
+        }
+
+        if (credentialsJson) {
+            return JSON.parse(credentialsJson);
+        }
+
+        return undefined;
     }
 
     getStorageClient(): Storage {

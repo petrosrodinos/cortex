@@ -1,9 +1,11 @@
 # Task: Output Generation — PDF, Excel, Word, Charts, Images, Widgets
 
 ## Objective
+
 Build the output generation pipeline that the AI agent invokes to produce rich deliverables: PDFs, Excel files, Word documents, charts (as images or JSON), AI-generated images, and interactive HTML/JS widgets. All outputs are uploaded to GCS and persisted as `Document` rows.
 
 ## Requirements
+
 - The AI agent calls output tools the same way it calls integration tools
 - Generated files are uploaded to GCS under `orgs/<organizationUuid>/documents/<uuid>.<ext>`
 - File references are stored in the existing `Document` table (not a separate `GeneratedFile` model)
@@ -46,11 +48,10 @@ Build the output generation pipeline that the AI agent invokes to produce rich d
   - `output__create_widget` — `{ html, js?, css? }` (sandboxed HTML snippet)
 
 - [ ] PDF generator (`api/src/modules/outputs/generators/pdf.generator.ts`)
-  - Use `puppeteer` (headless Chromium) for HTML-to-PDF conversion
+  - Use `WeasyPrint` with python using the SandboxCodeService to execute the python code
   - Accepts `content_html` — AI generates the HTML with inline Tailwind classes
   - Injects logo, header, footer via template wrapper
   - Returns `Buffer`
-  - Alternative: keep `WeasyPrint` as Python microservice if Puppeteer is too heavy
 
 - [ ] Excel generator (`api/src/modules/outputs/generators/excel.generator.ts`)
   - Use `exceljs`
@@ -110,6 +111,7 @@ Build the output generation pipeline that the AI agent invokes to produce rich d
 - [ ] Image preview in message bubble (click to expand full-screen; show prompt from `Document.metadata` if available)
 
 ## Technical Notes
+
 - Analysis vs generation: use `@openai/agents/sandbox` (`code_interpreter`) to analyze existing PDFs/Word/Excel uploads; use `output__create_*` tools here only to produce new files
 - Puppeteer binary adds ~300MB to Docker image — use `puppeteer-core` + `chrome-aws-lambda` for serverless, or pin full Puppeteer for VM-based deployments
 - Charts embedded in PDF: generate chart PNG first (`chart.generator.ts`), base64-encode, inject as `<img src="data:...">` in HTML before PDF render
@@ -124,6 +126,7 @@ Build the output generation pipeline that the AI agent invokes to produce rich d
 - Agent messages should reference `documentUuid` in metadata/files array so the frontend can resolve previews and downloads from `Document`
 
 ## Acceptance Criteria
+
 - [ ] Agent creates a PDF and the file card appears in chat with a working download link
 - [ ] Agent creates an Excel file with two sheets and a chart; opens correctly in Excel
 - [ ] Agent creates a Word document with a table and heading

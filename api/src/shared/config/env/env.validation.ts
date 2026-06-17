@@ -20,6 +20,7 @@ const EnvSchema = z.object({
     GCS_BUCKET_NAME: z.string().optional(),
     GCS_FOLDER_NAME: z.string().optional(),
     GCS_CREDENTIALS_PATH: z.string().optional(),
+    GCS_CREDENTIALS_BASE64: z.string().optional(),
     GCS_CREDENTIALS: z.string().optional(),
     STRIPE_PUBLISHABLE_KEY: z.string().optional(),
     STRIPE_SECRET_KEY: z.string().optional(),
