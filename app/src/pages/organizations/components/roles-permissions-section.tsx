@@ -1,22 +1,20 @@
-import { useState } from 'react';
-import { Check, ChevronDown, Pencil, Plus, Trash2, X } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Check, Pencil, Plus, Shield, Trash2, X } from 'lucide-react';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { useGetPermissions } from '@/features/permissions/hooks/use-permissions';
+import type { Permission } from '@/features/permissions/interfaces/permission.interfaces';
 import { useCreateRole, useDeleteRole, useGetRoles, useSetRolePermissions, useUpdateRole } from '@/features/roles/hooks/use-roles';
 import type { OrganizationRole } from '@/features/roles/interfaces/role.interfaces';
+import { cn } from '@/lib/utils';
 import { useOrganizationStore } from '@/stores/organization';
 
-type DeleteRoleTarget = {
-  uuid: string;
-  label: string;
-} | null;
+type DeleteRoleTarget = { uuid: string; label: string } | null;
 
 export function RolesPermissionsSection() {
   const currentOrganization = useOrganizationStore((state) => state.current_organization);
   const [roleName, setRoleName] = useState('');
   const [editingRoleUuid, setEditingRoleUuid] = useState<string | null>(null);
   const [editingRoleName, setEditingRoleName] = useState('');
-  const [openRoleUuid, setOpenRoleUuid] = useState<string | null>(null);
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<DeleteRoleTarget>(null);
@@ -38,20 +36,25 @@ export function RolesPermissionsSection() {
     deleteRoleMutation.isPending;
   const queryError = rolesQuery.error?.message ?? permissionsQuery.error?.message ?? null;
 
+  const permissionGroups = useMemo(() => {
+    const map: Record<string, Permission[]> = {};
+    for (const permission of permissions) {
+      const group = permission.group ?? 'General';
+      (map[group] ??= []).push(permission);
+    }
+    return Object.entries(map).sort(([a], [b]) => a.localeCompare(b));
+  }, [permissions]);
+
   async function createRole(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!currentOrganization || !roleName.trim()) return;
-
     setIsBusy(true);
     setError(null);
     try {
-      await createRoleMutation.mutateAsync({
-        name: roleName.trim(),
-        permission_keys: [],
-      });
+      await createRoleMutation.mutateAsync({ name: roleName.trim(), permission_keys: [] });
       setRoleName('');
     } catch (err: unknown) {
-      setError(getErrorMessage(err, 'Unable to create role'));
+      setError(err instanceof Error ? err.message : 'Unable to create role');
     } finally {
       setIsBusy(false);
     }
@@ -64,7 +67,6 @@ export function RolesPermissionsSection() {
 
   async function saveRoleName(role: OrganizationRole) {
     if (!currentOrganization || !editingRoleName.trim()) return;
-
     setIsBusy(true);
     setError(null);
     try {
@@ -75,7 +77,7 @@ export function RolesPermissionsSection() {
       setEditingRoleUuid(null);
       setEditingRoleName('');
     } catch (err: unknown) {
-      setError(getErrorMessage(err, 'Unable to update role'));
+      setError(err instanceof Error ? err.message : 'Unable to update role');
     } finally {
       setIsBusy(false);
     }
@@ -83,16 +85,19 @@ export function RolesPermissionsSection() {
 
   async function toggleRolePermission(role: OrganizationRole, permissionKey: string) {
     if (!currentOrganization) return;
-
     const keys = role.permissions?.map((item) => item.permission.key) ?? [];
-    const nextKeys = keys.includes(permissionKey) ? keys.filter((key) => key !== permissionKey) : [...keys, permissionKey];
-
+    const nextKeys = keys.includes(permissionKey)
+      ? keys.filter((k) => k !== permissionKey)
+      : [...keys, permissionKey];
     setIsBusy(true);
     setError(null);
     try {
-      await setRolePermissionsMutation.mutateAsync({ organization_role_uuid: role.uuid, permission_keys: nextKeys });
+      await setRolePermissionsMutation.mutateAsync({
+        organization_role_uuid: role.uuid,
+        permission_keys: nextKeys,
+      });
     } catch (err: unknown) {
-      setError(getErrorMessage(err, 'Unable to update role permissions'));
+      setError(err instanceof Error ? err.message : 'Unable to update permissions');
     } finally {
       setIsBusy(false);
     }
@@ -100,7 +105,6 @@ export function RolesPermissionsSection() {
 
   async function deleteRole() {
     if (!currentOrganization || !deleteTarget) return;
-
     setIsBusy(true);
     setError(null);
     try {
@@ -109,7 +113,7 @@ export function RolesPermissionsSection() {
         organization_role_uuid: deleteTarget.uuid,
       });
     } catch (err: unknown) {
-      setError(getErrorMessage(err, 'Unable to delete role'));
+      setError(err instanceof Error ? err.message : 'Unable to delete role');
     } finally {
       setIsBusy(false);
       setDeleteTarget(null);
@@ -119,140 +123,160 @@ export function RolesPermissionsSection() {
   if (!currentOrganization) return null;
 
   return (
-    <section className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-4">
-      <div>
-        <h2 className="text-sm font-semibold text-foreground">Roles and permissions</h2>
-        <p className="text-xs text-muted">Create custom roles and adjust permission access.</p>
-      </div>
-
-      {(error || queryError) && <p className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">{error ?? queryError}</p>}
-
-      <form onSubmit={createRole}>
-        <div className="flex flex-col gap-3 md:flex-row">
-          <input
-            value={roleName}
-            onChange={(event) => setRoleName(event.target.value)}
-            placeholder="Custom role name"
-            className="h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
-          />
-          <button
-            type="submit"
-            disabled={loading || !roleName.trim()}
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-accent px-4 text-sm font-medium text-accent-foreground disabled:opacity-50"
-          >
-            <Plus className="h-4 w-4" />
-            Create role
-          </button>
-        </div>
+    <div className="flex flex-col gap-4">
+      <form onSubmit={createRole} className="flex gap-2">
+        <input
+          value={roleName}
+          onChange={(event) => setRoleName(event.target.value)}
+          placeholder="New role name"
+          className="h-9 min-w-0 flex-1 rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted outline-none transition-all focus:border-accent/60 focus:ring-2 focus:ring-accent/20"
+        />
+        <button
+          type="submit"
+          disabled={loading || !roleName.trim()}
+          className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-accent px-3 text-sm font-medium text-accent-foreground disabled:opacity-50"
+        >
+          <Plus className="h-4 w-4" />
+          Create role
+        </button>
       </form>
 
-      {rolesQuery.isLoading || permissionsQuery.isLoading ? <RolesSkeleton /> : null}
-      {!rolesQuery.isLoading && !permissionsQuery.isLoading ? (
-        <div className="grid gap-3">
-          {roles.map((role) => {
-            const rolePermissionKeys = role.permissions?.map((item) => item.permission.key) ?? [];
-            const isOpen = openRoleUuid === role.uuid;
+      {(error || queryError) && (
+        <p className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2.5 text-sm text-red-300">
+          {error ?? queryError}
+        </p>
+      )}
 
-            return (
-              <section key={role.uuid} className="rounded-lg border border-border/80 bg-background p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
+      {rolesQuery.isLoading || permissionsQuery.isLoading ? (
+        <MatrixSkeleton />
+      ) : roles.length === 0 ? (
+        <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border py-12 text-center">
+          <Shield className="h-8 w-8 text-muted" />
+          <p className="text-sm font-medium text-foreground">No roles yet</p>
+          <p className="text-sm text-muted">Create a role to manage member access.</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-xl border border-border">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-surface">
+                <th className="sticky left-0 z-10 min-w-[200px] bg-surface px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">
+                  Permission
+                </th>
+                {roles.map((role) => (
+                  <th
+                    key={role.uuid}
+                    className="min-w-[130px] px-3 py-3 text-center align-top"
+                  >
                     {editingRoleUuid === role.uuid ? (
-                      <input
-                        value={editingRoleName}
-                        onChange={(event) => setEditingRoleName(event.target.value)}
-                        className="h-9 w-full max-w-sm rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
-                      />
-                    ) : (
-                      <h3 className="text-sm font-semibold text-foreground">{role.name}</h3>
-                    )}
-                    <p className="text-xs text-muted">{role.is_system ? 'System role' : `${rolePermissionKeys.length} permissions`}</p>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-1">
-                    {editingRoleUuid === role.uuid ? (
-                      <>
+                      <div className="flex items-center justify-center gap-1">
+                        <input
+                          value={editingRoleName}
+                          onChange={(e) => setEditingRoleName(e.target.value)}
+                          autoFocus
+                          className="h-7 w-24 rounded-md border border-border bg-background px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-accent"
+                        />
                         <button
                           type="button"
                           onClick={() => saveRoleName(role)}
-                          title="Save role"
                           disabled={loading || !editingRoleName.trim()}
-                          className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
+                          title="Save"
+                          className="grid h-7 w-7 place-items-center rounded text-muted hover:text-foreground disabled:opacity-50"
                         >
-                          <Check className="h-4 w-4" />
+                          <Check className="h-3.5 w-3.5" />
                         </button>
                         <button
                           type="button"
-                          onClick={() => {
-                            setEditingRoleUuid(null);
-                            setEditingRoleName('');
-                          }}
-                          title="Cancel edit"
-                          className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-surface-secondary hover:text-foreground"
+                          onClick={() => { setEditingRoleUuid(null); setEditingRoleName(''); }}
+                          title="Cancel"
+                          className="grid h-7 w-7 place-items-center rounded text-muted hover:text-foreground"
                         >
-                          <X className="h-4 w-4" />
+                          <X className="h-3.5 w-3.5" />
                         </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => setOpenRoleUuid((current) => (current === role.uuid ? null : role.uuid))}
-                            title={isOpen ? 'Collapse role' : 'Expand role'}
-                            className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-surface-secondary hover:text-foreground"
-                          >
-                            <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => startEditingRole(role)}
-                          title="Edit role"
-                          className="inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs text-muted hover:bg-surface-secondary hover:text-foreground"
-                        >
-                          <Pencil className="h-4 w-4" />
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setDeleteTarget({ uuid: role.uuid, label: role.name })}
-                          title="Delete role"
-                          className="inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs text-muted hover:bg-surface-secondary hover:text-foreground"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          Delete
-                        </button>
-                      </>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-1.5">
+                        <span className="text-xs font-semibold text-foreground">{role.name}</span>
+                        {!role.is_system && (
+                          <div className="flex items-center gap-0.5">
+                            <button
+                              type="button"
+                              onClick={() => startEditingRole(role)}
+                              title="Rename role"
+                              className="grid h-6 w-6 place-items-center rounded text-muted hover:bg-surface-secondary hover:text-foreground"
+                            >
+                              <Pencil className="h-3 w-3" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setDeleteTarget({ uuid: role.uuid, label: role.name })}
+                              title="Delete role"
+                              className="grid h-6 w-6 place-items-center rounded text-muted hover:bg-surface-secondary hover:text-red-400"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     )}
-                  </div>
-                </div>
-                {isOpen && (
-                  <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                    {permissions.map((permission) => (
-                      <label
-                        key={`${role.uuid}-${permission.key}`}
-                        className="flex items-center gap-2 rounded-md border border-border/80 px-2 py-2 text-xs text-foreground"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={rolePermissionKeys.includes(permission.key)}
-                          disabled={loading}
-                          onChange={() => toggleRolePermission(role, permission.key)}
-                          className="h-4 w-4 accent-[var(--accent)]"
-                        />
-                        <span className="min-w-0 truncate">{permission.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                )}
-              </section>
-            );
-          })}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {permissionGroups.map(([group, groupPermissions]) => (
+                <>
+                  <tr key={`group-${group}`}>
+                    <td
+                      colSpan={roles.length + 1}
+                      className="sticky left-0 border-b border-border/50 bg-surface-secondary px-4 py-2 text-[11px] font-medium uppercase tracking-wider text-muted"
+                    >
+                      {group}
+                    </td>
+                  </tr>
+                  {groupPermissions.map((permission, permIndex) => (
+                    <tr
+                      key={permission.key}
+                      className={cn(
+                        'group transition-colors hover:bg-surface',
+                        permIndex < groupPermissions.length - 1 && 'border-b border-border/40',
+                      )}
+                    >
+                      <td className="sticky left-0 z-10 bg-background px-4 py-3 text-sm text-foreground group-hover:bg-surface">
+                        {permission.label}
+                      </td>
+                      {roles.map((role) => {
+                        const checked =
+                          role.permissions?.some((p) => p.permission.key === permission.key) ?? false;
+                        return (
+                          <td key={role.uuid} className="px-3 py-3 text-center">
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              disabled={loading}
+                              onChange={() => toggleRolePermission(role, permission.key)}
+                              className="h-4 w-4 cursor-pointer accent-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-50"
+                            />
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </>
+              ))}
+            </tbody>
+          </table>
         </div>
-      ) : null}
+      )}
 
       <ConfirmationDialog
         open={Boolean(deleteTarget)}
         title="Delete role"
-        description={deleteTarget ? `Delete the ${deleteTarget.label} role? Members using this role may need to be updated first.` : ''}
+        description={
+          deleteTarget
+            ? `Delete the "${deleteTarget.label}" role? Members assigned this role may need to be updated.`
+            : ''
+        }
         confirmLabel="Delete role"
         loading={loading}
         onConfirm={deleteRole}
@@ -260,30 +284,21 @@ export function RolesPermissionsSection() {
           if (!open && !loading) setDeleteTarget(null);
         }}
       />
-    </section>
+    </div>
   );
 }
 
-function RolesSkeleton() {
+function MatrixSkeleton() {
   return (
-    <div className="grid gap-3" aria-hidden="true">
-      {[0, 1].map((role) => (
-        <div key={role} className="rounded-lg border border-border/80 bg-background p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <SkeletonLine className="h-4 w-32" />
-              <SkeletonLine className="mt-2 h-3 w-24" />
-            </div>
-            <div className="flex gap-2">
-              <SkeletonLine className="h-8 w-16 rounded-md" />
-              <SkeletonLine className="h-8 w-20 rounded-md" />
-            </div>
-          </div>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {[0, 1, 2, 3, 4, 5].map((permission) => (
-              <SkeletonLine key={permission} className="h-9 rounded-md" />
-            ))}
-          </div>
+    <div className="overflow-hidden rounded-xl border border-border">
+      <div className="grid grid-cols-[200px_repeat(3,_1fr)] border-b border-border bg-surface px-4 py-3 gap-4">
+        <SkeletonLine className="h-4 w-24" />
+        {[0, 1, 2].map((i) => <SkeletonLine key={i} className="h-4 w-16 mx-auto" />)}
+      </div>
+      {[0, 1, 2, 3, 4].map((row) => (
+        <div key={row} className="grid grid-cols-[200px_repeat(3,_1fr)] items-center border-b border-border/40 px-4 py-3 gap-4 last:border-0">
+          <SkeletonLine className="h-4 w-36" />
+          {[0, 1, 2].map((col) => <SkeletonLine key={col} className="h-4 w-4 mx-auto rounded" />)}
         </div>
       ))}
     </div>
@@ -292,8 +307,4 @@ function RolesSkeleton() {
 
 function SkeletonLine({ className }: { className: string }) {
   return <div className={`animate-pulse rounded bg-surface-secondary ${className}`} />;
-}
-
-function getErrorMessage(error: unknown, fallback: string) {
-  return error instanceof Error ? error.message : fallback;
 }

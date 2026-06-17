@@ -58,7 +58,6 @@ export function OrganizationContextSection() {
   async function createOrganization(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!organizationName.trim()) return;
-
     setIsBusy(true);
     setError(null);
     try {
@@ -79,16 +78,13 @@ export function OrganizationContextSection() {
       setDeleteTarget(null);
       return;
     }
-
-    const nextOrganizations = organizations.filter((organization) => organization.uuid !== currentOrganization.uuid);
-
+    const nextOrganizations = organizations.filter((o) => o.uuid !== currentOrganization.uuid);
     setIsBusy(true);
     setError(null);
     try {
       await deleteOrganizationMutation.mutateAsync({ organization_uuid: currentOrganization.uuid });
       setOrganizations(nextOrganizations);
       const nextOrganization = nextOrganizations[0] ?? null;
-
       if (nextOrganization) {
         await switchOrganization(nextOrganization);
       } else {
@@ -108,78 +104,91 @@ export function OrganizationContextSection() {
 
   return (
     <>
-      {error && <p className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">{error}</p>}
+      {error && (
+        <p className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2.5 text-sm text-red-300">{error}</p>
+      )}
 
-      <section className="grid gap-4 rounded-lg border border-border bg-surface p-4 lg:grid-cols-[minmax(0,1fr)_auto]">
-        <div className="min-w-0">
-          <h2 className="text-sm font-semibold text-foreground">Organisation context</h2>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-            {organizations.length === 0 ? (
-              <div className="flex items-center gap-2 rounded-md border border-border/80 px-3 py-3 text-sm text-muted">
-                <Building2 className="h-4 w-4" />
-                No organisations yet
-              </div>
-            ) : (
-              organizations.map((organization) => (
-                <button
-                  key={organization.uuid}
-                  type="button"
-                  disabled={loading}
-                  onClick={() => switchOrganization(organization)}
-                  className={cn(
-                    'flex min-w-0 items-center gap-2 rounded-md border px-3 py-2 text-left text-sm transition-colors disabled:opacity-60',
-                    organization.uuid === currentOrganization?.uuid
-                      ? 'border-accent/40 bg-surface-secondary text-foreground'
-                      : 'border-border/80 text-muted hover:bg-surface-secondary hover:text-foreground',
-                  )}
-                >
-                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-surface-tertiary text-[10px] font-semibold">
-                    {organization.name.slice(0, 2).toUpperCase()}
-                  </span>
-                  <span className="min-w-0 flex-1 truncate">{organization.name}</span>
-                  {organization.uuid === currentOrganization?.uuid && <Check className="h-4 w-4 shrink-0 text-accent" />}
-                </button>
-              ))
-            )}
-          </div>
-        </div>
-
-        <div className="flex min-w-[260px] flex-col gap-3">
-          <form onSubmit={createOrganization} className="flex gap-2">
-            <input
-              value={organizationName}
-              onChange={(event) => setOrganizationName(event.target.value)}
-              placeholder="New organisation"
-              className="h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
-            />
-            <button
-              type="submit"
-              disabled={loading || !organizationName.trim()}
-              title="Create organisation"
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground disabled:opacity-50"
-            >
-              <Plus className="h-4 w-4" />
-            </button>
-          </form>
-
+      <section className="flex flex-col gap-4 rounded-xl border border-border bg-surface p-4">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-medium uppercase tracking-wider text-muted">Workspace</span>
           <button
             type="button"
             disabled={loading || !canDeleteCurrentOrganization}
-            title={canDeleteCurrentOrganization ? 'Delete current organisation' : 'You must keep at least one organisation'}
+            title={
+              canDeleteCurrentOrganization
+                ? 'Delete current workspace'
+                : 'You must keep at least one organisation'
+            }
             onClick={() => currentOrganization && setDeleteTarget(currentOrganization)}
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-border px-3 text-sm font-medium text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs text-muted transition-colors hover:text-red-400 disabled:pointer-events-none disabled:opacity-40"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-3 w-3" />
             Delete current
           </button>
         </div>
+
+        {organizations.length === 0 ? (
+          <div className="flex items-center gap-2 py-1 text-sm text-muted">
+            <Building2 className="h-4 w-4" />
+            No workspaces yet
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {organizations.map((organization) => (
+              <button
+                key={organization.uuid}
+                type="button"
+                disabled={loading}
+                onClick={() => switchOrganization(organization)}
+                className={cn(
+                  'flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-all disabled:opacity-60',
+                  organization.uuid === currentOrganization?.uuid
+                    ? 'border-accent/40 bg-accent/8 text-foreground'
+                    : 'border-border bg-background text-muted hover:border-border/80 hover:text-foreground',
+                )}
+              >
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-[9px] font-bold bg-surface-tertiary">
+                  {organization.name.slice(0, 2).toUpperCase()}
+                </span>
+                <span className="max-w-[160px] truncate">{organization.name}</span>
+                {organization.uuid === currentOrganization?.uuid && (
+                  <Check className="ml-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <form
+          onSubmit={createOrganization}
+          className="flex gap-2 border-t border-border/60 pt-4"
+        >
+          <input
+            value={organizationName}
+            onChange={(event) => setOrganizationName(event.target.value)}
+            placeholder="New workspace name"
+            className="h-9 min-w-0 flex-1 rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted outline-none transition-all focus:border-accent/60 focus:ring-2 focus:ring-accent/20"
+          />
+          <button
+            type="submit"
+            disabled={loading || !organizationName.trim()}
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-accent px-3 text-sm font-medium text-accent-foreground transition-opacity disabled:opacity-50"
+          >
+            <Plus className="h-4 w-4" />
+            Create
+          </button>
+        </form>
       </section>
 
       <ConfirmationDialog
         open={Boolean(deleteTarget)}
-        title="Delete organisation"
-        description={deleteTarget ? `Delete ${deleteTarget.name}? Members, roles, and permissions for this organisation will be removed.` : ''}
-        confirmLabel="Delete organisation"
+        title="Delete workspace"
+        description={
+          deleteTarget
+            ? `Delete ${deleteTarget.name}? All members, roles, and permissions will be permanently removed.`
+            : ''
+        }
+        confirmLabel="Delete workspace"
         loading={loading}
         onConfirm={deleteCurrentOrganization}
         onOpenChange={(open) => {
