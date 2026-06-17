@@ -12,6 +12,6 @@ import { GcsConfig } from './config/gcs.config';
         GcsConfig,
         Logger
     ],
-    exports: [GcsService],
+    exports: [GcsService, GcsAdapter],
 })
 export class GcsIntegrationModule { }

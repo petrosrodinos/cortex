@@ -2,7 +2,7 @@
 
 ## Objective
 
-Build the AI agent system that accepts user messages, determines which integrations to call, orchestrates multi-tool workflows (sequential and parallel), executes Code Interpreter for data analysis, and returns structured outputs. Support multiple AI providers per org with runtime routing.
+Build the AI agent system that accepts user messages, determines which integrations to call, orchestrates multi-tool workflows (sequential and parallel), executes Code Interpreter for data analysis and PDF/document analysis, and returns structured outputs. Support multiple AI providers per org with runtime routing.
 
 ## Requirements
 
@@ -10,7 +10,7 @@ Build the AI agent system that accepts user messages, determines which integrati
 - Support OpenAI, Claude, and Grok as AI providers per org via `@ai-sdk/openai`, `@ai-sdk/anthropic`, and xAI-compatible provider
 - The agent discovers available tools dynamically from `IntegrationRegistry`
 - Multi-tool chaining and parallel tool execution via `ToolLoopAgent` loop (`stopWhen`, `onStepFinish`)
-- Sandboxed Code Interpreter via `@openai/agents/sandbox`
+- Sandboxed Code Interpreter via `@openai/agents/sandbox` for Python execution, data analysis, and PDF/document analysis (read, extract, summarize, transform uploaded files)
 - Custom conversation memory layer backed by **Redis hot cache** + **Postgres durable store** (no external Mem0/Letta dependency)
 - Human-in-the-loop approval for destructive actions (defined per action)
 - Stream agent progress to frontend via WebSocket (BullMQ job events)
@@ -78,6 +78,17 @@ Build the AI agent system that accepts user messages, determines which integrati
   - Each tool `execute` delegates to `ToolDispatcher.dispatch()`
   - Destructive tools set `needsApproval: true` when `IntegrationAction.requires_approval = true`
   - Inject Code Interpreter tool from `@openai/agents/sandbox` alongside integration tools
+  - `code_interpreter` tool description must steer the agent to use the sandbox for PDF/document analysis (not output generation tools from task-07)
+
+- [ ] Sandbox document analysis (`api/src/shared/services/ai/agents/sandbox-document.service.ts`)
+  - Bridge uploaded `Document` files (PDF, Word, Excel, CSV) into the `@openai/agents/sandbox` environment before `code_interpreter` runs
+  - `prepareDocuments(documentUuids: string[])`:
+    1. Resolve each `Document` row and download from GCS via `GcsAdapter`
+    2. Upload files into the sandbox workspace (OpenAI sandbox file APIs or mount path supported by `SandboxAgent`)
+    3. Return sandbox file paths/IDs for the agent to reference in Python (e.g. `pypdf`, `pdfplumber`, `python-docx`, `pandas`, `openpyxl`)
+  - Supported analysis flows: text extraction, table parsing, summarization, Q&A over document content, cross-document comparison
+  - When the user attaches documents to a message, pass `documentUuids` into the agent execution context so the sandbox is pre-loaded
+  - Sandbox analysis outputs (extracted text, charts, intermediate CSVs) may be persisted as temporary `Document` rows with `expires_at` when the agent needs to return artifacts
 
 - [ ] Agent runner (`api/src/modules/ai/agents/agent-runner.service.ts`)
   - `run(organizationUuid, userId, conversationId, userMessage, executionId)`:
@@ -85,14 +96,15 @@ Build the AI agent system that accepts user messages, determines which integrati
     2. Load conversation history via `ConversationMemoryService.getMessages(conversationId)`
     3. Append user message to memory (Redis + Postgres USER row)
     4. Load enabled tools from `integration-tools.factory.buildTools()`
-    5. Inject Code Interpreter tool from `@openai/agents/sandbox`
-    6. Build system prompt (include database schemas for DB integrations)
-    7. Create `ToolLoopAgent` with model, instructions, tools, `stopWhen: stepCountIs(20)`
-    8. Run agent via `agent.generate({ messages })` or `agent.stream({ messages })`
-    9. Use `onStepFinish` to emit BullMQ/WebSocket events per tool call step
-    10. For approval-required tools: pause execution, set `AgentExecution.status = AWAITING_APPROVAL`, emit WebSocket event, resume on approval
-    11. On completion: append assistant `ModelMessage` to memory, persist final `Message` (role: ASSISTANT), update `AgentExecution` status
-    12. Return final response content + any generated file references
+    5. If message has attached `Document` UUIDs, call `SandboxDocumentService.prepareDocuments()` before the agent loop
+    6. Inject Code Interpreter tool from `@openai/agents/sandbox`
+    7. Build system prompt (include database schemas for DB integrations; list sandbox-mounted document filenames when present)
+    8. Create `ToolLoopAgent` with model, instructions, tools, `stopWhen: stepCountIs(20)`
+    9. Run agent via `agent.generate({ messages })` or `agent.stream({ messages })`
+    10. Use `onStepFinish` to emit BullMQ/WebSocket events per tool call step
+    11. For approval-required tools: pause execution, set `AgentExecution.status = AWAITING_APPROVAL`, emit WebSocket event, resume on approval
+    12. On completion: append assistant `ModelMessage` to memory, persist final `Message` (role: ASSISTANT), update `AgentExecution` status
+    13. Return final response content + any generated file references
 
 - [ ] Conversations & Messages module (`api/src/modules/conversations/`)
   - `conversations.service.ts`: CRUD, ensure org isolation
@@ -128,8 +140,9 @@ Build the AI agent system that accepts user messages, determines which integrati
 
 - [ ] Output type detector (`api/src/modules/ai/agents/output-detector.ts`)
   - Analyzes agent's final response intent and sets `metadata.outputType`
-  - Types: `TEXT | FILE_PDF | FILE_EXCEL | FILE_WORD | CHART | TABLE | WIDGET`
+  - Types: `TEXT | FILE_PDF | FILE_EXCEL | FILE_WORD | CHART | TABLE | WIDGET | IMAGE`
   - Detected from prompt + tool results (e.g. if user said "create Excel report" → FILE_EXCEL)
+  - Document analysis requests (summarize PDF, extract tables from Excel) → `TEXT` unless sandbox returns a new artifact `Document`
 
 - [ ] `AiModule` registers all sub-services, exports `AgentRunner` and `ConversationMemoryService`
 
@@ -191,7 +204,11 @@ const result = await agent.generate({
 - `ToolCall.tokens_used` + `ToolCall.cost_usd` enables per-org usage dashboard
 - Approval-required tools: mark `IntegrationAction.requires_approval = true` for destructive ops (merge PR, delete, create refund); use AI SDK tool approval flow to pause the agent loop
 - Agent must never be given decrypted integration credentials — pass integration IDs; the dispatcher retrieves and uses them server-side
-- Agent loop uses AI SDK (`ToolLoopAgent`), not `@openai/agents` runner — exception: `@openai/agents/sandbox` for Code Interpreter only
+- Agent loop uses AI SDK (`ToolLoopAgent`), not `@openai/agents` runner — exception: `@openai/agents/sandbox` for Code Interpreter and document analysis only
+- PDF/document **analysis** (read, extract, summarize, compare uploaded files) must use `@openai/agents/sandbox` via `code_interpreter` — do not parse PDFs/Word/Excel in NestJS services
+- PDF/document **generation** (create new deliverables) uses output tools from task-07 — not the sandbox
+- System prompt rule: when user asks to analyze/summarize/extract from an uploaded file → use `code_interpreter` with sandbox-mounted documents; when user asks to create/export a new file → use `output__create_*` tools
+- Sandbox Python stack for document analysis: `pypdf` or `pdfplumber` (PDF), `python-docx` (Word), `pandas` + `openpyxl` (Excel), `matplotlib` (charts from extracted data)
 - Do not use external memory providers (Mem0, Letta); all session semantics are handled by `ConversationMemoryService`
 
 ## Acceptance Criteria
@@ -202,6 +219,8 @@ const result = await agent.generate({
 - [ ] Frontend receives real-time tool call events over WebSocket
 - [ ] Agent successfully calls 2+ integrations in one message (multi-tool via `ToolLoopAgent`)
 - [ ] Code Interpreter executes Python and returns output/chart
+- [ ] Agent analyzes an uploaded PDF via sandbox (extract text, summarize) without using output generation tools
+- [ ] Attached `Document` files are mounted into the sandbox before the agent runs
 - [ ] Destructive tool pauses for approval; approving resumes the agent
 - [ ] All ToolCall rows are persisted with duration, tokens, and cost
 - [ ] Switching AI provider (org setting) routes to correct model without code change

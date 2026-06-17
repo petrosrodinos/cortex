@@ -1,33 +1,55 @@
-import { Module } from '@nestjs/common';
-import { PrismaModule } from '@/core/databases/prisma/prisma.module';
-import { AppCacheModule } from '@/shared/services/cache/cache.module';
-import { IntegrationFrameworkModule } from '@/modules/integrations/framework/integration-framework.module';
-import { WebsocketsModule } from '@/core/websockets/websockets.module';
-import { OpenAiProviderAdapter } from './providers/openai-provider';
-import { ClaudeProviderAdapter } from './providers/claude-provider';
-import { GrokProviderAdapter } from './providers/grok-provider';
-import { AiProviderFactoryService } from './providers/ai-provider-factory.service';
-import { ConversationMemoryService } from './memory/conversation-memory.service';
-import { ToolDispatcherService } from './agents/tool-dispatcher.service';
-import { IntegrationToolsFactory } from './agents/integration-tools.factory';
-import { AgentRunnerService } from './agents/agent-runner.service';
-import { SystemPromptBuilder } from './agents/system-prompt.builder';
-import { EncryptionService } from '@/shared/utils/encryption.service';
-
-@Module({
-  imports: [PrismaModule, AppCacheModule, IntegrationFrameworkModule, WebsocketsModule],
-  providers: [
-    EncryptionService,
-    OpenAiProviderAdapter,
-    ClaudeProviderAdapter,
-    GrokProviderAdapter,
-    AiProviderFactoryService,
-    ConversationMemoryService,
-    ToolDispatcherService,
-    IntegrationToolsFactory,
-    SystemPromptBuilder,
-    AgentRunnerService,
-  ],
-  exports: [AgentRunnerService, ConversationMemoryService, AiProviderFactoryService],
-})
-export class AiModule {}
+import { Module } from '@nestjs/common';
+import { PrismaModule } from '@/core/databases/prisma/prisma.module';
+import { AppCacheModule } from '@/shared/services/cache/cache.module';
+import { IntegrationFrameworkModule } from '@/modules/integrations/framework/integration-framework.module';
+import { WebsocketsModule } from '@/core/websockets/websockets.module';
+import { GcsIntegrationModule } from '@/integrations/storage/gcs/gcs.module';
+import { OpenAiProviderAdapter } from './providers/openai-provider';
+import { ClaudeProviderAdapter } from './providers/claude-provider';
+import { GrokProviderAdapter } from './providers/grok-provider';
+import { AiProviderFactoryService } from './providers/ai-provider-factory.service';
+import { ConversationMemoryService } from './memory/conversation-memory.service';
+import { AgentRunnerService } from './agents/runner/agent-runner.service';
+import { ToolDispatcherService } from './agents/tools/tool-dispatcher.service';
+import { IntegrationToolsFactory } from './agents/tools/integration-tools.factory';
+import { SandboxCodeService } from './agents/sandbox/sandbox-code.service';
+import { DocumentReaderService } from './agents/documents/document-reader.service';
+import { DocumentToolsFactory } from './agents/documents/document-tools.factory';
+import { DocumentParserRegistry } from './agents/documents/document-parser.registry';
+import { PdfDocumentParser } from './agents/documents/parsers/pdf-document.parser';
+import { WordDocumentParser } from './agents/documents/parsers/word-document.parser';
+import { ExcelDocumentParser } from './agents/documents/parsers/excel-document.parser';
+import { CsvDocumentParser } from './agents/documents/parsers/csv-document.parser';
+import { TextDocumentParser } from './agents/documents/parsers/text-document.parser';
+import { ImageDocumentParser } from './agents/documents/parsers/image-document.parser';
+import { SystemPromptBuilder } from './agents/prompt/system-prompt.builder';
+import { EncryptionService } from '@/shared/utils/encryption.service';
+
+@Module({
+  imports: [PrismaModule, AppCacheModule, IntegrationFrameworkModule, WebsocketsModule, GcsIntegrationModule],
+  providers: [
+    EncryptionService,
+    OpenAiProviderAdapter,
+    ClaudeProviderAdapter,
+    GrokProviderAdapter,
+    AiProviderFactoryService,
+    ConversationMemoryService,
+    ToolDispatcherService,
+    SandboxCodeService,
+    PdfDocumentParser,
+    WordDocumentParser,
+    ExcelDocumentParser,
+    CsvDocumentParser,
+    TextDocumentParser,
+    ImageDocumentParser,
+    DocumentParserRegistry,
+    DocumentReaderService,
+    DocumentToolsFactory,
+    IntegrationToolsFactory,
+    SystemPromptBuilder,
+    AgentRunnerService,
+  ],
+  exports: [AgentRunnerService, ConversationMemoryService, AiProviderFactoryService],
+})
+export class AiModule {}
+

@@ -49,7 +49,7 @@ export class MessagesService {
         org_uuid: organizationUuid,
         user_uuid: userUuid,
         status: AgentExecutionStatus.PENDING,
-        input: { content: dto.content },
+        input: { content: dto.content, documentUuids: dto.documentUuids ?? [] },
       },
     });
 
@@ -61,6 +61,7 @@ export class MessagesService {
         conversationId: conversation.uuid,
         userMessage: dto.content,
         executionUuid: execution.uuid,
+        documentUuids: dto.documentUuids ?? [],
       },
       {
         attempts: 3,

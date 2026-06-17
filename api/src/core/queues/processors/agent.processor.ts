@@ -1,7 +1,7 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
-import { AgentRunnerService } from '@/shared/services/ai/agents/agent-runner.service';
+import { AgentRunnerService } from '@/shared/services/ai/agents/runner/agent-runner.service';
 import { AGENT_RUN_QUEUE } from '../queues.constants';
 
 export interface AgentRunJobData {
@@ -10,6 +10,7 @@ export interface AgentRunJobData {
   conversationId: string;
   userMessage: string;
   executionUuid: string;
+  documentUuids?: string[];
   resumeApprovals?: Array<{ approvalId: string; approved: boolean }>;
 }
 
@@ -30,7 +31,10 @@ export class AgentProcessor extends WorkerHost {
       job.data.conversationId,
       job.data.userMessage,
       job.data.executionUuid,
-      { resumeApprovals: job.data.resumeApprovals },
+      {
+        resumeApprovals: job.data.resumeApprovals,
+        documentUuids: job.data.documentUuids,
+      },
     );
   }
 }
