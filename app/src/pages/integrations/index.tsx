@@ -10,12 +10,17 @@ import { PROVIDER_CONFIG_FIELDS, type ProviderConfigField } from '@/features/int
 import {
   useCreateDatabaseIntegration,
   useCreateIntegration,
+  useCreateOpenApiIntegration,
   useGetDatabaseIntegrationDetails,
   useGetIntegrationActions,
   useGetIntegrations,
+  useGetOpenApiIntegrationDetails,
+  useParseOpenApiSpec,
+  useRegenerateOpenApiTools,
   useSyncDatabaseSchema,
   useTestDatabaseConnection,
   useTestIntegration,
+  useTestOpenApiIntegration,
   useTestSavedDatabaseConnection,
   useToggleIntegrationAction,
   useUpdateIntegration,
@@ -24,11 +29,14 @@ import {
   DatabaseOperations,
   IntegrationProviders,
   IntegrationStatuses,
+  OpenApiAuthTypes,
   type DatabaseIntegrationDetails,
   type DatabaseOperation,
   type DatabaseSchema,
   type Integration,
   type IntegrationProvider,
+  type OpenApiAuthType,
+  type OpenApiIntegrationDetails,
 } from '@/features/integrations/interfaces/integration.interface';
 import {
   createIntegrationSchema,
@@ -69,8 +77,20 @@ const databaseOperationLabels: Record<DatabaseOperation, string> = {
   DELETE: 'Delete',
 };
 
+const openApiAuthLabels: Record<OpenApiAuthType, string> = {
+  NONE: 'None',
+  API_KEY: 'API key',
+  BEARER: 'Bearer token',
+  OAUTH2: 'OAuth2 token',
+  CUSTOM_HEADERS: 'Custom headers',
+};
+
 function isDatabaseProvider(provider: IntegrationProvider): provider is (typeof databaseProviders)[number] {
   return databaseProviders.includes(provider as (typeof databaseProviders)[number]);
+}
+
+function isOpenApiProvider(provider: IntegrationProvider) {
+  return provider === IntegrationProviders.OPENAPI;
 }
 
 export default function IntegrationsPage() {
@@ -162,6 +182,7 @@ export default function IntegrationsPage() {
 function IntegrationDetail({ organizationUuid, integration }: { organizationUuid: string; integration: Integration }) {
   const testIntegrationMutation = useTestIntegration(organizationUuid);
   const testDatabaseMutation = useTestSavedDatabaseConnection(organizationUuid);
+  const testOpenApiMutation = useTestOpenApiIntegration(organizationUuid);
   const updateIntegrationMutation = useUpdateIntegration(organizationUuid);
   const actionsQuery = useGetIntegrationActions(organizationUuid, integration.uuid);
   const toggleActionMutation = useToggleIntegrationAction(organizationUuid, integration.uuid);
@@ -171,15 +192,25 @@ function IntegrationDetail({ organizationUuid, integration }: { organizationUuid
     isDatabaseProvider(integration.provider),
   );
   const syncSchemaMutation = useSyncDatabaseSchema(organizationUuid, integration.uuid);
+  const openApiDetailsQuery = useGetOpenApiIntegrationDetails(
+    organizationUuid,
+    integration.uuid,
+    isOpenApiProvider(integration.provider),
+  );
+  const regenerateOpenApiMutation = useRegenerateOpenApiTools(organizationUuid, integration.uuid);
   const actions = actionsQuery.data ?? integration.actions ?? [];
   const databaseDetails = databaseDetailsQuery.data?.database ?? integration.database ?? null;
+  const openApiDetails = openApiDetailsQuery.data?.openapi ?? integration.openapi ?? null;
   const loading =
     actionsQuery.isLoading ||
     databaseDetailsQuery.isLoading ||
+    openApiDetailsQuery.isLoading ||
     testIntegrationMutation.isPending ||
     testDatabaseMutation.isPending ||
+    testOpenApiMutation.isPending ||
     updateIntegrationMutation.isPending ||
     syncSchemaMutation.isPending ||
+    regenerateOpenApiMutation.isPending ||
     toggleActionMutation.isPending;
 
   async function toggleStatus() {
@@ -200,11 +231,20 @@ function IntegrationDetail({ organizationUuid, integration }: { organizationUuid
       return;
     }
 
+    if (isOpenApiProvider(integration.provider)) {
+      await testOpenApiMutation.mutateAsync({ integration_uuid: integration.uuid });
+      return;
+    }
+
     await testIntegrationMutation.mutateAsync({ integration_uuid: integration.uuid });
   }
 
   async function syncSchema() {
     await syncSchemaMutation.mutateAsync();
+  }
+
+  async function regenerateOpenApiTools() {
+    await regenerateOpenApiMutation.mutateAsync();
   }
 
   return (
@@ -240,6 +280,18 @@ function IntegrationDetail({ organizationUuid, integration }: { organizationUuid
               Sync
             </button>
           ) : null}
+          {isOpenApiProvider(integration.provider) ? (
+            <button
+              type="button"
+              disabled={loading}
+              onClick={regenerateOpenApiTools}
+              title="Regenerate tools"
+              className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Regenerate
+            </button>
+          ) : null}
           <button
             type="button"
             disabled={loading}
@@ -253,7 +305,7 @@ function IntegrationDetail({ organizationUuid, integration }: { organizationUuid
         </div>
       </div>
 
-      {testIntegrationMutation.data || testDatabaseMutation.data ? (
+      {testIntegrationMutation.data || testDatabaseMutation.data || testOpenApiMutation.data ? (
         <p className="mt-3 flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-600 dark:text-emerald-300">
           <CheckCircle2 className="h-4 w-4" />
           Connection succeeded
@@ -263,6 +315,8 @@ function IntegrationDetail({ organizationUuid, integration }: { organizationUuid
       {isDatabaseProvider(integration.provider) ? (
         <DatabaseSchemaSection database={databaseDetails} />
       ) : null}
+
+      {isOpenApiProvider(integration.provider) ? <OpenApiToolsSection openapi={openApiDetails} /> : null}
 
       <div className="mt-5">
         <h3 className="text-sm font-semibold text-foreground">Actions</h3>
@@ -401,10 +455,50 @@ function SchemaTree({ schema }: { schema: DatabaseSchema }) {
   );
 }
 
+function OpenApiToolsSection({ openapi }: { openapi: OpenApiIntegrationDetails | null }) {
+  const tools = openapi?.generated_tools ?? [];
+
+  return (
+    <div className="mt-5 border-t border-border pt-5">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">Generated tools</h3>
+          <p className="text-xs text-muted">{openapi?.base_url ?? 'No parsed base URL'}</p>
+        </div>
+        <span className="rounded-md bg-surface-secondary px-2 py-1 text-xs text-muted">
+          {tools.length} endpoint{tools.length === 1 ? '' : 's'}
+        </span>
+      </div>
+
+      <div className="mt-3 overflow-hidden rounded-lg border border-border">
+        {tools.length === 0 ? (
+          <p className="px-4 py-6 text-sm text-muted">No generated tools are stored for this spec.</p>
+        ) : (
+          tools.slice(0, 12).map((tool) => (
+            <div key={tool.name} className="border-b border-border px-4 py-3 last:border-0">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                <p className="min-w-0 truncate text-sm font-medium text-foreground">{tool.key}</p>
+                <code className="rounded bg-surface-secondary px-2 py-1 text-xs text-muted">{tool.name}</code>
+              </div>
+              <p className="mt-1 line-clamp-2 text-xs text-muted">{tool.description}</p>
+            </div>
+          ))
+        )}
+        {tools.length > 12 ? <p className="px-4 py-3 text-xs text-muted">{tools.length - 12} more tools stored.</p> : null}
+      </div>
+    </div>
+  );
+}
+
 function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: string; onClose: () => void }) {
   const createIntegrationMutation = useCreateIntegration(organizationUuid);
   const createDatabaseIntegrationMutation = useCreateDatabaseIntegration(organizationUuid);
+  const createOpenApiIntegrationMutation = useCreateOpenApiIntegration(organizationUuid);
   const testDatabaseConnectionMutation = useTestDatabaseConnection(organizationUuid);
+  const parseOpenApiMutation = useParseOpenApiSpec(organizationUuid);
+  const [openApiMode, setOpenApiMode] = useState<'url' | 'json'>('url');
+  const [openApiRawJson, setOpenApiRawJson] = useState('');
+  const [openApiAuthType, setOpenApiAuthType] = useState<OpenApiAuthType>(OpenApiAuthTypes.NONE);
   const form = useForm<CreateIntegrationFormData>({
     resolver: zodResolver(createIntegrationSchema),
     defaultValues: {
@@ -419,10 +513,13 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
   const configFields = PROVIDER_CONFIG_FIELDS[selectedProvider] ?? [];
   const selectedAllowedOps = (form.watch('allowedOps') ?? [DatabaseOperations.READ]) as DatabaseOperation[];
   const isDatabase = isDatabaseProvider(selectedProvider);
+  const isOpenApi = isOpenApiProvider(selectedProvider);
   const busy =
     createIntegrationMutation.isPending ||
     createDatabaseIntegrationMutation.isPending ||
-    testDatabaseConnectionMutation.isPending;
+    createOpenApiIntegrationMutation.isPending ||
+    testDatabaseConnectionMutation.isPending ||
+    parseOpenApiMutation.isPending;
 
   async function submit(values: CreateIntegrationFormData) {
     const config = buildConfig(values.config ?? {}, configFields);
@@ -434,6 +531,20 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
         provider: values.provider as Extract<IntegrationProvider, 'DATABASE_PG' | 'DATABASE_MYSQL' | 'DATABASE_MONGO'>,
         connectionString: String(config.connectionString ?? ''),
         allowedOps: normalizeDatabaseOps(values.allowedOps as DatabaseOperation[] | undefined),
+      });
+      onClose();
+      return;
+    }
+
+    if (isOpenApiProvider(values.provider as IntegrationProvider)) {
+      await createOpenApiIntegrationMutation.mutateAsync({
+        name: values.name,
+        description: values.description,
+        specUrl: openApiMode === 'url' ? String(config.specUrl ?? '') : undefined,
+        rawJson: openApiMode === 'json' ? openApiRawJson : undefined,
+        authType: openApiAuthType,
+        authConfig: buildOpenApiAuthConfig(openApiAuthType, config),
+        credentials: buildOpenApiCredentials(openApiAuthType, config),
       });
       onClose();
       return;
@@ -454,6 +565,15 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
     await testDatabaseConnectionMutation.mutateAsync({
       provider: selectedProvider as Extract<IntegrationProvider, 'DATABASE_PG' | 'DATABASE_MYSQL' | 'DATABASE_MONGO'>,
       connectionString: String(config.connectionString ?? ''),
+    });
+  }
+
+  async function parseOpenApiSpec() {
+    const config = buildConfig(form.getValues('config') ?? {}, configFields);
+
+    await parseOpenApiMutation.mutateAsync({
+      specUrl: openApiMode === 'url' ? String(config.specUrl ?? '') : undefined,
+      rawJson: openApiMode === 'json' ? openApiRawJson : undefined,
     });
   }
 
@@ -542,7 +662,7 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
             />
 
             <div className="grid gap-3 sm:grid-cols-2">
-              {configFields.map((configField) => (
+              {configFields.filter((field) => !isOpenApi || openApiVisibleField(field.key, openApiAuthType, openApiMode)).map((configField) => (
                 <FormField
                   key={`${selectedProvider}-${configField.key}`}
                   control={form.control}
@@ -564,6 +684,74 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
                 />
               ))}
             </div>
+
+            {isOpenApi ? (
+              <div className="grid gap-3 rounded-lg border border-border p-3">
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <label className="flex items-center gap-2 text-sm text-muted">
+                    <input
+                      type="radio"
+                      checked={openApiMode === 'url'}
+                      onChange={() => setOpenApiMode('url')}
+                      className="h-4 w-4 accent-[var(--accent)]"
+                    />
+                    Paste URL
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-muted">
+                    <input
+                      type="radio"
+                      checked={openApiMode === 'json'}
+                      onChange={() => setOpenApiMode('json')}
+                      className="h-4 w-4 accent-[var(--accent)]"
+                    />
+                    Paste JSON
+                  </label>
+                </div>
+
+                {openApiMode === 'json' ? (
+                  <textarea
+                    value={openApiRawJson}
+                    onChange={(event) => setOpenApiRawJson(event.target.value)}
+                    rows={8}
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
+                    placeholder='{"openapi":"3.0.3","paths":{}}'
+                  />
+                ) : null}
+
+                <div className="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-end">
+                  <label className="grid gap-1 text-sm">
+                    <span className="text-sm font-medium text-foreground">Auth type</span>
+                    <select
+                      value={openApiAuthType}
+                      onChange={(event) => setOpenApiAuthType(event.target.value as OpenApiAuthType)}
+                      className="h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
+                    >
+                      {Object.values(OpenApiAuthTypes).map((authType) => (
+                        <option key={authType} value={authType}>
+                          {openApiAuthLabels[authType]}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={parseOpenApiSpec}
+                    loading={parseOpenApiMutation.isPending}
+                    className="sm:w-auto"
+                  >
+                    <FlaskConical className="h-4 w-4" />
+                    Parse spec
+                  </Button>
+                </div>
+
+                {parseOpenApiMutation.data ? (
+                  <div className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-300">
+                    {parseOpenApiMutation.data.operationsCount} endpoints found at {parseOpenApiMutation.data.baseUrl}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
 
             {isDatabase ? (
               <div className="grid gap-3 rounded-lg border border-border p-3">
@@ -641,6 +829,63 @@ function buildConfig(values: Record<string, unknown>, fields: ProviderConfigFiel
 
 function normalizeDatabaseOps(operations?: DatabaseOperation[]) {
   return Array.from(new Set([DatabaseOperations.READ, ...(operations ?? [])]));
+}
+
+function openApiVisibleField(key: string, authType: OpenApiAuthType, mode: 'url' | 'json') {
+  if (key === 'specUrl') {
+    return mode === 'url';
+  }
+
+  if (authType === OpenApiAuthTypes.API_KEY) {
+    return ['apiKeyName', 'apiKeyLocation', 'apiKey'].includes(key);
+  }
+
+  if (authType === OpenApiAuthTypes.BEARER || authType === OpenApiAuthTypes.OAUTH2) {
+    return key === 'token';
+  }
+
+  if (authType === OpenApiAuthTypes.CUSTOM_HEADERS) {
+    return key === 'customHeaders';
+  }
+
+  return false;
+}
+
+function buildOpenApiAuthConfig(authType: OpenApiAuthType, config: Record<string, unknown>) {
+  if (authType === OpenApiAuthTypes.API_KEY) {
+    return {
+      type: authType,
+      name: String(config.apiKeyName ?? 'X-Api-Key'),
+      in: String(config.apiKeyLocation ?? 'header') === 'query' ? 'query' : 'header',
+    };
+  }
+
+  return { type: authType };
+}
+
+function buildOpenApiCredentials(authType: OpenApiAuthType, config: Record<string, unknown>) {
+  if (authType === OpenApiAuthTypes.API_KEY) {
+    return { apiKey: config.apiKey };
+  }
+
+  if (authType === OpenApiAuthTypes.BEARER || authType === OpenApiAuthTypes.OAUTH2) {
+    return { token: config.token };
+  }
+
+  if (authType === OpenApiAuthTypes.CUSTOM_HEADERS) {
+    return { headers: parseCustomHeaders(String(config.customHeaders ?? '{}')) };
+  }
+
+  return {};
+}
+
+function parseCustomHeaders(value: string) {
+  try {
+    const parsed = JSON.parse(value || '{}');
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
 }
 
 function StatusBadge({ status }: { status: string }) {

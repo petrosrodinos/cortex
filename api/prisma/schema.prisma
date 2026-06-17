@@ -74,6 +74,14 @@ enum DatabaseOperation {
   DELETE
 }
 
+enum OpenApiAuthType {
+  NONE
+  API_KEY
+  BEARER
+  OAUTH2
+  CUSTOM_HEADERS
+}
+
 model User {
   id       Int     @id @default(autoincrement())
   uuid     String  @unique @default(uuid())
@@ -215,6 +223,7 @@ model Integration {
   organization Organization        @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
   actions      IntegrationAction[]
   database     DatabaseIntegration?
+  openapi      OpenApiIntegration?
 
   @@index([org_uuid])
   @@index([provider])
@@ -239,6 +248,25 @@ model DatabaseIntegration {
   @@index([db_type])
   @@index([last_schema_sync])
   @@map("database_integrations")
+}
+
+model OpenApiIntegration {
+  id                Int             @id @default(autoincrement())
+  uuid              String          @unique @default(uuid())
+  integration_uuid  String          @unique
+  spec_url          String?
+  spec_json         Json
+  base_url          String
+  auth_type         OpenApiAuthType @default(NONE)
+  auth_config       String
+  generated_tools   Json
+  created_at        DateTime        @default(now())
+  updated_at        DateTime        @updatedAt
+
+  integration Integration @relation(fields: [integration_uuid], references: [uuid], onDelete: Cascade)
+
+  @@index([auth_type])
+  @@map("openapi_integrations")
 }
 
 model IntegrationAction {

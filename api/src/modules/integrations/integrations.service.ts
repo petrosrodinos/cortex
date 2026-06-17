@@ -1,7 +1,7 @@
 import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
-import { IntegrationStatus } from 'generated/prisma';
+import { IntegrationProvider, IntegrationStatus } from 'generated/prisma';
 import { DATABASE_PROVIDERS } from './databases/database-integration.types';
 import { CreateIntegrationDto } from './dto/create-integration.dto';
 import { UpdateIntegrationDto } from './dto/update-integration.dto';
@@ -19,6 +19,10 @@ export class IntegrationsService {
     try {
       if (DATABASE_PROVIDERS.includes(dto.provider as any)) {
         throw new BadRequestException('Use the database integration endpoint to create database connections');
+      }
+
+      if (dto.provider === IntegrationProvider.OPENAPI) {
+        throw new BadRequestException('Use the OpenAPI integration endpoint to create OpenAPI connections');
       }
 
       return await this.prisma.$transaction(async (tx) => {
@@ -61,7 +65,7 @@ export class IntegrationsService {
     try {
       const integrations = await this.prisma.integration.findMany({
         where: { org_uuid: organizationUuid },
-        include: { actions: true, database: true },
+        include: { actions: true, database: true, openapi: true },
         orderBy: { created_at: 'desc' },
       });
 
@@ -75,7 +79,7 @@ export class IntegrationsService {
     try {
       const integration = await this.prisma.integration.findFirst({
         where: { uuid: integrationUuid, org_uuid: organizationUuid },
-        include: { actions: true, database: true },
+        include: { actions: true, database: true, openapi: true },
       });
 
       if (!integration) {
@@ -150,18 +154,30 @@ export class IntegrationsService {
     return integration;
   }
 
-  private sanitizeIntegration<T extends { config?: string; database?: any }>(integration: T) {
-    const { config: _config, database, ...safe_integration } = integration;
+  private sanitizeIntegration<T extends { config?: string; database?: any; openapi?: any }>(integration: T) {
+    const { config: _config, database, openapi, ...safe_integration } = integration;
 
-    if (!database) {
+    if (!database && !openapi) {
       return safe_integration;
     }
 
-    const { connection_string: _connection_string, ...safe_database } = database;
+    const safe_database = database
+      ? (() => {
+          const { connection_string: _connection_string, ...rest } = database;
+          return rest;
+        })()
+      : undefined;
+    const safe_openapi = openapi
+      ? (() => {
+          const { auth_config: _auth_config, ...rest } = openapi;
+          return rest;
+        })()
+      : undefined;
 
     return {
       ...safe_integration,
-      database: safe_database,
+      ...(database ? { database: safe_database } : {}),
+      ...(openapi ? { openapi: safe_openapi } : {}),
     };
   }
 

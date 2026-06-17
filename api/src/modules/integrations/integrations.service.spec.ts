@@ -39,14 +39,14 @@ describe('IntegrationsService', () => {
     });
     prisma.integration.create.mockResolvedValue({
       uuid: 'integration-uuid',
-      provider: IntegrationProvider.OPENAPI,
+      provider: IntegrationProvider.GITHUB,
       status: IntegrationStatus.ACTIVE,
     });
     const service = new IntegrationsService(prisma, encryption, registry);
 
     await service.create('organization-uuid', {
       name: 'OpenAPI',
-      provider: IntegrationProvider.OPENAPI,
+      provider: IntegrationProvider.GITHUB,
       config: { token: 'secret' },
     });
 
@@ -66,5 +66,17 @@ describe('IntegrationsService', () => {
       ],
       skipDuplicates: true,
     });
+  });
+
+  it('rejects OpenAPI creation through the generic integration endpoint', async () => {
+    const service = new IntegrationsService(prisma, encryption, registry);
+
+    await expect(
+      service.create('organization-uuid', {
+        name: 'OpenAPI',
+        provider: IntegrationProvider.OPENAPI,
+        config: { token: 'secret' },
+      }),
+    ).rejects.toThrow('Use the OpenAPI integration endpoint');
   });
 });

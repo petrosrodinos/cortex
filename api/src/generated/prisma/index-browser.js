@@ -214,6 +214,20 @@ exports.Prisma.DatabaseIntegrationScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.OpenApiIntegrationScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  integration_uuid: 'integration_uuid',
+  spec_url: 'spec_url',
+  spec_json: 'spec_json',
+  base_url: 'base_url',
+  auth_type: 'auth_type',
+  auth_config: 'auth_config',
+  generated_tools: 'generated_tools',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.IntegrationActionScalarFieldEnum = {
   id: 'id',
   uuid: 'uuid',
@@ -317,6 +331,14 @@ exports.DatabaseOperation = exports.$Enums.DatabaseOperation = {
   DELETE: 'DELETE'
 };
 
+exports.OpenApiAuthType = exports.$Enums.OpenApiAuthType = {
+  NONE: 'NONE',
+  API_KEY: 'API_KEY',
+  BEARER: 'BEARER',
+  OAUTH2: 'OAUTH2',
+  CUSTOM_HEADERS: 'CUSTOM_HEADERS'
+};
+
 exports.DocumentType = exports.$Enums.DocumentType = {
   LOGO: 'LOGO',
   BANNER: 'BANNER',
@@ -338,6 +360,7 @@ exports.Prisma.ModelName = {
   AuditLog: 'AuditLog',
   Integration: 'Integration',
   DatabaseIntegration: 'DatabaseIntegration',
+  OpenApiIntegration: 'OpenApiIntegration',
   IntegrationAction: 'IntegrationAction',
   Document: 'Document'
 };

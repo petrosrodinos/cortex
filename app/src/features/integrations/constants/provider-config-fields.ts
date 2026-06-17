@@ -41,5 +41,12 @@ export const PROVIDER_CONFIG_FIELDS: Record<IntegrationProvider, ProviderConfigF
   [IntegrationProviders.DATABASE_PG]: [{ key: 'connectionString', label: 'Connection string', type: 'password' }],
   [IntegrationProviders.DATABASE_MYSQL]: [{ key: 'connectionString', label: 'Connection string', type: 'password' }],
   [IntegrationProviders.DATABASE_MONGO]: [{ key: 'connectionString', label: 'Connection string', type: 'password' }],
-  [IntegrationProviders.OPENAPI]: [{ key: 'apiKey', label: 'API key', type: 'password' }],
+  [IntegrationProviders.OPENAPI]: [
+    { key: 'specUrl', label: 'Spec URL', type: 'text' },
+    { key: 'apiKeyName', label: 'API key name', type: 'text' },
+    { key: 'apiKeyLocation', label: 'API key location', type: 'text' },
+    { key: 'apiKey', label: 'API key', type: 'password' },
+    { key: 'token', label: 'Token', type: 'password' },
+    { key: 'customHeaders', label: 'Custom headers JSON', type: 'text' },
+  ],
 };

@@ -30,6 +30,10 @@ export class IntegrationRegistry {
       return await this.executeDatabaseTool(organizationUuid, toolName, input);
     }
 
+    if (toolName.startsWith('openapi_')) {
+      return await this.executeOpenApiTool(organizationUuid, toolName, input);
+    }
+
     const [providerKey] = toolName.split('__');
 
     if (!providerKey || providerKey === toolName) {
@@ -61,6 +65,7 @@ export class IntegrationRegistry {
       },
       include: {
         database: true,
+        openapi: true,
         actions: {
           where: { enabled: true },
         },
@@ -78,6 +83,7 @@ export class IntegrationRegistry {
         integration.actions.flatMap((action) => [
           `${integration.provider.toLowerCase()}__${action.key}`,
           ...(DATABASE_PROVIDERS.includes(integration.provider as any) ? [`db__${action.key}`] : []),
+          ...(integration.provider === IntegrationProvider.OPENAPI ? [`openapi_${integration.uuid.slice(0, 8)}__${action.key}`] : []),
         ]),
       );
 
@@ -131,5 +137,29 @@ export class IntegrationRegistry {
     }
 
     return integrations[0] ?? null;
+  }
+
+  private async executeOpenApiTool(organizationUuid: string, toolName: string, input: Record<string, any>) {
+    const match = toolName.match(/^openapi_([^_]+)__(.+)$/);
+
+    if (!match) {
+      throw new ForbiddenException('OpenAPI tool names must include an integration prefix');
+    }
+
+    const integration = await this.prisma.integration.findFirst({
+      where: {
+        org_uuid: organizationUuid,
+        provider: IntegrationProvider.OPENAPI,
+        status: IntegrationStatus.ACTIVE,
+        uuid: { startsWith: match[1] },
+      },
+    });
+
+    if (!integration) {
+      throw new NotFoundException('No active OpenAPI integration is available for this tool');
+    }
+
+    const handler = this.getByProvider(IntegrationProvider.OPENAPI);
+    return await handler.executeTool(toolName, input, integration);
   }
 }
