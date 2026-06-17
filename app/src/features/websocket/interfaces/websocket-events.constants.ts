@@ -17,6 +17,13 @@ export const WEBSOCKET_EVENTS = {
         STOP_TYPING_RECEIVED: 'chat:stop_typing',
         READ: 'chat:read',
     },
+    AGENT: {
+        TOOL_START: 'tool:start',
+        TOOL_COMPLETE: 'tool:complete',
+        COMPLETE: 'agent:complete',
+        ERROR: 'agent:error',
+        APPROVAL_REQUIRED: 'agent:approval_required',
+    },
 } as const;
 
 export type WebsocketEventCategory = keyof typeof WEBSOCKET_EVENTS;

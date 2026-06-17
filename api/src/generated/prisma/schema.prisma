@@ -95,6 +95,42 @@ enum McpAuthType {
   OAUTH
 }
 
+enum AiProviderType {
+  OPENAI
+  CLAUDE
+  GROK
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+  TOOL
+}
+
+enum AgentExecutionStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  AWAITING_APPROVAL
+}
+
+enum ToolCallStatus {
+  SUCCESS
+  FAILED
+}
+
+enum OutputType {
+  TEXT
+  FILE_PDF
+  FILE_EXCEL
+  FILE_WORD
+  CHART
+  TABLE
+  WIDGET
+}
+
 model User {
   id       Int     @id @default(autoincrement())
   uuid     String  @unique @default(uuid())
@@ -108,6 +144,8 @@ model User {
 
   organization_members OrganizationMember[]
   audit_logs           AuditLog[]
+  conversations        Conversation[]
+  agent_executions     AgentExecution[]
 
   @@index([email])
   @@index([phone])
@@ -124,10 +162,13 @@ model Organization {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  members      OrganizationMember[]
-  roles        OrganizationRole[]
-  audit_logs   AuditLog[]
-  integrations Integration[]
+  members          OrganizationMember[]
+  roles            OrganizationRole[]
+  audit_logs       AuditLog[]
+  integrations     Integration[]
+  ai_providers     AiProvider[]
+  conversations    Conversation[]
+  agent_executions AgentExecution[]
 
   @@index([uuid])
   @@index([slug])
@@ -238,6 +279,7 @@ model Integration {
   database     DatabaseIntegration?
   openapi      OpenApiIntegration?
   mcp          McpIntegration?
+  tool_calls   ToolCall[]
 
   @@index([org_uuid])
   @@index([provider])
@@ -312,6 +354,7 @@ model IntegrationAction {
   label                   String
   description             String
   enabled                 Boolean @default(true)
+  requires_approval       Boolean @default(false)
   required_permission_key String?
 
   integration Integration @relation(fields: [integration_uuid], references: [uuid], onDelete: Cascade)
@@ -338,4 +381,115 @@ model Document {
   @@index([user_uuid])
   @@index([uuid])
   @@map("documents")
+}
+
+model AiProvider {
+  id                   Int            @id @default(autoincrement())
+  uuid                 String         @unique @default(uuid())
+  org_uuid             String
+  provider             AiProviderType
+  api_key              String
+  default_model        String
+  model_routing        Json?
+  usage_limit_tokens   Int?
+  usage_limit_cost_usd Decimal?
+  is_default           Boolean        @default(false)
+  created_at           DateTime       @default(now())
+  updated_at           DateTime       @updatedAt
+
+  organization Organization @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+
+  @@index([org_uuid])
+  @@index([provider])
+  @@map("ai_providers")
+}
+
+model Conversation {
+  id         Int      @id @default(autoincrement())
+  uuid       String   @unique @default(uuid())
+  org_uuid   String
+  user_uuid  String
+  title      String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  organization Organization     @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+  user         User             @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade)
+  messages     Message[]
+  executions   AgentExecution[]
+
+  @@index([org_uuid])
+  @@index([user_uuid])
+  @@map("conversations")
+}
+
+model Message {
+  id                Int         @id @default(autoincrement())
+  uuid              String      @unique @default(uuid())
+  conversation_uuid String
+  role              MessageRole
+  content           String
+  metadata          Json?
+  created_at        DateTime    @default(now())
+
+  conversation Conversation     @relation(fields: [conversation_uuid], references: [uuid], onDelete: Cascade)
+  executions   AgentExecution[]
+
+  @@index([conversation_uuid])
+  @@index([created_at])
+  @@map("messages")
+}
+
+model AgentExecution {
+  id                Int                  @id @default(autoincrement())
+  uuid              String               @unique @default(uuid())
+  message_uuid      String
+  conversation_uuid String
+  org_uuid          String
+  user_uuid         String
+  status            AgentExecutionStatus @default(PENDING)
+  input             Json?
+  output            Json?
+  tokens_used       Int                  @default(0)
+  cost_usd          Decimal              @default(0)
+  started_at        DateTime?
+  completed_at      DateTime?
+  error             String?
+  created_at        DateTime             @default(now())
+
+  message      Message      @relation(fields: [message_uuid], references: [uuid], onDelete: Cascade)
+  conversation Conversation @relation(fields: [conversation_uuid], references: [uuid], onDelete: Cascade)
+  organization Organization @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+  user         User         @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade)
+  tool_calls   ToolCall[]
+
+  @@index([org_uuid])
+  @@index([user_uuid])
+  @@index([conversation_uuid])
+  @@index([status])
+  @@map("agent_executions")
+}
+
+model ToolCall {
+  id               Int            @id @default(autoincrement())
+  uuid             String         @unique @default(uuid())
+  execution_uuid   String
+  integration_uuid String?
+  tool_name        String
+  input            Json?
+  output           Json?
+  status           ToolCallStatus
+  error            String?
+  tokens_used      Int            @default(0)
+  cost_usd         Decimal        @default(0)
+  duration_ms      Int            @default(0)
+  created_at       DateTime       @default(now())
+
+  execution   AgentExecution @relation(fields: [execution_uuid], references: [uuid], onDelete: Cascade)
+  integration Integration?   @relation(fields: [integration_uuid], references: [uuid], onDelete: SetNull)
+
+  @@index([execution_uuid])
+  @@index([integration_uuid])
+  @@index([created_at])
+  @@map("tool_calls")
 }

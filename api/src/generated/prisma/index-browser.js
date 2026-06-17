@@ -251,6 +251,7 @@ exports.Prisma.IntegrationActionScalarFieldEnum = {
   label: 'label',
   description: 'description',
   enabled: 'enabled',
+  requires_approval: 'requires_approval',
   required_permission_key: 'required_permission_key'
 };
 
@@ -264,6 +265,75 @@ exports.Prisma.DocumentScalarFieldEnum = {
   url: 'url',
   path: 'path',
   type: 'type',
+  created_at: 'created_at'
+};
+
+exports.Prisma.AiProviderScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  org_uuid: 'org_uuid',
+  provider: 'provider',
+  api_key: 'api_key',
+  default_model: 'default_model',
+  model_routing: 'model_routing',
+  usage_limit_tokens: 'usage_limit_tokens',
+  usage_limit_cost_usd: 'usage_limit_cost_usd',
+  is_default: 'is_default',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.ConversationScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  org_uuid: 'org_uuid',
+  user_uuid: 'user_uuid',
+  title: 'title',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.MessageScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  conversation_uuid: 'conversation_uuid',
+  role: 'role',
+  content: 'content',
+  metadata: 'metadata',
+  created_at: 'created_at'
+};
+
+exports.Prisma.AgentExecutionScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  message_uuid: 'message_uuid',
+  conversation_uuid: 'conversation_uuid',
+  org_uuid: 'org_uuid',
+  user_uuid: 'user_uuid',
+  status: 'status',
+  input: 'input',
+  output: 'output',
+  tokens_used: 'tokens_used',
+  cost_usd: 'cost_usd',
+  started_at: 'started_at',
+  completed_at: 'completed_at',
+  error: 'error',
+  created_at: 'created_at'
+};
+
+exports.Prisma.ToolCallScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  execution_uuid: 'execution_uuid',
+  integration_uuid: 'integration_uuid',
+  tool_name: 'tool_name',
+  input: 'input',
+  output: 'output',
+  status: 'status',
+  error: 'error',
+  tokens_used: 'tokens_used',
+  cost_usd: 'cost_usd',
+  duration_ms: 'duration_ms',
   created_at: 'created_at'
 };
 
@@ -378,6 +448,32 @@ exports.DocumentType = exports.$Enums.DocumentType = {
   OTHER: 'OTHER'
 };
 
+exports.AiProviderType = exports.$Enums.AiProviderType = {
+  OPENAI: 'OPENAI',
+  CLAUDE: 'CLAUDE',
+  GROK: 'GROK'
+};
+
+exports.MessageRole = exports.$Enums.MessageRole = {
+  USER: 'USER',
+  ASSISTANT: 'ASSISTANT',
+  SYSTEM: 'SYSTEM',
+  TOOL: 'TOOL'
+};
+
+exports.AgentExecutionStatus = exports.$Enums.AgentExecutionStatus = {
+  PENDING: 'PENDING',
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  AWAITING_APPROVAL: 'AWAITING_APPROVAL'
+};
+
+exports.ToolCallStatus = exports.$Enums.ToolCallStatus = {
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Organization: 'Organization',
@@ -391,7 +487,12 @@ exports.Prisma.ModelName = {
   OpenApiIntegration: 'OpenApiIntegration',
   McpIntegration: 'McpIntegration',
   IntegrationAction: 'IntegrationAction',
-  Document: 'Document'
+  Document: 'Document',
+  AiProvider: 'AiProvider',
+  Conversation: 'Conversation',
+  Message: 'Message',
+  AgentExecution: 'AgentExecution',
+  ToolCall: 'ToolCall'
 };
 
 /**

@@ -47,6 +47,13 @@ export const ApiRoutes = {
         mcpIntegrationTest: (organizationUuid: string, integrationUuid: string) => `/organizations/${organizationUuid}/integrations/mcp/${integrationUuid}/test`,
         integrationActions: (organizationUuid: string, integrationUuid: string) => `/organizations/${organizationUuid}/integrations/${integrationUuid}/actions`,
         integrationAction: (organizationUuid: string, integrationUuid: string, actionUuid: string) => `/organizations/${organizationUuid}/integrations/${integrationUuid}/actions/${actionUuid}`,
+        conversations: (organizationUuid: string) => `/organizations/${organizationUuid}/conversations`,
+        conversation: (organizationUuid: string, conversationUuid: string) => `/organizations/${organizationUuid}/conversations/${conversationUuid}`,
+        conversationMessages: (organizationUuid: string, conversationUuid: string) => `/organizations/${organizationUuid}/conversations/${conversationUuid}/messages`,
+        executions: (organizationUuid: string) => `/organizations/${organizationUuid}/executions`,
+        execution: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}`,
+        executionApprove: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}/approve`,
+        executionReject: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}/reject`,
     },
     permissions: {
         root: "/permissions",

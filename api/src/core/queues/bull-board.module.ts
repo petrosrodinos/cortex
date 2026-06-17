@@ -5,31 +5,23 @@ import { ExpressAdapter } from '@bull-board/express';
 import { Queue } from 'bullmq';
 import { getQueueToken } from '@nestjs/bullmq';
 import { BullModule } from '@nestjs/bullmq';
-import { BULL_BOARD_ADAPTER } from './queues.constants';
-
+import { BULL_BOARD_ADAPTER, AGENT_RUN_QUEUE } from './queues.constants';
 
 @Global()
 @Module({
     imports: [
-        BullModule.registerQueue(
-            // { name: MESSAGE_QUEUE },
-        ),
+        BullModule.registerQueue({ name: AGENT_RUN_QUEUE }),
     ],
     providers: [
         {
             provide: BULL_BOARD_ADAPTER,
-            inject: [
-                // getQueueToken(CAMPAIGN_QUEUE),
-            ],
-            useFactory: (campaignQueue: Queue, messageQueue: Queue) => {
+            inject: [getQueueToken(AGENT_RUN_QUEUE)],
+            useFactory: (agentQueue: Queue) => {
                 const serverAdapter = new ExpressAdapter();
                 serverAdapter.setBasePath('/admin/queues');
 
                 createBullBoard({
-                    queues: [
-                        new BullMQAdapter(campaignQueue),
-                        new BullMQAdapter(messageQueue),
-                    ],
+                    queues: [new BullMQAdapter(agentQueue)],
                     serverAdapter,
                 });
 
@@ -40,4 +32,3 @@ import { BULL_BOARD_ADAPTER } from './queues.constants';
     exports: [BULL_BOARD_ADAPTER, BullModule],
 })
 export class BullBoardModule { }
-

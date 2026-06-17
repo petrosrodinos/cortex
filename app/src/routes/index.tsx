@@ -8,6 +8,7 @@ import DashboardLayout from "@/pages/dashboard/layout";
 import DashboardHome from "@/pages/dashboard";
 import OrganizationsPage from "@/pages/organizations";
 import IntegrationsPage from "@/pages/integrations";
+import ConversationsPage from "@/pages/conversations";
 
 export default function AppRoutes() {
   return (
@@ -39,6 +40,8 @@ export default function AppRoutes() {
         <Route path="organizations" element={<OrganizationsPage />} />
         <Route path="integrations" element={<IntegrationsPage />} />
         <Route path="integrations/:integrationUuid" element={<IntegrationsPage />} />
+        <Route path="conversations" element={<ConversationsPage />} />
+        <Route path="conversations/:conversationUuid" element={<ConversationsPage />} />
         <Route path="organizations/members" element={<Navigate to={Routes.dashboard.organizations} replace />} />
         <Route path="organizations/roles" element={<Navigate to={Routes.dashboard.organizations} replace />} />
       </Route>

@@ -12,5 +12,6 @@ export interface IntegrationActionSeed {
   label: string;
   description: string;
   enabled?: boolean;
+  requires_approval?: boolean;
   required_permission_key?: string | null;
 }

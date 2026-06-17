@@ -2,6 +2,7 @@ import { Module, Global } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import type { RedisOptions } from 'ioredis';
 import { REDIS_OPTIONS } from '../databases/redis/redis.constants';
+import { AGENT_RUN_QUEUE } from './queues.constants';
 
 @Global()
 @Module({
@@ -18,6 +19,7 @@ import { REDIS_OPTIONS } from '../databases/redis/redis.constants';
                 };
             },
         }),
+        BullModule.registerQueue({ name: AGENT_RUN_QUEUE }),
     ],
     exports: [BullModule],
 })

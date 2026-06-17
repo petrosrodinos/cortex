@@ -3,7 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MailModule } from './modules/internal/mail/mail.module';
 import { SmsModule } from './modules/internal/sms/sms.module';
-import { AiModule } from './modules/internal/ai/ai.module';
+import { AiModule as InternalAiModule } from './modules/internal/ai/ai.module';
+import { AiModule as AgentAiModule } from './shared/services/ai/ai.module';
 import { RedisModule } from './core/databases/redis/redis.module';
 import { RedisCacheModule } from './modules/internal/redis-cache/redis-cache.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -12,13 +13,18 @@ import { OrganizationsModule } from './modules/organizations/organizations.modul
 import { MembersModule } from './modules/members/members.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { IntegrationsModule } from './modules/integrations/integrations.module';
+import { AiProvidersModule } from './modules/ai-providers/ai-providers.module';
+import { ConversationsModule } from './modules/conversations/conversations.module';
+import { WebsocketsModule } from './core/websockets/websockets.module';
+import { QueuesModule } from './core/queues/queues.module';
+import { AgentQueueModule } from './core/queues/agent-queue.module';
 
 @Module({
   imports: [
     ConfigModule,
     MailModule,
     SmsModule,
-    AiModule,
+    InternalAiModule,
     RedisModule,
     RedisCacheModule,
     // GraphQLModule,
@@ -27,6 +33,12 @@ import { IntegrationsModule } from './modules/integrations/integrations.module';
     MembersModule,
     RolesModule,
     IntegrationsModule,
+    AiProvidersModule,
+    ConversationsModule,
+    AgentAiModule,
+    WebsocketsModule,
+    QueuesModule,
+    AgentQueueModule,
   ],
   controllers: [AppController],
   providers: [AppService],
