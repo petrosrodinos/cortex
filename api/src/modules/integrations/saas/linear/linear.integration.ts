@@ -3,30 +3,215 @@ import { z } from 'zod';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
 import { IntegrationProvider } from 'generated/prisma';
-import { SaasActionDefinition, SaasIntegration, emptySchema, loadRuntimePackage, optionalString } from '../saas-integration.base';
+import { SaasActionDefinition, SaasIntegration, emptySchema, loadRuntimePackage, optionalNumber, optionalString } from '../saas-integration.base';
+import { LINEAR_REQUIRED_CONFIG_KEYS } from './config/linear.config';
+import { LinearService } from './services/linear.service';
 
 @Injectable()
 export class LinearIntegration extends SaasIntegration {
   provider = IntegrationProvider.LINEAR;
+
   protected readonly actions: SaasActionDefinition[] = [
-    { key: 'list_issues', label: 'List issues', description: 'List Linear issues.', schema: z.object({ teamId: optionalString, assigneeId: optionalString }), parameters: this.jsonSchema({ teamId: { type: 'string' }, assigneeId: { type: 'string' } }) },
-    { key: 'create_issue', label: 'Create issue', description: 'Create a Linear issue.', schema: z.object({ teamId: z.string(), title: z.string(), description: optionalString, assigneeId: optionalString }), parameters: this.jsonSchema({ teamId: { type: 'string' }, title: { type: 'string' }, description: { type: 'string' }, assigneeId: { type: 'string' } }, ['teamId', 'title']) },
-    { key: 'update_issue', label: 'Update issue', description: 'Update a Linear issue.', schema: z.object({ issueId: z.string(), title: optionalString, description: optionalString, assigneeId: optionalString, stateId: optionalString }), parameters: this.jsonSchema({ issueId: { type: 'string' }, title: { type: 'string' }, description: { type: 'string' }, assigneeId: { type: 'string' }, stateId: { type: 'string' } }, ['issueId']) },
-    { key: 'list_projects', label: 'List projects', description: 'List Linear projects.', schema: emptySchema, parameters: this.jsonSchema() },
+    // ── Issues ────────────────────────────────────────────────────────────
+    {
+      key: 'list_issues',
+      label: 'List issues',
+      description: 'List Linear issues with optional filters.',
+      schema: z.object({ teamId: optionalString, assigneeId: optionalString, stateId: optionalString, labelId: optionalString, priority: optionalNumber, first: optionalNumber }),
+      parameters: this.jsonSchema({ teamId: { type: 'string' }, assigneeId: { type: 'string' }, stateId: { type: 'string' }, labelId: { type: 'string' }, priority: { type: 'number' }, first: { type: 'number' } }),
+    },
+    {
+      key: 'get_issue',
+      label: 'Get issue',
+      description: 'Get a Linear issue by ID.',
+      schema: z.object({ issueId: z.string() }),
+      parameters: this.jsonSchema({ issueId: { type: 'string' } }, ['issueId']),
+    },
+    {
+      key: 'create_issue',
+      label: 'Create issue',
+      description: 'Create a new Linear issue.',
+      schema: z.object({ teamId: z.string(), title: z.string(), description: optionalString, assigneeId: optionalString, stateId: optionalString, labelIds: z.array(z.string()).optional(), priority: optionalNumber, estimate: optionalNumber, cycleId: optionalString, projectId: optionalString, dueDate: optionalString }),
+      parameters: this.jsonSchema({ teamId: { type: 'string' }, title: { type: 'string' }, description: { type: 'string' }, assigneeId: { type: 'string' }, stateId: { type: 'string' }, labelIds: { type: 'array', items: { type: 'string' } }, priority: { type: 'number' }, estimate: { type: 'number' }, cycleId: { type: 'string' }, projectId: { type: 'string' }, dueDate: { type: 'string' } }, ['teamId', 'title']),
+    },
+    {
+      key: 'update_issue',
+      label: 'Update issue',
+      description: 'Update a Linear issue by ID.',
+      schema: z.object({ issueId: z.string(), title: optionalString, description: optionalString, assigneeId: optionalString, stateId: optionalString, priority: optionalNumber, estimate: optionalNumber, dueDate: optionalString }),
+      parameters: this.jsonSchema({ issueId: { type: 'string' }, title: { type: 'string' }, description: { type: 'string' }, assigneeId: { type: 'string' }, stateId: { type: 'string' }, priority: { type: 'number' }, estimate: { type: 'number' }, dueDate: { type: 'string' } }, ['issueId']),
+    },
+    {
+      key: 'delete_issue',
+      label: 'Delete issue',
+      description: 'Delete a Linear issue by ID.',
+      schema: z.object({ issueId: z.string() }),
+      parameters: this.jsonSchema({ issueId: { type: 'string' } }, ['issueId']),
+    },
+    {
+      key: 'list_issue_comments',
+      label: 'List issue comments',
+      description: 'List comments on a Linear issue.',
+      schema: z.object({ issueId: z.string() }),
+      parameters: this.jsonSchema({ issueId: { type: 'string' } }, ['issueId']),
+    },
+    {
+      key: 'create_issue_comment',
+      label: 'Create issue comment',
+      description: 'Add a comment to a Linear issue.',
+      schema: z.object({ issueId: z.string(), body: z.string() }),
+      parameters: this.jsonSchema({ issueId: { type: 'string' }, body: { type: 'string' } }, ['issueId', 'body']),
+    },
+
+    // ── Projects ──────────────────────────────────────────────────────────
+    {
+      key: 'list_projects',
+      label: 'List projects',
+      description: 'List Linear projects.',
+      schema: emptySchema,
+      parameters: this.jsonSchema(),
+    },
+    {
+      key: 'get_project',
+      label: 'Get project',
+      description: 'Get a Linear project by ID.',
+      schema: z.object({ projectId: z.string() }),
+      parameters: this.jsonSchema({ projectId: { type: 'string' } }, ['projectId']),
+    },
+    {
+      key: 'create_project',
+      label: 'Create project',
+      description: 'Create a new Linear project.',
+      schema: z.object({ teamIds: z.array(z.string()), name: z.string(), description: optionalString, state: optionalString, targetDate: optionalString }),
+      parameters: this.jsonSchema({ teamIds: { type: 'array', items: { type: 'string' } }, name: { type: 'string' }, description: { type: 'string' }, state: { type: 'string' }, targetDate: { type: 'string' } }, ['teamIds', 'name']),
+    },
+    {
+      key: 'update_project',
+      label: 'Update project',
+      description: 'Update a Linear project by ID.',
+      schema: z.object({ projectId: z.string(), name: optionalString, description: optionalString, state: optionalString, targetDate: optionalString }),
+      parameters: this.jsonSchema({ projectId: { type: 'string' }, name: { type: 'string' }, description: { type: 'string' }, state: { type: 'string' }, targetDate: { type: 'string' } }, ['projectId']),
+    },
+
+    // ── Teams ─────────────────────────────────────────────────────────────
+    {
+      key: 'list_teams',
+      label: 'List teams',
+      description: 'List all Linear teams.',
+      schema: emptySchema,
+      parameters: this.jsonSchema(),
+    },
+    {
+      key: 'get_team',
+      label: 'Get team',
+      description: 'Get a Linear team by ID.',
+      schema: z.object({ teamId: z.string() }),
+      parameters: this.jsonSchema({ teamId: { type: 'string' } }, ['teamId']),
+    },
+
+    // ── Users ─────────────────────────────────────────────────────────────
+    {
+      key: 'list_users',
+      label: 'List users',
+      description: 'List all Linear workspace members.',
+      schema: emptySchema,
+      parameters: this.jsonSchema(),
+    },
+    {
+      key: 'get_viewer',
+      label: 'Get current user',
+      description: 'Get the currently authenticated Linear user.',
+      schema: emptySchema,
+      parameters: this.jsonSchema(),
+    },
+
+    // ── Cycles ────────────────────────────────────────────────────────────
+    {
+      key: 'list_cycles',
+      label: 'List cycles',
+      description: 'List Linear cycles, optionally filtered by team.',
+      schema: z.object({ teamId: optionalString }),
+      parameters: this.jsonSchema({ teamId: { type: 'string' } }),
+    },
+    {
+      key: 'get_cycle',
+      label: 'Get cycle',
+      description: 'Get a Linear cycle by ID.',
+      schema: z.object({ cycleId: z.string() }),
+      parameters: this.jsonSchema({ cycleId: { type: 'string' } }, ['cycleId']),
+    },
+
+    // ── Labels ────────────────────────────────────────────────────────────
+    {
+      key: 'list_labels',
+      label: 'List labels',
+      description: 'List Linear issue labels, optionally filtered by team.',
+      schema: z.object({ teamId: optionalString }),
+      parameters: this.jsonSchema({ teamId: { type: 'string' } }),
+    },
+
+    // ── Workflow States ───────────────────────────────────────────────────
+    {
+      key: 'list_states',
+      label: 'List workflow states',
+      description: 'List Linear workflow states, optionally filtered by team.',
+      schema: z.object({ teamId: optionalString }),
+      parameters: this.jsonSchema({ teamId: { type: 'string' } }),
+    },
+
+    // ── Roadmaps ──────────────────────────────────────────────────────────
+    {
+      key: 'list_roadmaps',
+      label: 'List roadmaps',
+      description: 'List Linear roadmaps.',
+      schema: emptySchema,
+      parameters: this.jsonSchema(),
+    },
   ];
 
-  constructor(prisma: PrismaService, encryption: EncryptionService) { super(prisma, encryption); }
-  protected requiredConfigKeys() { return ['apiKey']; }
+  constructor(prisma: PrismaService, encryption: EncryptionService) {
+    super(prisma, encryption);
+  }
+
+  protected requiredConfigKeys() {
+    return [...LINEAR_REQUIRED_CONFIG_KEYS];
+  }
 
   protected async executeValidatedTool(actionKey: string, input: Record<string, any>, config: Record<string, any>) {
     const { LinearClient } = await loadRuntimePackage('@linear/sdk');
-    const client: any = new LinearClient({ apiKey: config.apiKey });
+    const service = new LinearService(new LinearClient({ apiKey: config.apiKey }));
+
     const actions: Record<string, () => Promise<any>> = {
-      list_issues: () => client.issues({ filter: { team: input.teamId ? { id: { eq: input.teamId } } : undefined, assignee: input.assigneeId ? { id: { eq: input.assigneeId } } : undefined } }),
-      create_issue: () => client.createIssue(input),
-      update_issue: () => client.updateIssue(input.issueId, input),
-      list_projects: () => client.projects(),
+      // Issues
+      list_issues: () => service.listIssues(input),
+      get_issue: () => service.getIssue(input as any),
+      create_issue: () => service.createIssue(input as any),
+      update_issue: () => service.updateIssue(input as any),
+      delete_issue: () => service.deleteIssue(input as any),
+      list_issue_comments: () => service.listIssueComments(input as any),
+      create_issue_comment: () => service.createIssueComment(input as any),
+      // Projects
+      list_projects: () => service.listProjects(),
+      get_project: () => service.getProject(input as any),
+      create_project: () => service.createProject(input as any),
+      update_project: () => service.updateProject(input as any),
+      // Teams
+      list_teams: () => service.listTeams(),
+      get_team: () => service.getTeam(input as any),
+      // Users
+      list_users: () => service.listUsers(),
+      get_viewer: () => service.getViewer(),
+      // Cycles
+      list_cycles: () => service.listCycles(input),
+      get_cycle: () => service.getCycle(input as any),
+      // Labels
+      list_labels: () => service.listLabels(input),
+      // States
+      list_states: () => service.listStates(input),
+      // Roadmaps
+      list_roadmaps: () => service.listRoadmaps(),
     };
-    return { success: true, data: await actions[actionKey]() };
+
+    return actions[actionKey]();
   }
 }
