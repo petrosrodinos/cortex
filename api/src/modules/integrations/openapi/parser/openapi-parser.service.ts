@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { convertObj } from 'swagger2openapi';
-import { ParsedOperation, ParsedOperationParameter, ParsedSpec } from './openapi.types';
+import { ParsedOperation, ParsedOperationParameter, ParsedSpec } from '../types/openapi.types';
 
 const HTTP_METHODS = new Set(['get', 'post', 'put', 'patch', 'delete', 'head', 'options']);
 

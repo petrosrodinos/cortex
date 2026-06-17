@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { IntegrationProvider } from 'generated/prisma';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
-import { IntegrationRegistry } from '../framework/integration-registry.service';
+import { IntegrationRegistry } from '../framework/registry/integration-registry.service';
 import { SaasIntegrationsModule } from './saas-integrations.module';
 
 describe('SaasIntegrationsModule', () => {

@@ -49,4 +49,15 @@ export const PROVIDER_CONFIG_FIELDS: Record<IntegrationProvider, ProviderConfigF
     { key: 'token', label: 'Token', type: 'password' },
     { key: 'customHeaders', label: 'Custom headers JSON', type: 'text' },
   ],
+  [IntegrationProviders.MCP]: [
+    { key: 'serverUrl', label: 'Server URL', type: 'text' },
+    { key: 'token', label: 'Bearer token', type: 'password' },
+    { key: 'customHeaders', label: 'Custom headers JSON', type: 'text' },
+    { key: 'accessToken', label: 'OAuth access token', type: 'password' },
+    { key: 'refreshToken', label: 'OAuth refresh token', type: 'password' },
+    { key: 'clientId', label: 'OAuth client ID', type: 'text' },
+    { key: 'clientSecret', label: 'OAuth client secret', type: 'password' },
+    { key: 'tokenEndpoint', label: 'OAuth token endpoint', type: 'text' },
+    { key: 'allowedOrigins', label: 'Allowed OAuth origins (comma-separated)', type: 'text' },
+  ],
 };

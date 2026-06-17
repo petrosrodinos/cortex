@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
-import { DatabaseSchema, IDbAdapter, QueryResult } from '../db-adapter.interface';
-import { withQueryTimeout } from '../database-query-safety';
+import { DatabaseSchema, IDbAdapter, QueryResult } from '../interfaces/db-adapter.interface';
+import { withQueryTimeout } from '../../database-query-safety';
 
 export class PostgresAdapter implements IDbAdapter {
   constructor(private readonly pool: Pool) {}

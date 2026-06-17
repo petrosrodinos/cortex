@@ -3,10 +3,10 @@ import { createPool as createMysqlPool, Pool as MysqlPool } from 'mysql2/promise
 import { MongoClient } from 'mongodb';
 import { Pool as PgPool } from 'pg';
 import { DatabaseType } from 'generated/prisma';
-import { IDbAdapter } from '../db-adapter.interface';
-import { MongoAdapter } from './mongo.adapter';
-import { MysqlAdapter } from './mysql.adapter';
-import { PostgresAdapter } from './postgres.adapter';
+import { IDbAdapter } from '../interfaces/db-adapter.interface';
+import { MongoAdapter } from '../mongo/mongo.adapter';
+import { MysqlAdapter } from '../mysql/mysql.adapter';
+import { PostgresAdapter } from '../postgres/postgres.adapter';
 
 type CachedClient = {
   type: DatabaseType;

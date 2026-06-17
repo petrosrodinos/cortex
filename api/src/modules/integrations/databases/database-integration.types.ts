@@ -1,5 +1,5 @@
 import { DatabaseOperation, DatabaseType, IntegrationProvider } from 'generated/prisma';
-import { DatabaseSchema } from './db-adapter.interface';
+import { DatabaseSchema } from './adapters/interfaces/db-adapter.interface';
 
 export const DATABASE_PROVIDERS = [
   IntegrationProvider.DATABASE_PG,

@@ -14,6 +14,7 @@ export const IntegrationProviders = {
   DATABASE_MYSQL: 'DATABASE_MYSQL',
   DATABASE_MONGO: 'DATABASE_MONGO',
   OPENAPI: 'OPENAPI',
+  MCP: 'MCP',
 } as const;
 
 export type IntegrationProvider = (typeof IntegrationProviders)[keyof typeof IntegrationProviders];
@@ -52,6 +53,22 @@ export const OpenApiAuthTypes = {
 } as const;
 
 export type OpenApiAuthType = (typeof OpenApiAuthTypes)[keyof typeof OpenApiAuthTypes];
+
+export const McpTransportTypes = {
+  HTTP: 'HTTP',
+  SSE: 'SSE',
+} as const;
+
+export type McpTransportType = (typeof McpTransportTypes)[keyof typeof McpTransportTypes];
+
+export const McpAuthTypes = {
+  NONE: 'NONE',
+  BEARER: 'BEARER',
+  CUSTOM_HEADERS: 'CUSTOM_HEADERS',
+  OAUTH: 'OAUTH',
+} as const;
+
+export type McpAuthType = (typeof McpAuthTypes)[keyof typeof McpAuthTypes];
 
 export interface DatabaseColumn {
   name: string;
@@ -101,6 +118,26 @@ export interface OpenApiIntegrationDetails {
   updated_at?: string;
 }
 
+export interface DiscoveredMcpTool {
+  name: string;
+  serverToolName: string;
+  description: string;
+  parameters: Record<string, unknown>;
+}
+
+export interface McpIntegrationDetails {
+  uuid: string;
+  integration_uuid: string;
+  server_url: string;
+  transport_type: McpTransportType;
+  auth_type: McpAuthType;
+  server_name?: string | null;
+  discovered_tools: DiscoveredMcpTool[];
+  last_tool_sync?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface IntegrationAction {
   id: number;
   uuid: string;
@@ -123,6 +160,7 @@ export interface Integration {
   metadata?: Record<string, unknown> | null;
   database?: DatabaseIntegrationDetails | null;
   openapi?: OpenApiIntegrationDetails | null;
+  mcp?: McpIntegrationDetails | null;
   created_at: string;
   updated_at: string;
   actions?: IntegrationAction[];
@@ -191,4 +229,29 @@ export interface CreateOpenApiIntegrationDto {
   authType?: OpenApiAuthType;
   authConfig?: Record<string, unknown>;
   credentials?: Record<string, unknown>;
+}
+
+export interface CreateMcpIntegrationDto {
+  name: string;
+  description?: string;
+  serverUrl: string;
+  transportType?: McpTransportType;
+  authType?: McpAuthType;
+  authConfig?: Record<string, unknown>;
+  credentials?: Record<string, unknown>;
+}
+
+export interface TestMcpConnectionDto {
+  serverUrl: string;
+  transportType?: McpTransportType;
+  authType?: McpAuthType;
+  authConfig?: Record<string, unknown>;
+  credentials?: Record<string, unknown>;
+}
+
+export interface TestMcpConnectionResponse {
+  success: boolean;
+  serverName?: string;
+  toolCount?: number;
+  error?: string;
 }

@@ -3,11 +3,11 @@ import axios from 'axios';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
 import { IntegrationProvider, IntegrationStatus, OpenApiAuthType, Prisma } from 'generated/prisma';
-import { OpenApiAuthService } from './openapi-auth.service';
-import { OpenApiParserService } from './openapi-parser.service';
-import { ToolGeneratorService } from './tool-generator.service';
-import { CreateOpenApiIntegrationDto } from './dto/create-openapi-integration.dto';
-import { ParseOpenApiSpecDto } from './dto/parse-openapi-spec.dto';
+import { OpenApiAuthService } from '../auth/openapi-auth.service';
+import { CreateOpenApiIntegrationDto } from '../dto/create-openapi-integration.dto';
+import { ParseOpenApiSpecDto } from '../dto/parse-openapi-spec.dto';
+import { OpenApiParserService } from '../parser/openapi-parser.service';
+import { ToolGeneratorService } from '../tools/tool-generator.service';
 
 @Injectable()
 export class OpenApiIntegrationsService {

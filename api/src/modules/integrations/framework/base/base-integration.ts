@@ -2,8 +2,8 @@ import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
 import { Integration, IntegrationProvider } from 'generated/prisma';
-import { AiTool } from './ai-tool.interface';
-import { IIntegration } from './integration.interface';
+import { AiTool } from '../interfaces/ai-tool.interface';
+import { IIntegration } from '../interfaces/integration.interface';
 
 export abstract class BaseIntegration implements IIntegration {
   abstract provider: IntegrationProvider;

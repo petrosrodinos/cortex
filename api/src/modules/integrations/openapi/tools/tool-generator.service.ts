@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { GeneratedOpenApiTool, ParsedOperation, ParsedSpec } from './openapi.types';
+import { GeneratedOpenApiTool, ParsedOperation, ParsedSpec } from '../types/openapi.types';
 
 const MAX_TOOLS_PER_SPEC = 100;
 

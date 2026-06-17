@@ -1,5 +1,5 @@
 import { formatDatabaseSchema } from './database-schema.formatter';
-import { DatabaseSchema } from './db-adapter.interface';
+import { DatabaseSchema } from './adapters/interfaces/db-adapter.interface';
 
 describe('formatDatabaseSchema', () => {
   it('formats tables and primary keys for AI context', () => {

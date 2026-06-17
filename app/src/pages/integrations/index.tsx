@@ -10,16 +10,21 @@ import { PROVIDER_CONFIG_FIELDS, type ProviderConfigField } from '@/features/int
 import {
   useCreateDatabaseIntegration,
   useCreateIntegration,
+  useCreateMcpIntegration,
   useCreateOpenApiIntegration,
   useGetDatabaseIntegrationDetails,
   useGetIntegrationActions,
   useGetIntegrations,
+  useGetMcpIntegrationDetails,
   useGetOpenApiIntegrationDetails,
   useParseOpenApiSpec,
   useRegenerateOpenApiTools,
   useSyncDatabaseSchema,
+  useSyncMcpTools,
   useTestDatabaseConnection,
   useTestIntegration,
+  useTestMcpConnection,
+  useTestMcpIntegration,
   useTestOpenApiIntegration,
   useTestSavedDatabaseConnection,
   useToggleIntegrationAction,
@@ -29,12 +34,18 @@ import {
   DatabaseOperations,
   IntegrationProviders,
   IntegrationStatuses,
+  McpAuthTypes,
+  McpTransportTypes,
   OpenApiAuthTypes,
   type DatabaseIntegrationDetails,
   type DatabaseOperation,
   type DatabaseSchema,
+  type DiscoveredMcpTool,
   type Integration,
   type IntegrationProvider,
+  type McpAuthType,
+  type McpIntegrationDetails,
+  type McpTransportType,
   type OpenApiAuthType,
   type OpenApiIntegrationDetails,
 } from '@/features/integrations/interfaces/integration.interface';
@@ -62,6 +73,7 @@ const providerLabels: Record<IntegrationProvider, string> = {
   DATABASE_MYSQL: 'MySQL',
   DATABASE_MONGO: 'MongoDB',
   OPENAPI: 'OpenAPI',
+  MCP: 'MCP',
 };
 
 const databaseProviders = [
@@ -85,12 +97,23 @@ const openApiAuthLabels: Record<OpenApiAuthType, string> = {
   CUSTOM_HEADERS: 'Custom headers',
 };
 
+const mcpAuthLabels: Record<McpAuthType, string> = {
+  NONE: 'None',
+  BEARER: 'Bearer token',
+  CUSTOM_HEADERS: 'Custom headers',
+  OAUTH: 'OAuth',
+};
+
 function isDatabaseProvider(provider: IntegrationProvider): provider is (typeof databaseProviders)[number] {
   return databaseProviders.includes(provider as (typeof databaseProviders)[number]);
 }
 
 function isOpenApiProvider(provider: IntegrationProvider) {
   return provider === IntegrationProviders.OPENAPI;
+}
+
+function isMcpProvider(provider: IntegrationProvider) {
+  return provider === IntegrationProviders.MCP;
 }
 
 export default function IntegrationsPage() {
@@ -183,6 +206,7 @@ function IntegrationDetail({ organizationUuid, integration }: { organizationUuid
   const testIntegrationMutation = useTestIntegration(organizationUuid);
   const testDatabaseMutation = useTestSavedDatabaseConnection(organizationUuid);
   const testOpenApiMutation = useTestOpenApiIntegration(organizationUuid);
+  const testMcpMutation = useTestMcpIntegration(organizationUuid);
   const updateIntegrationMutation = useUpdateIntegration(organizationUuid);
   const actionsQuery = useGetIntegrationActions(organizationUuid, integration.uuid);
   const toggleActionMutation = useToggleIntegrationAction(organizationUuid, integration.uuid);
@@ -198,19 +222,29 @@ function IntegrationDetail({ organizationUuid, integration }: { organizationUuid
     isOpenApiProvider(integration.provider),
   );
   const regenerateOpenApiMutation = useRegenerateOpenApiTools(organizationUuid, integration.uuid);
+  const mcpDetailsQuery = useGetMcpIntegrationDetails(
+    organizationUuid,
+    integration.uuid,
+    isMcpProvider(integration.provider),
+  );
+  const syncMcpToolsMutation = useSyncMcpTools(organizationUuid, integration.uuid);
   const actions = actionsQuery.data ?? integration.actions ?? [];
   const databaseDetails = databaseDetailsQuery.data?.database ?? integration.database ?? null;
   const openApiDetails = openApiDetailsQuery.data?.openapi ?? integration.openapi ?? null;
+  const mcpDetails = mcpDetailsQuery.data?.mcp ?? integration.mcp ?? null;
   const loading =
     actionsQuery.isLoading ||
     databaseDetailsQuery.isLoading ||
     openApiDetailsQuery.isLoading ||
+    mcpDetailsQuery.isLoading ||
     testIntegrationMutation.isPending ||
     testDatabaseMutation.isPending ||
     testOpenApiMutation.isPending ||
+    testMcpMutation.isPending ||
     updateIntegrationMutation.isPending ||
     syncSchemaMutation.isPending ||
     regenerateOpenApiMutation.isPending ||
+    syncMcpToolsMutation.isPending ||
     toggleActionMutation.isPending;
 
   async function toggleStatus() {
@@ -236,6 +270,11 @@ function IntegrationDetail({ organizationUuid, integration }: { organizationUuid
       return;
     }
 
+    if (isMcpProvider(integration.provider)) {
+      await testMcpMutation.mutateAsync({ integration_uuid: integration.uuid });
+      return;
+    }
+
     await testIntegrationMutation.mutateAsync({ integration_uuid: integration.uuid });
   }
 
@@ -245,6 +284,10 @@ function IntegrationDetail({ organizationUuid, integration }: { organizationUuid
 
   async function regenerateOpenApiTools() {
     await regenerateOpenApiMutation.mutateAsync();
+  }
+
+  async function syncMcpTools() {
+    await syncMcpToolsMutation.mutateAsync();
   }
 
   return (
@@ -292,6 +335,18 @@ function IntegrationDetail({ organizationUuid, integration }: { organizationUuid
               Regenerate
             </button>
           ) : null}
+          {isMcpProvider(integration.provider) ? (
+            <button
+              type="button"
+              disabled={loading}
+              onClick={syncMcpTools}
+              title="Sync tools"
+              className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Sync tools
+            </button>
+          ) : null}
           <button
             type="button"
             disabled={loading}
@@ -305,10 +360,16 @@ function IntegrationDetail({ organizationUuid, integration }: { organizationUuid
         </div>
       </div>
 
-      {testIntegrationMutation.data || testDatabaseMutation.data || testOpenApiMutation.data ? (
+      {testIntegrationMutation.data || testDatabaseMutation.data || testOpenApiMutation.data || testMcpMutation.data?.success ? (
         <p className="mt-3 flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-600 dark:text-emerald-300">
           <CheckCircle2 className="h-4 w-4" />
           Connection succeeded
+        </p>
+      ) : null}
+
+      {testMcpMutation.data && !testMcpMutation.data.success ? (
+        <p className="mt-3 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-600 dark:text-red-300">
+          {testMcpMutation.data.error ?? 'Connection failed'}
         </p>
       ) : null}
 
@@ -317,6 +378,8 @@ function IntegrationDetail({ organizationUuid, integration }: { organizationUuid
       ) : null}
 
       {isOpenApiProvider(integration.provider) ? <OpenApiToolsSection openapi={openApiDetails} /> : null}
+
+      {isMcpProvider(integration.provider) ? <McpToolsSection mcp={mcpDetails} /> : null}
 
       <div className="mt-5">
         <h3 className="text-sm font-semibold text-foreground">Actions</h3>
@@ -490,15 +553,64 @@ function OpenApiToolsSection({ openapi }: { openapi: OpenApiIntegrationDetails |
   );
 }
 
+function McpToolsSection({ mcp }: { mcp: McpIntegrationDetails | null }) {
+  const tools = mcp?.discovered_tools ?? [];
+
+  return (
+    <div className="mt-5 border-t border-border pt-5">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">Discovered tools</h3>
+          <p className="text-xs text-muted">
+            {mcp?.server_name ? `${mcp.server_name} · ` : ''}
+            {mcp?.server_url ?? 'No server URL'}
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-md bg-surface-secondary px-2 py-1 text-xs text-muted">
+            {tools.length} tool{tools.length === 1 ? '' : 's'}
+          </span>
+          {mcp?.last_tool_sync ? (
+            <span className="rounded-md bg-surface-secondary px-2 py-1 text-xs text-muted">
+              Synced {new Date(mcp.last_tool_sync).toLocaleString()}
+            </span>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="mt-3 overflow-hidden rounded-lg border border-border">
+        {tools.length === 0 ? (
+          <p className="px-4 py-6 text-sm text-muted">No tools have been discovered from this server yet.</p>
+        ) : (
+          tools.slice(0, 12).map((tool: DiscoveredMcpTool) => (
+            <div key={tool.name} className="border-b border-border px-4 py-3 last:border-0">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                <p className="min-w-0 truncate text-sm font-medium text-foreground">{tool.serverToolName}</p>
+                <code className="rounded bg-surface-secondary px-2 py-1 text-xs text-muted">{tool.name}</code>
+              </div>
+              <p className="mt-1 line-clamp-2 text-xs text-muted">{tool.description}</p>
+            </div>
+          ))
+        )}
+        {tools.length > 12 ? <p className="px-4 py-3 text-xs text-muted">{tools.length - 12} more tools stored.</p> : null}
+      </div>
+    </div>
+  );
+}
+
 function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: string; onClose: () => void }) {
   const createIntegrationMutation = useCreateIntegration(organizationUuid);
   const createDatabaseIntegrationMutation = useCreateDatabaseIntegration(organizationUuid);
   const createOpenApiIntegrationMutation = useCreateOpenApiIntegration(organizationUuid);
+  const createMcpIntegrationMutation = useCreateMcpIntegration(organizationUuid);
   const testDatabaseConnectionMutation = useTestDatabaseConnection(organizationUuid);
   const parseOpenApiMutation = useParseOpenApiSpec(organizationUuid);
+  const testMcpConnectionMutation = useTestMcpConnection(organizationUuid);
   const [openApiMode, setOpenApiMode] = useState<'url' | 'json'>('url');
   const [openApiRawJson, setOpenApiRawJson] = useState('');
   const [openApiAuthType, setOpenApiAuthType] = useState<OpenApiAuthType>(OpenApiAuthTypes.NONE);
+  const [mcpTransportType, setMcpTransportType] = useState<McpTransportType>(McpTransportTypes.HTTP);
+  const [mcpAuthType, setMcpAuthType] = useState<McpAuthType>(McpAuthTypes.NONE);
   const form = useForm<CreateIntegrationFormData>({
     resolver: zodResolver(createIntegrationSchema),
     defaultValues: {
@@ -514,12 +626,15 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
   const selectedAllowedOps = (form.watch('allowedOps') ?? [DatabaseOperations.READ]) as DatabaseOperation[];
   const isDatabase = isDatabaseProvider(selectedProvider);
   const isOpenApi = isOpenApiProvider(selectedProvider);
+  const isMcp = isMcpProvider(selectedProvider);
   const busy =
     createIntegrationMutation.isPending ||
     createDatabaseIntegrationMutation.isPending ||
     createOpenApiIntegrationMutation.isPending ||
+    createMcpIntegrationMutation.isPending ||
     testDatabaseConnectionMutation.isPending ||
-    parseOpenApiMutation.isPending;
+    parseOpenApiMutation.isPending ||
+    testMcpConnectionMutation.isPending;
 
   async function submit(values: CreateIntegrationFormData) {
     const config = buildConfig(values.config ?? {}, configFields);
@@ -550,6 +665,20 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
       return;
     }
 
+    if (isMcpProvider(values.provider as IntegrationProvider)) {
+      await createMcpIntegrationMutation.mutateAsync({
+        name: values.name,
+        description: values.description,
+        serverUrl: String(config.serverUrl ?? ''),
+        transportType: mcpTransportType,
+        authType: mcpAuthType,
+        authConfig: buildMcpAuthConfig(mcpAuthType, config),
+        credentials: buildMcpCredentials(mcpAuthType, config),
+      });
+      onClose();
+      return;
+    }
+
     await createIntegrationMutation.mutateAsync({
       name: values.name,
       description: values.description,
@@ -574,6 +703,18 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
     await parseOpenApiMutation.mutateAsync({
       specUrl: openApiMode === 'url' ? String(config.specUrl ?? '') : undefined,
       rawJson: openApiMode === 'json' ? openApiRawJson : undefined,
+    });
+  }
+
+  async function testMcpConnection() {
+    const config = buildConfig(form.getValues('config') ?? {}, configFields);
+
+    await testMcpConnectionMutation.mutateAsync({
+      serverUrl: String(config.serverUrl ?? ''),
+      transportType: mcpTransportType,
+      authType: mcpAuthType,
+      authConfig: buildMcpAuthConfig(mcpAuthType, config),
+      credentials: buildMcpCredentials(mcpAuthType, config),
     });
   }
 
@@ -662,7 +803,13 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
             />
 
             <div className="grid gap-3 sm:grid-cols-2">
-              {configFields.filter((field) => !isOpenApi || openApiVisibleField(field.key, openApiAuthType, openApiMode)).map((configField) => (
+              {configFields
+                .filter(
+                  (field) =>
+                    (!isOpenApi || openApiVisibleField(field.key, openApiAuthType, openApiMode)) &&
+                    (!isMcp || mcpVisibleField(field.key, mcpAuthType)),
+                )
+                .map((configField) => (
                 <FormField
                   key={`${selectedProvider}-${configField.key}`}
                   control={form.control}
@@ -684,6 +831,61 @@ function AddIntegrationModal({ organizationUuid, onClose }: { organizationUuid: 
                 />
               ))}
             </div>
+
+            {isMcp ? (
+              <div className="grid gap-3 rounded-lg border border-border p-3">
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <label className="grid gap-1 text-sm">
+                    <span className="text-sm font-medium text-foreground">Transport</span>
+                    <select
+                      value={mcpTransportType}
+                      onChange={(event) => setMcpTransportType(event.target.value as McpTransportType)}
+                      className="h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
+                    >
+                      <option value="HTTP">HTTP (Streamable)</option>
+                      <option value="SSE">SSE</option>
+                    </select>
+                  </label>
+                  <label className="grid gap-1 text-sm">
+                    <span className="text-sm font-medium text-foreground">Auth type</span>
+                    <select
+                      value={mcpAuthType}
+                      onChange={(event) => setMcpAuthType(event.target.value as McpAuthType)}
+                      className="h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
+                    >
+                      {Object.values(McpAuthTypes).map((authType) => (
+                        <option key={authType} value={authType}>
+                          {mcpAuthLabels[authType]}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={testMcpConnection}
+                    loading={testMcpConnectionMutation.isPending}
+                    className="sm:w-auto"
+                  >
+                    <FlaskConical className="h-4 w-4" />
+                    Test connection
+                  </Button>
+                  {testMcpConnectionMutation.data?.success ? (
+                    <span className="flex items-center gap-1.5 text-sm text-emerald-600 dark:text-emerald-300">
+                      <CheckCircle2 className="h-4 w-4" />
+                      {testMcpConnectionMutation.data.serverName ?? 'Server'} · {testMcpConnectionMutation.data.toolCount ?? 0} tools
+                    </span>
+                  ) : null}
+                </div>
+                {testMcpConnectionMutation.data && !testMcpConnectionMutation.data.success ? (
+                  <p className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-600 dark:text-red-300">
+                    {testMcpConnectionMutation.data.error ?? 'Connection failed'}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
 
             {isOpenApi ? (
               <div className="grid gap-3 rounded-lg border border-border p-3">
@@ -879,6 +1081,61 @@ function buildOpenApiCredentials(authType: OpenApiAuthType, config: Record<strin
   return {};
 }
 
+function mcpVisibleField(key: string, authType: McpAuthType) {
+  if (key === 'serverUrl') {
+    return true;
+  }
+
+  if (authType === McpAuthTypes.BEARER) {
+    return key === 'token';
+  }
+
+  if (authType === McpAuthTypes.CUSTOM_HEADERS) {
+    return key === 'customHeaders';
+  }
+
+  if (authType === McpAuthTypes.OAUTH) {
+    return ['accessToken', 'refreshToken', 'clientId', 'clientSecret', 'tokenEndpoint', 'allowedOrigins'].includes(key);
+  }
+
+  return false;
+}
+
+function buildMcpAuthConfig(authType: McpAuthType, config: Record<string, unknown>) {
+  if (authType !== McpAuthTypes.OAUTH) {
+    return {};
+  }
+
+  const allowedAuthorizationServerOrigins = String(config.allowedOrigins ?? '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  return { allowedAuthorizationServerOrigins };
+}
+
+function buildMcpCredentials(authType: McpAuthType, config: Record<string, unknown>) {
+  if (authType === McpAuthTypes.BEARER) {
+    return { token: config.token };
+  }
+
+  if (authType === McpAuthTypes.CUSTOM_HEADERS) {
+    return { headers: parseCustomHeaders(String(config.customHeaders ?? '{}')) };
+  }
+
+  if (authType === McpAuthTypes.OAUTH) {
+    return {
+      accessToken: config.accessToken,
+      refreshToken: config.refreshToken,
+      clientId: config.clientId,
+      clientSecret: config.clientSecret,
+      tokenEndpoint: config.tokenEndpoint,
+    };
+  }
+
+  return {};
+}
+
 function parseCustomHeaders(value: string) {
   try {
     const parsed = JSON.parse(value || '{}');
@@ -890,13 +1147,16 @@ function parseCustomHeaders(value: string) {
 
 function StatusBadge({ status }: { status: string }) {
   const active = status === IntegrationStatuses.ACTIVE;
+  const errored = status === IntegrationStatuses.ERROR;
   return (
     <span
       className={cn(
         'shrink-0 rounded-md px-2 py-1 text-xs font-medium',
         active
           ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
-          : 'bg-surface-tertiary text-muted',
+          : errored
+            ? 'bg-red-500/10 text-red-700 dark:text-red-300'
+            : 'bg-surface-tertiary text-muted',
       )}
     >
       {status.toLowerCase()}

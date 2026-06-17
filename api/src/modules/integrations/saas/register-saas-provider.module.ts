@@ -1,5 +1,5 @@
 import { DynamicModule, Inject, Injectable, Module, OnModuleInit, Type } from '@nestjs/common';
-import { IntegrationRegistry } from '../framework/integration-registry.service';
+import { IntegrationRegistry } from '../framework/registry/integration-registry.service';
 import { IntegrationFrameworkModule } from '../framework/integration-framework.module';
 import { SaasIntegration } from './saas-integration.base';
 

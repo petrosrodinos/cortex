@@ -1,4 +1,4 @@
-import { DatabaseSchema } from './db-adapter.interface';
+import { DatabaseSchema } from './adapters/interfaces/db-adapter.interface';
 
 export function formatDatabaseSchema(schema?: DatabaseSchema | null): string {
   if (!schema?.tables?.length) {

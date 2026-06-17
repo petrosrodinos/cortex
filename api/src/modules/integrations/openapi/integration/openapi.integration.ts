@@ -3,10 +3,10 @@ import axios from 'axios';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
 import { Integration, IntegrationProvider, OpenApiAuthType } from 'generated/prisma';
-import { AiTool, IntegrationActionSeed } from '../framework/ai-tool.interface';
-import { BaseIntegration } from '../framework/base-integration';
-import { OpenApiAuthConfig, OpenApiAuthService } from './openapi-auth.service';
-import { GeneratedOpenApiTool } from './openapi.types';
+import { AiTool, IntegrationActionSeed } from '../../framework/interfaces/ai-tool.interface';
+import { BaseIntegration } from '../../framework/base/base-integration';
+import { OpenApiAuthConfig, OpenApiAuthService } from '../auth/openapi-auth.service';
+import { GeneratedOpenApiTool } from '../types/openapi.types';
 
 type OpenApiIntegrationRecord = {
   integration_uuid: string;

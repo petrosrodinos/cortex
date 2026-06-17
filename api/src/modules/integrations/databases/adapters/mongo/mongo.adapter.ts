@@ -1,6 +1,6 @@
 import { Collection, Db, Document, MongoClient } from 'mongodb';
-import { DatabaseSchema, IDbAdapter, QueryResult } from '../db-adapter.interface';
-import { withQueryTimeout } from '../database-query-safety';
+import { DatabaseSchema, IDbAdapter, QueryResult } from '../interfaces/db-adapter.interface';
+import { withQueryTimeout } from '../../database-query-safety';
 
 export class MongoAdapter implements IDbAdapter {
   constructor(private readonly client: MongoClient) {}

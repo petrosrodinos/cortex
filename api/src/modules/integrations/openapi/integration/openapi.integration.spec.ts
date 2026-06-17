@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { IntegrationProvider, OpenApiAuthType } from 'generated/prisma';
-import { OpenApiAuthService } from './openapi-auth.service';
+import { OpenApiAuthService } from '../auth/openapi-auth.service';
 import { OpenApiIntegration } from './openapi.integration';
 
 jest.mock('axios');

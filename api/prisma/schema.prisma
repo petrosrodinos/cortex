@@ -53,6 +53,7 @@ enum IntegrationProvider {
   DATABASE_MYSQL
   DATABASE_MONGO
   OPENAPI
+  MCP
 }
 
 enum IntegrationStatus {
@@ -80,6 +81,18 @@ enum OpenApiAuthType {
   BEARER
   OAUTH2
   CUSTOM_HEADERS
+}
+
+enum McpTransportType {
+  HTTP
+  SSE
+}
+
+enum McpAuthType {
+  NONE
+  BEARER
+  CUSTOM_HEADERS
+  OAUTH
 }
 
 model User {
@@ -224,6 +237,7 @@ model Integration {
   actions      IntegrationAction[]
   database     DatabaseIntegration?
   openapi      OpenApiIntegration?
+  mcp          McpIntegration?
 
   @@index([org_uuid])
   @@index([provider])
@@ -267,6 +281,27 @@ model OpenApiIntegration {
 
   @@index([auth_type])
   @@map("openapi_integrations")
+}
+
+model McpIntegration {
+  id               Int              @id @default(autoincrement())
+  uuid             String           @unique @default(uuid())
+  integration_uuid String           @unique
+  server_url       String
+  transport_type   McpTransportType @default(HTTP)
+  auth_type        McpAuthType      @default(NONE)
+  auth_config      String
+  server_name      String?
+  discovered_tools Json             @default("[]")
+  last_tool_sync   DateTime?
+  created_at       DateTime         @default(now())
+  updated_at       DateTime         @updatedAt
+
+  integration Integration @relation(fields: [integration_uuid], references: [uuid], onDelete: Cascade)
+
+  @@index([transport_type])
+  @@index([auth_type])
+  @@map("mcp_integrations")
 }
 
 model IntegrationAction {

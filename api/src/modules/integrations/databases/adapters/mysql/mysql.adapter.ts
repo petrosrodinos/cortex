@@ -1,6 +1,6 @@
 import { Pool, RowDataPacket } from 'mysql2/promise';
-import { DatabaseSchema, IDbAdapter, QueryResult } from '../db-adapter.interface';
-import { withQueryTimeout } from '../database-query-safety';
+import { DatabaseSchema, IDbAdapter, QueryResult } from '../interfaces/db-adapter.interface';
+import { withQueryTimeout } from '../../database-query-safety';
 
 interface MysqlColumnRow extends RowDataPacket {
   TABLE_NAME: string;

@@ -1,6 +1,7 @@
 import { IntegrationProvider, IntegrationStatus, OpenApiAuthType } from 'generated/prisma';
 import { OpenApiIntegrationsService } from './openapi-integrations.service';
 
+
 describe('OpenApiIntegrationsService', () => {
   const prisma: any = {
     integration: { create: jest.fn(), findUniqueOrThrow: jest.fn() },

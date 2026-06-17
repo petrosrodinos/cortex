@@ -3,13 +3,13 @@ import { z } from 'zod';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
 import { DatabaseOperation, DatabaseType, Integration, IntegrationProvider } from 'generated/prisma';
-import { AiTool, IntegrationActionSeed } from '../framework/ai-tool.interface';
-import { BaseIntegration } from '../framework/base-integration';
-import { DatabaseAdapterFactory } from './adapters/database-adapter.factory';
-import { MongoAdapter } from './adapters/mongo.adapter';
+import { AiTool, IntegrationActionSeed } from '../framework/interfaces/ai-tool.interface';
+import { BaseIntegration } from '../framework/base/base-integration';
+import { DatabaseAdapterFactory } from './adapters/factory/database-adapter.factory';
+import { MongoAdapter } from './adapters/mongo/mongo.adapter';
 import { assertSqlQueryAllowed } from './database-query-safety';
 import { formatDatabaseSchema } from './database-schema.formatter';
-import { DatabaseSchema } from './db-adapter.interface';
+import { DatabaseSchema } from './adapters/interfaces/db-adapter.interface';
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
 
@@ -60,11 +60,12 @@ const deleteSchema = z.object({
 
 @Injectable()
 export class DatabaseIntegration extends BaseIntegration {
+  readonly provider: IntegrationProvider = IntegrationProvider.DATABASE_PG;
+
   constructor(
     prisma: PrismaService,
     encryptionService: EncryptionService,
     private readonly adapterFactory: DatabaseAdapterFactory,
-    readonly provider: IntegrationProvider = IntegrationProvider.DATABASE_PG,
   ) {
     super(prisma, encryptionService);
   }
@@ -334,7 +335,7 @@ export class PostgresDatabaseIntegration extends DatabaseIntegration {
   readonly provider = IntegrationProvider.DATABASE_PG;
 
   constructor(prisma: PrismaService, encryptionService: EncryptionService, adapterFactory: DatabaseAdapterFactory) {
-    super(prisma, encryptionService, adapterFactory, IntegrationProvider.DATABASE_PG);
+    super(prisma, encryptionService, adapterFactory);
   }
 }
 
@@ -342,7 +343,7 @@ export class MysqlDatabaseIntegration extends DatabaseIntegration {
   readonly provider = IntegrationProvider.DATABASE_MYSQL;
 
   constructor(prisma: PrismaService, encryptionService: EncryptionService, adapterFactory: DatabaseAdapterFactory) {
-    super(prisma, encryptionService, adapterFactory, IntegrationProvider.DATABASE_MYSQL);
+    super(prisma, encryptionService, adapterFactory);
   }
 }
 
@@ -350,7 +351,7 @@ export class MongoDatabaseIntegration extends DatabaseIntegration {
   readonly provider = IntegrationProvider.DATABASE_MONGO;
 
   constructor(prisma: PrismaService, encryptionService: EncryptionService, adapterFactory: DatabaseAdapterFactory) {
-    super(prisma, encryptionService, adapterFactory, IntegrationProvider.DATABASE_MONGO);
+    super(prisma, encryptionService, adapterFactory);
   }
 }
 

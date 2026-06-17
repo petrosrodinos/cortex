@@ -1,4 +1,4 @@
-import { DatabaseOperation, DatabaseType, IntegrationProvider } from 'generated/prisma';
+import { DatabaseOperation, DatabaseType } from 'generated/prisma';
 import { DatabaseIntegration } from './database.integration';
 
 describe('DatabaseIntegration', () => {
@@ -34,7 +34,7 @@ describe('DatabaseIntegration', () => {
   });
 
   it('exposes shared database tools based on allowed operations', () => {
-    const integration = new DatabaseIntegration(prisma, encryption, adapterFactory, IntegrationProvider.DATABASE_PG);
+    const integration = new DatabaseIntegration(prisma, encryption, adapterFactory);
     const tools = integration.getTools({
       database: { allowed_ops: [DatabaseOperation.READ, DatabaseOperation.INSERT] },
     } as any);
@@ -58,7 +58,7 @@ describe('DatabaseIntegration', () => {
       last_schema_sync: oldDate,
     });
     adapterFactory.getAdapter.mockResolvedValue(adapter);
-    const integration = new DatabaseIntegration(prisma, encryption, adapterFactory, IntegrationProvider.DATABASE_PG);
+    const integration = new DatabaseIntegration(prisma, encryption, adapterFactory);
 
     const result = await integration.executeTool('db__query', { query: 'select * from users', params: [] }, {
       uuid: 'integration-uuid',

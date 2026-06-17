@@ -64,6 +64,11 @@ export type DatabaseIntegration = $Result.DefaultSelection<Prisma.$DatabaseInteg
  */
 export type OpenApiIntegration = $Result.DefaultSelection<Prisma.$OpenApiIntegrationPayload>
 /**
+ * Model McpIntegration
+ * 
+ */
+export type McpIntegration = $Result.DefaultSelection<Prisma.$McpIntegrationPayload>
+/**
  * Model IntegrationAction
  * 
  */
@@ -126,7 +131,8 @@ export const IntegrationProvider: {
   DATABASE_PG: 'DATABASE_PG',
   DATABASE_MYSQL: 'DATABASE_MYSQL',
   DATABASE_MONGO: 'DATABASE_MONGO',
-  OPENAPI: 'OPENAPI'
+  OPENAPI: 'OPENAPI',
+  MCP: 'MCP'
 };
 
 export type IntegrationProvider = (typeof IntegrationProvider)[keyof typeof IntegrationProvider]
@@ -170,6 +176,24 @@ export const OpenApiAuthType: {
 
 export type OpenApiAuthType = (typeof OpenApiAuthType)[keyof typeof OpenApiAuthType]
 
+
+export const McpTransportType: {
+  HTTP: 'HTTP',
+  SSE: 'SSE'
+};
+
+export type McpTransportType = (typeof McpTransportType)[keyof typeof McpTransportType]
+
+
+export const McpAuthType: {
+  NONE: 'NONE',
+  BEARER: 'BEARER',
+  CUSTOM_HEADERS: 'CUSTOM_HEADERS',
+  OAUTH: 'OAUTH'
+};
+
+export type McpAuthType = (typeof McpAuthType)[keyof typeof McpAuthType]
+
 }
 
 export type AuthRole = $Enums.AuthRole
@@ -203,6 +227,14 @@ export const DatabaseOperation: typeof $Enums.DatabaseOperation
 export type OpenApiAuthType = $Enums.OpenApiAuthType
 
 export const OpenApiAuthType: typeof $Enums.OpenApiAuthType
+
+export type McpTransportType = $Enums.McpTransportType
+
+export const McpTransportType: typeof $Enums.McpTransportType
+
+export type McpAuthType = $Enums.McpAuthType
+
+export const McpAuthType: typeof $Enums.McpAuthType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -420,6 +452,16 @@ export class PrismaClient<
     * ```
     */
   get openApiIntegration(): Prisma.OpenApiIntegrationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.mcpIntegration`: Exposes CRUD operations for the **McpIntegration** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more McpIntegrations
+    * const mcpIntegrations = await prisma.mcpIntegration.findMany()
+    * ```
+    */
+  get mcpIntegration(): Prisma.McpIntegrationDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.integrationAction`: Exposes CRUD operations for the **IntegrationAction** model.
@@ -884,6 +926,7 @@ export namespace Prisma {
     Integration: 'Integration',
     DatabaseIntegration: 'DatabaseIntegration',
     OpenApiIntegration: 'OpenApiIntegration',
+    McpIntegration: 'McpIntegration',
     IntegrationAction: 'IntegrationAction',
     Document: 'Document'
   };
@@ -901,7 +944,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "databaseIntegration" | "openApiIntegration" | "integrationAction" | "document"
+      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "databaseIntegration" | "openApiIntegration" | "mcpIntegration" | "integrationAction" | "document"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1645,6 +1688,80 @@ export namespace Prisma {
           }
         }
       }
+      McpIntegration: {
+        payload: Prisma.$McpIntegrationPayload<ExtArgs>
+        fields: Prisma.McpIntegrationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.McpIntegrationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpIntegrationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.McpIntegrationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpIntegrationPayload>
+          }
+          findFirst: {
+            args: Prisma.McpIntegrationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpIntegrationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.McpIntegrationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpIntegrationPayload>
+          }
+          findMany: {
+            args: Prisma.McpIntegrationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpIntegrationPayload>[]
+          }
+          create: {
+            args: Prisma.McpIntegrationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpIntegrationPayload>
+          }
+          createMany: {
+            args: Prisma.McpIntegrationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.McpIntegrationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpIntegrationPayload>[]
+          }
+          delete: {
+            args: Prisma.McpIntegrationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpIntegrationPayload>
+          }
+          update: {
+            args: Prisma.McpIntegrationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpIntegrationPayload>
+          }
+          deleteMany: {
+            args: Prisma.McpIntegrationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.McpIntegrationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.McpIntegrationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpIntegrationPayload>[]
+          }
+          upsert: {
+            args: Prisma.McpIntegrationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$McpIntegrationPayload>
+          }
+          aggregate: {
+            args: Prisma.McpIntegrationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMcpIntegration>
+          }
+          groupBy: {
+            args: Prisma.McpIntegrationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<McpIntegrationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.McpIntegrationCountArgs<ExtArgs>
+            result: $Utils.Optional<McpIntegrationCountAggregateOutputType> | number
+          }
+        }
+      }
       IntegrationAction: {
         payload: Prisma.$IntegrationActionPayload<ExtArgs>
         fields: Prisma.IntegrationActionFieldRefs
@@ -1911,6 +2028,7 @@ export namespace Prisma {
     integration?: IntegrationOmit
     databaseIntegration?: DatabaseIntegrationOmit
     openApiIntegration?: OpenApiIntegrationOmit
+    mcpIntegration?: McpIntegrationOmit
     integrationAction?: IntegrationActionOmit
     document?: DocumentOmit
   }
@@ -10459,6 +10577,7 @@ export namespace Prisma {
     actions?: boolean | Integration$actionsArgs<ExtArgs>
     database?: boolean | Integration$databaseArgs<ExtArgs>
     openapi?: boolean | Integration$openapiArgs<ExtArgs>
+    mcp?: boolean | Integration$mcpArgs<ExtArgs>
     _count?: boolean | IntegrationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["integration"]>
 
@@ -10512,6 +10631,7 @@ export namespace Prisma {
     actions?: boolean | Integration$actionsArgs<ExtArgs>
     database?: boolean | Integration$databaseArgs<ExtArgs>
     openapi?: boolean | Integration$openapiArgs<ExtArgs>
+    mcp?: boolean | Integration$mcpArgs<ExtArgs>
     _count?: boolean | IntegrationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type IntegrationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10528,6 +10648,7 @@ export namespace Prisma {
       actions: Prisma.$IntegrationActionPayload<ExtArgs>[]
       database: Prisma.$DatabaseIntegrationPayload<ExtArgs> | null
       openapi: Prisma.$OpenApiIntegrationPayload<ExtArgs> | null
+      mcp: Prisma.$McpIntegrationPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -10939,6 +11060,7 @@ export namespace Prisma {
     actions<T extends Integration$actionsArgs<ExtArgs> = {}>(args?: Subset<T, Integration$actionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IntegrationActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     database<T extends Integration$databaseArgs<ExtArgs> = {}>(args?: Subset<T, Integration$databaseArgs<ExtArgs>>): Prisma__DatabaseIntegrationClient<$Result.GetResult<Prisma.$DatabaseIntegrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     openapi<T extends Integration$openapiArgs<ExtArgs> = {}>(args?: Subset<T, Integration$openapiArgs<ExtArgs>>): Prisma__OpenApiIntegrationClient<$Result.GetResult<Prisma.$OpenApiIntegrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    mcp<T extends Integration$mcpArgs<ExtArgs> = {}>(args?: Subset<T, Integration$mcpArgs<ExtArgs>>): Prisma__McpIntegrationClient<$Result.GetResult<Prisma.$McpIntegrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11434,6 +11556,25 @@ export namespace Prisma {
      */
     include?: OpenApiIntegrationInclude<ExtArgs> | null
     where?: OpenApiIntegrationWhereInput
+  }
+
+  /**
+   * Integration.mcp
+   */
+  export type Integration$mcpArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpIntegration
+     */
+    select?: McpIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the McpIntegration
+     */
+    omit?: McpIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpIntegrationInclude<ExtArgs> | null
+    where?: McpIntegrationWhereInput
   }
 
   /**
@@ -13763,6 +13904,1185 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: OpenApiIntegrationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model McpIntegration
+   */
+
+  export type AggregateMcpIntegration = {
+    _count: McpIntegrationCountAggregateOutputType | null
+    _avg: McpIntegrationAvgAggregateOutputType | null
+    _sum: McpIntegrationSumAggregateOutputType | null
+    _min: McpIntegrationMinAggregateOutputType | null
+    _max: McpIntegrationMaxAggregateOutputType | null
+  }
+
+  export type McpIntegrationAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type McpIntegrationSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type McpIntegrationMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    integration_uuid: string | null
+    server_url: string | null
+    transport_type: $Enums.McpTransportType | null
+    auth_type: $Enums.McpAuthType | null
+    auth_config: string | null
+    server_name: string | null
+    last_tool_sync: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type McpIntegrationMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    integration_uuid: string | null
+    server_url: string | null
+    transport_type: $Enums.McpTransportType | null
+    auth_type: $Enums.McpAuthType | null
+    auth_config: string | null
+    server_name: string | null
+    last_tool_sync: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type McpIntegrationCountAggregateOutputType = {
+    id: number
+    uuid: number
+    integration_uuid: number
+    server_url: number
+    transport_type: number
+    auth_type: number
+    auth_config: number
+    server_name: number
+    discovered_tools: number
+    last_tool_sync: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type McpIntegrationAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type McpIntegrationSumAggregateInputType = {
+    id?: true
+  }
+
+  export type McpIntegrationMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    integration_uuid?: true
+    server_url?: true
+    transport_type?: true
+    auth_type?: true
+    auth_config?: true
+    server_name?: true
+    last_tool_sync?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type McpIntegrationMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    integration_uuid?: true
+    server_url?: true
+    transport_type?: true
+    auth_type?: true
+    auth_config?: true
+    server_name?: true
+    last_tool_sync?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type McpIntegrationCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    integration_uuid?: true
+    server_url?: true
+    transport_type?: true
+    auth_type?: true
+    auth_config?: true
+    server_name?: true
+    discovered_tools?: true
+    last_tool_sync?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type McpIntegrationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which McpIntegration to aggregate.
+     */
+    where?: McpIntegrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of McpIntegrations to fetch.
+     */
+    orderBy?: McpIntegrationOrderByWithRelationInput | McpIntegrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: McpIntegrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` McpIntegrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` McpIntegrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned McpIntegrations
+    **/
+    _count?: true | McpIntegrationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: McpIntegrationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: McpIntegrationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: McpIntegrationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: McpIntegrationMaxAggregateInputType
+  }
+
+  export type GetMcpIntegrationAggregateType<T extends McpIntegrationAggregateArgs> = {
+        [P in keyof T & keyof AggregateMcpIntegration]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMcpIntegration[P]>
+      : GetScalarType<T[P], AggregateMcpIntegration[P]>
+  }
+
+
+
+
+  export type McpIntegrationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: McpIntegrationWhereInput
+    orderBy?: McpIntegrationOrderByWithAggregationInput | McpIntegrationOrderByWithAggregationInput[]
+    by: McpIntegrationScalarFieldEnum[] | McpIntegrationScalarFieldEnum
+    having?: McpIntegrationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: McpIntegrationCountAggregateInputType | true
+    _avg?: McpIntegrationAvgAggregateInputType
+    _sum?: McpIntegrationSumAggregateInputType
+    _min?: McpIntegrationMinAggregateInputType
+    _max?: McpIntegrationMaxAggregateInputType
+  }
+
+  export type McpIntegrationGroupByOutputType = {
+    id: number
+    uuid: string
+    integration_uuid: string
+    server_url: string
+    transport_type: $Enums.McpTransportType
+    auth_type: $Enums.McpAuthType
+    auth_config: string
+    server_name: string | null
+    discovered_tools: JsonValue
+    last_tool_sync: Date | null
+    created_at: Date
+    updated_at: Date
+    _count: McpIntegrationCountAggregateOutputType | null
+    _avg: McpIntegrationAvgAggregateOutputType | null
+    _sum: McpIntegrationSumAggregateOutputType | null
+    _min: McpIntegrationMinAggregateOutputType | null
+    _max: McpIntegrationMaxAggregateOutputType | null
+  }
+
+  type GetMcpIntegrationGroupByPayload<T extends McpIntegrationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<McpIntegrationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof McpIntegrationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], McpIntegrationGroupByOutputType[P]>
+            : GetScalarType<T[P], McpIntegrationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type McpIntegrationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    integration_uuid?: boolean
+    server_url?: boolean
+    transport_type?: boolean
+    auth_type?: boolean
+    auth_config?: boolean
+    server_name?: boolean
+    discovered_tools?: boolean
+    last_tool_sync?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    integration?: boolean | IntegrationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["mcpIntegration"]>
+
+  export type McpIntegrationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    integration_uuid?: boolean
+    server_url?: boolean
+    transport_type?: boolean
+    auth_type?: boolean
+    auth_config?: boolean
+    server_name?: boolean
+    discovered_tools?: boolean
+    last_tool_sync?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    integration?: boolean | IntegrationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["mcpIntegration"]>
+
+  export type McpIntegrationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    integration_uuid?: boolean
+    server_url?: boolean
+    transport_type?: boolean
+    auth_type?: boolean
+    auth_config?: boolean
+    server_name?: boolean
+    discovered_tools?: boolean
+    last_tool_sync?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    integration?: boolean | IntegrationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["mcpIntegration"]>
+
+  export type McpIntegrationSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    integration_uuid?: boolean
+    server_url?: boolean
+    transport_type?: boolean
+    auth_type?: boolean
+    auth_config?: boolean
+    server_name?: boolean
+    discovered_tools?: boolean
+    last_tool_sync?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type McpIntegrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "integration_uuid" | "server_url" | "transport_type" | "auth_type" | "auth_config" | "server_name" | "discovered_tools" | "last_tool_sync" | "created_at" | "updated_at", ExtArgs["result"]["mcpIntegration"]>
+  export type McpIntegrationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    integration?: boolean | IntegrationDefaultArgs<ExtArgs>
+  }
+  export type McpIntegrationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    integration?: boolean | IntegrationDefaultArgs<ExtArgs>
+  }
+  export type McpIntegrationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    integration?: boolean | IntegrationDefaultArgs<ExtArgs>
+  }
+
+  export type $McpIntegrationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "McpIntegration"
+    objects: {
+      integration: Prisma.$IntegrationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      integration_uuid: string
+      server_url: string
+      transport_type: $Enums.McpTransportType
+      auth_type: $Enums.McpAuthType
+      auth_config: string
+      server_name: string | null
+      discovered_tools: Prisma.JsonValue
+      last_tool_sync: Date | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["mcpIntegration"]>
+    composites: {}
+  }
+
+  type McpIntegrationGetPayload<S extends boolean | null | undefined | McpIntegrationDefaultArgs> = $Result.GetResult<Prisma.$McpIntegrationPayload, S>
+
+  type McpIntegrationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<McpIntegrationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: McpIntegrationCountAggregateInputType | true
+    }
+
+  export interface McpIntegrationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['McpIntegration'], meta: { name: 'McpIntegration' } }
+    /**
+     * Find zero or one McpIntegration that matches the filter.
+     * @param {McpIntegrationFindUniqueArgs} args - Arguments to find a McpIntegration
+     * @example
+     * // Get one McpIntegration
+     * const mcpIntegration = await prisma.mcpIntegration.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends McpIntegrationFindUniqueArgs>(args: SelectSubset<T, McpIntegrationFindUniqueArgs<ExtArgs>>): Prisma__McpIntegrationClient<$Result.GetResult<Prisma.$McpIntegrationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one McpIntegration that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {McpIntegrationFindUniqueOrThrowArgs} args - Arguments to find a McpIntegration
+     * @example
+     * // Get one McpIntegration
+     * const mcpIntegration = await prisma.mcpIntegration.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends McpIntegrationFindUniqueOrThrowArgs>(args: SelectSubset<T, McpIntegrationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__McpIntegrationClient<$Result.GetResult<Prisma.$McpIntegrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first McpIntegration that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpIntegrationFindFirstArgs} args - Arguments to find a McpIntegration
+     * @example
+     * // Get one McpIntegration
+     * const mcpIntegration = await prisma.mcpIntegration.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends McpIntegrationFindFirstArgs>(args?: SelectSubset<T, McpIntegrationFindFirstArgs<ExtArgs>>): Prisma__McpIntegrationClient<$Result.GetResult<Prisma.$McpIntegrationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first McpIntegration that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpIntegrationFindFirstOrThrowArgs} args - Arguments to find a McpIntegration
+     * @example
+     * // Get one McpIntegration
+     * const mcpIntegration = await prisma.mcpIntegration.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends McpIntegrationFindFirstOrThrowArgs>(args?: SelectSubset<T, McpIntegrationFindFirstOrThrowArgs<ExtArgs>>): Prisma__McpIntegrationClient<$Result.GetResult<Prisma.$McpIntegrationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more McpIntegrations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpIntegrationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all McpIntegrations
+     * const mcpIntegrations = await prisma.mcpIntegration.findMany()
+     * 
+     * // Get first 10 McpIntegrations
+     * const mcpIntegrations = await prisma.mcpIntegration.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const mcpIntegrationWithIdOnly = await prisma.mcpIntegration.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends McpIntegrationFindManyArgs>(args?: SelectSubset<T, McpIntegrationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$McpIntegrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a McpIntegration.
+     * @param {McpIntegrationCreateArgs} args - Arguments to create a McpIntegration.
+     * @example
+     * // Create one McpIntegration
+     * const McpIntegration = await prisma.mcpIntegration.create({
+     *   data: {
+     *     // ... data to create a McpIntegration
+     *   }
+     * })
+     * 
+     */
+    create<T extends McpIntegrationCreateArgs>(args: SelectSubset<T, McpIntegrationCreateArgs<ExtArgs>>): Prisma__McpIntegrationClient<$Result.GetResult<Prisma.$McpIntegrationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many McpIntegrations.
+     * @param {McpIntegrationCreateManyArgs} args - Arguments to create many McpIntegrations.
+     * @example
+     * // Create many McpIntegrations
+     * const mcpIntegration = await prisma.mcpIntegration.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends McpIntegrationCreateManyArgs>(args?: SelectSubset<T, McpIntegrationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many McpIntegrations and returns the data saved in the database.
+     * @param {McpIntegrationCreateManyAndReturnArgs} args - Arguments to create many McpIntegrations.
+     * @example
+     * // Create many McpIntegrations
+     * const mcpIntegration = await prisma.mcpIntegration.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many McpIntegrations and only return the `id`
+     * const mcpIntegrationWithIdOnly = await prisma.mcpIntegration.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends McpIntegrationCreateManyAndReturnArgs>(args?: SelectSubset<T, McpIntegrationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$McpIntegrationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a McpIntegration.
+     * @param {McpIntegrationDeleteArgs} args - Arguments to delete one McpIntegration.
+     * @example
+     * // Delete one McpIntegration
+     * const McpIntegration = await prisma.mcpIntegration.delete({
+     *   where: {
+     *     // ... filter to delete one McpIntegration
+     *   }
+     * })
+     * 
+     */
+    delete<T extends McpIntegrationDeleteArgs>(args: SelectSubset<T, McpIntegrationDeleteArgs<ExtArgs>>): Prisma__McpIntegrationClient<$Result.GetResult<Prisma.$McpIntegrationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one McpIntegration.
+     * @param {McpIntegrationUpdateArgs} args - Arguments to update one McpIntegration.
+     * @example
+     * // Update one McpIntegration
+     * const mcpIntegration = await prisma.mcpIntegration.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends McpIntegrationUpdateArgs>(args: SelectSubset<T, McpIntegrationUpdateArgs<ExtArgs>>): Prisma__McpIntegrationClient<$Result.GetResult<Prisma.$McpIntegrationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more McpIntegrations.
+     * @param {McpIntegrationDeleteManyArgs} args - Arguments to filter McpIntegrations to delete.
+     * @example
+     * // Delete a few McpIntegrations
+     * const { count } = await prisma.mcpIntegration.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends McpIntegrationDeleteManyArgs>(args?: SelectSubset<T, McpIntegrationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more McpIntegrations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpIntegrationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many McpIntegrations
+     * const mcpIntegration = await prisma.mcpIntegration.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends McpIntegrationUpdateManyArgs>(args: SelectSubset<T, McpIntegrationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more McpIntegrations and returns the data updated in the database.
+     * @param {McpIntegrationUpdateManyAndReturnArgs} args - Arguments to update many McpIntegrations.
+     * @example
+     * // Update many McpIntegrations
+     * const mcpIntegration = await prisma.mcpIntegration.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more McpIntegrations and only return the `id`
+     * const mcpIntegrationWithIdOnly = await prisma.mcpIntegration.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends McpIntegrationUpdateManyAndReturnArgs>(args: SelectSubset<T, McpIntegrationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$McpIntegrationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one McpIntegration.
+     * @param {McpIntegrationUpsertArgs} args - Arguments to update or create a McpIntegration.
+     * @example
+     * // Update or create a McpIntegration
+     * const mcpIntegration = await prisma.mcpIntegration.upsert({
+     *   create: {
+     *     // ... data to create a McpIntegration
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the McpIntegration we want to update
+     *   }
+     * })
+     */
+    upsert<T extends McpIntegrationUpsertArgs>(args: SelectSubset<T, McpIntegrationUpsertArgs<ExtArgs>>): Prisma__McpIntegrationClient<$Result.GetResult<Prisma.$McpIntegrationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of McpIntegrations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpIntegrationCountArgs} args - Arguments to filter McpIntegrations to count.
+     * @example
+     * // Count the number of McpIntegrations
+     * const count = await prisma.mcpIntegration.count({
+     *   where: {
+     *     // ... the filter for the McpIntegrations we want to count
+     *   }
+     * })
+    **/
+    count<T extends McpIntegrationCountArgs>(
+      args?: Subset<T, McpIntegrationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], McpIntegrationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a McpIntegration.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpIntegrationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends McpIntegrationAggregateArgs>(args: Subset<T, McpIntegrationAggregateArgs>): Prisma.PrismaPromise<GetMcpIntegrationAggregateType<T>>
+
+    /**
+     * Group by McpIntegration.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {McpIntegrationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends McpIntegrationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: McpIntegrationGroupByArgs['orderBy'] }
+        : { orderBy?: McpIntegrationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, McpIntegrationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMcpIntegrationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the McpIntegration model
+   */
+  readonly fields: McpIntegrationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for McpIntegration.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__McpIntegrationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    integration<T extends IntegrationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, IntegrationDefaultArgs<ExtArgs>>): Prisma__IntegrationClient<$Result.GetResult<Prisma.$IntegrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the McpIntegration model
+   */
+  interface McpIntegrationFieldRefs {
+    readonly id: FieldRef<"McpIntegration", 'Int'>
+    readonly uuid: FieldRef<"McpIntegration", 'String'>
+    readonly integration_uuid: FieldRef<"McpIntegration", 'String'>
+    readonly server_url: FieldRef<"McpIntegration", 'String'>
+    readonly transport_type: FieldRef<"McpIntegration", 'McpTransportType'>
+    readonly auth_type: FieldRef<"McpIntegration", 'McpAuthType'>
+    readonly auth_config: FieldRef<"McpIntegration", 'String'>
+    readonly server_name: FieldRef<"McpIntegration", 'String'>
+    readonly discovered_tools: FieldRef<"McpIntegration", 'Json'>
+    readonly last_tool_sync: FieldRef<"McpIntegration", 'DateTime'>
+    readonly created_at: FieldRef<"McpIntegration", 'DateTime'>
+    readonly updated_at: FieldRef<"McpIntegration", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * McpIntegration findUnique
+   */
+  export type McpIntegrationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpIntegration
+     */
+    select?: McpIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the McpIntegration
+     */
+    omit?: McpIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpIntegrationInclude<ExtArgs> | null
+    /**
+     * Filter, which McpIntegration to fetch.
+     */
+    where: McpIntegrationWhereUniqueInput
+  }
+
+  /**
+   * McpIntegration findUniqueOrThrow
+   */
+  export type McpIntegrationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpIntegration
+     */
+    select?: McpIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the McpIntegration
+     */
+    omit?: McpIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpIntegrationInclude<ExtArgs> | null
+    /**
+     * Filter, which McpIntegration to fetch.
+     */
+    where: McpIntegrationWhereUniqueInput
+  }
+
+  /**
+   * McpIntegration findFirst
+   */
+  export type McpIntegrationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpIntegration
+     */
+    select?: McpIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the McpIntegration
+     */
+    omit?: McpIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpIntegrationInclude<ExtArgs> | null
+    /**
+     * Filter, which McpIntegration to fetch.
+     */
+    where?: McpIntegrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of McpIntegrations to fetch.
+     */
+    orderBy?: McpIntegrationOrderByWithRelationInput | McpIntegrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for McpIntegrations.
+     */
+    cursor?: McpIntegrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` McpIntegrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` McpIntegrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of McpIntegrations.
+     */
+    distinct?: McpIntegrationScalarFieldEnum | McpIntegrationScalarFieldEnum[]
+  }
+
+  /**
+   * McpIntegration findFirstOrThrow
+   */
+  export type McpIntegrationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpIntegration
+     */
+    select?: McpIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the McpIntegration
+     */
+    omit?: McpIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpIntegrationInclude<ExtArgs> | null
+    /**
+     * Filter, which McpIntegration to fetch.
+     */
+    where?: McpIntegrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of McpIntegrations to fetch.
+     */
+    orderBy?: McpIntegrationOrderByWithRelationInput | McpIntegrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for McpIntegrations.
+     */
+    cursor?: McpIntegrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` McpIntegrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` McpIntegrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of McpIntegrations.
+     */
+    distinct?: McpIntegrationScalarFieldEnum | McpIntegrationScalarFieldEnum[]
+  }
+
+  /**
+   * McpIntegration findMany
+   */
+  export type McpIntegrationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpIntegration
+     */
+    select?: McpIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the McpIntegration
+     */
+    omit?: McpIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpIntegrationInclude<ExtArgs> | null
+    /**
+     * Filter, which McpIntegrations to fetch.
+     */
+    where?: McpIntegrationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of McpIntegrations to fetch.
+     */
+    orderBy?: McpIntegrationOrderByWithRelationInput | McpIntegrationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing McpIntegrations.
+     */
+    cursor?: McpIntegrationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` McpIntegrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` McpIntegrations.
+     */
+    skip?: number
+    distinct?: McpIntegrationScalarFieldEnum | McpIntegrationScalarFieldEnum[]
+  }
+
+  /**
+   * McpIntegration create
+   */
+  export type McpIntegrationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpIntegration
+     */
+    select?: McpIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the McpIntegration
+     */
+    omit?: McpIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpIntegrationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a McpIntegration.
+     */
+    data: XOR<McpIntegrationCreateInput, McpIntegrationUncheckedCreateInput>
+  }
+
+  /**
+   * McpIntegration createMany
+   */
+  export type McpIntegrationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many McpIntegrations.
+     */
+    data: McpIntegrationCreateManyInput | McpIntegrationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * McpIntegration createManyAndReturn
+   */
+  export type McpIntegrationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpIntegration
+     */
+    select?: McpIntegrationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the McpIntegration
+     */
+    omit?: McpIntegrationOmit<ExtArgs> | null
+    /**
+     * The data used to create many McpIntegrations.
+     */
+    data: McpIntegrationCreateManyInput | McpIntegrationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpIntegrationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * McpIntegration update
+   */
+  export type McpIntegrationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpIntegration
+     */
+    select?: McpIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the McpIntegration
+     */
+    omit?: McpIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpIntegrationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a McpIntegration.
+     */
+    data: XOR<McpIntegrationUpdateInput, McpIntegrationUncheckedUpdateInput>
+    /**
+     * Choose, which McpIntegration to update.
+     */
+    where: McpIntegrationWhereUniqueInput
+  }
+
+  /**
+   * McpIntegration updateMany
+   */
+  export type McpIntegrationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update McpIntegrations.
+     */
+    data: XOR<McpIntegrationUpdateManyMutationInput, McpIntegrationUncheckedUpdateManyInput>
+    /**
+     * Filter which McpIntegrations to update
+     */
+    where?: McpIntegrationWhereInput
+    /**
+     * Limit how many McpIntegrations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * McpIntegration updateManyAndReturn
+   */
+  export type McpIntegrationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpIntegration
+     */
+    select?: McpIntegrationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the McpIntegration
+     */
+    omit?: McpIntegrationOmit<ExtArgs> | null
+    /**
+     * The data used to update McpIntegrations.
+     */
+    data: XOR<McpIntegrationUpdateManyMutationInput, McpIntegrationUncheckedUpdateManyInput>
+    /**
+     * Filter which McpIntegrations to update
+     */
+    where?: McpIntegrationWhereInput
+    /**
+     * Limit how many McpIntegrations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpIntegrationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * McpIntegration upsert
+   */
+  export type McpIntegrationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpIntegration
+     */
+    select?: McpIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the McpIntegration
+     */
+    omit?: McpIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpIntegrationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the McpIntegration to update in case it exists.
+     */
+    where: McpIntegrationWhereUniqueInput
+    /**
+     * In case the McpIntegration found by the `where` argument doesn't exist, create a new McpIntegration with this data.
+     */
+    create: XOR<McpIntegrationCreateInput, McpIntegrationUncheckedCreateInput>
+    /**
+     * In case the McpIntegration was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<McpIntegrationUpdateInput, McpIntegrationUncheckedUpdateInput>
+  }
+
+  /**
+   * McpIntegration delete
+   */
+  export type McpIntegrationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpIntegration
+     */
+    select?: McpIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the McpIntegration
+     */
+    omit?: McpIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpIntegrationInclude<ExtArgs> | null
+    /**
+     * Filter which McpIntegration to delete.
+     */
+    where: McpIntegrationWhereUniqueInput
+  }
+
+  /**
+   * McpIntegration deleteMany
+   */
+  export type McpIntegrationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which McpIntegrations to delete
+     */
+    where?: McpIntegrationWhereInput
+    /**
+     * Limit how many McpIntegrations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * McpIntegration without action
+   */
+  export type McpIntegrationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the McpIntegration
+     */
+    select?: McpIntegrationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the McpIntegration
+     */
+    omit?: McpIntegrationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: McpIntegrationInclude<ExtArgs> | null
   }
 
 
@@ -16147,6 +17467,24 @@ export namespace Prisma {
   export type OpenApiIntegrationScalarFieldEnum = (typeof OpenApiIntegrationScalarFieldEnum)[keyof typeof OpenApiIntegrationScalarFieldEnum]
 
 
+  export const McpIntegrationScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    integration_uuid: 'integration_uuid',
+    server_url: 'server_url',
+    transport_type: 'transport_type',
+    auth_type: 'auth_type',
+    auth_config: 'auth_config',
+    server_name: 'server_name',
+    discovered_tools: 'discovered_tools',
+    last_tool_sync: 'last_tool_sync',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type McpIntegrationScalarFieldEnum = (typeof McpIntegrationScalarFieldEnum)[keyof typeof McpIntegrationScalarFieldEnum]
+
+
   export const IntegrationActionScalarFieldEnum: {
     id: 'id',
     uuid: 'uuid',
@@ -16388,6 +17726,34 @@ export namespace Prisma {
    * Reference to a field of type 'OpenApiAuthType[]'
    */
   export type ListEnumOpenApiAuthTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OpenApiAuthType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'McpTransportType'
+   */
+  export type EnumMcpTransportTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'McpTransportType'>
+    
+
+
+  /**
+   * Reference to a field of type 'McpTransportType[]'
+   */
+  export type ListEnumMcpTransportTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'McpTransportType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'McpAuthType'
+   */
+  export type EnumMcpAuthTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'McpAuthType'>
+    
+
+
+  /**
+   * Reference to a field of type 'McpAuthType[]'
+   */
+  export type ListEnumMcpAuthTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'McpAuthType[]'>
     
 
 
@@ -16928,6 +18294,7 @@ export namespace Prisma {
     actions?: IntegrationActionListRelationFilter
     database?: XOR<DatabaseIntegrationNullableScalarRelationFilter, DatabaseIntegrationWhereInput> | null
     openapi?: XOR<OpenApiIntegrationNullableScalarRelationFilter, OpenApiIntegrationWhereInput> | null
+    mcp?: XOR<McpIntegrationNullableScalarRelationFilter, McpIntegrationWhereInput> | null
   }
 
   export type IntegrationOrderByWithRelationInput = {
@@ -16946,6 +18313,7 @@ export namespace Prisma {
     actions?: IntegrationActionOrderByRelationAggregateInput
     database?: DatabaseIntegrationOrderByWithRelationInput
     openapi?: OpenApiIntegrationOrderByWithRelationInput
+    mcp?: McpIntegrationOrderByWithRelationInput
   }
 
   export type IntegrationWhereUniqueInput = Prisma.AtLeast<{
@@ -16967,6 +18335,7 @@ export namespace Prisma {
     actions?: IntegrationActionListRelationFilter
     database?: XOR<DatabaseIntegrationNullableScalarRelationFilter, DatabaseIntegrationWhereInput> | null
     openapi?: XOR<OpenApiIntegrationNullableScalarRelationFilter, OpenApiIntegrationWhereInput> | null
+    mcp?: XOR<McpIntegrationNullableScalarRelationFilter, McpIntegrationWhereInput> | null
   }, "id" | "uuid">
 
   export type IntegrationOrderByWithAggregationInput = {
@@ -17172,6 +18541,98 @@ export namespace Prisma {
     generated_tools?: JsonWithAggregatesFilter<"OpenApiIntegration">
     created_at?: DateTimeWithAggregatesFilter<"OpenApiIntegration"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"OpenApiIntegration"> | Date | string
+  }
+
+  export type McpIntegrationWhereInput = {
+    AND?: McpIntegrationWhereInput | McpIntegrationWhereInput[]
+    OR?: McpIntegrationWhereInput[]
+    NOT?: McpIntegrationWhereInput | McpIntegrationWhereInput[]
+    id?: IntFilter<"McpIntegration"> | number
+    uuid?: StringFilter<"McpIntegration"> | string
+    integration_uuid?: StringFilter<"McpIntegration"> | string
+    server_url?: StringFilter<"McpIntegration"> | string
+    transport_type?: EnumMcpTransportTypeFilter<"McpIntegration"> | $Enums.McpTransportType
+    auth_type?: EnumMcpAuthTypeFilter<"McpIntegration"> | $Enums.McpAuthType
+    auth_config?: StringFilter<"McpIntegration"> | string
+    server_name?: StringNullableFilter<"McpIntegration"> | string | null
+    discovered_tools?: JsonFilter<"McpIntegration">
+    last_tool_sync?: DateTimeNullableFilter<"McpIntegration"> | Date | string | null
+    created_at?: DateTimeFilter<"McpIntegration"> | Date | string
+    updated_at?: DateTimeFilter<"McpIntegration"> | Date | string
+    integration?: XOR<IntegrationScalarRelationFilter, IntegrationWhereInput>
+  }
+
+  export type McpIntegrationOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    integration_uuid?: SortOrder
+    server_url?: SortOrder
+    transport_type?: SortOrder
+    auth_type?: SortOrder
+    auth_config?: SortOrder
+    server_name?: SortOrderInput | SortOrder
+    discovered_tools?: SortOrder
+    last_tool_sync?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    integration?: IntegrationOrderByWithRelationInput
+  }
+
+  export type McpIntegrationWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    integration_uuid?: string
+    AND?: McpIntegrationWhereInput | McpIntegrationWhereInput[]
+    OR?: McpIntegrationWhereInput[]
+    NOT?: McpIntegrationWhereInput | McpIntegrationWhereInput[]
+    server_url?: StringFilter<"McpIntegration"> | string
+    transport_type?: EnumMcpTransportTypeFilter<"McpIntegration"> | $Enums.McpTransportType
+    auth_type?: EnumMcpAuthTypeFilter<"McpIntegration"> | $Enums.McpAuthType
+    auth_config?: StringFilter<"McpIntegration"> | string
+    server_name?: StringNullableFilter<"McpIntegration"> | string | null
+    discovered_tools?: JsonFilter<"McpIntegration">
+    last_tool_sync?: DateTimeNullableFilter<"McpIntegration"> | Date | string | null
+    created_at?: DateTimeFilter<"McpIntegration"> | Date | string
+    updated_at?: DateTimeFilter<"McpIntegration"> | Date | string
+    integration?: XOR<IntegrationScalarRelationFilter, IntegrationWhereInput>
+  }, "id" | "uuid" | "integration_uuid">
+
+  export type McpIntegrationOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    integration_uuid?: SortOrder
+    server_url?: SortOrder
+    transport_type?: SortOrder
+    auth_type?: SortOrder
+    auth_config?: SortOrder
+    server_name?: SortOrderInput | SortOrder
+    discovered_tools?: SortOrder
+    last_tool_sync?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: McpIntegrationCountOrderByAggregateInput
+    _avg?: McpIntegrationAvgOrderByAggregateInput
+    _max?: McpIntegrationMaxOrderByAggregateInput
+    _min?: McpIntegrationMinOrderByAggregateInput
+    _sum?: McpIntegrationSumOrderByAggregateInput
+  }
+
+  export type McpIntegrationScalarWhereWithAggregatesInput = {
+    AND?: McpIntegrationScalarWhereWithAggregatesInput | McpIntegrationScalarWhereWithAggregatesInput[]
+    OR?: McpIntegrationScalarWhereWithAggregatesInput[]
+    NOT?: McpIntegrationScalarWhereWithAggregatesInput | McpIntegrationScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"McpIntegration"> | number
+    uuid?: StringWithAggregatesFilter<"McpIntegration"> | string
+    integration_uuid?: StringWithAggregatesFilter<"McpIntegration"> | string
+    server_url?: StringWithAggregatesFilter<"McpIntegration"> | string
+    transport_type?: EnumMcpTransportTypeWithAggregatesFilter<"McpIntegration"> | $Enums.McpTransportType
+    auth_type?: EnumMcpAuthTypeWithAggregatesFilter<"McpIntegration"> | $Enums.McpAuthType
+    auth_config?: StringWithAggregatesFilter<"McpIntegration"> | string
+    server_name?: StringNullableWithAggregatesFilter<"McpIntegration"> | string | null
+    discovered_tools?: JsonWithAggregatesFilter<"McpIntegration">
+    last_tool_sync?: DateTimeNullableWithAggregatesFilter<"McpIntegration"> | Date | string | null
+    created_at?: DateTimeWithAggregatesFilter<"McpIntegration"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"McpIntegration"> | Date | string
   }
 
   export type IntegrationActionWhereInput = {
@@ -17817,6 +19278,7 @@ export namespace Prisma {
     actions?: IntegrationActionCreateNestedManyWithoutIntegrationInput
     database?: DatabaseIntegrationCreateNestedOneWithoutIntegrationInput
     openapi?: OpenApiIntegrationCreateNestedOneWithoutIntegrationInput
+    mcp?: McpIntegrationCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationUncheckedCreateInput = {
@@ -17834,6 +19296,7 @@ export namespace Prisma {
     actions?: IntegrationActionUncheckedCreateNestedManyWithoutIntegrationInput
     database?: DatabaseIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
     openapi?: OpenApiIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
+    mcp?: McpIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationUpdateInput = {
@@ -17850,6 +19313,7 @@ export namespace Prisma {
     actions?: IntegrationActionUpdateManyWithoutIntegrationNestedInput
     database?: DatabaseIntegrationUpdateOneWithoutIntegrationNestedInput
     openapi?: OpenApiIntegrationUpdateOneWithoutIntegrationNestedInput
+    mcp?: McpIntegrationUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationUncheckedUpdateInput = {
@@ -17867,6 +19331,7 @@ export namespace Prisma {
     actions?: IntegrationActionUncheckedUpdateManyWithoutIntegrationNestedInput
     database?: DatabaseIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
     openapi?: OpenApiIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
+    mcp?: McpIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationCreateManyInput = {
@@ -18086,6 +19551,107 @@ export namespace Prisma {
     auth_type?: EnumOpenApiAuthTypeFieldUpdateOperationsInput | $Enums.OpenApiAuthType
     auth_config?: StringFieldUpdateOperationsInput | string
     generated_tools?: JsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type McpIntegrationCreateInput = {
+    uuid?: string
+    server_url: string
+    transport_type?: $Enums.McpTransportType
+    auth_type?: $Enums.McpAuthType
+    auth_config: string
+    server_name?: string | null
+    discovered_tools?: JsonNullValueInput | InputJsonValue
+    last_tool_sync?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    integration: IntegrationCreateNestedOneWithoutMcpInput
+  }
+
+  export type McpIntegrationUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    integration_uuid: string
+    server_url: string
+    transport_type?: $Enums.McpTransportType
+    auth_type?: $Enums.McpAuthType
+    auth_config: string
+    server_name?: string | null
+    discovered_tools?: JsonNullValueInput | InputJsonValue
+    last_tool_sync?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type McpIntegrationUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    server_url?: StringFieldUpdateOperationsInput | string
+    transport_type?: EnumMcpTransportTypeFieldUpdateOperationsInput | $Enums.McpTransportType
+    auth_type?: EnumMcpAuthTypeFieldUpdateOperationsInput | $Enums.McpAuthType
+    auth_config?: StringFieldUpdateOperationsInput | string
+    server_name?: NullableStringFieldUpdateOperationsInput | string | null
+    discovered_tools?: JsonNullValueInput | InputJsonValue
+    last_tool_sync?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    integration?: IntegrationUpdateOneRequiredWithoutMcpNestedInput
+  }
+
+  export type McpIntegrationUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    integration_uuid?: StringFieldUpdateOperationsInput | string
+    server_url?: StringFieldUpdateOperationsInput | string
+    transport_type?: EnumMcpTransportTypeFieldUpdateOperationsInput | $Enums.McpTransportType
+    auth_type?: EnumMcpAuthTypeFieldUpdateOperationsInput | $Enums.McpAuthType
+    auth_config?: StringFieldUpdateOperationsInput | string
+    server_name?: NullableStringFieldUpdateOperationsInput | string | null
+    discovered_tools?: JsonNullValueInput | InputJsonValue
+    last_tool_sync?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type McpIntegrationCreateManyInput = {
+    id?: number
+    uuid?: string
+    integration_uuid: string
+    server_url: string
+    transport_type?: $Enums.McpTransportType
+    auth_type?: $Enums.McpAuthType
+    auth_config: string
+    server_name?: string | null
+    discovered_tools?: JsonNullValueInput | InputJsonValue
+    last_tool_sync?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type McpIntegrationUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    server_url?: StringFieldUpdateOperationsInput | string
+    transport_type?: EnumMcpTransportTypeFieldUpdateOperationsInput | $Enums.McpTransportType
+    auth_type?: EnumMcpAuthTypeFieldUpdateOperationsInput | $Enums.McpAuthType
+    auth_config?: StringFieldUpdateOperationsInput | string
+    server_name?: NullableStringFieldUpdateOperationsInput | string | null
+    discovered_tools?: JsonNullValueInput | InputJsonValue
+    last_tool_sync?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type McpIntegrationUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    integration_uuid?: StringFieldUpdateOperationsInput | string
+    server_url?: StringFieldUpdateOperationsInput | string
+    transport_type?: EnumMcpTransportTypeFieldUpdateOperationsInput | $Enums.McpTransportType
+    auth_type?: EnumMcpAuthTypeFieldUpdateOperationsInput | $Enums.McpAuthType
+    auth_config?: StringFieldUpdateOperationsInput | string
+    server_name?: NullableStringFieldUpdateOperationsInput | string | null
+    discovered_tools?: JsonNullValueInput | InputJsonValue
+    last_tool_sync?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18888,6 +20454,11 @@ export namespace Prisma {
     isNot?: OpenApiIntegrationWhereInput | null
   }
 
+  export type McpIntegrationNullableScalarRelationFilter = {
+    is?: McpIntegrationWhereInput | null
+    isNot?: McpIntegrationWhereInput | null
+  }
+
   export type IntegrationActionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -19120,6 +20691,91 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumOpenApiAuthTypeFilter<$PrismaModel>
     _max?: NestedEnumOpenApiAuthTypeFilter<$PrismaModel>
+  }
+
+  export type EnumMcpTransportTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.McpTransportType | EnumMcpTransportTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.McpTransportType[] | ListEnumMcpTransportTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.McpTransportType[] | ListEnumMcpTransportTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMcpTransportTypeFilter<$PrismaModel> | $Enums.McpTransportType
+  }
+
+  export type EnumMcpAuthTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.McpAuthType | EnumMcpAuthTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.McpAuthType[] | ListEnumMcpAuthTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.McpAuthType[] | ListEnumMcpAuthTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMcpAuthTypeFilter<$PrismaModel> | $Enums.McpAuthType
+  }
+
+  export type McpIntegrationCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    integration_uuid?: SortOrder
+    server_url?: SortOrder
+    transport_type?: SortOrder
+    auth_type?: SortOrder
+    auth_config?: SortOrder
+    server_name?: SortOrder
+    discovered_tools?: SortOrder
+    last_tool_sync?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type McpIntegrationAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type McpIntegrationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    integration_uuid?: SortOrder
+    server_url?: SortOrder
+    transport_type?: SortOrder
+    auth_type?: SortOrder
+    auth_config?: SortOrder
+    server_name?: SortOrder
+    last_tool_sync?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type McpIntegrationMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    integration_uuid?: SortOrder
+    server_url?: SortOrder
+    transport_type?: SortOrder
+    auth_type?: SortOrder
+    auth_config?: SortOrder
+    server_name?: SortOrder
+    last_tool_sync?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type McpIntegrationSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type EnumMcpTransportTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.McpTransportType | EnumMcpTransportTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.McpTransportType[] | ListEnumMcpTransportTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.McpTransportType[] | ListEnumMcpTransportTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMcpTransportTypeWithAggregatesFilter<$PrismaModel> | $Enums.McpTransportType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMcpTransportTypeFilter<$PrismaModel>
+    _max?: NestedEnumMcpTransportTypeFilter<$PrismaModel>
+  }
+
+  export type EnumMcpAuthTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.McpAuthType | EnumMcpAuthTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.McpAuthType[] | ListEnumMcpAuthTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.McpAuthType[] | ListEnumMcpAuthTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMcpAuthTypeWithAggregatesFilter<$PrismaModel> | $Enums.McpAuthType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMcpAuthTypeFilter<$PrismaModel>
+    _max?: NestedEnumMcpAuthTypeFilter<$PrismaModel>
   }
 
   export type IntegrationActionIntegration_uuidKeyCompoundUniqueInput = {
@@ -19790,6 +21446,12 @@ export namespace Prisma {
     connect?: OpenApiIntegrationWhereUniqueInput
   }
 
+  export type McpIntegrationCreateNestedOneWithoutIntegrationInput = {
+    create?: XOR<McpIntegrationCreateWithoutIntegrationInput, McpIntegrationUncheckedCreateWithoutIntegrationInput>
+    connectOrCreate?: McpIntegrationCreateOrConnectWithoutIntegrationInput
+    connect?: McpIntegrationWhereUniqueInput
+  }
+
   export type IntegrationActionUncheckedCreateNestedManyWithoutIntegrationInput = {
     create?: XOR<IntegrationActionCreateWithoutIntegrationInput, IntegrationActionUncheckedCreateWithoutIntegrationInput> | IntegrationActionCreateWithoutIntegrationInput[] | IntegrationActionUncheckedCreateWithoutIntegrationInput[]
     connectOrCreate?: IntegrationActionCreateOrConnectWithoutIntegrationInput | IntegrationActionCreateOrConnectWithoutIntegrationInput[]
@@ -19807,6 +21469,12 @@ export namespace Prisma {
     create?: XOR<OpenApiIntegrationCreateWithoutIntegrationInput, OpenApiIntegrationUncheckedCreateWithoutIntegrationInput>
     connectOrCreate?: OpenApiIntegrationCreateOrConnectWithoutIntegrationInput
     connect?: OpenApiIntegrationWhereUniqueInput
+  }
+
+  export type McpIntegrationUncheckedCreateNestedOneWithoutIntegrationInput = {
+    create?: XOR<McpIntegrationCreateWithoutIntegrationInput, McpIntegrationUncheckedCreateWithoutIntegrationInput>
+    connectOrCreate?: McpIntegrationCreateOrConnectWithoutIntegrationInput
+    connect?: McpIntegrationWhereUniqueInput
   }
 
   export type EnumIntegrationProviderFieldUpdateOperationsInput = {
@@ -19859,6 +21527,16 @@ export namespace Prisma {
     update?: XOR<XOR<OpenApiIntegrationUpdateToOneWithWhereWithoutIntegrationInput, OpenApiIntegrationUpdateWithoutIntegrationInput>, OpenApiIntegrationUncheckedUpdateWithoutIntegrationInput>
   }
 
+  export type McpIntegrationUpdateOneWithoutIntegrationNestedInput = {
+    create?: XOR<McpIntegrationCreateWithoutIntegrationInput, McpIntegrationUncheckedCreateWithoutIntegrationInput>
+    connectOrCreate?: McpIntegrationCreateOrConnectWithoutIntegrationInput
+    upsert?: McpIntegrationUpsertWithoutIntegrationInput
+    disconnect?: McpIntegrationWhereInput | boolean
+    delete?: McpIntegrationWhereInput | boolean
+    connect?: McpIntegrationWhereUniqueInput
+    update?: XOR<XOR<McpIntegrationUpdateToOneWithWhereWithoutIntegrationInput, McpIntegrationUpdateWithoutIntegrationInput>, McpIntegrationUncheckedUpdateWithoutIntegrationInput>
+  }
+
   export type IntegrationActionUncheckedUpdateManyWithoutIntegrationNestedInput = {
     create?: XOR<IntegrationActionCreateWithoutIntegrationInput, IntegrationActionUncheckedCreateWithoutIntegrationInput> | IntegrationActionCreateWithoutIntegrationInput[] | IntegrationActionUncheckedCreateWithoutIntegrationInput[]
     connectOrCreate?: IntegrationActionCreateOrConnectWithoutIntegrationInput | IntegrationActionCreateOrConnectWithoutIntegrationInput[]
@@ -19891,6 +21569,16 @@ export namespace Prisma {
     delete?: OpenApiIntegrationWhereInput | boolean
     connect?: OpenApiIntegrationWhereUniqueInput
     update?: XOR<XOR<OpenApiIntegrationUpdateToOneWithWhereWithoutIntegrationInput, OpenApiIntegrationUpdateWithoutIntegrationInput>, OpenApiIntegrationUncheckedUpdateWithoutIntegrationInput>
+  }
+
+  export type McpIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput = {
+    create?: XOR<McpIntegrationCreateWithoutIntegrationInput, McpIntegrationUncheckedCreateWithoutIntegrationInput>
+    connectOrCreate?: McpIntegrationCreateOrConnectWithoutIntegrationInput
+    upsert?: McpIntegrationUpsertWithoutIntegrationInput
+    disconnect?: McpIntegrationWhereInput | boolean
+    delete?: McpIntegrationWhereInput | boolean
+    connect?: McpIntegrationWhereUniqueInput
+    update?: XOR<XOR<McpIntegrationUpdateToOneWithWhereWithoutIntegrationInput, McpIntegrationUpdateWithoutIntegrationInput>, McpIntegrationUncheckedUpdateWithoutIntegrationInput>
   }
 
   export type DatabaseIntegrationCreateallowed_opsInput = {
@@ -19936,6 +21624,28 @@ export namespace Prisma {
     upsert?: IntegrationUpsertWithoutOpenapiInput
     connect?: IntegrationWhereUniqueInput
     update?: XOR<XOR<IntegrationUpdateToOneWithWhereWithoutOpenapiInput, IntegrationUpdateWithoutOpenapiInput>, IntegrationUncheckedUpdateWithoutOpenapiInput>
+  }
+
+  export type IntegrationCreateNestedOneWithoutMcpInput = {
+    create?: XOR<IntegrationCreateWithoutMcpInput, IntegrationUncheckedCreateWithoutMcpInput>
+    connectOrCreate?: IntegrationCreateOrConnectWithoutMcpInput
+    connect?: IntegrationWhereUniqueInput
+  }
+
+  export type EnumMcpTransportTypeFieldUpdateOperationsInput = {
+    set?: $Enums.McpTransportType
+  }
+
+  export type EnumMcpAuthTypeFieldUpdateOperationsInput = {
+    set?: $Enums.McpAuthType
+  }
+
+  export type IntegrationUpdateOneRequiredWithoutMcpNestedInput = {
+    create?: XOR<IntegrationCreateWithoutMcpInput, IntegrationUncheckedCreateWithoutMcpInput>
+    connectOrCreate?: IntegrationCreateOrConnectWithoutMcpInput
+    upsert?: IntegrationUpsertWithoutMcpInput
+    connect?: IntegrationWhereUniqueInput
+    update?: XOR<XOR<IntegrationUpdateToOneWithWhereWithoutMcpInput, IntegrationUpdateWithoutMcpInput>, IntegrationUncheckedUpdateWithoutMcpInput>
   }
 
   export type IntegrationCreateNestedOneWithoutActionsInput = {
@@ -20278,6 +21988,40 @@ export namespace Prisma {
     _max?: NestedEnumOpenApiAuthTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumMcpTransportTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.McpTransportType | EnumMcpTransportTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.McpTransportType[] | ListEnumMcpTransportTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.McpTransportType[] | ListEnumMcpTransportTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMcpTransportTypeFilter<$PrismaModel> | $Enums.McpTransportType
+  }
+
+  export type NestedEnumMcpAuthTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.McpAuthType | EnumMcpAuthTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.McpAuthType[] | ListEnumMcpAuthTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.McpAuthType[] | ListEnumMcpAuthTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMcpAuthTypeFilter<$PrismaModel> | $Enums.McpAuthType
+  }
+
+  export type NestedEnumMcpTransportTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.McpTransportType | EnumMcpTransportTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.McpTransportType[] | ListEnumMcpTransportTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.McpTransportType[] | ListEnumMcpTransportTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMcpTransportTypeWithAggregatesFilter<$PrismaModel> | $Enums.McpTransportType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMcpTransportTypeFilter<$PrismaModel>
+    _max?: NestedEnumMcpTransportTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumMcpAuthTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.McpAuthType | EnumMcpAuthTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.McpAuthType[] | ListEnumMcpAuthTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.McpAuthType[] | ListEnumMcpAuthTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMcpAuthTypeWithAggregatesFilter<$PrismaModel> | $Enums.McpAuthType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMcpAuthTypeFilter<$PrismaModel>
+    _max?: NestedEnumMcpAuthTypeFilter<$PrismaModel>
+  }
+
   export type NestedEnumDocumentTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.DocumentType | EnumDocumentTypeFieldRefInput<$PrismaModel>
     in?: $Enums.DocumentType[] | ListEnumDocumentTypeFieldRefInput<$PrismaModel>
@@ -20516,6 +22260,7 @@ export namespace Prisma {
     actions?: IntegrationActionCreateNestedManyWithoutIntegrationInput
     database?: DatabaseIntegrationCreateNestedOneWithoutIntegrationInput
     openapi?: OpenApiIntegrationCreateNestedOneWithoutIntegrationInput
+    mcp?: McpIntegrationCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationUncheckedCreateWithoutOrganizationInput = {
@@ -20532,6 +22277,7 @@ export namespace Prisma {
     actions?: IntegrationActionUncheckedCreateNestedManyWithoutIntegrationInput
     database?: DatabaseIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
     openapi?: OpenApiIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
+    mcp?: McpIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationCreateOrConnectWithoutOrganizationInput = {
@@ -21350,6 +23096,38 @@ export namespace Prisma {
     create: XOR<OpenApiIntegrationCreateWithoutIntegrationInput, OpenApiIntegrationUncheckedCreateWithoutIntegrationInput>
   }
 
+  export type McpIntegrationCreateWithoutIntegrationInput = {
+    uuid?: string
+    server_url: string
+    transport_type?: $Enums.McpTransportType
+    auth_type?: $Enums.McpAuthType
+    auth_config: string
+    server_name?: string | null
+    discovered_tools?: JsonNullValueInput | InputJsonValue
+    last_tool_sync?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type McpIntegrationUncheckedCreateWithoutIntegrationInput = {
+    id?: number
+    uuid?: string
+    server_url: string
+    transport_type?: $Enums.McpTransportType
+    auth_type?: $Enums.McpAuthType
+    auth_config: string
+    server_name?: string | null
+    discovered_tools?: JsonNullValueInput | InputJsonValue
+    last_tool_sync?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type McpIntegrationCreateOrConnectWithoutIntegrationInput = {
+    where: McpIntegrationWhereUniqueInput
+    create: XOR<McpIntegrationCreateWithoutIntegrationInput, McpIntegrationUncheckedCreateWithoutIntegrationInput>
+  }
+
   export type OrganizationUpsertWithoutIntegrationsInput = {
     update: XOR<OrganizationUpdateWithoutIntegrationsInput, OrganizationUncheckedUpdateWithoutIntegrationsInput>
     create: XOR<OrganizationCreateWithoutIntegrationsInput, OrganizationUncheckedCreateWithoutIntegrationsInput>
@@ -21486,6 +23264,44 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type McpIntegrationUpsertWithoutIntegrationInput = {
+    update: XOR<McpIntegrationUpdateWithoutIntegrationInput, McpIntegrationUncheckedUpdateWithoutIntegrationInput>
+    create: XOR<McpIntegrationCreateWithoutIntegrationInput, McpIntegrationUncheckedCreateWithoutIntegrationInput>
+    where?: McpIntegrationWhereInput
+  }
+
+  export type McpIntegrationUpdateToOneWithWhereWithoutIntegrationInput = {
+    where?: McpIntegrationWhereInput
+    data: XOR<McpIntegrationUpdateWithoutIntegrationInput, McpIntegrationUncheckedUpdateWithoutIntegrationInput>
+  }
+
+  export type McpIntegrationUpdateWithoutIntegrationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    server_url?: StringFieldUpdateOperationsInput | string
+    transport_type?: EnumMcpTransportTypeFieldUpdateOperationsInput | $Enums.McpTransportType
+    auth_type?: EnumMcpAuthTypeFieldUpdateOperationsInput | $Enums.McpAuthType
+    auth_config?: StringFieldUpdateOperationsInput | string
+    server_name?: NullableStringFieldUpdateOperationsInput | string | null
+    discovered_tools?: JsonNullValueInput | InputJsonValue
+    last_tool_sync?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type McpIntegrationUncheckedUpdateWithoutIntegrationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    server_url?: StringFieldUpdateOperationsInput | string
+    transport_type?: EnumMcpTransportTypeFieldUpdateOperationsInput | $Enums.McpTransportType
+    auth_type?: EnumMcpAuthTypeFieldUpdateOperationsInput | $Enums.McpAuthType
+    auth_config?: StringFieldUpdateOperationsInput | string
+    server_name?: NullableStringFieldUpdateOperationsInput | string | null
+    discovered_tools?: JsonNullValueInput | InputJsonValue
+    last_tool_sync?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntegrationCreateWithoutDatabaseInput = {
     uuid?: string
     name: string
@@ -21499,6 +23315,7 @@ export namespace Prisma {
     organization: OrganizationCreateNestedOneWithoutIntegrationsInput
     actions?: IntegrationActionCreateNestedManyWithoutIntegrationInput
     openapi?: OpenApiIntegrationCreateNestedOneWithoutIntegrationInput
+    mcp?: McpIntegrationCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationUncheckedCreateWithoutDatabaseInput = {
@@ -21515,6 +23332,7 @@ export namespace Prisma {
     updated_at?: Date | string
     actions?: IntegrationActionUncheckedCreateNestedManyWithoutIntegrationInput
     openapi?: OpenApiIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
+    mcp?: McpIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationCreateOrConnectWithoutDatabaseInput = {
@@ -21546,6 +23364,7 @@ export namespace Prisma {
     organization?: OrganizationUpdateOneRequiredWithoutIntegrationsNestedInput
     actions?: IntegrationActionUpdateManyWithoutIntegrationNestedInput
     openapi?: OpenApiIntegrationUpdateOneWithoutIntegrationNestedInput
+    mcp?: McpIntegrationUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationUncheckedUpdateWithoutDatabaseInput = {
@@ -21562,6 +23381,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     actions?: IntegrationActionUncheckedUpdateManyWithoutIntegrationNestedInput
     openapi?: OpenApiIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
+    mcp?: McpIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationCreateWithoutOpenapiInput = {
@@ -21577,6 +23397,7 @@ export namespace Prisma {
     organization: OrganizationCreateNestedOneWithoutIntegrationsInput
     actions?: IntegrationActionCreateNestedManyWithoutIntegrationInput
     database?: DatabaseIntegrationCreateNestedOneWithoutIntegrationInput
+    mcp?: McpIntegrationCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationUncheckedCreateWithoutOpenapiInput = {
@@ -21593,6 +23414,7 @@ export namespace Prisma {
     updated_at?: Date | string
     actions?: IntegrationActionUncheckedCreateNestedManyWithoutIntegrationInput
     database?: DatabaseIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
+    mcp?: McpIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationCreateOrConnectWithoutOpenapiInput = {
@@ -21624,6 +23446,7 @@ export namespace Prisma {
     organization?: OrganizationUpdateOneRequiredWithoutIntegrationsNestedInput
     actions?: IntegrationActionUpdateManyWithoutIntegrationNestedInput
     database?: DatabaseIntegrationUpdateOneWithoutIntegrationNestedInput
+    mcp?: McpIntegrationUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationUncheckedUpdateWithoutOpenapiInput = {
@@ -21640,6 +23463,89 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     actions?: IntegrationActionUncheckedUpdateManyWithoutIntegrationNestedInput
     database?: DatabaseIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
+    mcp?: McpIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
+  }
+
+  export type IntegrationCreateWithoutMcpInput = {
+    uuid?: string
+    name: string
+    description?: string | null
+    provider: $Enums.IntegrationProvider
+    status?: $Enums.IntegrationStatus
+    config: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutIntegrationsInput
+    actions?: IntegrationActionCreateNestedManyWithoutIntegrationInput
+    database?: DatabaseIntegrationCreateNestedOneWithoutIntegrationInput
+    openapi?: OpenApiIntegrationCreateNestedOneWithoutIntegrationInput
+  }
+
+  export type IntegrationUncheckedCreateWithoutMcpInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    name: string
+    description?: string | null
+    provider: $Enums.IntegrationProvider
+    status?: $Enums.IntegrationStatus
+    config: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    updated_at?: Date | string
+    actions?: IntegrationActionUncheckedCreateNestedManyWithoutIntegrationInput
+    database?: DatabaseIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
+    openapi?: OpenApiIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
+  }
+
+  export type IntegrationCreateOrConnectWithoutMcpInput = {
+    where: IntegrationWhereUniqueInput
+    create: XOR<IntegrationCreateWithoutMcpInput, IntegrationUncheckedCreateWithoutMcpInput>
+  }
+
+  export type IntegrationUpsertWithoutMcpInput = {
+    update: XOR<IntegrationUpdateWithoutMcpInput, IntegrationUncheckedUpdateWithoutMcpInput>
+    create: XOR<IntegrationCreateWithoutMcpInput, IntegrationUncheckedCreateWithoutMcpInput>
+    where?: IntegrationWhereInput
+  }
+
+  export type IntegrationUpdateToOneWithWhereWithoutMcpInput = {
+    where?: IntegrationWhereInput
+    data: XOR<IntegrationUpdateWithoutMcpInput, IntegrationUncheckedUpdateWithoutMcpInput>
+  }
+
+  export type IntegrationUpdateWithoutMcpInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: EnumIntegrationProviderFieldUpdateOperationsInput | $Enums.IntegrationProvider
+    status?: EnumIntegrationStatusFieldUpdateOperationsInput | $Enums.IntegrationStatus
+    config?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutIntegrationsNestedInput
+    actions?: IntegrationActionUpdateManyWithoutIntegrationNestedInput
+    database?: DatabaseIntegrationUpdateOneWithoutIntegrationNestedInput
+    openapi?: OpenApiIntegrationUpdateOneWithoutIntegrationNestedInput
+  }
+
+  export type IntegrationUncheckedUpdateWithoutMcpInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: EnumIntegrationProviderFieldUpdateOperationsInput | $Enums.IntegrationProvider
+    status?: EnumIntegrationStatusFieldUpdateOperationsInput | $Enums.IntegrationStatus
+    config?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    actions?: IntegrationActionUncheckedUpdateManyWithoutIntegrationNestedInput
+    database?: DatabaseIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
+    openapi?: OpenApiIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationCreateWithoutActionsInput = {
@@ -21655,6 +23561,7 @@ export namespace Prisma {
     organization: OrganizationCreateNestedOneWithoutIntegrationsInput
     database?: DatabaseIntegrationCreateNestedOneWithoutIntegrationInput
     openapi?: OpenApiIntegrationCreateNestedOneWithoutIntegrationInput
+    mcp?: McpIntegrationCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationUncheckedCreateWithoutActionsInput = {
@@ -21671,6 +23578,7 @@ export namespace Prisma {
     updated_at?: Date | string
     database?: DatabaseIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
     openapi?: OpenApiIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
+    mcp?: McpIntegrationUncheckedCreateNestedOneWithoutIntegrationInput
   }
 
   export type IntegrationCreateOrConnectWithoutActionsInput = {
@@ -21702,6 +23610,7 @@ export namespace Prisma {
     organization?: OrganizationUpdateOneRequiredWithoutIntegrationsNestedInput
     database?: DatabaseIntegrationUpdateOneWithoutIntegrationNestedInput
     openapi?: OpenApiIntegrationUpdateOneWithoutIntegrationNestedInput
+    mcp?: McpIntegrationUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationUncheckedUpdateWithoutActionsInput = {
@@ -21718,6 +23627,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     database?: DatabaseIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
     openapi?: OpenApiIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
+    mcp?: McpIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
   }
 
   export type OrganizationMemberCreateManyUserInput = {
@@ -21941,6 +23851,7 @@ export namespace Prisma {
     actions?: IntegrationActionUpdateManyWithoutIntegrationNestedInput
     database?: DatabaseIntegrationUpdateOneWithoutIntegrationNestedInput
     openapi?: OpenApiIntegrationUpdateOneWithoutIntegrationNestedInput
+    mcp?: McpIntegrationUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationUncheckedUpdateWithoutOrganizationInput = {
@@ -21957,6 +23868,7 @@ export namespace Prisma {
     actions?: IntegrationActionUncheckedUpdateManyWithoutIntegrationNestedInput
     database?: DatabaseIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
     openapi?: OpenApiIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
+    mcp?: McpIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
   }
 
   export type IntegrationUncheckedUpdateManyWithoutOrganizationInput = {

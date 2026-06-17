@@ -5,7 +5,7 @@ import { IntegrationProvider, IntegrationStatus } from 'generated/prisma';
 import { DATABASE_PROVIDERS } from './databases/database-integration.types';
 import { CreateIntegrationDto } from './dto/create-integration.dto';
 import { UpdateIntegrationDto } from './dto/update-integration.dto';
-import { IntegrationRegistry } from './framework/integration-registry.service';
+import { IntegrationRegistry } from './framework/registry/integration-registry.service';
 
 @Injectable()
 export class IntegrationsService {
@@ -23,6 +23,10 @@ export class IntegrationsService {
 
       if (dto.provider === IntegrationProvider.OPENAPI) {
         throw new BadRequestException('Use the OpenAPI integration endpoint to create OpenAPI connections');
+      }
+
+      if (dto.provider === IntegrationProvider.MCP) {
+        throw new BadRequestException('Use the MCP integration endpoint to create MCP connections');
       }
 
       return await this.prisma.$transaction(async (tx) => {
@@ -65,7 +69,7 @@ export class IntegrationsService {
     try {
       const integrations = await this.prisma.integration.findMany({
         where: { org_uuid: organizationUuid },
-        include: { actions: true, database: true, openapi: true },
+        include: { actions: true, database: true, openapi: true, mcp: true },
         orderBy: { created_at: 'desc' },
       });
 
@@ -79,7 +83,7 @@ export class IntegrationsService {
     try {
       const integration = await this.prisma.integration.findFirst({
         where: { uuid: integrationUuid, org_uuid: organizationUuid },
-        include: { actions: true, database: true, openapi: true },
+        include: { actions: true, database: true, openapi: true, mcp: true },
       });
 
       if (!integration) {
@@ -154,10 +158,10 @@ export class IntegrationsService {
     return integration;
   }
 
-  private sanitizeIntegration<T extends { config?: string; database?: any; openapi?: any }>(integration: T) {
-    const { config: _config, database, openapi, ...safe_integration } = integration;
+  private sanitizeIntegration<T extends { config?: string; database?: any; openapi?: any; mcp?: any }>(integration: T) {
+    const { config: _config, database, openapi, mcp, ...safe_integration } = integration;
 
-    if (!database && !openapi) {
+    if (!database && !openapi && !mcp) {
       return safe_integration;
     }
 
@@ -173,11 +177,18 @@ export class IntegrationsService {
           return rest;
         })()
       : undefined;
+    const safe_mcp = mcp
+      ? (() => {
+          const { auth_config: _auth_config, ...rest } = mcp;
+          return rest;
+        })()
+      : undefined;
 
     return {
       ...safe_integration,
       ...(database ? { database: safe_database } : {}),
       ...(openapi ? { openapi: safe_openapi } : {}),
+      ...(mcp ? { mcp: safe_mcp } : {}),
     };
   }
 

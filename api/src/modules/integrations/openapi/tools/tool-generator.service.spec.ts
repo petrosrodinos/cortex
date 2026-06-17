@@ -1,5 +1,5 @@
 import { ToolGeneratorService } from './tool-generator.service';
-import { ParsedSpec } from './openapi.types';
+import { ParsedSpec } from '../types/openapi.types';
 
 describe('ToolGeneratorService', () => {
   it('generates integration-scoped OpenAI function tools from operations', () => {

@@ -1,8 +1,7 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PrismaModule } from '@/core/databases/prisma/prisma.module';
 import { IntegrationFrameworkModule } from '../framework/integration-framework.module';
-import { IntegrationRegistry } from '../framework/integration-registry.service';
-import { DatabaseAdapterFactory } from './adapters/database-adapter.factory';
+import { DatabaseAdapterFactory } from './adapters/factory/database-adapter.factory';
 import { DatabaseIntegrationsController } from './database-integrations.controller';
 import { DatabaseIntegrationsService } from './database-integrations.service';
 import {
@@ -10,21 +9,7 @@ import {
   MysqlDatabaseIntegration,
   PostgresDatabaseIntegration,
 } from './database.integration';
-
-class DatabaseIntegrationsRegistrar implements OnModuleInit {
-  constructor(
-    private readonly registry: IntegrationRegistry,
-    private readonly postgres: PostgresDatabaseIntegration,
-    private readonly mysql: MysqlDatabaseIntegration,
-    private readonly mongo: MongoDatabaseIntegration,
-  ) {}
-
-  onModuleInit() {
-    this.registry.register(this.postgres);
-    this.registry.register(this.mysql);
-    this.registry.register(this.mongo);
-  }
-}
+import { DatabaseIntegrationRegistrar } from './integration/database-integration.registrar';
 
 @Module({
   imports: [PrismaModule, IntegrationFrameworkModule],
@@ -35,7 +20,7 @@ class DatabaseIntegrationsRegistrar implements OnModuleInit {
     PostgresDatabaseIntegration,
     MysqlDatabaseIntegration,
     MongoDatabaseIntegration,
-    DatabaseIntegrationsRegistrar,
+    DatabaseIntegrationRegistrar,
   ],
   exports: [DatabaseIntegrationsService, DatabaseAdapterFactory],
 })

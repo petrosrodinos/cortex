@@ -1,23 +1,12 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { IntegrationFrameworkModule } from '../framework/integration-framework.module';
-import { IntegrationRegistry } from '../framework/integration-registry.service';
-import { OpenApiAuthService } from './openapi-auth.service';
-import { OpenApiIntegration } from './openapi.integration';
-import { OpenApiIntegrationsController } from './openapi-integrations.controller';
-import { OpenApiIntegrationsService } from './openapi-integrations.service';
-import { OpenApiParserService } from './openapi-parser.service';
-import { ToolGeneratorService } from './tool-generator.service';
-
-class OpenApiIntegrationRegistrar implements OnModuleInit {
-  constructor(
-    private readonly registry: IntegrationRegistry,
-    private readonly openApiIntegration: OpenApiIntegration,
-  ) {}
-
-  onModuleInit() {
-    this.registry.register(this.openApiIntegration);
-  }
-}
+import { OpenApiAuthService } from './auth/openapi-auth.service';
+import { OpenApiIntegrationsController } from './controllers/openapi-integrations.controller';
+import { OpenApiIntegrationRegistrar } from './integration/openapi-integration.registrar';
+import { OpenApiIntegration } from './integration/openapi.integration';
+import { OpenApiParserService } from './parser/openapi-parser.service';
+import { OpenApiIntegrationsService } from './services/openapi-integrations.service';
+import { ToolGeneratorService } from './tools/tool-generator.service';
 
 @Module({
   imports: [IntegrationFrameworkModule],

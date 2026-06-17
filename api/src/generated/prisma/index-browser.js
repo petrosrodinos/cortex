@@ -228,6 +228,21 @@ exports.Prisma.OpenApiIntegrationScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.McpIntegrationScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  integration_uuid: 'integration_uuid',
+  server_url: 'server_url',
+  transport_type: 'transport_type',
+  auth_type: 'auth_type',
+  auth_config: 'auth_config',
+  server_name: 'server_name',
+  discovered_tools: 'discovered_tools',
+  last_tool_sync: 'last_tool_sync',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.IntegrationActionScalarFieldEnum = {
   id: 'id',
   uuid: 'uuid',
@@ -309,7 +324,8 @@ exports.IntegrationProvider = exports.$Enums.IntegrationProvider = {
   DATABASE_PG: 'DATABASE_PG',
   DATABASE_MYSQL: 'DATABASE_MYSQL',
   DATABASE_MONGO: 'DATABASE_MONGO',
-  OPENAPI: 'OPENAPI'
+  OPENAPI: 'OPENAPI',
+  MCP: 'MCP'
 };
 
 exports.IntegrationStatus = exports.$Enums.IntegrationStatus = {
@@ -339,6 +355,18 @@ exports.OpenApiAuthType = exports.$Enums.OpenApiAuthType = {
   CUSTOM_HEADERS: 'CUSTOM_HEADERS'
 };
 
+exports.McpTransportType = exports.$Enums.McpTransportType = {
+  HTTP: 'HTTP',
+  SSE: 'SSE'
+};
+
+exports.McpAuthType = exports.$Enums.McpAuthType = {
+  NONE: 'NONE',
+  BEARER: 'BEARER',
+  CUSTOM_HEADERS: 'CUSTOM_HEADERS',
+  OAUTH: 'OAUTH'
+};
+
 exports.DocumentType = exports.$Enums.DocumentType = {
   LOGO: 'LOGO',
   BANNER: 'BANNER',
@@ -361,6 +389,7 @@ exports.Prisma.ModelName = {
   Integration: 'Integration',
   DatabaseIntegration: 'DatabaseIntegration',
   OpenApiIntegration: 'OpenApiIntegration',
+  McpIntegration: 'McpIntegration',
   IntegrationAction: 'IntegrationAction',
   Document: 'Document'
 };

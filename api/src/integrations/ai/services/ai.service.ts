@@ -30,7 +30,7 @@ export class AiService {
                 model: modelAdapter,
                 system: options?.system || 'You are a helpful assistant.',
                 temperature: options.temperature,
-                maxTokens: options.maxTokens,
+                maxOutputTokens: options.maxTokens,
                 topP: options.topP,
                 frequencyPenalty: options.frequencyPenalty,
                 presencePenalty: options.presencePenalty,
@@ -39,8 +39,8 @@ export class AiService {
             const cost = calculateAiCost({
                 provider: options.provider,
                 model: options.model,
-                inputTokens: usage.promptTokens,
-                outputTokens: usage.completionTokens,
+                inputTokens: usage.inputTokens ?? 0,
+                outputTokens: usage.outputTokens ?? 0,
             });
 
             return {
@@ -62,10 +62,12 @@ export class AiService {
             try {
                 const modelAdapter = this.aiConfig.getModelAdapter(options.provider, options.model);
 
-                const { object, usage } = await generateObject({
+                const schema = (options?.schema ?? z.array(z.unknown())) as z.ZodTypeAny;
+
+                const { object, usage } = await (generateObject as any)({
                     model: modelAdapter,
                     output: 'array',
-                    schema: options?.schema || z.any(),
+                    schema,
                     prompt: options.prompt,
                     system: options?.system || 'You are a helpful assistant.',
                 });
@@ -73,8 +75,8 @@ export class AiService {
                 const cost = calculateAiCost({
                     provider: options.provider,
                     model: options.model,
-                    inputTokens: usage.promptTokens,
-                    outputTokens: usage.completionTokens,
+                    inputTokens: usage.inputTokens ?? 0,
+                    outputTokens: usage.outputTokens ?? 0,
                 });
 
                 return {
@@ -110,7 +112,7 @@ export class AiService {
                 system: options.system,
                 prompt: options.prompt,
                 temperature: options.temperature,
-                maxTokens: options.maxTokens,
+                maxOutputTokens: options.maxTokens,
                 topP: options.topP,
                 frequencyPenalty: options.frequencyPenalty,
                 presencePenalty: options.presencePenalty,

@@ -2,8 +2,8 @@ import { BadRequestException, HttpException, Injectable, NotFoundException } fro
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
 import { DatabaseOperation, IntegrationStatus, Prisma } from 'generated/prisma';
-import { IntegrationRegistry } from '../framework/integration-registry.service';
-import { DatabaseAdapterFactory } from './adapters/database-adapter.factory';
+import { IntegrationRegistry } from '../framework/registry/integration-registry.service';
+import { DatabaseAdapterFactory } from './adapters/factory/database-adapter.factory';
 import { formatDatabaseSchema } from './database-schema.formatter';
 import {
   DATABASE_PROVIDERS,

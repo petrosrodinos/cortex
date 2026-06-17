@@ -4,8 +4,8 @@ import { z } from 'zod';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
 import { Integration, IntegrationProvider } from 'generated/prisma';
-import { AiTool, IntegrationActionSeed } from '../framework/ai-tool.interface';
-import { BaseIntegration } from '../framework/base-integration';
+import { AiTool, IntegrationActionSeed } from '../framework/interfaces/ai-tool.interface';
+import { BaseIntegration } from '../framework/base/base-integration';
 
 export type SaasActionDefinition = IntegrationActionSeed & {
   parameters: Record<string, any>;

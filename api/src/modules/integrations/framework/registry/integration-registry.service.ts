@@ -1,9 +1,9 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { IntegrationProvider, IntegrationStatus } from 'generated/prisma';
-import { DATABASE_PROVIDERS } from '../databases/database-integration.types';
-import { AiTool } from './ai-tool.interface';
-import { IIntegration } from './integration.interface';
+import { DATABASE_PROVIDERS } from '../../databases/database-integration.types';
+import { AiTool } from '../interfaces/ai-tool.interface';
+import { IIntegration } from '../interfaces/integration.interface';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class IntegrationRegistry {
@@ -32,6 +32,10 @@ export class IntegrationRegistry {
 
     if (toolName.startsWith('openapi_')) {
       return await this.executeOpenApiTool(organizationUuid, toolName, input);
+    }
+
+    if (toolName.startsWith('mcp_')) {
+      return await this.executeMcpTool(organizationUuid, toolName, input);
     }
 
     const [providerKey] = toolName.split('__');
@@ -66,6 +70,7 @@ export class IntegrationRegistry {
       include: {
         database: true,
         openapi: true,
+        mcp: true,
         actions: {
           where: { enabled: true },
         },
@@ -84,6 +89,7 @@ export class IntegrationRegistry {
           `${integration.provider.toLowerCase()}__${action.key}`,
           ...(DATABASE_PROVIDERS.includes(integration.provider as any) ? [`db__${action.key}`] : []),
           ...(integration.provider === IntegrationProvider.OPENAPI ? [`openapi_${integration.uuid.slice(0, 8)}__${action.key}`] : []),
+          ...(integration.provider === IntegrationProvider.MCP ? [`mcp_${integration.uuid.slice(0, 8)}__${action.key}`] : []),
         ]),
       );
 
@@ -160,6 +166,30 @@ export class IntegrationRegistry {
     }
 
     const handler = this.getByProvider(IntegrationProvider.OPENAPI);
+    return await handler.executeTool(toolName, input, integration);
+  }
+
+  private async executeMcpTool(organizationUuid: string, toolName: string, input: Record<string, any>) {
+    const match = toolName.match(/^mcp_([^_]+)__(.+)$/);
+
+    if (!match) {
+      throw new ForbiddenException('MCP tool names must include an integration prefix');
+    }
+
+    const integration = await this.prisma.integration.findFirst({
+      where: {
+        org_uuid: organizationUuid,
+        provider: IntegrationProvider.MCP,
+        status: IntegrationStatus.ACTIVE,
+        uuid: { startsWith: match[1] },
+      },
+    });
+
+    if (!integration) {
+      throw new NotFoundException('No active MCP integration is available for this tool');
+    }
+
+    const handler = this.getByProvider(IntegrationProvider.MCP);
     return await handler.executeTool(toolName, input, integration);
   }
 }
