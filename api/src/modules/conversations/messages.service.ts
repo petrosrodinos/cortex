@@ -130,7 +130,7 @@ export class MessagesService {
         documentUuids: dto.documentUuids ?? [],
       },
       {
-        jobId: `run:${execution.uuid}`,
+        jobId: `run-${execution.uuid}`,
         attempts: 3,
         backoff: { type: 'exponential', delay: 2000 },
         removeOnComplete: 100,
