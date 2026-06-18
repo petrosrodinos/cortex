@@ -3,6 +3,7 @@ import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { IntegrationStatus } from 'generated/prisma';
 import type { AttachedDocumentMeta } from '../documents/document-content.types';
 import { DocumentReaderService } from '../documents/document-reader.service';
+import { AgentActorService } from '../actor/agent-actor.service';
 
 const NO_AI_CONNECTOR_MESSAGE =
   'Cortex needs an AI provider before it can respond. Go to Integrations in your dashboard and connect OpenAI, Claude, or Grok.';
@@ -12,6 +13,7 @@ export class SystemPromptBuilder {
   constructor(
     private readonly prisma: PrismaService,
     private readonly documentReader: DocumentReaderService,
+    private readonly agentActor: AgentActorService,
   ) {}
 
   async getNoAiConnectorMessage(organizationUuid: string): Promise<string | null> {
@@ -23,7 +25,12 @@ export class SystemPromptBuilder {
     return hasAiProvider ? null : NO_AI_CONNECTOR_MESSAGE;
   }
 
-  async build(organizationUuid: string, attachedDocuments: AttachedDocumentMeta[] = []): Promise<string> {
+  async build(
+    organizationUuid: string,
+    userUuid: string,
+    attachedDocuments: AttachedDocumentMeta[] = [],
+    integrationUuids?: string[],
+  ): Promise<string> {
     const noAiConnectorMessage = await this.getNoAiConnectorMessage(organizationUuid);
     if (noAiConnectorMessage) {
       return [
@@ -33,18 +40,24 @@ export class SystemPromptBuilder {
       ].join('\n');
     }
 
-    const organization = await this.prisma.organization.findUnique({
-      where: { uuid: organizationUuid },
-    });
-
-    const integrations = await this.prisma.integration.findMany({
-      where: { org_uuid: organizationUuid, status: IntegrationStatus.ACTIVE },
-      include: { database: true, actions: { where: { enabled: true } } },
-    });
+    const [organization, actor, integrations] = await Promise.all([
+      this.prisma.organization.findUnique({
+        where: { uuid: organizationUuid },
+      }),
+      this.agentActor.resolve(userUuid, organizationUuid),
+      this.prisma.integration.findMany({
+        where: {
+          org_uuid: organizationUuid,
+          status: IntegrationStatus.ACTIVE,
+          ...(integrationUuids !== undefined ? { uuid: { in: integrationUuids } } : {}),
+        },
+        include: { database: true, actions: { where: { enabled: true } } },
+      }),
+    ]);
 
     const integrationLines = integrations.map((integration) => {
       const actions = integration.actions.map((action) => action.key).join(', ');
-      return `- ${integration.name} (${integration.provider}): ${actions || 'no enabled actions'}`;
+      return `- ${integration.name} (${integration.provider}, uuid: ${integration.uuid}): ${actions || 'no enabled actions'}`;
     });
 
     const schemaBlocks = integrations
@@ -59,6 +72,10 @@ export class SystemPromptBuilder {
     return [
       `You are Cortex, an AI business operations copilot for ${organization?.name ?? 'the organization'}.`,
       `Today's date: ${today}.`,
+      'Authenticated user:',
+      `- member_uuid: ${actor.memberUuid}`,
+      `- email: ${actor.email}`,
+      `- role: ${actor.roleName}`,
       'Use available tools to retrieve data and take actions. Never invent credentials or integration secrets.',
       'When destructive actions require approval, wait for explicit user approval before proceeding.',
       'When the user attaches documents, call document__list first, then use the matching document__read_* tool to read each file before answering questions about it.',
@@ -66,9 +83,8 @@ export class SystemPromptBuilder {
       'Use code_interpreter only for Python data analysis, calculations, or chart generation on structured data already in the conversation.',
       'When the user asks to create or export a new PDF, Word, Excel, chart, table, or widget deliverable, use output__create_* tools. For Word documents use output__create_word. For PDF documents use output__create_pdf. For Excel spreadsheets use output__create_excel.',
       'When the user asks to create, draw, generate, or design an image, illustration, photo, portrait, or graphic, call output__create_image once with a detailed prompt. Do not say you cannot create images. Do not embed image URLs or markdown images in your reply — the UI renders the generated file automatically.',
-      'Organization tools: organization__get_account for org profile, organization__list_members and organization__get_member for team directory lookups, organization__send_member_email to email an active team member through the org email integration.',
-      'Before sending email to a team member, confirm the recipient with organization__get_member or organization__list_members when the user only gave a name or ambiguous reference.',
-      'organization__send_member_email requires user approval before sending.',
+      'Organization tools: organization__get_account for org profile, organization__list_members and organization__get_member for team directory lookups, organization__send_email to send email through the org email integration.',
+      'organization__send_email requires user approval before sending.',
       '',
       'Connected integrations:',
       integrationLines.length > 0 ? integrationLines.join('\n') : '- None',
@@ -80,4 +96,3 @@ export class SystemPromptBuilder {
       .join('\n');
   }
 }
-

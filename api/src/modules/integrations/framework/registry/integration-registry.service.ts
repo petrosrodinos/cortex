@@ -61,11 +61,12 @@ export class IntegrationRegistry {
     return await handler.executeTool(toolName, input, integration);
   }
 
-  async getAllTools(organizationUuid: string): Promise<AiTool[]> {
+  async getAllTools(organizationUuid: string, integrationUuids?: string[]): Promise<AiTool[]> {
     const integrations = await this.prisma.integration.findMany({
       where: {
         org_uuid: organizationUuid,
         status: IntegrationStatus.ACTIVE,
+        ...(integrationUuids !== undefined ? { uuid: { in: integrationUuids } } : {}),
       },
       include: {
         database: true,

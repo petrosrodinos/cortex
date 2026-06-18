@@ -31,11 +31,12 @@ export class IntegrationToolsFactory {
     userPermissions: string[],
     options?: {
       documentUuids?: string[];
+      integrationUuids?: string[];
       onToolEvent?: (event: 'start' | 'complete', payload: Record<string, unknown>) => void;
     },
   ): Promise<ToolSet> {
     const onToolEvent = options?.onToolEvent;
-    const aiTools = await this.registry.getAllTools(organizationUuid);
+    const aiTools = await this.registry.getAllTools(organizationUuid, options?.integrationUuids);
     const approvalMap = await this.loadApprovalMap(organizationUuid);
     const tools: ToolSet = {};
 

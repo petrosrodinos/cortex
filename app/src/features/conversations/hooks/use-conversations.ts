@@ -88,8 +88,15 @@ export function useSendMessage(organizationUuid?: string, conversationUuid?: str
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ content, documentUuids }: { content: string; documentUuids?: string[] }) =>
-      sendMessage(organizationUuid as string, conversationUuid as string, content, documentUuids),
+    mutationFn: ({
+      content,
+      documentUuids,
+      integrationUuids,
+    }: {
+      content: string;
+      documentUuids?: string[];
+      integrationUuids?: string[];
+    }) => sendMessage(organizationUuid as string, conversationUuid as string, content, documentUuids, integrationUuids),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['messages', organizationUuid, conversationUuid] });
       queryClient.invalidateQueries({ queryKey: conversationsQueryKey });

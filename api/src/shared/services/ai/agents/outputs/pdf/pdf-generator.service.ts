@@ -1,14 +1,12 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { DocumentType } from 'generated/prisma';
 import * as libreConvert from 'libreoffice-convert';
-import { promisify } from 'node:util';
 import { DocumentOutputService } from '../shared/document-output.service';
 import type { GeneratedFileResult } from '../shared/generated-file.types';
 import { DocxGeneratorService } from '../word/docx-generator.service';
 import type { DocxGenerateParams } from '../word/docx.types';
 
 const PDF_MIME = 'application/pdf';
-const convertAsync = promisify(libreConvert.convert);
 
 @Injectable()
 export class PdfGeneratorService {
@@ -39,7 +37,7 @@ export class PdfGeneratorService {
 
   private async convertDocxToPdf(docxBuffer: Buffer): Promise<Buffer> {
     try {
-      const pdfBuffer = await convertAsync(docxBuffer, '.pdf', undefined);
+      const pdfBuffer = await this.runLibreOfficeConvert(docxBuffer);
       if (!Buffer.isBuffer(pdfBuffer) || pdfBuffer.length === 0) {
         throw new BadRequestException('PDF conversion produced an empty file');
       }
@@ -52,5 +50,28 @@ export class PdfGeneratorService {
         'PDF conversion failed. LibreOffice must be installed on the server for PDF export.',
       );
     }
+  }
+
+  private runLibreOfficeConvert(docxBuffer: Buffer): Promise<Buffer> {
+    const libreOfficeExe = process.env.LIBRE_OFFICE_EXE;
+    const options = libreOfficeExe
+      ? { sofficeBinaryPaths: [libreOfficeExe] }
+      : {};
+
+    return new Promise((resolve, reject) => {
+      libreConvert.convertWithOptions(
+        docxBuffer,
+        '.pdf',
+        undefined,
+        options,
+        (error, result) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve(result);
+        },
+      );
+    });
   }
 }

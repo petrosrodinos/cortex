@@ -31,6 +31,7 @@ import { PdfGeneratorService } from './agents/outputs/pdf/pdf-generator.service'
 import { ExcelGeneratorService } from './agents/outputs/excel/excel-generator.service';
 import { OutputToolsFactory } from './agents/outputs/tools/output-tools.factory';
 import { ExecutionToolIdempotencyService } from './agents/tools/execution-tool-idempotency.service';
+import { AgentActorService } from './agents/actor/agent-actor.service';
 import { OrganizationToolsFactory } from './agents/organization/organization-tools.factory';
 import { OrganizationToolsService } from './agents/organization/organization-tools.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
@@ -64,6 +65,7 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     PdfGeneratorService,
     ExcelGeneratorService,
     OutputToolsFactory,
+    AgentActorService,
     OrganizationToolsService,
     OrganizationToolsFactory,
     SystemPromptBuilder,

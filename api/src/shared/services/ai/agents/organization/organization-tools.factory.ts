@@ -32,7 +32,7 @@ export class OrganizationToolsFactory {
     return {
       organization__get_account: tool({
         description:
-          'Get the current organization account profile, including name, slug, logo, member count, and the requesting user role.',
+          'Get the current organization account profile, including name, slug, logo, member count, and the authenticated user role and email.',
         inputSchema: jsonSchema({ type: 'object', properties: {}, additionalProperties: false }),
         execute: async () =>
           this.runTool(context, 'organization__get_account', {}, async () =>
@@ -64,7 +64,7 @@ export class OrganizationToolsFactory {
       }),
       organization__get_member: tool({
         description:
-          'Get one organization team member by member_uuid or email. Use before sending email when you need to confirm the recipient.',
+          'Get one organization team member by member_uuid or email. Use before sending email to another member when you need to confirm the recipient.',
         inputSchema: jsonSchema({
           type: 'object',
           properties: {
@@ -84,19 +84,20 @@ export class OrganizationToolsFactory {
             this.organizationTools.getMember(toolContext, input),
           ),
       }),
-      organization__send_member_email: tool({
+      organization__send_email: tool({
         description:
-          'Send an email to an organization team member using the organization email integration (SendGrid, Resend, SMTP, or Gmail). Provide member_uuid or email plus subject and body.',
+          'Send an email through the organization email integration. Use recipient_type=self to email the authenticated user. Use recipient_type=member with member_uuid to email another active team member. Optionally attach generated documents by document_uuid.',
         inputSchema: jsonSchema({
           type: 'object',
           properties: {
+            recipient_type: {
+              type: 'string',
+              enum: ['self', 'member'],
+              description: 'Use self for the authenticated user. Use member for another organization member.',
+            },
             member_uuid: {
               type: 'string',
-              description: 'Organization member UUID',
-            },
-            email: {
-              type: 'string',
-              description: 'Member account email address',
+              description: 'Required when recipient_type is member',
             },
             subject: {
               type: 'string',
@@ -118,22 +119,28 @@ export class OrganizationToolsFactory {
               type: 'string',
               description: 'Optional reply-to email address',
             },
+            attachment_document_uuids: {
+              type: 'array',
+              items: { type: 'string' },
+              description: 'Optional document UUIDs from generated output tools to attach to the email',
+            },
           },
-          required: ['subject', 'body'],
+          required: ['recipient_type', 'subject', 'body'],
           additionalProperties: false,
         }),
         needsApproval: true,
         execute: async (input: {
+          recipient_type: 'self' | 'member';
           member_uuid?: string;
-          email?: string;
           subject: string;
           body: string;
           cc?: string;
           bcc?: string;
           reply_to?: string;
+          attachment_document_uuids?: string[];
         }) =>
-          this.runTool(context, 'organization__send_member_email', input, async () =>
-            this.organizationTools.sendMemberEmail(toolContext, input),
+          this.runTool(context, 'organization__send_email', input, async () =>
+            this.organizationTools.sendEmail(toolContext, input),
           ),
       }),
     };

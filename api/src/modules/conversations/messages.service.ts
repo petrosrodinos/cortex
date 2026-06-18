@@ -115,7 +115,11 @@ export class MessagesService {
         org_uuid: organizationUuid,
         user_uuid: userUuid,
         status: AgentExecutionStatus.PENDING,
-        input: { content: dto.content, documentUuids: dto.documentUuids ?? [] },
+        input: {
+          content: dto.content,
+          documentUuids: dto.documentUuids ?? [],
+          integrationUuids: dto.integrationUuids ?? [],
+        },
       },
     });
 
@@ -128,6 +132,7 @@ export class MessagesService {
         userMessage: dto.content,
         executionUuid: execution.uuid,
         documentUuids: dto.documentUuids ?? [],
+        integrationUuids: dto.integrationUuids ?? [],
       },
       {
         jobId: `run-${execution.uuid}`,

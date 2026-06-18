@@ -12,4 +12,10 @@ export class SendMessageDto {
   @IsArray()
   @IsUUID('4', { each: true })
   documentUuids?: string[];
+
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  integrationUuids?: string[];
 }

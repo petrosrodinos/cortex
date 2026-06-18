@@ -49,6 +49,7 @@ export class ExecutionsService {
       approvalRequests?: Array<{ approvalId: string }>;
       content?: string;
       documentUuids?: string[];
+      integrationUuids?: string[];
     };
 
     await this.prisma.agentExecution.update({
@@ -65,6 +66,7 @@ export class ExecutionsService {
         userMessage: input.content ?? '',
         executionUuid: execution.uuid,
         documentUuids: input.documentUuids ?? [],
+        integrationUuids: input.integrationUuids,
         resumeApprovals: (input.approvalRequests ?? []).map((request) => ({
           approvalId: request.approvalId,
           approved: true,

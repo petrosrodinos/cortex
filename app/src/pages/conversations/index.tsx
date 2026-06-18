@@ -6,6 +6,7 @@ import { Drawer, useOverlayState } from '@heroui/react';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { useOrganizationStore } from '@/stores/organization';
 import { Routes } from '@/routes/routes';
+import { useGetIntegrations } from '@/features/integrations/common/hooks/use-integrations';
 import {
   useApproveExecution,
   useCreateConversation,
@@ -24,6 +25,7 @@ import { ConversationEmptyState } from './components/conversation-empty-state';
 import { ConversationDocumentsModal } from './components/conversation-documents-modal';
 import { ConversationHeader } from './components/conversation-header';
 import { ConversationInput } from './components/conversation-input';
+import { getToolEligibleIntegrations } from './components/conversation-tools-menu';
 import { ConversationMessages } from './components/conversation-messages';
 import { ConversationSidebar } from './components/conversation-sidebar';
 import { ConversationSidebarSkeleton } from './components/conversation-sidebar-skeleton';
@@ -42,6 +44,7 @@ const ConversationsPage: FC = () => {
   const [draft, setDraft] = useState('');
   const [activeExecutionId, setActiveExecutionId] = useState<string | null>(null);
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
+  const [selectedIntegrationUuids, setSelectedIntegrationUuids] = useState<string[]>([]);
   const [pendingUserMessage, setPendingUserMessage] = useState<string | null>(null);
   const [pendingUserAttachments, setPendingUserAttachments] = useState<MessageAttachment[]>([]);
   const [deleteTargetUuid, setDeleteTargetUuid] = useState<string | null>(null);
@@ -50,6 +53,7 @@ const ConversationsPage: FC = () => {
   const chatListDrawer = useOverlayState();
 
   const { data: conversations = [], isLoading: conversationsLoading } = useGetConversations(organizationUuid);
+  const { data: integrations = [] } = useGetIntegrations(organizationUuid);
   const { data: messages = [], isLoading: messagesLoading } = useGetMessages(organizationUuid, conversationUuid);
   const createConversation = useCreateConversation(organizationUuid);
   const deleteConversation = useDeleteConversation(organizationUuid);
@@ -71,6 +75,26 @@ const ConversationsPage: FC = () => {
     () => [...conversations].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()),
     [conversations],
   );
+
+  const toolEligibleIntegrations = useMemo(() => getToolEligibleIntegrations(integrations), [integrations]);
+  const toolEligibleIntegrationUuids = useMemo(
+    () => toolEligibleIntegrations.map((integration) => integration.uuid),
+    [toolEligibleIntegrations],
+  );
+
+  useEffect(() => {
+    setSelectedIntegrationUuids((prev) => {
+      const available = new Set(toolEligibleIntegrationUuids);
+
+      if (prev.length === 0) {
+        return toolEligibleIntegrationUuids;
+      }
+
+      const kept = prev.filter((uuid) => available.has(uuid));
+      const added = toolEligibleIntegrationUuids.filter((uuid) => !prev.includes(uuid));
+      return [...kept, ...added];
+    });
+  }, [toolEligibleIntegrationUuids]);
 
   useEffect(() => {
     if (!organizationUuid || conversationsLoading) {
@@ -199,7 +223,11 @@ const ConversationsPage: FC = () => {
     setPendingUserAttachments(sentAttachments);
 
     try {
-      const response = await sendMessage.mutateAsync({ content, documentUuids });
+      const response = await sendMessage.mutateAsync({
+        content,
+        documentUuids,
+        integrationUuids: selectedIntegrationUuids,
+      });
       setActiveExecutionId(response.executionId);
 
       if (isFirstMessage) {
@@ -372,12 +400,15 @@ const ConversationsPage: FC = () => {
             <ConversationInput
               draft={draft}
               attachedFiles={attachedFiles}
+              integrations={integrations}
+              selectedIntegrationUuids={selectedIntegrationUuids}
               disabled={sendMessage.isPending || isRunning}
               isUploading={uploadDocument.isPending}
               onDraftChange={setDraft}
               onSend={() => void handleSend()}
               onFileSelect={(event) => void handleFileSelect(event)}
               onRemoveFile={removeAttachedFile}
+              onIntegrationSelectionChange={setSelectedIntegrationUuids}
             />
           </div>
         )}

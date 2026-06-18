@@ -15,6 +15,7 @@ import { DocumentReaderService } from '../documents/document-reader.service';
 interface SavedExecutionInput {
   content?: string;
   documentUuids?: string[];
+  integrationUuids?: string[];
   approvalRequests?: Array<{ approvalId: string; toolName?: string; input?: unknown }>;
   agentMessages?: ModelMessage[];
   responseMessages?: ModelMessage[];
@@ -53,6 +54,7 @@ export class AgentRunnerService {
     options?: {
       resumeApprovals?: Array<{ approvalId: string; approved: boolean }>;
       documentUuids?: string[];
+      integrationUuids?: string[];
     },
   ): Promise<AgentRunResult> {
     const existingExecution = await this.prisma.agentExecution.findUnique({
@@ -107,7 +109,8 @@ export class AgentRunnerService {
       const resolved = await this.providerFactory.resolveProvider(organizationUuid);
       const messages = await this.memory.getMessages(organizationUuid, conversationId);
 
-      const documentUuids = options?.documentUuids ?? [];
+      const documentUuids = options?.documentUuids ?? savedInput.documentUuids ?? [];
+      const integrationUuids = options?.integrationUuids ?? savedInput.integrationUuids;
       const attachedDocuments =
         documentUuids.length > 0
           ? await this.documentReader.getAttachedMetadata(documentUuids)
@@ -126,6 +129,7 @@ export class AgentRunnerService {
         permissions,
         {
           documentUuids,
+          integrationUuids,
           onToolEvent: (event, payload) => {
             const room = this.wsEvents.executionRoom(organizationUuid, executionUuid);
             if (event === 'start') {
@@ -137,7 +141,12 @@ export class AgentRunnerService {
         },
       );
 
-      const instructions = await this.systemPromptBuilder.build(organizationUuid, attachedDocuments);
+      const instructions = await this.systemPromptBuilder.build(
+        organizationUuid,
+        userUuid,
+        attachedDocuments,
+        integrationUuids,
+      );
       const agent = this.providerFactory.createAgent(resolved, tools, instructions);
 
       const result = await agent.generate({
@@ -164,6 +173,7 @@ export class AgentRunnerService {
               agentMessages,
               responseMessages: result.response.messages,
               documentUuids,
+              integrationUuids,
             } as object,
             tokens_used: usage.tokensUsed,
             cost_usd: usage.costUsd,
