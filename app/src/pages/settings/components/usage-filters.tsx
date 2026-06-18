@@ -3,7 +3,7 @@ import type { Selection } from '@heroui/react';
 import { Button, Dropdown, Label } from '@heroui/react';
 import { ChevronsUpDown, RotateCcw } from 'lucide-react';
 import type { OrganizationMember } from '@/features/members/interfaces/member.interfaces';
-import type { UsageQuery } from '@/features/settings/interfaces/usage.interfaces';
+import type { UsageQuery } from '@/features/executions/interfaces/usage.interfaces';
 import { DatePickerField } from '@/components/ui/date-picker-field';
 import { cn } from '@/lib/utils';
 

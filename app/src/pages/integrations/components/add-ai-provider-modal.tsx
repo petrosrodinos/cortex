@@ -8,7 +8,7 @@ import {
   aiProviderDefaultModels,
   catalogProviderLabels,
 } from '@/features/integrations/constants/provider-metadata';
-import { useCreateAiProvider } from '@/features/settings/hooks/use-settings';
+import { useCreateAiProvider } from '@/features/ai-providers/hooks/use-ai-providers';
 import { AiProviderModelSelect, DefaultAiProviderToggle } from './ai-provider-form-controls';
 
 interface AddAiProviderModalProps {

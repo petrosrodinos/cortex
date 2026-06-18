@@ -1,5 +1,6 @@
 import axiosInstance from '@/config/api/axios';
 import { ApiRoutes } from '@/config/api/routes';
+import type { UsageQuery, UsageRecordsResponse, UsageSummary } from '../interfaces/usage.interfaces';
 
 export interface ToolCall {
   uuid: string;
@@ -48,5 +49,23 @@ export const listExecutions = async (orgUuid: string): Promise<ExecutionDetail[]
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.message || 'Failed to load executions.');
+  }
+};
+
+export const getUsage = async (orgUuid: string, query?: UsageQuery): Promise<UsageSummary> => {
+  try {
+    const response = await axiosInstance.get(ApiRoutes.usage(orgUuid), { params: query });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to load usage.');
+  }
+};
+
+export const getUsageRecords = async (orgUuid: string, query?: UsageQuery): Promise<UsageRecordsResponse> => {
+  try {
+    const response = await axiosInstance.get(ApiRoutes.usageRecords(orgUuid), { params: query });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to load usage records.');
   }
 };

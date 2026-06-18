@@ -9,7 +9,7 @@ import {
   catalogProviderLabels,
 } from '@/features/integrations/constants/provider-metadata';
 import { isAiCatalogProvider } from '@/features/integrations/utils/integration.utils';
-import type { AiProvider } from '@/features/settings/services/settings.service';
+import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
 import { cn } from '@/lib/utils';
 
 interface ProviderCatalogProps {

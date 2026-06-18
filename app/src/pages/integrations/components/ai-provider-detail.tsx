@@ -21,8 +21,8 @@ import {
   aiProviderModelOptions,
   catalogProviderLabels,
 } from '@/features/integrations/constants/provider-metadata';
-import type { AiProvider } from '@/features/settings/services/settings.service';
-import { useDeleteAiProvider, useUpdateAiProvider } from '@/features/settings/hooks/use-settings';
+import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
+import { useDeleteAiProvider, useUpdateAiProvider } from '@/features/ai-providers/hooks/use-ai-providers';
 import { Routes } from '@/routes/routes';
 import { cn } from '@/lib/utils';
 import { AiProviderModelSelect } from './ai-provider-form-controls';

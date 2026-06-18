@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import type { UsageQuery } from '@/features/settings/interfaces/usage.interfaces';
+import type { UsageQuery } from '@/features/executions/interfaces/usage.interfaces';
 
 const DEFAULT_LIMIT = 20;
 

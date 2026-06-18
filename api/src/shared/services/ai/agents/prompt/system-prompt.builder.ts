@@ -4,6 +4,9 @@ import { IntegrationStatus } from 'generated/prisma';
 import type { AttachedDocumentMeta } from '../documents/document-content.types';
 import { DocumentReaderService } from '../documents/document-reader.service';
 
+const NO_AI_CONNECTOR_MESSAGE =
+  'Cortex needs an AI provider before it can respond. Go to Integrations in your dashboard and connect OpenAI, Claude, or Grok.';
+
 @Injectable()
 export class SystemPromptBuilder {
   constructor(
@@ -11,7 +14,25 @@ export class SystemPromptBuilder {
     private readonly documentReader: DocumentReaderService,
   ) {}
 
+  async getNoAiConnectorMessage(organizationUuid: string): Promise<string | null> {
+    const hasAiProvider = await this.prisma.aiProvider.findFirst({
+      where: { org_uuid: organizationUuid },
+      select: { uuid: true },
+    });
+
+    return hasAiProvider ? null : NO_AI_CONNECTOR_MESSAGE;
+  }
+
   async build(organizationUuid: string, attachedDocuments: AttachedDocumentMeta[] = []): Promise<string> {
+    const noAiConnectorMessage = await this.getNoAiConnectorMessage(organizationUuid);
+    if (noAiConnectorMessage) {
+      return [
+        'You are Cortex, an AI business operations copilot.',
+        'This organization has no AI provider configured.',
+        `Respond with exactly this message and nothing else:\n"${noAiConnectorMessage}"`,
+      ].join('\n');
+    }
+
     const organization = await this.prisma.organization.findUnique({
       where: { uuid: organizationUuid },
     });

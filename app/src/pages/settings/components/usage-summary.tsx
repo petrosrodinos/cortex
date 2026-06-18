@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Tabs } from '@heroui/react';
-import type { UsageSummary } from '@/features/settings/interfaces/usage.interfaces';
+import type { UsageSummary } from '@/features/executions/interfaces/usage.interfaces';
 import { formatUsdCompact } from '@/lib/currency';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { UsageSummarySkeleton } from './usage-summary-skeleton';

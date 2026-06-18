@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import type { UsageExecutionRecord } from '@/features/settings/interfaces/usage.interfaces';
+import type { UsageExecutionRecord } from '@/features/executions/interfaces/usage.interfaces';
 import { Routes } from '@/routes/routes';
 import { Button } from '@/components/ui/button';
 import { formatUsdCompact } from '@/lib/currency';

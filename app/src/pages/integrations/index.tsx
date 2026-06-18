@@ -15,8 +15,8 @@ import {
   providerLabels,
 } from '@/features/integrations/constants/provider-metadata';
 import { isAiCatalogProvider } from '@/features/integrations/utils/integration.utils';
-import { useGetAiProviders } from '@/features/settings/hooks/use-settings';
-import type { AiProvider } from '@/features/settings/services/settings.service';
+import { useGetAiProviders } from '@/features/ai-providers/hooks/use-ai-providers';
+import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
 import { AiProviderDetail } from './components/ai-provider-detail';

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useOrganizationStore } from '@/stores/organization';
 import { useAuthStore } from '@/stores/auth';
 import { useGetMembers } from '@/features/members/hooks/use-members';
-import { useGetUsage, useGetUsageRecords } from '@/features/settings/hooks/use-settings';
+import { useGetUsage, useGetUsageRecords } from '@/features/executions/hooks/use-executions';
 import { UsageFilters } from './components/usage-filters';
 import { UsageRecordsTable } from './components/usage-records-table';
 import { UsageSummarySection } from './components/usage-summary';

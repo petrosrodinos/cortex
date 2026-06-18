@@ -1,20 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
-import type { CreateAiProviderDto, UpdateAiProviderDto } from '../services/settings.service';
-import type { UsageQuery } from '../interfaces/usage.interfaces';
+import type { CreateAiProviderDto, UpdateAiProviderDto } from '../interfaces/ai-providers.interfaces';
 import {
   createAiProvider,
   deleteAiProvider,
   getAiProviders,
-  getAuditLogs,
-  getUsage,
-  getUsageRecords,
   updateAiProvider,
-} from '../services/settings.service';
+} from '../services/ai-providers.services';
 
-export const aiProvidersQueryKey = ['aiProviders'] as const;
-export const usageQueryKey = ['usage'] as const;
-export const auditLogsQueryKey = ['auditLogs'] as const;
+export const aiProvidersQueryKey = ['ai-providers'] as const;
 
 export function useGetAiProviders(orgUuid?: string) {
   return useQuery({
@@ -30,7 +24,7 @@ export function useCreateAiProvider(orgUuid?: string) {
   return useMutation({
     mutationFn: (payload: CreateAiProviderDto) => createAiProvider(orgUuid as string, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [...aiProvidersQueryKey, orgUuid] });
+      queryClient.invalidateQueries({ queryKey: aiProvidersQueryKey });
       toast({ title: 'AI provider added', duration: 2000 });
     },
     onError: (error: Error) => {
@@ -46,7 +40,7 @@ export function useUpdateAiProvider(orgUuid?: string) {
     mutationFn: ({ providerUuid, payload }: { providerUuid: string; payload: UpdateAiProviderDto }) =>
       updateAiProvider(orgUuid as string, providerUuid, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [...aiProvidersQueryKey, orgUuid] });
+      queryClient.invalidateQueries({ queryKey: aiProvidersQueryKey });
       toast({ title: 'AI provider updated', duration: 2000 });
     },
     onError: (error: Error) => {
@@ -61,35 +55,11 @@ export function useDeleteAiProvider(orgUuid?: string) {
   return useMutation({
     mutationFn: (providerUuid: string) => deleteAiProvider(orgUuid as string, providerUuid),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [...aiProvidersQueryKey, orgUuid] });
+      queryClient.invalidateQueries({ queryKey: aiProvidersQueryKey });
       toast({ title: 'AI provider removed', duration: 2000 });
     },
     onError: (error: Error) => {
       toast({ title: 'Could not remove AI provider', description: error.message, variant: 'error' });
     },
-  });
-}
-
-export function useGetUsage(orgUuid?: string, query?: UsageQuery) {
-  return useQuery({
-    queryKey: [...usageQueryKey, orgUuid, query],
-    queryFn: () => getUsage(orgUuid as string, query),
-    enabled: !!orgUuid,
-  });
-}
-
-export function useGetUsageRecords(orgUuid?: string, query?: UsageQuery) {
-  return useQuery({
-    queryKey: [...usageQueryKey, 'records', orgUuid, query],
-    queryFn: () => getUsageRecords(orgUuid as string, query),
-    enabled: !!orgUuid,
-  });
-}
-
-export function useGetAuditLogs(orgUuid?: string, page = 1, limit = 20) {
-  return useQuery({
-    queryKey: [...auditLogsQueryKey, orgUuid, page, limit],
-    queryFn: () => getAuditLogs(orgUuid as string, page, limit),
-    enabled: !!orgUuid,
   });
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useOrganizationStore } from '@/stores/organization';
-import { useGetAuditLogs } from '@/features/settings/hooks/use-settings';
+import { useGetAuditLogs } from '@/features/audit-logs/hooks/use-audit-logs';
 import { Button } from '@/components/ui/button';
 
 export default function AuditLogsPage() {

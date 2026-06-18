@@ -93,6 +93,16 @@ export class AgentRunnerService {
     });
 
     try {
+      const noAiConnectorMessage = await this.systemPromptBuilder.getNoAiConnectorMessage(organizationUuid);
+      if (noAiConnectorMessage) {
+        return this.completeWithDirectResponse(
+          organizationUuid,
+          conversationId,
+          executionUuid,
+          noAiConnectorMessage,
+        );
+      }
+
       const permissions = await this.loadUserPermissions(userUuid, organizationUuid);
       const resolved = await this.providerFactory.resolveProvider(organizationUuid);
       const messages = await this.memory.getMessages(organizationUuid, conversationId);
@@ -276,6 +286,60 @@ export class AgentRunnerService {
         this.logger.warn(`Sandbox cleanup failed for ${executionUuid}: ${message}`);
       }
     }
+  }
+
+  private async completeWithDirectResponse(
+    organizationUuid: string,
+    conversationId: string,
+    executionUuid: string,
+    content: string,
+  ): Promise<AgentRunResult> {
+    const usage = await this.toolDispatcher.syncExecutionUsageTotals(executionUuid).catch(() => ({
+      tokensUsed: 0,
+      costUsd: 0,
+    }));
+
+    await this.prisma.agentExecution.updateMany({
+      where: {
+        uuid: executionUuid,
+        status: { not: AgentExecutionStatus.COMPLETED },
+      },
+      data: {
+        status: AgentExecutionStatus.COMPLETED,
+        completed_at: new Date(),
+        tokens_used: usage.tokensUsed,
+        cost_usd: usage.costUsd,
+        output: {
+          content,
+          files: [],
+          outputType: 'TEXT',
+        },
+      },
+    });
+
+    await this.memory.appendMessages(organizationUuid, conversationId, [{ role: 'assistant', content }]);
+    await this.memory.persistNewMessages(conversationId, [
+      {
+        role: MessageRole.ASSISTANT,
+        content,
+        metadata: { outputType: 'TEXT' },
+      },
+    ]);
+
+    this.wsEvents.emitToRoom(this.wsEvents.executionRoom(organizationUuid, executionUuid), 'agent:complete', {
+      content,
+      files: [],
+      executionId: executionUuid,
+      outputType: 'TEXT',
+      tokensUsed: usage.tokensUsed,
+      costUsd: usage.costUsd,
+    });
+
+    return {
+      content,
+      files: [],
+      outputType: 'TEXT',
+    };
   }
 
   private buildMessagesForAgent(
