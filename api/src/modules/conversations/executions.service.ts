@@ -49,18 +49,28 @@ export class ExecutionsService {
       data: { status: AgentExecutionStatus.PENDING },
     });
 
-    await this.agentQueue.add('resume', {
-      organizationUuid,
-      userUuid,
-      conversationId: execution.conversation_uuid,
-      userMessage: input.content ?? '',
-      executionUuid: execution.uuid,
-      documentUuids: input.documentUuids ?? [],
-      resumeApprovals: (input.approvalRequests ?? []).map((request) => ({
-        approvalId: request.approvalId,
-        approved: true,
-      })),
-    });
+    await this.agentQueue.add(
+      'resume',
+      {
+        organizationUuid,
+        userUuid,
+        conversationId: execution.conversation_uuid,
+        userMessage: input.content ?? '',
+        executionUuid: execution.uuid,
+        documentUuids: input.documentUuids ?? [],
+        resumeApprovals: (input.approvalRequests ?? []).map((request) => ({
+          approvalId: request.approvalId,
+          approved: true,
+        })),
+      },
+      {
+        jobId: `resume:${execution.uuid}`,
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 2000 },
+        removeOnComplete: 100,
+        removeOnFail: 200,
+      },
+    );
 
     return { approved: true, executionId: execution.uuid };
   }

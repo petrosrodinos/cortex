@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FC, type KeyboardEvent } from 'react';
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { Conversation } from '@/features/conversations/interfaces/conversation.interfaces';
 import { cn } from '@/lib/utils';
 
@@ -66,17 +66,26 @@ export const ConversationSidebar: FC<ConversationSidebarProps> = ({
   };
 
   return (
-    <aside className="flex w-72 shrink-0 flex-col gap-3">
-      <button
-        type="button"
-        onClick={onCreate}
-        disabled={isCreating}
-        className="inline-flex h-10 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-medium text-accent-foreground transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        New chat
-      </button>
+    <aside className="flex w-72 shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface">
+      <header className="flex shrink-0 items-center gap-2 border-b border-border px-4 py-3">
+        <div className="min-w-0 flex-1">
+          <h2 className="text-sm font-medium text-foreground">Chats</h2>
+          <p className="text-xs text-muted">
+            {conversations.length} {conversations.length === 1 ? 'chat' : 'chats'} created
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onCreate}
+          disabled={isCreating}
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-secondary text-foreground transition-colors hover:bg-surface hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label="New chat"
+        >
+          <Plus className="h-4 w-4" />
+        </button>
+      </header>
 
-      <div className="flex-1 space-y-1 overflow-y-auto">
+      <div className="flex-1 space-y-1.5 overflow-y-auto p-2">
         {conversations.map((conversation) => {
           const isActive = conversation.uuid === activeConversationUuid;
           const isEditing = editingUuid === conversation.uuid;
@@ -85,8 +94,10 @@ export const ConversationSidebar: FC<ConversationSidebarProps> = ({
             <div
               key={conversation.uuid}
               className={cn(
-                'group relative flex items-center rounded-xl transition-colors',
-                isActive ? 'bg-surface-secondary' : 'hover:bg-surface-secondary/70',
+                'group relative flex items-center rounded-xl border transition-colors',
+                isActive
+                  ? 'border-border bg-surface-secondary'
+                  : 'border-transparent hover:border-border hover:bg-surface-secondary/70',
                 isEditing && 'py-0.5',
               )}
             >

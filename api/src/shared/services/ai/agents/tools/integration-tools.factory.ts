@@ -6,15 +6,11 @@ import { IntegrationProvider, IntegrationStatus } from 'generated/prisma';
 import { jsonSchema, tool } from 'ai';
 import type { ToolSet } from 'ai';
 import { SandboxCodeService } from '../sandbox/sandbox-code.service';
+import { CODE_INTERPRETER_DESCRIPTION } from '../sandbox/sandbox.config';
 import { DocumentToolsFactory } from '../documents/document-tools.factory';
 import { OutputToolsFactory } from '../outputs/output-tools.factory';
+import { OrganizationToolsFactory } from '../organization/organization-tools.factory';
 import { ToolDispatcherService } from './tool-dispatcher.service';
-
-const CODE_INTERPRETER_DESCRIPTION =
-  'Execute Python in an isolated sandbox for data analysis, calculations, and chart generation. ' +
-  'Use when you need to compute on structured data already present in the conversation. ' +
-  'Do not use this tool to read uploaded files — use document__read_* tools instead. ' +
-  'Do not use output__create_* tools to analyze existing uploads — only use those to generate new deliverables.';
 
 @Injectable()
 export class IntegrationToolsFactory {
@@ -25,6 +21,7 @@ export class IntegrationToolsFactory {
     private readonly sandboxCode: SandboxCodeService,
     private readonly documentToolsFactory: DocumentToolsFactory,
     private readonly outputToolsFactory: OutputToolsFactory,
+    private readonly organizationToolsFactory: OrganizationToolsFactory,
   ) {}
 
   async buildTools(
@@ -110,7 +107,15 @@ export class IntegrationToolsFactory {
       onToolEvent,
     });
 
-    return { ...tools, ...documentTools, ...outputTools };
+    const organizationTools = this.organizationToolsFactory.buildTools({
+      organizationUuid,
+      userUuid,
+      executionUuid,
+      userPermissions,
+      onToolEvent,
+    });
+
+    return { ...tools, ...documentTools, ...outputTools, ...organizationTools };
   }
 
   private async loadApprovalMap(organizationUuid: string) {

@@ -5,6 +5,7 @@ import { IntegrationProvider, IntegrationStatus, ToolCallStatus } from 'generate
 import { calculateAiCost } from '@/integrations/ai/utils/ai-cost';
 import { AiProviders } from '@/integrations/ai/interfaces/ai.interface';
 import { DATABASE_PROVIDERS } from '@/modules/integrations/databases/database-integration.types';
+import { ExecutionToolIdempotencyService } from './execution-tool-idempotency.service';
 
 export interface ToolDispatchResult {
   success: boolean;
@@ -22,6 +23,7 @@ export class ToolDispatcherService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly registry: IntegrationRegistry,
+    private readonly idempotency: ExecutionToolIdempotencyService,
   ) {}
 
   async dispatch(
@@ -36,6 +38,13 @@ export class ToolDispatcherService {
 
     try {
       await this.assertToolAllowed(organizationUuid, toolName, userPermissions);
+
+      const cached = await this.idempotency.getCachedResult(executionUuid, toolName, input);
+      if (cached) {
+        const durationMs = Date.now() - started;
+        return { success: true, result: cached, durationMs, tokensUsed: 0, costUsd: 0 };
+      }
+
       const integrationUuid = await this.resolveIntegrationUuid(organizationUuid, toolName);
       const result = await this.registry.executeTool(organizationUuid, toolName, input);
       const durationMs = Date.now() - started;

@@ -25,6 +25,9 @@ import { ImageDocumentParser } from './agents/documents/parsers/image-document.p
 import { SystemPromptBuilder } from './agents/prompt/system-prompt.builder';
 import { ImageGeneratorService } from './agents/outputs/image-generator.service';
 import { OutputToolsFactory } from './agents/outputs/output-tools.factory';
+import { ExecutionToolIdempotencyService } from './agents/tools/execution-tool-idempotency.service';
+import { OrganizationToolsFactory } from './agents/organization/organization-tools.factory';
+import { OrganizationToolsService } from './agents/organization/organization-tools.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
 
 @Module({
@@ -37,6 +40,7 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     AiProviderFactoryService,
     ConversationMemoryService,
     ToolDispatcherService,
+    ExecutionToolIdempotencyService,
     SandboxCodeService,
     PdfDocumentParser,
     WordDocumentParser,
@@ -50,6 +54,8 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     IntegrationToolsFactory,
     ImageGeneratorService,
     OutputToolsFactory,
+    OrganizationToolsService,
+    OrganizationToolsFactory,
     SystemPromptBuilder,
     AgentRunnerService,
   ],

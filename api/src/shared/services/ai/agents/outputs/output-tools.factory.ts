@@ -4,6 +4,7 @@ import { ToolCallStatus } from 'generated/prisma';
 import { jsonSchema, tool } from 'ai';
 import type { ToolSet } from 'ai';
 import { ImageGeneratorService, type GeneratedImageResult } from './image-generator.service';
+import { ExecutionToolIdempotencyService } from '../tools/execution-tool-idempotency.service';
 
 export interface OutputToolsContext {
   organizationUuid: string;
@@ -17,6 +18,7 @@ export class OutputToolsFactory {
   constructor(
     private readonly imageGenerator: ImageGeneratorService,
     private readonly prisma: PrismaService,
+    private readonly idempotency: ExecutionToolIdempotencyService,
   ) {}
 
   buildTools(context: OutputToolsContext): ToolSet {
@@ -61,7 +63,10 @@ export class OutputToolsFactory {
           const started = Date.now();
 
           try {
-            const cached = await this.getCachedImageResult(executionUuid);
+            const cached = await this.idempotency.getCachedResult<GeneratedImageResult>(
+              executionUuid,
+              'output__create_image',
+            );
             if (cached) {
               onToolEvent?.('complete', {
                 toolName: 'output__create_image',
@@ -115,27 +120,5 @@ export class OutputToolsFactory {
         },
       }),
     };
-  }
-
-  private async getCachedImageResult(executionUuid: string): Promise<GeneratedImageResult | null> {
-    const priorCall = await this.prisma.toolCall.findFirst({
-      where: {
-        execution_uuid: executionUuid,
-        tool_name: 'output__create_image',
-        status: ToolCallStatus.SUCCESS,
-      },
-      orderBy: { created_at: 'asc' },
-    });
-
-    if (!priorCall?.output || typeof priorCall.output !== 'object') {
-      return null;
-    }
-
-    const output = priorCall.output as Record<string, unknown>;
-    if (typeof output.file_url !== 'string') {
-      return null;
-    }
-
-    return output as unknown as GeneratedImageResult;
   }
 }

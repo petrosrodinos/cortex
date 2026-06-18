@@ -12,6 +12,14 @@ import { ToolDispatcherService } from '../tools/tool-dispatcher.service';
 import { SandboxCodeService } from '../sandbox/sandbox-code.service';
 import { DocumentReaderService } from '../documents/document-reader.service';
 
+interface SavedExecutionInput {
+  content?: string;
+  documentUuids?: string[];
+  approvalRequests?: Array<{ approvalId: string; toolName?: string; input?: unknown }>;
+  agentMessages?: ModelMessage[];
+  responseMessages?: ModelMessage[];
+}
+
 export interface AgentRunResult {
   content: string;
   files: string[];
@@ -50,6 +58,7 @@ export class AgentRunnerService {
     const existingExecution = await this.prisma.agentExecution.findUnique({
       where: { uuid: executionUuid },
     });
+    const savedInput = (existingExecution?.input ?? {}) as SavedExecutionInput;
 
     if (existingExecution?.status === AgentExecutionStatus.COMPLETED && existingExecution.output) {
       const output = existingExecution.output as {
@@ -62,6 +71,19 @@ export class AgentRunnerService {
         content: output.content ?? '',
         files: output.files ?? [],
         outputType: output.outputType ?? 'TEXT',
+      };
+    }
+
+    if (
+      existingExecution?.status === AgentExecutionStatus.AWAITING_APPROVAL &&
+      !options?.resumeApprovals?.length
+    ) {
+      return {
+        content: '',
+        files: [],
+        outputType: 'TEXT',
+        awaitingApproval: true,
+        approvalRequests: savedInput.approvalRequests ?? [],
       };
     }
 
@@ -81,7 +103,11 @@ export class AgentRunnerService {
           ? await this.documentReader.getAttachedMetadata(documentUuids)
           : [];
 
-      const agentMessages = this.buildAgentMessages(messages, attachedDocuments);
+      const agentMessages =
+        options?.resumeApprovals?.length && savedInput.agentMessages?.length
+          ? savedInput.agentMessages
+          : this.buildAgentMessages(messages, attachedDocuments);
+      const messagesForAgent = this.buildMessagesForAgent(agentMessages, savedInput, options?.resumeApprovals);
 
       const tools = await this.toolsFactory.buildTools(
         organizationUuid,
@@ -102,17 +128,10 @@ export class AgentRunnerService {
       );
 
       const instructions = await this.systemPromptBuilder.build(organizationUuid, attachedDocuments);
-      const agent = this.providerFactory.createAgent(resolved, tools, instructions, {
-        onStepFinish: async (step: any) => {
-          const usage = step?.usage;
-          if (usage) {
-            await this.toolDispatcher.recordStepUsage(executionUuid, 'agent-step', usage, resolved.modelId);
-          }
-        },
-      });
+      const agent = this.providerFactory.createAgent(resolved, tools, instructions);
 
       const result = await agent.generate({
-        messages: agentMessages,
+        messages: messagesForAgent,
         onStepFinish: async (step) => {
           const usage = step?.usage;
           if (usage) {
@@ -122,14 +141,20 @@ export class AgentRunnerService {
       });
 
       const approvalRequests = this.extractApprovalRequests(result);
-      if (approvalRequests.length > 0 && !options?.resumeApprovals) {
+      if (approvalRequests.length > 0 && !options?.resumeApprovals?.length) {
         const usage = await this.toolDispatcher.syncExecutionUsageTotals(executionUuid);
 
         await this.prisma.agentExecution.update({
           where: { uuid: executionUuid },
           data: {
             status: AgentExecutionStatus.AWAITING_APPROVAL,
-            input: { approvalRequests, messages: agentMessages, documentUuids } as object,
+            input: {
+              content: savedInput.content ?? userMessage,
+              approvalRequests,
+              agentMessages,
+              responseMessages: result.response.messages,
+              documentUuids,
+            } as object,
             tokens_used: usage.tokensUsed,
             cost_usd: usage.costUsd,
           },
@@ -154,20 +179,13 @@ export class AgentRunnerService {
       const toolResults = (result.steps ?? []).flatMap((step: any) => step.toolResults ?? []);
       const content = this.sanitizeAssistantContent(result.text ?? '', toolResults);
       const detection = detectOutputType(userMessage, content, toolResults);
-
-      await this.memory.appendMessages(organizationUuid, conversationId, [{ role: 'assistant', content }]);
-      await this.memory.persistNewMessages(conversationId, [
-        {
-          role: MessageRole.ASSISTANT,
-          content,
-          metadata: { outputType: detection.outputType, files: detection.files },
-        },
-      ]);
-
       const usage = await this.toolDispatcher.syncExecutionUsageTotals(executionUuid);
 
-      await this.prisma.agentExecution.update({
-        where: { uuid: executionUuid },
+      const completionUpdate = await this.prisma.agentExecution.updateMany({
+        where: {
+          uuid: executionUuid,
+          status: { not: AgentExecutionStatus.COMPLETED },
+        },
         data: {
           status: AgentExecutionStatus.COMPLETED,
           completed_at: new Date(),
@@ -180,6 +198,32 @@ export class AgentRunnerService {
           },
         },
       });
+
+      if (completionUpdate.count === 0) {
+        const completedExecution = await this.prisma.agentExecution.findUnique({
+          where: { uuid: executionUuid },
+        });
+        const output = (completedExecution?.output ?? {}) as {
+          content?: string;
+          files?: string[];
+          outputType?: string;
+        };
+
+        return {
+          content: output.content ?? content,
+          files: output.files ?? detection.files,
+          outputType: output.outputType ?? detection.outputType,
+        };
+      }
+
+      await this.memory.appendMessages(organizationUuid, conversationId, [{ role: 'assistant', content }]);
+      await this.memory.persistNewMessages(conversationId, [
+        {
+          role: MessageRole.ASSISTANT,
+          content,
+          metadata: { outputType: detection.outputType, files: detection.files },
+        },
+      ]);
 
       this.wsEvents.emitToRoom(this.wsEvents.executionRoom(organizationUuid, executionUuid), 'agent:complete', {
         content,
@@ -222,8 +266,41 @@ export class AgentRunnerService {
 
       throw error;
     } finally {
-      await this.sandboxCode.closeSession(executionUuid);
+      try {
+        await this.sandboxCode.closeSession(executionUuid);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to close sandbox session';
+        this.logger.warn(`Sandbox cleanup failed for ${executionUuid}: ${message}`);
+      }
     }
+  }
+
+  private buildMessagesForAgent(
+    agentMessages: ModelMessage[],
+    savedInput: SavedExecutionInput,
+    resumeApprovals?: Array<{ approvalId: string; approved: boolean }>,
+  ): ModelMessage[] {
+    if (!resumeApprovals?.length) {
+      return agentMessages;
+    }
+
+    const responseMessages = savedInput.responseMessages ?? [];
+    if (responseMessages.length === 0) {
+      return agentMessages;
+    }
+
+    return [
+      ...agentMessages,
+      ...responseMessages,
+      {
+        role: 'tool',
+        content: resumeApprovals.map((approval) => ({
+          type: 'tool-approval-response' as const,
+          approvalId: approval.approvalId,
+          approved: approval.approved,
+        })),
+      },
+    ];
   }
 
   private buildAgentMessages(

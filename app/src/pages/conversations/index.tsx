@@ -203,7 +203,6 @@ const ConversationsPage: FC = () => {
 
     await approveExecution.mutateAsync(activeExecutionId);
     setActiveExecutionId(activeExecutionId);
-    resetExecution();
   };
 
   const handleReject = async () => {
@@ -255,9 +254,17 @@ const ConversationsPage: FC = () => {
   return (
     <div className="flex h-[calc(100vh-8rem)] gap-4">
       {conversationsLoading ? (
-        <aside className="flex w-72 shrink-0 flex-col gap-3">
-          <div className="h-10 animate-pulse rounded-md bg-surface-secondary" />
-          <ConversationSidebarSkeleton />
+        <aside className="flex w-72 shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface">
+          <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+            <div className="flex-1 space-y-1.5">
+              <div className="h-4 w-12 animate-pulse rounded bg-surface-secondary" />
+              <div className="h-3 w-20 animate-pulse rounded bg-surface-secondary" />
+            </div>
+            <div className="h-8 w-8 shrink-0 animate-pulse rounded-lg bg-surface-secondary" />
+          </div>
+          <div className="flex-1 p-2">
+            <ConversationSidebarSkeleton />
+          </div>
         </aside>
       ) : (
         <ConversationSidebar

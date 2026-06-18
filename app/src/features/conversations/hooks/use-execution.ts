@@ -77,6 +77,8 @@ export function useExecution(organizationUuid?: string, executionId?: string | n
 
     const subscriptions = [
       websocketSubscribe<{ toolName: string; input?: unknown }>(AGENT_EVENTS.TOOL_START, (payload) => {
+        setApprovalRequest(null);
+        setIsRunning(true);
         setToolCalls((current) => [
           ...current,
           { toolName: payload.toolName, input: payload.input, status: 'running' },
