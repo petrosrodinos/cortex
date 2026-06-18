@@ -3,28 +3,14 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { generateImage } from 'ai';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { GcsService } from '@/integrations/storage/gcs/services/gcs.service';
-import { AiProviderFactoryService } from '../../providers/ai-provider-factory.service';
+import { AiProviderFactoryService } from '../../../providers/ai-provider-factory.service';
 import { DocumentType } from 'generated/prisma';
 import { randomUUID } from 'node:crypto';
+import type { GenerateImageParams, GeneratedImageResult } from './image.types';
 
 const MAX_PROMPT_LENGTH = 4000;
 const DEFAULT_IMAGE_MODEL = 'gpt-image-1';
 const FALLBACK_IMAGE_MODEL = 'dall-e-3';
-
-export interface GenerateImageParams {
-  prompt: string;
-  size?: '1024x1024' | '1536x1024' | '1024x1536' | '1792x1024' | '1024x1792';
-  quality?: 'standard' | 'hd';
-  style?: 'vivid' | 'natural';
-}
-
-export interface GeneratedImageResult {
-  file_url: string;
-  filename: string;
-  document_uuid: string;
-  media_type: string;
-  revised_prompt?: string;
-}
 
 @Injectable()
 export class ImageGeneratorService {

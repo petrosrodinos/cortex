@@ -10,7 +10,7 @@ import {
   TextRun,
   WidthType,
 } from 'docx';
-import type { DocxGenerateParams } from './docx-generator.types';
+import type { DocxGenerateParams } from './docx.types';
 
 @Injectable()
 export class DocxGeneratorService {

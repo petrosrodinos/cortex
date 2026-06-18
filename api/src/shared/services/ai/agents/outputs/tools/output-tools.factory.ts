@@ -3,11 +3,15 @@ import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { ToolCallStatus } from 'generated/prisma';
 import { jsonSchema, tool } from 'ai';
 import type { ToolSet } from 'ai';
-import { ImageGeneratorService, type GeneratedImageResult } from './image-generator.service';
-import type { DocxGenerateParams, GeneratedFileResult } from './docx-generator.types';
-import { WordGeneratorService } from './word-generator.service';
-import { PdfGeneratorService } from './pdf-generator.service';
-import { ExecutionToolIdempotencyService } from '../tools/execution-tool-idempotency.service';
+import { ExcelGeneratorService } from '../excel/excel-generator.service';
+import type { ExcelGenerateParams } from '../excel/excel.types';
+import { ImageGeneratorService } from '../image/image-generator.service';
+import type { GeneratedImageResult } from '../image/image.types';
+import { PdfGeneratorService } from '../pdf/pdf-generator.service';
+import type { GeneratedFileResult } from '../shared/generated-file.types';
+import type { DocxGenerateParams } from '../word/docx.types';
+import { WordGeneratorService } from '../word/word-generator.service';
+import { ExecutionToolIdempotencyService } from '../../tools/execution-tool-idempotency.service';
 
 export interface OutputToolsContext {
   organizationUuid: string;
@@ -60,12 +64,42 @@ const DOCUMENT_TOOL_SCHEMA = jsonSchema({
   required: ['title', 'sections'],
 });
 
+const EXCEL_TOOL_SCHEMA = jsonSchema({
+  type: 'object',
+  properties: {
+    sheets: {
+      type: 'array',
+      description: 'One or more spreadsheet sheets to include in the workbook',
+      items: {
+        type: 'object',
+        properties: {
+          name: { type: 'string', description: 'Sheet tab name (max 31 characters)' },
+          headers: {
+            type: 'array',
+            items: { type: 'string' },
+          },
+          rows: {
+            type: 'array',
+            items: {
+              type: 'array',
+              items: { type: ['string', 'number'] },
+            },
+          },
+        },
+        required: ['headers', 'rows'],
+      },
+    },
+  },
+  required: ['sheets'],
+});
+
 @Injectable()
 export class OutputToolsFactory {
   constructor(
     private readonly imageGenerator: ImageGeneratorService,
     private readonly wordGenerator: WordGeneratorService,
     private readonly pdfGenerator: PdfGeneratorService,
+    private readonly excelGenerator: ExcelGeneratorService,
     private readonly prisma: PrismaService,
     private readonly idempotency: ExecutionToolIdempotencyService,
   ) {}
@@ -144,6 +178,21 @@ export class OutputToolsFactory {
             executionUuid,
             onToolEvent,
             run: () => this.pdfGenerator.generate(organizationUuid, userUuid, input),
+          });
+        },
+      }),
+
+      output__create_excel: tool({
+        description:
+          'Create an Excel (.xlsx) spreadsheet from structured data. Use when the user asks to create, export, or generate a spreadsheet, Excel file, or .xlsx workbook.',
+        inputSchema: EXCEL_TOOL_SCHEMA,
+        execute: async (input: ExcelGenerateParams) => {
+          return this.executeSideEffectTool({
+            toolName: 'output__create_excel',
+            input,
+            executionUuid,
+            onToolEvent,
+            run: () => this.excelGenerator.generate(organizationUuid, userUuid, input),
           });
         },
       }),

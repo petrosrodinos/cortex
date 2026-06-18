@@ -2,9 +2,10 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { DocumentType } from 'generated/prisma';
 import * as libreConvert from 'libreoffice-convert';
 import { promisify } from 'node:util';
-import { DocxGeneratorService } from './docx-generator.service';
-import type { DocxGenerateParams, GeneratedFileResult } from './docx-generator.types';
-import { DocumentOutputService } from './document-output.service';
+import { DocumentOutputService } from '../shared/document-output.service';
+import type { GeneratedFileResult } from '../shared/generated-file.types';
+import { DocxGeneratorService } from '../word/docx-generator.service';
+import type { DocxGenerateParams } from '../word/docx.types';
 
 const PDF_MIME = 'application/pdf';
 const convertAsync = promisify(libreConvert.convert);

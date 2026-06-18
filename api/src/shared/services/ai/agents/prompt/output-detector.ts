@@ -66,7 +66,9 @@ export function detectOutputType(userMessage: string, assistantContent: string, 
       }
 
       if (
-        (toolName === 'output__create_pdf' || toolName === 'output__create_word') &&
+        (toolName === 'output__create_pdf' ||
+          toolName === 'output__create_word' ||
+          toolName === 'output__create_excel') &&
         typeof payload.file_url === 'string'
       ) {
         files.push(payload.file_url);

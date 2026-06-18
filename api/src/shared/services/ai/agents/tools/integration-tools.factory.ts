@@ -8,7 +8,7 @@ import type { ToolSet } from 'ai';
 import { SandboxCodeService } from '../sandbox/sandbox-code.service';
 import { CODE_INTERPRETER_DESCRIPTION } from '../sandbox/sandbox.config';
 import { DocumentToolsFactory } from '../documents/document-tools.factory';
-import { OutputToolsFactory } from '../outputs/output-tools.factory';
+import { OutputToolsFactory } from '../outputs/tools/output-tools.factory';
 import { OrganizationToolsFactory } from '../organization/organization-tools.factory';
 import { ToolDispatcherService } from './tool-dispatcher.service';
 

@@ -3,7 +3,7 @@ import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { GcsService } from '@/integrations/storage/gcs/services/gcs.service';
 import { DocumentType } from 'generated/prisma';
 import { randomUUID } from 'node:crypto';
-import type { GeneratedFileResult } from './docx-generator.types';
+import type { GeneratedFileResult } from './generated-file.types';
 
 @Injectable()
 export class DocumentOutputService {

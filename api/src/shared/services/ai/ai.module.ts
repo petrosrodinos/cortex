@@ -23,12 +23,13 @@ import { CsvDocumentParser } from './agents/documents/parsers/csv-document.parse
 import { TextDocumentParser } from './agents/documents/parsers/text-document.parser';
 import { ImageDocumentParser } from './agents/documents/parsers/image-document.parser';
 import { SystemPromptBuilder } from './agents/prompt/system-prompt.builder';
-import { ImageGeneratorService } from './agents/outputs/image-generator.service';
-import { DocxGeneratorService } from './agents/outputs/docx-generator.service';
-import { DocumentOutputService } from './agents/outputs/document-output.service';
-import { WordGeneratorService } from './agents/outputs/word-generator.service';
-import { PdfGeneratorService } from './agents/outputs/pdf-generator.service';
-import { OutputToolsFactory } from './agents/outputs/output-tools.factory';
+import { ImageGeneratorService } from './agents/outputs/image/image-generator.service';
+import { DocxGeneratorService } from './agents/outputs/word/docx-generator.service';
+import { DocumentOutputService } from './agents/outputs/shared/document-output.service';
+import { WordGeneratorService } from './agents/outputs/word/word-generator.service';
+import { PdfGeneratorService } from './agents/outputs/pdf/pdf-generator.service';
+import { ExcelGeneratorService } from './agents/outputs/excel/excel-generator.service';
+import { OutputToolsFactory } from './agents/outputs/tools/output-tools.factory';
 import { ExecutionToolIdempotencyService } from './agents/tools/execution-tool-idempotency.service';
 import { OrganizationToolsFactory } from './agents/organization/organization-tools.factory';
 import { OrganizationToolsService } from './agents/organization/organization-tools.service';
@@ -61,6 +62,7 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     DocumentOutputService,
     WordGeneratorService,
     PdfGeneratorService,
+    ExcelGeneratorService,
     OutputToolsFactory,
     OrganizationToolsService,
     OrganizationToolsFactory,

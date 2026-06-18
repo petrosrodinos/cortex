@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { DocumentType } from 'generated/prisma';
+import { DocumentOutputService } from '../shared/document-output.service';
+import type { GeneratedFileResult } from '../shared/generated-file.types';
 import { DocxGeneratorService } from './docx-generator.service';
-import type { DocxGenerateParams, GeneratedFileResult } from './docx-generator.types';
-import { DocumentOutputService } from './document-output.service';
+import type { DocxGenerateParams } from './docx.types';
 
 const DOCX_MIME = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 

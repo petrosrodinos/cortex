@@ -81,6 +81,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "docx": "^9.7.1",
+    "exceljs": "^4.4.0",
     "express-session": "^1.18.1",
     "googleapis": "^173.0.0",
     "graphql": "^16.11.0",

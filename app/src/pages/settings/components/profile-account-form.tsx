@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FieldError, Form, Input, Label } from '@heroui/react';
 import { ActionButtonWithPending } from '@/components/ui/action-button-with-pending';
 import { useGetCurrentUser, useUpdateCurrentUser } from '@/features/user/hooks/use-user';
+import { ProfileAccountFormSkeleton } from './profile-account-form-skeleton';
 import {
   UpdateProfileSchema,
   type UpdateProfileFormValues,
@@ -23,7 +24,6 @@ export function ProfileAccountForm() {
     defaultValues: {
       first_name: '',
       last_name: '',
-      email: '',
       phone: '',
     },
   });
@@ -33,7 +33,6 @@ export function ProfileAccountForm() {
       reset({
         first_name: user.first_name ?? '',
         last_name: user.last_name ?? '',
-        email: user.email,
         phone: user.phone ?? '',
       });
     }
@@ -43,13 +42,12 @@ export function ProfileAccountForm() {
     updateUser.mutate({
       first_name: data.first_name?.trim() ? data.first_name.trim() : null,
       last_name: data.last_name?.trim() ? data.last_name.trim() : null,
-      email: data.email,
       phone: data.phone?.trim() ? data.phone.trim() : null,
     });
   }
 
   if (isLoading) {
-    return <p className="text-sm text-muted">Loading profile...</p>;
+    return <ProfileAccountFormSkeleton />;
   }
 
   return (
@@ -71,8 +69,7 @@ export function ProfileAccountForm() {
 
         <div className="flex flex-col gap-1">
           <Label htmlFor="profile-email">Email</Label>
-          <Input id="profile-email" type="email" fullWidth {...register('email')} />
-          {errors.email && <FieldError>{errors.email.message}</FieldError>}
+          <Input id="profile-email" type="email" fullWidth isDisabled value={user?.email ?? ''} />
         </div>
 
         <div className="flex flex-col gap-1">

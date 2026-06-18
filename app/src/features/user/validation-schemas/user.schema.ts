@@ -3,7 +3,6 @@ import { z } from 'zod';
 export const UpdateProfileSchema = z.object({
   first_name: z.string().optional(),
   last_name: z.string().optional(),
-  email: z.string().min(1, { message: 'Please enter your email' }).email({ message: 'Please enter a valid email' }),
   phone: z.string().optional(),
 });
 
