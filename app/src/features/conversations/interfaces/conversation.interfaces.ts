@@ -41,6 +41,17 @@ export interface SendMessageResponse {
   messageId: string;
 }
 
+export interface AgentExecution {
+  uuid: string;
+  status: AgentExecutionStatus;
+  error?: string | null;
+  output?: {
+    content?: string;
+    files?: string[];
+    outputType?: string;
+  } | null;
+}
+
 export interface ToolCallProgress {
   toolName: string;
   input?: unknown;

@@ -32,77 +32,113 @@ function isDocumentAnalysisRequest(message: string): boolean {
   return isAnalysis && !isGeneration;
 }
 
+function extractToolPayload(record: Record<string, unknown>): Record<string, unknown> {
+  if (record.output && typeof record.output === 'object') {
+    return record.output as Record<string, unknown>;
+  }
+
+  return record;
+}
+
 export function detectOutputType(userMessage: string, assistantContent: string, toolResults: unknown[]): OutputDetectionResult {
   const combined = `${userMessage}\n${assistantContent}`.toLowerCase();
   const files: string[] = [];
   let usedCodeInterpreter = false;
   let readUploadedDocument = false;
+  let imageFileUrl: string | null = null;
 
   for (const result of toolResults) {
     if (result && typeof result === 'object') {
       const record = result as Record<string, unknown>;
-      if (typeof record.filename === 'string') {
-        files.push(record.filename);
+      const toolName = typeof record.toolName === 'string' ? record.toolName : undefined;
+      const payload = extractToolPayload(record);
+
+      if (toolName === 'output__create_image' && typeof payload.file_url === 'string' && !imageFileUrl) {
+        imageFileUrl = payload.file_url;
       }
-      if (typeof record.file_url === 'string') {
-        files.push(record.file_url);
+
+      if (typeof payload.filename === 'string' && typeof payload.file_url === 'string') {
+        files.push(payload.file_url);
+      } else if (typeof payload.filename === 'string') {
+        files.push(payload.filename);
       }
-      if (Array.isArray(record.files)) {
-        files.push(...record.files.filter((entry): entry is string => typeof entry === 'string'));
+
+      if (typeof payload.file_url === 'string' && !files.includes(payload.file_url)) {
+        files.push(payload.file_url);
       }
-      if ('stdout' in record || 'stderr' in record) {
+
+      if (Array.isArray(payload.files)) {
+        files.push(...payload.files.filter((entry): entry is string => typeof entry === 'string'));
+      }
+
+      if ('stdout' in payload || 'stderr' in payload) {
         usedCodeInterpreter = true;
       }
-      if ('content' in record && typeof record.content === 'string') {
+
+      if ('content' in payload && typeof payload.content === 'string') {
         readUploadedDocument = true;
       }
     }
   }
 
-  if ((isDocumentAnalysisRequest(userMessage) || readUploadedDocument) && usedCodeInterpreter && files.length === 0) {
-    return { outputType: OutputType.TEXT, files };
+  const uniqueFiles = imageFileUrl ? [imageFileUrl] : [...new Set(files)];
+
+  if (imageFileUrl) {
+    return { outputType: OutputType.CHART, files: uniqueFiles };
+  }
+
+  if ((isDocumentAnalysisRequest(userMessage) || readUploadedDocument) && usedCodeInterpreter && uniqueFiles.length === 0) {
+    return { outputType: OutputType.TEXT, files: uniqueFiles };
   }
 
   if (readUploadedDocument && isDocumentAnalysisRequest(userMessage)) {
-    return { outputType: OutputType.TEXT, files };
+    return { outputType: OutputType.TEXT, files: uniqueFiles };
   }
 
   if (combined.includes('excel') || combined.includes('.xlsx') || combined.includes('spreadsheet')) {
     if (isDocumentAnalysisRequest(userMessage)) {
-      return { outputType: OutputType.TEXT, files };
+      return { outputType: OutputType.TEXT, files: uniqueFiles };
     }
-    return { outputType: OutputType.FILE_EXCEL, files };
+    return { outputType: OutputType.FILE_EXCEL, files: uniqueFiles };
   }
 
   if (combined.includes('pdf') || combined.includes('.pdf')) {
     if (isDocumentAnalysisRequest(userMessage)) {
-      return { outputType: OutputType.TEXT, files };
+      return { outputType: OutputType.TEXT, files: uniqueFiles };
     }
-    return { outputType: OutputType.FILE_PDF, files };
+    return { outputType: OutputType.FILE_PDF, files: uniqueFiles };
   }
 
   if (combined.includes('word') || combined.includes('.docx')) {
     if (isDocumentAnalysisRequest(userMessage)) {
-      return { outputType: OutputType.TEXT, files };
+      return { outputType: OutputType.TEXT, files: uniqueFiles };
     }
-    return { outputType: OutputType.FILE_WORD, files };
+    return { outputType: OutputType.FILE_WORD, files: uniqueFiles };
   }
 
   if (combined.includes('chart') || combined.includes('graph') || combined.includes('plot')) {
-    return { outputType: OutputType.CHART, files };
+    return { outputType: OutputType.CHART, files: uniqueFiles };
   }
 
   if (combined.includes('table') || combined.includes('tabular')) {
-    return { outputType: OutputType.TABLE, files };
+    return { outputType: OutputType.TABLE, files: uniqueFiles };
   }
 
   if (combined.includes('widget') || combined.includes('dashboard card')) {
-    return { outputType: OutputType.WIDGET, files };
+    return { outputType: OutputType.WIDGET, files: uniqueFiles };
   }
 
-  if (combined.includes('image') || combined.includes('.png') || combined.includes('.jpg') || combined.includes('.jpeg')) {
-    return { outputType: OutputType.TEXT, files };
+  if (
+    (combined.includes('image') ||
+      combined.includes('portrait') ||
+      combined.includes('illustration') ||
+      combined.includes('.png') ||
+      combined.includes('.jpg') ||
+      combined.includes('.jpeg')) &&
+    uniqueFiles.length > 0
+  ) {
+    return { outputType: OutputType.CHART, files: uniqueFiles };
   }
 
-  return { outputType: OutputType.TEXT, files };
+  return { outputType: OutputType.TEXT, files: uniqueFiles };
 }

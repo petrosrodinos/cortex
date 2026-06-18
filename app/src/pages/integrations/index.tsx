@@ -2,7 +2,10 @@ import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useGetIntegrations } from '@/features/integrations/common/hooks/use-integrations';
-import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
+import {
+  IntegrationStatuses,
+  type Integration,
+} from '@/features/integrations/common/interfaces/integration.interface';
 import type { CatalogProvider } from '@/features/integrations/constants/catalog-provider';
 import {
   CATALOG_PROVIDER_ICON_META,
@@ -43,6 +46,13 @@ export default function IntegrationsPage() {
     () => aiProviders.find((provider) => provider.uuid === aiProviderUuid) ?? null,
     [aiProviderUuid, aiProviders],
   );
+
+  const activeIntegrationsCount = useMemo(() => {
+    const activeIntegrations = integrations.filter(
+      (integration) => integration.status === IntegrationStatuses.ACTIVE,
+    ).length;
+    return activeIntegrations + aiProviders.length;
+  }, [integrations, aiProviders]);
 
   function handleManageIntegration(integration: Integration) {
     navigate(Routes.dashboard.integration(integration.uuid));
@@ -101,7 +111,14 @@ export default function IntegrationsPage() {
         </header>
       ) : (
         <header>
-          <h1 className="text-xl font-semibold text-foreground">Integrations</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-xl font-semibold text-foreground">Integrations</h1>
+            {!loading ? (
+              <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                {activeIntegrationsCount} active
+              </span>
+            ) : null}
+          </div>
           <p className="mt-1 text-sm text-muted">Connect systems and choose which actions the agent can use.</p>
         </header>
       )}

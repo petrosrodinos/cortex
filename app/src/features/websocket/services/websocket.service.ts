@@ -19,6 +19,7 @@ let socket: Socket | null = null;
 let options: WebsocketConnectOptions = DEFAULT_OPTIONS;
 const subscriptions: Map<string, Set<WebsocketEventCallback>> = new Map();
 const connectionListeners: Set<(state: WebsocketConnectionState) => void> = new Set();
+const pendingRooms = new Set<string>();
 let currentAuthToken: string | null = null;
 
 let state: WebsocketConnectionState = {
@@ -44,6 +45,10 @@ const setupEventListeners = (): void => {
             socket_id: socket?.id || null,
             reconnect_attempts: 0,
             last_connected_at: new Date(),
+        });
+
+        pendingRooms.forEach((room) => {
+            socket?.emit('join_room', { room });
         });
     });
 
@@ -229,11 +234,19 @@ export const websocketEmitWithAck = <T = unknown, R = unknown>(
 };
 
 export const websocketJoinRoom = (room: string): void => {
-    websocketEmit('join_room', { room });
+    pendingRooms.add(room);
+
+    if (socket?.connected) {
+        socket.emit('join_room', { room });
+    }
 };
 
 export const websocketLeaveRoom = (room: string): void => {
-    websocketEmit('leave_room', { room });
+    pendingRooms.delete(room);
+
+    if (socket?.connected) {
+        socket.emit('leave_room', { room });
+    }
 };
 
 export const websocketPing = (): void => {

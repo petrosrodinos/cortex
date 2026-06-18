@@ -1,6 +1,6 @@
 import axiosInstance from '@/config/api/axios';
 import { ApiRoutes } from '@/config/api/routes';
-import type { Conversation, Message, SendMessageResponse } from '../interfaces/conversation.interfaces';
+import type { Conversation, Message, SendMessageResponse, AgentExecution } from '../interfaces/conversation.interfaces';
 
 export const getConversations = async (organizationUuid: string): Promise<Conversation[]> => {
   try {
@@ -60,6 +60,15 @@ export const sendMessage = async (
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.message || 'Failed to send message.');
+  }
+};
+
+export const getExecution = async (organizationUuid: string, executionUuid: string): Promise<AgentExecution> => {
+  try {
+    const response = await axiosInstance.get(ApiRoutes.organizations.execution(organizationUuid, executionUuid));
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to load execution.');
   }
 };
 

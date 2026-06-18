@@ -68,6 +68,28 @@ export class AiProviderFactoryService {
     return resolved.adapter.createAgent(tools, resolved.model, instructions, options);
   }
 
+  async resolveOpenAiApiKey(organizationUuid: string): Promise<string | null> {
+    const defaultProvider = await this.prisma.aiProvider.findFirst({
+      where: { org_uuid: organizationUuid, is_default: true },
+      orderBy: { created_at: 'asc' },
+    });
+
+    if (defaultProvider?.provider === AiProviderType.OPENAI) {
+      return this.encryption.decrypt(defaultProvider.api_key);
+    }
+
+    const openAiProvider = await this.prisma.aiProvider.findFirst({
+      where: { org_uuid: organizationUuid, provider: AiProviderType.OPENAI },
+      orderBy: { created_at: 'asc' },
+    });
+
+    if (openAiProvider) {
+      return this.encryption.decrypt(openAiProvider.api_key);
+    }
+
+    return this.config.get<string>('OPENAI_API_KEY') ?? null;
+  }
+
   private getAdapter(provider: AiProviderType): AiProviderAdapter {
     switch (provider) {
       case AiProviderType.OPENAI:

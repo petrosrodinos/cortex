@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { MessageSquarePlus, Paperclip, Send, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import rehypeSanitize from 'rehype-sanitize';
@@ -16,11 +17,13 @@ import {
   useGetMessages,
   useRejectExecution,
   useSendMessage,
+  conversationsQueryKey,
 } from '@/features/conversations/hooks/use-conversations';
 import { useExecution } from '@/features/conversations/hooks/use-execution';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
 import { useUploadDocument } from '@/features/files/hooks/use-files';
 import { cn } from '@/lib/utils';
+import { AiTypingIndicator } from './components/ai-typing-indicator';
 
 interface AttachedFile {
   file: File;
@@ -29,15 +32,17 @@ interface AttachedFile {
 
 const ConversationsPage: FC = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { conversationUuid } = useParams<{ conversationUuid?: string }>();
   const organizationUuid = useOrganizationStore((state) => state.current_organization?.uuid);
   const [draft, setDraft] = useState('');
   const [activeExecutionId, setActiveExecutionId] = useState<string | null>(null);
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
+  const [pendingUserMessage, setPendingUserMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: conversations = [], isLoading: conversationsLoading } = useGetConversations(organizationUuid);
-  const { data: messages = [], refetch: refetchMessages } = useGetMessages(organizationUuid, conversationUuid);
+  const { data: messages = [] } = useGetMessages(organizationUuid, conversationUuid);
   const createConversation = useCreateConversation(organizationUuid);
   const sendMessage = useSendMessage(organizationUuid, conversationUuid);
   const approveExecution = useApproveExecution(organizationUuid);
@@ -45,18 +50,62 @@ const ConversationsPage: FC = () => {
   const uploadDocument = useUploadDocument(organizationUuid);
 
   const execution = useExecution(organizationUuid, activeExecutionId);
+  const { isComplete, reset: resetExecution, assistantContent, isRunning, toolCalls, approvalRequest, error: executionError } = execution;
 
   useEffect(() => {
-    if (execution.assistantContent && conversationUuid) {
-      void refetchMessages();
-      setActiveExecutionId(null);
+    if (!isComplete || !conversationUuid || !organizationUuid) {
+      return;
     }
-  }, [execution.assistantContent, conversationUuid, refetchMessages]);
+
+    void queryClient.invalidateQueries({ queryKey: ['messages', organizationUuid, conversationUuid] });
+    void queryClient.invalidateQueries({ queryKey: conversationsQueryKey });
+    resetExecution();
+    setActiveExecutionId(null);
+  }, [isComplete, conversationUuid, organizationUuid, queryClient, resetExecution]);
 
   const sortedConversations = useMemo(
     () => [...conversations].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()),
     [conversations],
   );
+
+  const pendingAssistantContent = useMemo(() => {
+    if (isComplete || assistantContent == null) {
+      return null;
+    }
+
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.role === MessageRoles.ASSISTANT && lastMessage.content === assistantContent) {
+      return null;
+    }
+
+    return assistantContent;
+  }, [assistantContent, isComplete, messages]);
+
+  const isPendingUserMessageVisible = useMemo(() => {
+    if (!pendingUserMessage) {
+      return false;
+    }
+
+    const lastMessage = messages[messages.length - 1];
+    return !(lastMessage?.role === MessageRoles.USER && lastMessage.content === pendingUserMessage);
+  }, [messages, pendingUserMessage]);
+
+  const showTypingIndicator =
+    (sendMessage.isPending || isRunning) &&
+    !approvalRequest &&
+    pendingAssistantContent == null &&
+    (isPendingUserMessageVisible || (activeExecutionId != null && !sendMessage.isPending));
+
+  useEffect(() => {
+    if (!pendingUserMessage) {
+      return;
+    }
+
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.role === MessageRoles.USER && lastMessage.content === pendingUserMessage) {
+      setPendingUserMessage(null);
+    }
+  }, [messages, pendingUserMessage]);
 
   const handleCreateConversation = async () => {
     const created = await createConversation.mutateAsync('New conversation');
@@ -95,8 +144,14 @@ const ConversationsPage: FC = () => {
     const documentUuids = attachedFiles.filter((f) => f.uuid).map((f) => f.uuid as string);
     setDraft('');
     setAttachedFiles([]);
-    const response = await sendMessage.mutateAsync({ content, documentUuids });
-    setActiveExecutionId(response.executionId);
+    setPendingUserMessage(content);
+
+    try {
+      const response = await sendMessage.mutateAsync({ content, documentUuids });
+      setActiveExecutionId(response.executionId);
+    } catch {
+      setPendingUserMessage(null);
+    }
   };
 
   const handleApprove = async () => {
@@ -106,7 +161,7 @@ const ConversationsPage: FC = () => {
 
     await approveExecution.mutateAsync(activeExecutionId);
     setActiveExecutionId(activeExecutionId);
-    execution.reset();
+    resetExecution();
   };
 
   const handleReject = async () => {
@@ -215,7 +270,11 @@ const ConversationsPage: FC = () => {
                     if (outputType === 'CHART' && files.length > 0) {
                       return (
                         <div className="mt-3">
-                          <img src={files[0]} alt="chart" className="max-w-full rounded-lg" />
+                          <img
+                            src={files[0]}
+                            alt="Generated visual"
+                            className="max-h-64 max-w-[240px] w-auto rounded-lg object-contain"
+                          />
                         </div>
                       );
                     }
@@ -238,33 +297,46 @@ const ConversationsPage: FC = () => {
                 </div>
               ))}
 
-              {execution.isRunning && (
-                <Card className="mr-auto max-w-[85%] border-dashed p-4">
-                  <p className="mb-3 text-sm font-medium">Agent is working...</p>
-                  <div className="space-y-2">
-                    {execution.toolCalls.map((tool, index) => (
-                      <div key={`${tool.toolName}-${index}`} className="rounded-lg border border-border px-3 py-2 text-sm">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="font-medium">{tool.toolName}</span>
-                          <span className="text-xs text-muted capitalize">{tool.status}</span>
-                        </div>
-                        {tool.durationMs != null && (
-                          <p className="mt-1 text-xs text-muted">{tool.durationMs}ms</p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </Card>
+              {isPendingUserMessageVisible && (
+                <div className="ml-auto max-w-[85%] rounded-2xl bg-accent/15 px-4 py-3 text-sm text-foreground whitespace-pre-wrap">
+                  {pendingUserMessage}
+                </div>
               )}
 
-              {execution.approvalRequest && (
+              {pendingAssistantContent != null && (
+                <div className="mr-auto max-w-[85%] rounded-2xl bg-surface-secondary px-4 py-3 text-sm text-foreground">
+                  <div className="prose prose-sm prose-invert max-w-none">
+                    <ReactMarkdown rehypePlugins={[rehypeSanitize]}>{pendingAssistantContent}</ReactMarkdown>
+                  </div>
+                </div>
+              )}
+
+              {showTypingIndicator && (
+                <div className="mr-auto flex w-fit flex-col gap-2">
+                  <div className="rounded-2xl bg-surface-secondary px-3 py-2.5">
+                    <AiTypingIndicator />
+                  </div>
+                  {toolCalls.length > 0 && (
+                    <div className="max-w-[85%] space-y-1">
+                      {toolCalls.map((tool, index) => (
+                        <p key={`${tool.toolName}-${index}`} className="text-xs text-muted">
+                          {tool.toolName}
+                          <span className="ml-1.5 capitalize opacity-70">{tool.status}</span>
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {approvalRequest && (
                 <Card className="mr-auto max-w-[85%] border-amber-500/30 bg-amber-500/5 p-4">
                   <p className="font-medium">Approval required</p>
                   <p className="mt-1 text-sm text-muted">
-                    Tool <span className="font-mono">{execution.approvalRequest.toolName}</span> wants to run with sensitive input.
+                    Tool <span className="font-mono">{approvalRequest.toolName}</span> wants to run with sensitive input.
                   </p>
                   <pre className="mt-3 overflow-x-auto rounded-lg bg-surface-secondary p-3 text-xs">
-                    {JSON.stringify(execution.approvalRequest.input, null, 2)}
+                    {JSON.stringify(approvalRequest.input, null, 2)}
                   </pre>
                   <div className="mt-4 flex gap-2">
                     <Button onClick={handleApprove} disabled={approveExecution.isPending}>
@@ -277,9 +349,9 @@ const ConversationsPage: FC = () => {
                 </Card>
               )}
 
-              {execution.error && (
+              {executionError && (
                 <Card className="mr-auto max-w-[85%] border-red-500/30 bg-red-500/5 p-4 text-sm text-red-500">
-                  {execution.error}
+                  {executionError}
                 </Card>
               )}
             </div>
@@ -322,7 +394,7 @@ const ConversationsPage: FC = () => {
                   variant="outline"
                   className="h-9 w-9 p-0 shrink-0"
                   onClick={() => fileInputRef.current?.click()}
-                  disabled={sendMessage.isPending || execution.isRunning || uploadDocument.isPending}
+                  disabled={sendMessage.isPending || isRunning || uploadDocument.isPending}
                   title="Attach file"
                 >
                   <Paperclip className="h-4 w-4" />
@@ -331,9 +403,9 @@ const ConversationsPage: FC = () => {
                   value={draft}
                   onChange={(event) => setDraft(event.target.value)}
                   placeholder="Ask Cortex anything..."
-                  disabled={sendMessage.isPending || execution.isRunning}
+                  disabled={sendMessage.isPending || isRunning}
                 />
-                <Button type="submit" disabled={!draft.trim() || sendMessage.isPending || execution.isRunning}>
+                <Button type="submit" disabled={!draft.trim() || sendMessage.isPending || isRunning}>
                   <Send className="h-4 w-4" />
                 </Button>
               </form>
