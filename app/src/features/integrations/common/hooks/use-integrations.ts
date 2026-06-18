@@ -7,6 +7,7 @@ import type {
 } from '../interfaces/integration.interface';
 import {
   createIntegration,
+  deleteIntegration,
   getIntegration,
   getIntegrationActions,
   getIntegrations,
@@ -60,6 +61,22 @@ export function useUpdateIntegration(organizationUuid?: string) {
     },
     onError: (error: Error) => {
       toast({ title: 'Could not update integration', description: error.message, variant: 'error', duration: 3000 });
+    },
+  });
+}
+
+export function useDeleteIntegration(organizationUuid?: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ integration_uuid }: { integration_uuid: string }) =>
+      deleteIntegration(organizationUuid as string, integration_uuid),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: integrationsQueryKey });
+      toast({ title: 'Integration removed', description: 'The integration has been deleted.', duration: 2000 });
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Could not remove integration', description: error.message, variant: 'error', duration: 3000 });
     },
   });
 }

@@ -67,6 +67,14 @@ export const getIntegrationActions = async (organizationUuid: string, integratio
   }
 };
 
+export const deleteIntegration = async (organizationUuid: string, integrationUuid: string): Promise<void> => {
+  try {
+    await axiosInstance.delete(ApiRoutes.organizations.integration(organizationUuid, integrationUuid));
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to remove integration. Please try again.');
+  }
+};
+
 export const toggleIntegrationAction = async (
   organizationUuid: string,
   integrationUuid: string,

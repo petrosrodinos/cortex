@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { ChevronRight, CheckCircle2, Database, FlaskConical, Power, PowerOff, RefreshCw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ChevronRight, CheckCircle2, Database, FlaskConical, Power, PowerOff, RefreshCw, Trash2, Pencil } from 'lucide-react';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import {
+  useDeleteIntegration,
   useGetIntegrationActions,
   useTestIntegration,
   useToggleIntegrationAction,
   useUpdateIntegration,
 } from '@/features/integrations/common/hooks/use-integrations';
+import { Routes } from '@/routes/routes';
 import { IntegrationStatuses, type Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import {
   useGetDatabaseIntegrationDetails,
@@ -38,12 +41,17 @@ interface IntegrationDetailProps {
 }
 
 export function IntegrationDetail({ organizationUuid, integration }: IntegrationDetailProps) {
-  const [confirmDialog, setConfirmDialog] = useState<{ action: 'enable' | 'disable' } | null>(null);
+  const navigate = useNavigate();
+  const [confirmDialog, setConfirmDialog] = useState<{ action: 'enable' | 'disable' | 'remove' } | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editDescription, setEditDescription] = useState('');
   const testIntegrationMutation = useTestIntegration(organizationUuid);
   const testDatabaseMutation = useTestSavedDatabaseConnection(organizationUuid);
   const testOpenApiMutation = useTestOpenApiIntegration(organizationUuid);
   const testMcpMutation = useTestMcpIntegration(organizationUuid);
   const updateIntegrationMutation = useUpdateIntegration(organizationUuid);
+  const deleteIntegrationMutation = useDeleteIntegration(organizationUuid);
   const actionsQuery = useGetIntegrationActions(organizationUuid, integration.uuid);
   const toggleActionMutation = useToggleIntegrationAction(organizationUuid, integration.uuid);
   const databaseDetailsQuery = useGetDatabaseIntegrationDetails(
@@ -78,10 +86,32 @@ export function IntegrationDetail({ organizationUuid, integration }: Integration
     testOpenApiMutation.isPending ||
     testMcpMutation.isPending ||
     updateIntegrationMutation.isPending ||
+    deleteIntegrationMutation.isPending ||
     syncSchemaMutation.isPending ||
     regenerateOpenApiMutation.isPending ||
     syncMcpToolsMutation.isPending ||
     toggleActionMutation.isPending;
+
+  function openEditModal() {
+    setEditName(integration.name);
+    setEditDescription(integration.description ?? '');
+    setEditModalOpen(true);
+  }
+
+  async function saveEdit() {
+    if (!editName.trim()) return;
+    await updateIntegrationMutation.mutateAsync({
+      integration_uuid: integration.uuid,
+      payload: { name: editName.trim(), description: editDescription.trim() },
+    });
+    setEditModalOpen(false);
+  }
+
+  async function removeIntegration() {
+    await deleteIntegrationMutation.mutateAsync({ integration_uuid: integration.uuid });
+    setConfirmDialog(null);
+    navigate(Routes.dashboard.integrations);
+  }
 
   async function toggleStatus() {
     await updateIntegrationMutation.mutateAsync({
@@ -119,8 +149,20 @@ export function IntegrationDetail({ organizationUuid, integration }: Integration
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="truncate text-base font-semibold text-foreground">{integration.name}</h2>
             <StatusBadge status={integration.status} />
+            <button
+              type="button"
+              onClick={openEditModal}
+              disabled={loading}
+              title="Edit integration"
+              className="grid h-5 w-5 place-items-center rounded text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-40"
+            >
+              <Pencil className="h-3 w-3" />
+            </button>
           </div>
-          <p className="mt-1 text-sm text-muted">{providerLabels[integration.provider]}</p>
+          {integration.description ? (
+            <p className="mt-1 text-sm text-muted">{integration.description}</p>
+          ) : null}
+          <p className="mt-1 text-xs text-muted">{providerLabels[integration.provider]}</p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2">
           <button
@@ -192,23 +234,113 @@ export function IntegrationDetail({ organizationUuid, integration }: Integration
               Enable
             </button>
           )}
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => setConfirmDialog({ action: 'remove' })}
+            title="Remove integration"
+            className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 disabled:opacity-50"
+          >
+            <Trash2 className="h-4 w-4" />
+            Remove
+          </button>
         </div>
 
         <ConfirmationDialog
           open={confirmDialog !== null}
           variant={confirmDialog?.action === 'enable' ? 'confirm' : 'danger'}
-          title={confirmDialog?.action === 'enable' ? 'Enable integration' : 'Disable integration'}
+          title={
+            confirmDialog?.action === 'enable' ? 'Enable integration'
+            : confirmDialog?.action === 'remove' ? 'Remove integration'
+            : 'Disable integration'
+          }
           description={
             confirmDialog?.action === 'enable'
               ? 'This will make the integration active and allow the agent to use its actions.'
+              : confirmDialog?.action === 'remove'
+              ? 'This will permanently delete the integration and all its associated data. This action cannot be undone.'
               : 'This will pause the integration. The agent will no longer be able to use its actions.'
           }
-          confirmLabel={confirmDialog?.action === 'enable' ? 'Enable' : 'Disable'}
-          loading={updateIntegrationMutation.isPending}
-          onConfirm={toggleStatus}
+          confirmLabel={
+            confirmDialog?.action === 'enable' ? 'Enable'
+            : confirmDialog?.action === 'remove' ? 'Remove'
+            : 'Disable'
+          }
+          loading={updateIntegrationMutation.isPending || deleteIntegrationMutation.isPending}
+          onConfirm={confirmDialog?.action === 'remove' ? removeIntegration : toggleStatus}
           onOpenChange={(open) => { if (!open) setConfirmDialog(null); }}
         />
       </div>
+
+      {editModalOpen ? (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <button
+            type="button"
+            aria-label="Close"
+            className="absolute inset-0 bg-[color-mix(in_oklch,black_42%,transparent)]"
+            onClick={() => setEditModalOpen(false)}
+          />
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="edit-integration-title"
+            className="relative w-full max-w-[460px] rounded-lg border border-border bg-surface p-5 shadow-xl"
+            style={{ boxShadow: '0 24px 60px -20px color-mix(in oklch, black 55%, transparent)' }}
+          >
+            <h2 id="edit-integration-title" className="text-sm font-semibold text-foreground">
+              Edit integration
+            </h2>
+
+            <div className="mt-4 flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="edit-name" className="text-xs font-medium text-muted">
+                  Name
+                </label>
+                <input
+                  id="edit-name"
+                  autoFocus
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') setEditModalOpen(false); }}
+                  className="h-9 w-full rounded-md border border-border bg-transparent px-3 text-sm text-foreground outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="edit-description" className="text-xs font-medium text-muted">
+                  Description
+                </label>
+                <textarea
+                  id="edit-description"
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Escape') setEditModalOpen(false); }}
+                  rows={3}
+                  className="w-full resize-none rounded-md border border-border bg-transparent px-3 py-2 text-sm text-foreground outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                />
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                disabled={updateIntegrationMutation.isPending}
+                onClick={() => setEditModalOpen(false)}
+                className="inline-flex h-9 items-center justify-center rounded-md border border-border px-3 text-sm font-medium text-muted transition-colors hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={updateIntegrationMutation.isPending || !editName.trim()}
+                onClick={saveEdit}
+                className="inline-flex h-9 items-center justify-center rounded-md bg-accent px-3 text-sm font-medium text-white transition-colors hover:bg-accent/90 disabled:opacity-50"
+              >
+                {updateIntegrationMutation.isPending ? 'Saving…' : 'Save'}
+              </button>
+            </div>
+          </section>
+        </div>
+      ) : null}
 
       {testIntegrationMutation.data || testDatabaseMutation.data || testOpenApiMutation.data || testMcpMutation.data?.success ? (
         <p className="mt-3 flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-600 dark:text-emerald-300">
