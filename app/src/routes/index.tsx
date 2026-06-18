@@ -12,7 +12,6 @@ import ConversationsPage from "@/pages/conversations";
 import FilesPage from "@/pages/files";
 import SettingsLayout from "@/pages/settings";
 import OrganizationSettingsPage from "@/pages/settings/organization";
-import AiProvidersPage from "@/pages/integrations/ai-providers";
 import UsagePage from "@/pages/settings/usage";
 import AuditLogsPage from "@/pages/settings/audit-logs";
 import ExecutionDetailPage from "@/pages/executions";
@@ -46,6 +45,7 @@ export default function AppRoutes() {
         <Route index element={<DashboardHome />} />
         <Route path="organizations" element={<OrganizationsPage />} />
         <Route path="integrations" element={<IntegrationsPage />} />
+        <Route path="integrations/ai/:aiProviderUuid" element={<IntegrationsPage />} />
         <Route path="integrations/:integrationUuid" element={<IntegrationsPage />} />
         <Route path="conversations" element={<ConversationsPage />} />
         <Route path="conversations/:conversationUuid" element={<ConversationsPage />} />
@@ -55,7 +55,7 @@ export default function AppRoutes() {
         <Route path="settings" element={<SettingsLayout />}>
           <Route index element={<Navigate to={Routes.dashboard.settingsOrganization} replace />} />
           <Route path="organization" element={<OrganizationSettingsPage />} />
-          <Route path="ai-providers" element={<AiProvidersPage />} />
+          <Route path="ai-providers" element={<Navigate to={Routes.dashboard.integrations} replace />} />
           <Route path="usage" element={<UsagePage />} />
           <Route path="audit-logs" element={<AuditLogsPage />} />
         </Route>

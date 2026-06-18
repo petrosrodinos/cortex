@@ -2,44 +2,83 @@ import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useGetIntegrations } from '@/features/integrations/common/hooks/use-integrations';
-import type { Integration, IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
-import { providerLabels, PROVIDER_ICON_META } from '@/features/integrations/constants/provider-metadata';
-import { cn } from '@/lib/utils';
+import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
+import type { CatalogProvider } from '@/features/integrations/constants/catalog-provider';
+import {
+  CATALOG_PROVIDER_ICON_META,
+  catalogProviderLabels,
+  PROVIDER_ICON_META,
+  providerLabels,
+} from '@/features/integrations/constants/provider-metadata';
+import { isAiCatalogProvider } from '@/features/integrations/utils/integration.utils';
+import { useGetAiProviders } from '@/features/settings/hooks/use-settings';
+import type { AiProvider } from '@/features/settings/services/settings.service';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
-import AiProvidersPage from './ai-providers';
+import { AiProviderDetail } from './components/ai-provider-detail';
 import { IntegrationDetail } from './components/integration-detail';
 import { IntegrationsSkeleton } from './components/integrations-skeleton';
 import { NoOrgPanel } from './components/no-org-panel';
 import { ProviderCatalog } from './components/provider-catalog';
 import { AddIntegrationModal } from './components/add-integration-modal';
-
-type IntegrationsTab = 'integrations' | 'ai-providers';
+import { AddAiProviderModal } from './components/add-ai-provider-modal';
 
 export default function IntegrationsPage() {
-  const { integrationUuid } = useParams();
+  const { integrationUuid, aiProviderUuid } = useParams();
   const navigate = useNavigate();
   const currentOrganization = useOrganizationStore((state) => state.current_organization);
-  const [activeTab, setActiveTab] = useState<IntegrationsTab>('integrations');
-  const [connectingProvider, setConnectingProvider] = useState<IntegrationProvider | null>(null);
+  const [connectingProvider, setConnectingProvider] = useState<CatalogProvider | null>(null);
   const integrationsQuery = useGetIntegrations(currentOrganization?.uuid);
+  const aiProvidersQuery = useGetAiProviders(currentOrganization?.uuid);
   const integrations = integrationsQuery.data ?? [];
+  const aiProviders = aiProvidersQuery.data ?? [];
+
   const selectedIntegration = useMemo(
     () => integrations.find((integration) => integration.uuid === integrationUuid) ?? null,
     [integrationUuid, integrations],
   );
 
-  function handleManage(integration: Integration) {
+  const selectedAiProvider = useMemo(
+    () => aiProviders.find((provider) => provider.uuid === aiProviderUuid) ?? null,
+    [aiProviderUuid, aiProviders],
+  );
+
+  function handleManageIntegration(integration: Integration) {
     navigate(Routes.dashboard.integration(integration.uuid));
   }
 
-  const isDetailView = !!(integrationUuid && selectedIntegration);
-  const detailIconMeta = selectedIntegration ? PROVIDER_ICON_META[selectedIntegration.provider] : null;
+  function handleManageAiProvider(provider: AiProvider) {
+    navigate(Routes.dashboard.aiProvider(provider.uuid));
+  }
+
+  const isIntegrationDetail = !!(integrationUuid && selectedIntegration);
+  const isAiProviderDetail = !!(aiProviderUuid && selectedAiProvider);
+  const isDetailView = isIntegrationDetail || isAiProviderDetail;
+
+  const detailIconMeta = isIntegrationDetail
+    ? PROVIDER_ICON_META[selectedIntegration.provider]
+    : isAiProviderDetail
+      ? CATALOG_PROVIDER_ICON_META[selectedAiProvider.provider as CatalogProvider]
+      : null;
   const DetailIcon = detailIconMeta?.icon;
+
+  const detailTitle = isIntegrationDetail
+    ? selectedIntegration.name
+    : isAiProviderDetail
+      ? catalogProviderLabels[selectedAiProvider.provider as CatalogProvider] ?? selectedAiProvider.provider
+      : '';
+
+  const detailSubtitle = isIntegrationDetail
+    ? providerLabels[selectedIntegration.provider]
+    : isAiProviderDetail
+      ? selectedAiProvider.default_model
+      : '';
+
+  const loading = integrationsQuery.isLoading || aiProvidersQuery.isLoading;
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-5">
-      {isDetailView && selectedIntegration ? (
+      {isDetailView ? (
         <header className="flex items-center gap-3">
           <button
             type="button"
@@ -55,8 +94,8 @@ export default function IntegrationsPage() {
             {DetailIcon ? <DetailIcon size={16} className="text-white" /> : null}
           </div>
           <div className="min-w-0">
-            <p className="text-xs text-muted">{providerLabels[selectedIntegration.provider]}</p>
-            <h1 className="text-base font-semibold leading-tight text-foreground">{selectedIntegration.name}</h1>
+            <p className="text-xs text-muted">{detailSubtitle}</p>
+            <h1 className="text-base font-semibold leading-tight text-foreground">{detailTitle}</h1>
           </div>
         </header>
       ) : (
@@ -66,43 +105,33 @@ export default function IntegrationsPage() {
         </header>
       )}
 
-      {!isDetailView ? (
-        <div className="flex gap-1 rounded-lg border border-border bg-surface p-1 w-fit">
-          {(['integrations', 'ai-providers'] as const).map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              onClick={() => setActiveTab(tab)}
-              className={cn(
-                'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-                activeTab === tab
-                  ? 'bg-surface-secondary text-foreground'
-                  : 'text-muted hover:text-foreground',
-              )}
-            >
-              {tab === 'integrations' ? 'Integrations' : 'AI Providers'}
-            </button>
-          ))}
-        </div>
-      ) : null}
-
-      {activeTab === 'ai-providers' && !isDetailView ? (
-        <AiProvidersPage />
-      ) : !currentOrganization ? (
+      {!currentOrganization ? (
         <NoOrgPanel />
-      ) : integrationsQuery.isLoading ? (
+      ) : loading ? (
         <IntegrationsSkeleton />
-      ) : isDetailView && selectedIntegration ? (
+      ) : isIntegrationDetail && selectedIntegration ? (
         <IntegrationDetail organizationUuid={currentOrganization.uuid} integration={selectedIntegration} />
+      ) : isAiProviderDetail && selectedAiProvider ? (
+        <AiProviderDetail organizationUuid={currentOrganization.uuid} provider={selectedAiProvider} />
       ) : (
         <ProviderCatalog
           integrations={integrations}
+          aiProviders={aiProviders}
           onConnect={(provider) => setConnectingProvider(provider)}
-          onManage={handleManage}
+          onManageIntegration={handleManageIntegration}
+          onManageAiProvider={handleManageAiProvider}
         />
       )}
 
-      {connectingProvider && currentOrganization ? (
+      {connectingProvider && currentOrganization && isAiCatalogProvider(connectingProvider) ? (
+        <AddAiProviderModal
+          organizationUuid={currentOrganization.uuid}
+          provider={connectingProvider}
+          onClose={() => setConnectingProvider(null)}
+        />
+      ) : null}
+
+      {connectingProvider && currentOrganization && !isAiCatalogProvider(connectingProvider) ? (
         <AddIntegrationModal
           organizationUuid={currentOrganization.uuid}
           provider={connectingProvider}

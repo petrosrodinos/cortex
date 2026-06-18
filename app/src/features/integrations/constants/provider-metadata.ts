@@ -1,7 +1,9 @@
 import type { ComponentType } from 'react';
-import { Mail, Cpu, FileCode2 } from 'lucide-react';
-import { SiGithub, SiSlack, SiStripe, SiHubspot, SiLinear, SiNotion, SiGoogledrive, SiGmail, SiPosthog, SiIntercom, SiPostgresql, SiMysql, SiMongodb } from 'react-icons/si';
+import { Mail, Cpu, FileCode2, Bot, Zap } from 'lucide-react';
+import { SiGithub, SiSlack, SiStripe, SiHubspot, SiLinear, SiNotion, SiGoogledrive, SiGmail, SiPosthog, SiIntercom, SiPostgresql, SiMysql, SiMongodb, SiOpenai } from 'react-icons/si';
 import type { IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
+import { AiProviderTypes } from '@/features/integrations/constants/ai-provider-types';
+import type { CatalogProvider } from '@/features/integrations/constants/catalog-provider';
 import type { DatabaseOperation } from '@/features/integrations/database/interfaces/database.interface';
 import { DatabaseOperations } from '@/features/integrations/database/interfaces/database.interface';
 import type { McpAuthType } from '@/features/integrations/mcp/interfaces/mcp.interface';
@@ -11,7 +13,7 @@ import { OpenApiAuthTypes } from '@/features/integrations/openapi/interfaces/ope
 
 export type ProviderIcon = ComponentType<{ size?: number; className?: string }>;
 
-export const providerLabels: Record<IntegrationProvider, string> = {
+const integrationProviderLabels: Record<IntegrationProvider, string> = {
   GITHUB: 'GitHub',
   SLACK: 'Slack',
   STRIPE: 'Stripe',
@@ -32,7 +34,16 @@ export const providerLabels: Record<IntegrationProvider, string> = {
   MCP: 'MCP',
 };
 
-export const providerDescriptions: Record<IntegrationProvider, string> = {
+export const providerLabels = integrationProviderLabels;
+
+export const catalogProviderLabels: Record<CatalogProvider, string> = {
+  ...integrationProviderLabels,
+  [AiProviderTypes.OPENAI]: 'OpenAI',
+  [AiProviderTypes.CLAUDE]: 'Claude',
+  [AiProviderTypes.GROK]: 'Grok',
+};
+
+const integrationProviderDescriptions: Record<IntegrationProvider, string> = {
   GITHUB: 'Repos, issues, pull requests, and workflows',
   SLACK: 'Messages, channels, and workspace events',
   STRIPE: 'Payments, customers, and subscriptions',
@@ -53,7 +64,16 @@ export const providerDescriptions: Record<IntegrationProvider, string> = {
   MCP: 'Any tool server via Model Context Protocol',
 };
 
-export const PROVIDER_ICON_META: Record<IntegrationProvider, { bg: string; icon: ProviderIcon }> = {
+export const providerDescriptions = integrationProviderDescriptions;
+
+export const catalogProviderDescriptions: Record<CatalogProvider, string> = {
+  ...integrationProviderDescriptions,
+  [AiProviderTypes.OPENAI]: 'GPT models for chat, reasoning, and tool use',
+  [AiProviderTypes.CLAUDE]: 'Anthropic models for chat and agent workflows',
+  [AiProviderTypes.GROK]: 'xAI models for fast chat and reasoning',
+};
+
+const integrationProviderIconMeta: Record<IntegrationProvider, { bg: string; icon: ProviderIcon }> = {
   GITHUB: { bg: '#24292f', icon: SiGithub },
   SLACK: { bg: '#4a154b', icon: SiSlack },
   STRIPE: { bg: '#635bff', icon: SiStripe },
@@ -72,6 +92,41 @@ export const PROVIDER_ICON_META: Record<IntegrationProvider, { bg: string; icon:
   DATABASE_MONGO: { bg: '#13aa52', icon: SiMongodb },
   OPENAPI: { bg: '#0d9488', icon: FileCode2 },
   MCP: { bg: '#7c3aed', icon: Cpu },
+};
+
+export const PROVIDER_ICON_META = integrationProviderIconMeta;
+
+export const CATALOG_PROVIDER_ICON_META: Record<CatalogProvider, { bg: string; icon: ProviderIcon }> = {
+  ...integrationProviderIconMeta,
+  [AiProviderTypes.OPENAI]: { bg: '#10a37f', icon: SiOpenai },
+  [AiProviderTypes.CLAUDE]: { bg: '#d97706', icon: Bot },
+  [AiProviderTypes.GROK]: { bg: '#111827', icon: Zap },
+};
+
+export const aiProviderModelOptions: Record<(typeof AiProviderTypes)[keyof typeof AiProviderTypes], { value: string; label: string }[]> = {
+  [AiProviderTypes.OPENAI]: [
+    { value: 'gpt-4o', label: 'GPT-4o' },
+    { value: 'gpt-4o-mini', label: 'GPT-4o Mini' },
+    { value: 'gpt-4-turbo', label: 'GPT-4 Turbo' },
+    { value: 'gpt-4', label: 'GPT-4' },
+    { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
+  ],
+  [AiProviderTypes.CLAUDE]: [
+    { value: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4' },
+    { value: 'claude-3-5-sonnet-latest', label: 'Claude 3.5 Sonnet' },
+    { value: 'claude-3-5-haiku-latest', label: 'Claude 3.5 Haiku' },
+    { value: 'claude-3-opus-latest', label: 'Claude 3 Opus' },
+  ],
+  [AiProviderTypes.GROK]: [
+    { value: 'grok-beta', label: 'Grok Beta' },
+    { value: 'grok-pro', label: 'Grok Pro' },
+  ],
+};
+
+export const aiProviderDefaultModels: Record<(typeof AiProviderTypes)[keyof typeof AiProviderTypes], string> = {
+  [AiProviderTypes.OPENAI]: aiProviderModelOptions[AiProviderTypes.OPENAI][0].value,
+  [AiProviderTypes.CLAUDE]: aiProviderModelOptions[AiProviderTypes.CLAUDE][0].value,
+  [AiProviderTypes.GROK]: aiProviderModelOptions[AiProviderTypes.GROK][0].value,
 };
 
 export const databaseOperationLabels: Record<DatabaseOperation, string> = {
