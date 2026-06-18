@@ -1,5 +1,12 @@
 import axiosInstance from '@/config/api/axios';
 import { ApiRoutes } from '@/config/api/routes';
+import type {
+  UsageQuery,
+  UsageRecordsResponse,
+  UsageSummary,
+} from '../interfaces/usage.interfaces';
+
+export type { UsageQuery, UsageRecordsResponse, UsageSummary } from '../interfaces/usage.interfaces';
 
 export interface AiProvider {
   uuid: string;
@@ -24,12 +31,8 @@ export interface CreateAiProviderDto {
 
 export type UpdateAiProviderDto = Partial<CreateAiProviderDto>;
 
-export interface Usage {
-  total_tokens: number;
-  total_cost_usd: number;
-  total_executions: number;
-  daily: { date: string; tokens: number; cost_usd: number; count: number }[];
-}
+export interface Usage extends UsageSummary {}
+
 
 export interface AuditLog {
   uuid: string;
@@ -87,12 +90,21 @@ export const deleteAiProvider = async (orgUuid: string, providerUuid: string): P
   }
 };
 
-export const getUsage = async (orgUuid: string): Promise<Usage> => {
+export const getUsage = async (orgUuid: string, query?: UsageQuery): Promise<UsageSummary> => {
   try {
-    const response = await axiosInstance.get(ApiRoutes.usage(orgUuid));
+    const response = await axiosInstance.get(ApiRoutes.usage(orgUuid), { params: query });
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.message || 'Failed to load usage.');
+  }
+};
+
+export const getUsageRecords = async (orgUuid: string, query?: UsageQuery): Promise<UsageRecordsResponse> => {
+  try {
+    const response = await axiosInstance.get(ApiRoutes.usageRecords(orgUuid), { params: query });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to load usage records.');
   }
 };
 

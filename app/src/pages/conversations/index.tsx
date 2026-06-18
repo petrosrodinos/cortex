@@ -20,6 +20,7 @@ import { useExecution } from '@/features/conversations/hooks/use-execution';
 import { MessageRoles, type MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { useUploadDocument } from '@/features/files/hooks/use-files';
 import { ConversationEmptyState } from './components/conversation-empty-state';
+import { ConversationDocumentsModal } from './components/conversation-documents-modal';
 import { ConversationHeader } from './components/conversation-header';
 import { ConversationInput } from './components/conversation-input';
 import { ConversationMessages } from './components/conversation-messages';
@@ -43,6 +44,7 @@ const ConversationsPage: FC = () => {
   const [pendingUserMessage, setPendingUserMessage] = useState<string | null>(null);
   const [pendingUserAttachments, setPendingUserAttachments] = useState<MessageAttachment[]>([]);
   const [deleteTargetUuid, setDeleteTargetUuid] = useState<string | null>(null);
+  const [documentsOpen, setDocumentsOpen] = useState(false);
   const autoCreateStarted = useRef(false);
 
   const { data: conversations = [], isLoading: conversationsLoading } = useGetConversations(organizationUuid);
@@ -289,6 +291,14 @@ const ConversationsPage: FC = () => {
               title={activeConversation?.title || 'Untitled chat'}
               onRename={(title) => handleRename(conversationUuid, title)}
               onDelete={() => handleDeleteRequest(conversationUuid)}
+              onOpenDocuments={() => setDocumentsOpen(true)}
+            />
+
+            <ConversationDocumentsModal
+              open={documentsOpen}
+              messages={messages}
+              pendingAttachments={isPendingUserMessageVisible ? pendingUserAttachments : []}
+              onOpenChange={setDocumentsOpen}
             />
 
             <ConversationMessages

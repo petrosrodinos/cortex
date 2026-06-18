@@ -3,6 +3,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { PrismaModule } from '@/core/databases/prisma/prisma.module';
 import { OrganizationsModule } from '@/modules/organizations/organizations.module';
 import { AiModule } from '@/shared/services/ai/ai.module';
+import { GcsIntegrationModule } from '@/integrations/storage/gcs/gcs.module';
 import { AGENT_RUN_QUEUE } from '@/core/queues/queues.constants';
 import { ConversationsController, ExecutionsController } from './conversations.controller';
 import { ConversationsService } from './conversations.service';
@@ -14,6 +15,7 @@ import { ExecutionsService } from './executions.service';
     PrismaModule,
     OrganizationsModule,
     AiModule,
+    GcsIntegrationModule,
     BullModule.registerQueue({ name: AGENT_RUN_QUEUE }),
   ],
   controllers: [ConversationsController, ExecutionsController],

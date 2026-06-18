@@ -11,7 +11,6 @@ export const Routes = {
         conversation: (conversationUuid: string) => `/dashboard/conversations/${conversationUuid}`,
         integration: (integrationUuid: string) => `/dashboard/integrations/${integrationUuid}`,
         aiProvider: (aiProviderUuid: string) => `/dashboard/integrations/ai/${aiProviderUuid}`,
-        files: '/dashboard/files',
         settings: '/dashboard/settings',
         settingsOrganization: '/dashboard/settings/organization',
         settingsAiProviders: '/dashboard/integrations',

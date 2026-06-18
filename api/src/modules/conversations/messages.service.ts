@@ -7,6 +7,7 @@ import { AgentExecutionStatus, MessageRole } from 'generated/prisma';
 import { ConversationMemoryService } from '@/shared/services/ai/memory/conversation-memory.service';
 import { AiProviderFactoryService } from '@/shared/services/ai/providers/ai-provider-factory.service';
 import { OrganizationsService } from '@/modules/organizations/organizations.service';
+import { GcsService } from '@/integrations/storage/gcs/services/gcs.service';
 import { AGENT_RUN_QUEUE } from '@/core/queues/queues.constants';
 import type { AgentRunJobData } from '@/core/queues/processors/agent.processor';
 import { SendMessageDto } from './dto/send-message.dto';
@@ -20,6 +21,7 @@ export class MessagesService {
     private readonly organizations: OrganizationsService,
     private readonly memory: ConversationMemoryService,
     private readonly providerFactory: AiProviderFactoryService,
+    private readonly gcs: GcsService,
     @InjectQueue(AGENT_RUN_QUEUE) private readonly agentQueue: Queue<AgentRunJobData>,
   ) {}
 
@@ -27,10 +29,67 @@ export class MessagesService {
     await this.organizations.requireActiveMember(userUuid, organizationUuid);
     await this.getConversation(userUuid, organizationUuid, conversationUuid);
 
-    return this.prisma.message.findMany({
+    const messages = await this.prisma.message.findMany({
       where: { conversation_uuid: conversationUuid },
       orderBy: { created_at: 'asc' },
     });
+
+    return Promise.all(messages.map((message) => this.withViewableAttachmentUrls(message)));
+  }
+
+  private async withViewableAttachmentUrls(message: {
+    metadata: unknown;
+    [key: string]: unknown;
+  }) {
+    const metadata = message.metadata as {
+      attachments?: Array<{
+        uuid: string;
+        filename: string;
+        url?: string;
+        mimetype?: string;
+        path?: string;
+      }>;
+    } | null;
+
+    if (!metadata?.attachments?.length) {
+      return message;
+    }
+
+    const attachments = await Promise.all(
+      metadata.attachments.map(async (attachment) => {
+        const document = await this.prisma.document.findUnique({
+          where: { uuid: attachment.uuid },
+          select: { path: true, mimetype: true, filename: true },
+        });
+
+        if (!document?.path) {
+          return {
+            uuid: attachment.uuid,
+            filename: attachment.filename,
+            mimetype: attachment.mimetype,
+          };
+        }
+
+        const url = await this.gcs.getSignedUrlForObjectPath(document.path, 60, {
+          contentType: document.mimetype,
+        });
+
+        return {
+          uuid: attachment.uuid,
+          filename: document.filename,
+          mimetype: document.mimetype,
+          url,
+        };
+      }),
+    );
+
+    return {
+      ...message,
+      metadata: {
+        ...metadata,
+        attachments,
+      },
+    };
   }
 
   async sendMessage(userUuid: string, organizationUuid: string, conversationUuid: string, dto: SendMessageDto) {
@@ -143,7 +202,7 @@ export class MessagesService {
 
     const documents = await this.prisma.document.findMany({
       where: { uuid: { in: documentUuids }, user_uuid: userUuid },
-      select: { uuid: true, filename: true, url: true, mimetype: true },
+      select: { uuid: true, filename: true, mimetype: true, path: true },
     });
 
     if (documents.length !== documentUuids.length) {
@@ -152,7 +211,12 @@ export class MessagesService {
       throw new NotFoundException(`Documents not found: ${missing.join(', ')}`);
     }
 
-    return documents;
+    return documents.map(({ uuid, filename, mimetype, path }) => ({
+      uuid,
+      filename,
+      mimetype,
+      path,
+    }));
   }
 
   private async getConversation(userUuid: string, organizationUuid: string, conversationUuid: string) {

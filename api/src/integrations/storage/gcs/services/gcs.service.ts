@@ -102,6 +102,19 @@ export class GcsService {
         }
     }
 
+    public async getSignedUrlForObjectPath(
+        objectPath: string,
+        expiresInMinutes: number = 60,
+        options?: { contentType?: string },
+    ): Promise<string> {
+        try {
+            return await this.gcsAdapter.getSignedUrlForObjectPath(objectPath, expiresInMinutes, options);
+        } catch (error) {
+            this.logger.error('Get signed URL for object path error:', error);
+            throw new Error(`Failed to get signed URL: ${error.message}`);
+        }
+    }
+
     public async downloadImage(request: DownloadImageRequest): Promise<DownloadImageResponse> {
         try {
             return await this.gcsAdapter.downloadImage(request);

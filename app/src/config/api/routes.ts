@@ -70,6 +70,7 @@ export const ApiRoutes = {
     aiProviders: (orgUuid: string) => `/organizations/${orgUuid}/ai-providers`,
     aiProvider: (orgUuid: string, providerUuid: string) => `/organizations/${orgUuid}/ai-providers/${providerUuid}`,
     usage: (orgUuid: string) => `/organizations/${orgUuid}/executions/usage`,
+    usageRecords: (orgUuid: string) => `/organizations/${orgUuid}/executions/usage/records`,
     auditLogs: (orgUuid: string) => `/organizations/${orgUuid}/audit-logs`,
     documents: (orgUuid: string) => `/organizations/${orgUuid}/documents`,
 }

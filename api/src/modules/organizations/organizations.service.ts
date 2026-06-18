@@ -174,11 +174,14 @@ export class OrganizationsService {
     }
   }
 
+  hasPermission(membership: { role: { name: string; permissions?: Array<{ permission: { key: string } }> } }, permission_key: string) {
+    const permissions = membership.role.permissions?.map((role_permission) => role_permission.permission.key) ?? [];
+    return membership.role.name === 'Owner' || permissions.includes(permission_key);
+  }
+
   private requirePermissionOrOwner(membership: any, permission_key: string) {
     try {
-      const permissions = membership.role.permissions?.map((role_permission) => role_permission.permission.key) ?? [];
-
-      if (membership.role.name !== 'Owner' && !permissions.includes(permission_key)) {
+      if (!this.hasPermission(membership, permission_key)) {
         throw new ForbiddenException('Missing organization permission');
       }
     } catch (error) {

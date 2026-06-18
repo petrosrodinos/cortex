@@ -1,10 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
+import { ZodValidationPipe } from '@/shared/pipes/zod.validation.pipe';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { UpdateConversationDto } from './dto/update-conversation.dto';
 import { SendMessageDto } from './dto/send-message.dto';
+import { UsageQuerySchema, type UsageQueryType } from './dto/usage-query.schema';
 import { ConversationsService } from './conversations.service';
 import { MessagesService } from './messages.service';
 import { ExecutionsService } from './executions.service';
@@ -85,8 +87,21 @@ export class ExecutionsController {
   constructor(private readonly executions: ExecutionsService) {}
 
   @Get('usage')
-  getUsage(@CurrentUser('uuid') userUuid: string, @Param('organization_uuid') organizationUuid: string) {
-    return this.executions.getUsage(userUuid, organizationUuid);
+  getUsage(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Query(new ZodValidationPipe(UsageQuerySchema)) query: UsageQueryType,
+  ) {
+    return this.executions.getUsage(userUuid, organizationUuid, query);
+  }
+
+  @Get('usage/records')
+  getUsageRecords(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Query(new ZodValidationPipe(UsageQuerySchema)) query: UsageQueryType,
+  ) {
+    return this.executions.getUsageRecords(userUuid, organizationUuid, query);
   }
 
   @Get()

@@ -1,15 +1,24 @@
 import { useEffect, useRef, useState, type FC, type KeyboardEvent } from 'react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { FileText, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ConversationHeaderProps {
   title: string;
   onRename: (title: string) => void;
   onDelete: () => void;
+  onOpenDocuments: () => void;
 }
 
-export const ConversationHeader: FC<ConversationHeaderProps> = ({ title, onRename, onDelete }) => {
+export const ConversationHeader: FC<ConversationHeaderProps> = ({
+  title,
+  onRename,
+  onDelete,
+  onOpenDocuments,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -24,6 +33,17 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({ title, onRenam
       inputRef.current?.select();
     }
   }, [isEditing]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const commitEdit = () => {
     const trimmed = editTitle.trim();
@@ -44,6 +64,11 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({ title, onRenam
     }
   };
 
+  const startEditing = () => {
+    setMenuOpen(false);
+    setIsEditing(true);
+  };
+
   return (
     <header className="flex shrink-0 items-center gap-2 border-b border-border px-4 py-3">
       {isEditing ? (
@@ -62,20 +87,50 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({ title, onRenam
       <div className="flex shrink-0 items-center gap-1">
         <button
           type="button"
-          onClick={() => setIsEditing(true)}
+          onClick={onOpenDocuments}
           className="rounded-md p-1.5 text-muted transition-colors hover:bg-surface-secondary hover:text-foreground"
-          aria-label="Rename conversation"
+          aria-label="View documents"
         >
-          <Pencil className="h-4 w-4" />
+          <FileText className="h-4 w-4" />
         </button>
-        <button
-          type="button"
-          onClick={onDelete}
-          className="rounded-md p-1.5 text-muted transition-colors hover:bg-surface-secondary hover:text-red-400"
-          aria-label="Delete conversation"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
+
+        <div className="relative" ref={menuRef}>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            className={cn(
+              'rounded-md p-1.5 text-muted transition-colors hover:bg-surface-secondary hover:text-foreground',
+              menuOpen && 'bg-surface-secondary text-foreground',
+            )}
+            aria-label="Conversation options"
+          >
+            <MoreHorizontal className="h-4 w-4" />
+          </button>
+
+          {menuOpen && (
+            <div className="absolute right-0 top-full z-20 mt-1 min-w-[140px] overflow-hidden rounded-lg border border-border bg-surface py-1 shadow-lg">
+              <button
+                type="button"
+                onClick={startEditing}
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-surface-secondary"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                Rename
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onDelete();
+                }}
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-400 hover:bg-surface-secondary"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Delete
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

@@ -51,6 +51,14 @@ export function detectOutputType(userMessage: string, assistantContent: string, 
     if (result && typeof result === 'object') {
       const record = result as Record<string, unknown>;
       const toolName = typeof record.toolName === 'string' ? record.toolName : undefined;
+
+      if (toolName?.startsWith('document__')) {
+        if (toolName !== 'document__list') {
+          readUploadedDocument = true;
+        }
+        continue;
+      }
+
       const payload = extractToolPayload(record);
 
       if (toolName === 'output__create_image' && typeof payload.file_url === 'string' && !imageFileUrl) {
@@ -59,11 +67,7 @@ export function detectOutputType(userMessage: string, assistantContent: string, 
 
       if (typeof payload.filename === 'string' && typeof payload.file_url === 'string') {
         files.push(payload.file_url);
-      } else if (typeof payload.filename === 'string') {
-        files.push(payload.filename);
-      }
-
-      if (typeof payload.file_url === 'string' && !files.includes(payload.file_url)) {
+      } else if (typeof payload.file_url === 'string' && !files.includes(payload.file_url)) {
         files.push(payload.file_url);
       }
 
@@ -73,10 +77,6 @@ export function detectOutputType(userMessage: string, assistantContent: string, 
 
       if ('stdout' in payload || 'stderr' in payload) {
         usedCodeInterpreter = true;
-      }
-
-      if ('content' in payload && typeof payload.content === 'string') {
-        readUploadedDocument = true;
       }
     }
   }

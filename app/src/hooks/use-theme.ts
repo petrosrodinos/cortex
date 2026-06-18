@@ -10,11 +10,19 @@ function getStored(): Theme {
   }
 }
 
+function applyTheme(theme: Theme) {
+  document.documentElement.classList.toggle("dark", theme === "dark");
+}
+
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>(getStored);
+  const [theme, setTheme] = useState<Theme>(() => {
+    const stored = getStored();
+    applyTheme(stored);
+    return stored;
+  });
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
+    applyTheme(theme);
     try {
       localStorage.setItem("theme", theme);
     } catch {}

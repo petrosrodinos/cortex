@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Building2, FolderOpen, LayoutDashboard, MessageSquare, PlugZap, Settings } from 'lucide-react';
+import { Building2, LayoutDashboard, MessageSquare, PlugZap, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Routes } from '@/routes/routes';
 
@@ -13,7 +13,6 @@ const navItems = [
   { label: 'Conversations', icon: MessageSquare, href: Routes.dashboard.conversations, end: false },
   { label: 'Organisations', icon: Building2, href: Routes.dashboard.organizations, end: false },
   { label: 'Integrations', icon: PlugZap, href: Routes.dashboard.integrations, end: false },
-  { label: 'Files', icon: FolderOpen, href: Routes.dashboard.files, end: false },
   { label: 'Settings', icon: Settings, href: Routes.dashboard.settings, end: false },
 ];
 

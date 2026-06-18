@@ -221,7 +221,10 @@ export class AgentRunnerService {
         {
           role: MessageRole.ASSISTANT,
           content,
-          metadata: { outputType: detection.outputType, files: detection.files },
+          metadata: {
+            outputType: detection.outputType,
+            ...(detection.files.length > 0 ? { files: detection.files } : {}),
+          },
         },
       ]);
 

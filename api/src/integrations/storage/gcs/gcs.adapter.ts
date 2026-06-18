@@ -37,6 +37,7 @@ export class GcsAdapter {
             const stream = file.createWriteStream({
                 metadata: {
                     contentType: request.contentType,
+                    contentDisposition: 'inline',
                 },
                 // public: request.public || false,
             });
@@ -155,6 +156,30 @@ export class GcsAdapter {
             return signedUrl;
         } catch (error) {
             this.logger.error('Get signed URL error:', error);
+            throw new Error(`Failed to get signed URL: ${error.message}`);
+        }
+    }
+
+    public async getSignedUrlForObjectPath(
+        objectPath: string,
+        expiresInMinutes: number = 60,
+        options?: { contentType?: string },
+    ): Promise<string> {
+        try {
+            const storage = this.gcsConfig.getStorageClient();
+            const bucketName = this.gcsConfig.getBucketName();
+            const bucket = storage.bucket(bucketName);
+            const file = bucket.file(objectPath);
+            const [signedUrl] = await file.getSignedUrl({
+                action: 'read',
+                expires: Date.now() + expiresInMinutes * 60 * 1000,
+                responseDisposition: 'inline',
+                ...(options?.contentType ? { responseType: options.contentType } : {}),
+            });
+
+            return signedUrl;
+        } catch (error) {
+            this.logger.error('Get signed URL for object path error:', error);
             throw new Error(`Failed to get signed URL: ${error.message}`);
         }
     }

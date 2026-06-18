@@ -1,7 +1,11 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { useOrganizationStore } from '@/stores/organization';
 import { useGetExecution } from '@/features/executions/hooks/use-executions';
+import { formatUsd } from '@/lib/currency';
+import { Routes } from '@/routes/routes';
+import { ExecutionDetailSkeleton } from './components/execution-detail-skeleton';
 
 const statusColors: Record<string, string> = {
   COMPLETED: 'bg-green-500/10 text-green-400',
@@ -30,22 +34,35 @@ function JsonCollapsible({ label, data }: { label: string; data: unknown }) {
 
 export default function ExecutionDetailPage() {
   const { executionUuid } = useParams<{ executionUuid: string }>();
+  const navigate = useNavigate();
   const orgUuid = useOrganizationStore((s) => s.current_organization?.uuid);
   const { data: execution, isLoading } = useGetExecution(orgUuid, executionUuid);
 
-  if (isLoading) return <p className="text-sm text-muted">Loading...</p>;
+  if (isLoading) {
+    return <ExecutionDetailSkeleton />;
+  }
 
   if (!execution) return <p className="text-sm text-muted">Execution not found.</p>;
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-6">
       <header className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-lg font-semibold tracking-tight text-foreground">Execution</h1>
-          <p className="mt-0.5 font-mono text-xs text-muted">{execution.uuid}</p>
+        <div className="flex min-w-0 flex-1 items-start gap-3">
+          <button
+            type="button"
+            onClick={() => navigate(Routes.dashboard.settingsUsage)}
+            className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-md text-muted transition-colors hover:bg-surface-secondary hover:text-foreground"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <div className="min-w-0">
+            <h1 className="text-lg font-semibold tracking-tight text-foreground">Execution</h1>
+            <p className="mt-0.5 font-mono text-xs text-muted">{execution.uuid}</p>
+          </div>
         </div>
         <span
-          className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[execution.status] ?? 'bg-surface-secondary text-muted'}`}
+          className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${statusColors[execution.status] ?? 'bg-surface-secondary text-muted'}`}
         >
           {execution.status}
         </span>
@@ -58,7 +75,7 @@ export default function ExecutionDetailPage() {
         </div>
         <div className="rounded-xl border border-border bg-surface p-4">
           <p className="text-xs text-muted">Cost</p>
-          <p className="mt-1 text-xl font-semibold text-foreground">${(execution.cost_usd ?? 0).toFixed(6)}</p>
+          <p className="mt-1 text-xl font-semibold text-foreground">{formatUsd(execution.cost_usd, 6)}</p>
         </div>
         <div className="rounded-xl border border-border bg-surface p-4">
           <p className="text-xs text-muted">Created</p>
@@ -110,7 +127,7 @@ export default function ExecutionDetailPage() {
                     <span className="text-xs text-muted">{tc.tokens_used} tokens</span>
                   )}
                   {tc.cost_usd != null && (
-                    <span className="text-xs text-muted">${tc.cost_usd.toFixed(6)}</span>
+                    <span className="text-xs text-muted">{formatUsd(tc.cost_usd, 6)}</span>
                   )}
                   <span
                     className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${statusColors[tc.status] ?? 'bg-surface-secondary text-muted'}`}

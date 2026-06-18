@@ -119,7 +119,8 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
                       <a
                         key={fileUrl}
                         href={fileUrl}
-                        download={filename}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs text-accent hover:underline"
                       >
                         <span>📄</span>

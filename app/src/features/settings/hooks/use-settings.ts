@@ -1,12 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import type { CreateAiProviderDto, UpdateAiProviderDto } from '../services/settings.service';
+import type { UsageQuery } from '../interfaces/usage.interfaces';
 import {
   createAiProvider,
   deleteAiProvider,
   getAiProviders,
   getAuditLogs,
   getUsage,
+  getUsageRecords,
   updateAiProvider,
 } from '../services/settings.service';
 
@@ -68,10 +70,18 @@ export function useDeleteAiProvider(orgUuid?: string) {
   });
 }
 
-export function useGetUsage(orgUuid?: string) {
+export function useGetUsage(orgUuid?: string, query?: UsageQuery) {
   return useQuery({
-    queryKey: [...usageQueryKey, orgUuid],
-    queryFn: () => getUsage(orgUuid as string),
+    queryKey: [...usageQueryKey, orgUuid, query],
+    queryFn: () => getUsage(orgUuid as string, query),
+    enabled: !!orgUuid,
+  });
+}
+
+export function useGetUsageRecords(orgUuid?: string, query?: UsageQuery) {
+  return useQuery({
+    queryKey: [...usageQueryKey, 'records', orgUuid, query],
+    queryFn: () => getUsageRecords(orgUuid as string, query),
     enabled: !!orgUuid,
   });
 }
