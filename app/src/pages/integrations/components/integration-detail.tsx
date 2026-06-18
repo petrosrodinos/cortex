@@ -1,29 +1,31 @@
 import { useState } from 'react';
 import { ChevronRight, CheckCircle2, Database, FlaskConical, Power, PowerOff, RefreshCw } from 'lucide-react';
+import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import {
-  useGetDatabaseIntegrationDetails,
   useGetIntegrationActions,
-  useGetMcpIntegrationDetails,
-  useGetOpenApiIntegrationDetails,
-  useRegenerateOpenApiTools,
-  useSyncDatabaseSchema,
-  useSyncMcpTools,
   useTestIntegration,
-  useTestMcpIntegration,
-  useTestOpenApiIntegration,
-  useTestSavedDatabaseConnection,
   useToggleIntegrationAction,
   useUpdateIntegration,
-} from '@/features/integrations/hooks/use-integrations';
+} from '@/features/integrations/common/hooks/use-integrations';
+import { IntegrationStatuses, type Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import {
-  IntegrationStatuses,
-  type DatabaseIntegrationDetails,
-  type DatabaseSchema,
-  type DiscoveredMcpTool,
-  type Integration,
-  type McpIntegrationDetails,
-  type OpenApiIntegrationDetails,
-} from '@/features/integrations/interfaces/integration.interface';
+  useGetDatabaseIntegrationDetails,
+  useSyncDatabaseSchema,
+  useTestSavedDatabaseConnection,
+} from '@/features/integrations/database/hooks/use-database-integration';
+import type { DatabaseIntegrationDetails, DatabaseSchema } from '@/features/integrations/database/interfaces/database.interface';
+import {
+  useGetMcpIntegrationDetails,
+  useSyncMcpTools,
+  useTestMcpIntegration,
+} from '@/features/integrations/mcp/hooks/use-mcp-integration';
+import type { DiscoveredMcpTool, McpIntegrationDetails } from '@/features/integrations/mcp/interfaces/mcp.interface';
+import {
+  useGetOpenApiIntegrationDetails,
+  useRegenerateOpenApiTools,
+  useTestOpenApiIntegration,
+} from '@/features/integrations/openapi/hooks/use-openapi-integration';
+import type { OpenApiIntegrationDetails } from '@/features/integrations/openapi/interfaces/openapi.interface';
 import { databaseOperationLabels } from '@/features/integrations/constants/provider-metadata';
 import { isDatabaseProvider, isOpenApiProvider, isMcpProvider } from '@/features/integrations/utils/integration.utils';
 import { providerLabels } from '@/features/integrations/constants/provider-metadata';
@@ -36,6 +38,7 @@ interface IntegrationDetailProps {
 }
 
 export function IntegrationDetail({ organizationUuid, integration }: IntegrationDetailProps) {
+  const [confirmDialog, setConfirmDialog] = useState<{ action: 'enable' | 'disable' } | null>(null);
   const testIntegrationMutation = useTestIntegration(organizationUuid);
   const testDatabaseMutation = useTestSavedDatabaseConnection(organizationUuid);
   const testOpenApiMutation = useTestOpenApiIntegration(organizationUuid);
@@ -90,6 +93,7 @@ export function IntegrationDetail({ organizationUuid, integration }: Integration
             : IntegrationStatuses.ACTIVE,
       },
     });
+    setConfirmDialog(null);
   }
 
   async function testConnection() {
@@ -124,7 +128,7 @@ export function IntegrationDetail({ organizationUuid, integration }: Integration
             disabled={loading}
             onClick={testConnection}
             title="Test connection"
-            className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
+            className="inline-flex h-9 items-center gap-2 rounded-md border border-blue-500/40 bg-blue-500/10 px-3 text-sm text-blue-600 hover:bg-blue-500/20 dark:text-blue-400 disabled:opacity-50"
           >
             <FlaskConical className="h-4 w-4" />
             Test
@@ -165,21 +169,45 @@ export function IntegrationDetail({ organizationUuid, integration }: Integration
               Sync tools
             </button>
           ) : null}
-          <button
-            type="button"
-            disabled={loading}
-            onClick={toggleStatus}
-            title={integration.status === IntegrationStatuses.ACTIVE ? 'Disable integration' : 'Enable integration'}
-            className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
-          >
-            {integration.status === IntegrationStatuses.ACTIVE ? (
+          {integration.status === IntegrationStatuses.ACTIVE ? (
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => setConfirmDialog({ action: 'disable' })}
+              title="Disable integration"
+              className="inline-flex h-9 items-center gap-2 rounded-md border border-red-500/40 bg-red-500/10 px-3 text-sm text-red-600 hover:bg-red-500/20 dark:text-red-400 disabled:opacity-50"
+            >
               <PowerOff className="h-4 w-4" />
-            ) : (
+              Disable
+            </button>
+          ) : (
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => setConfirmDialog({ action: 'enable' })}
+              title="Enable integration"
+              className="inline-flex h-9 items-center gap-2 rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 text-sm text-emerald-600 hover:bg-emerald-500/20 dark:text-emerald-400 disabled:opacity-50"
+            >
               <Power className="h-4 w-4" />
-            )}
-            {integration.status === IntegrationStatuses.ACTIVE ? 'Disable' : 'Enable'}
-          </button>
+              Enable
+            </button>
+          )}
         </div>
+
+        <ConfirmationDialog
+          open={confirmDialog !== null}
+          variant={confirmDialog?.action === 'enable' ? 'confirm' : 'danger'}
+          title={confirmDialog?.action === 'enable' ? 'Enable integration' : 'Disable integration'}
+          description={
+            confirmDialog?.action === 'enable'
+              ? 'This will make the integration active and allow the agent to use its actions.'
+              : 'This will pause the integration. The agent will no longer be able to use its actions.'
+          }
+          confirmLabel={confirmDialog?.action === 'enable' ? 'Enable' : 'Disable'}
+          loading={updateIntegrationMutation.isPending}
+          onConfirm={toggleStatus}
+          onOpenChange={(open) => { if (!open) setConfirmDialog(null); }}
+        />
       </div>
 
       {testIntegrationMutation.data || testDatabaseMutation.data || testOpenApiMutation.data || testMcpMutation.data?.success ? (
@@ -209,35 +237,47 @@ export function IntegrationDetail({ organizationUuid, integration }: Integration
           {actions.length === 0 ? (
             <p className="px-4 py-6 text-sm text-muted">No actions have been seeded for this provider.</p>
           ) : (
-            actions.map((action) => (
-              <div
-                key={action.uuid}
-                className="grid gap-3 border-b border-border px-4 py-3 last:border-0 md:grid-cols-[minmax(0,1fr)_auto]"
-              >
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-foreground">{action.label}</p>
-                  <p className="mt-1 text-xs text-muted">{action.description}</p>
-                  {action.required_permission_key ? (
-                    <p className="mt-1 text-xs text-muted">{action.required_permission_key}</p>
-                  ) : null}
-                </div>
-                <label className="inline-flex items-center gap-2 text-sm text-muted">
-                  <input
-                    type="checkbox"
-                    checked={action.enabled}
-                    disabled={loading}
-                    onChange={(event) =>
+            actions.map((action) => {
+              const isLocked = action.key === 'get_schema' || action.key === 'query';
+              return (
+                <div
+                  key={action.uuid}
+                  className="grid gap-3 border-b border-border px-4 py-3 last:border-0 md:grid-cols-[minmax(0,1fr)_auto]"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-foreground">{action.label}</p>
+                    <p className="mt-1 text-xs text-muted">{action.description}</p>
+                    {action.required_permission_key ? (
+                      <p className="mt-1 text-xs text-muted">{action.required_permission_key}</p>
+                    ) : null}
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={action.enabled}
+                    disabled={loading || isLocked}
+                    onClick={() =>
                       toggleActionMutation.mutate({
                         action_uuid: action.uuid,
-                        payload: { enabled: event.target.checked },
+                        payload: { enabled: !action.enabled },
                       })
                     }
-                    className="h-4 w-4 accent-[var(--accent)]"
-                  />
-                  Enabled
-                </label>
-              </div>
-            ))
+                    className={cn(
+                      'relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors',
+                      action.enabled ? 'bg-accent' : 'bg-border',
+                      (loading || isLocked) && 'cursor-not-allowed opacity-60',
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        'pointer-events-none block h-4 w-4 translate-x-0.5 rounded-full bg-white shadow-sm transition-transform',
+                        action.enabled && 'translate-x-4',
+                      )}
+                    />
+                  </button>
+                </div>
+              );
+            })
           )}
         </div>
       </div>

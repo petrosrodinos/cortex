@@ -6,26 +6,24 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { PROVIDER_CONFIG_FIELDS, type ProviderConfigField } from '@/features/integrations/constants/provider-config-fields';
+import { useCreateIntegration } from '@/features/integrations/common/hooks/use-integrations';
+import { IntegrationProviders, type IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
 import {
   useCreateDatabaseIntegration,
-  useCreateIntegration,
+  useTestDatabaseConnection,
+} from '@/features/integrations/database/hooks/use-database-integration';
+import { DatabaseOperations, type DatabaseOperation } from '@/features/integrations/database/interfaces/database.interface';
+import {
   useCreateMcpIntegration,
+  useTestMcpConnection,
+} from '@/features/integrations/mcp/hooks/use-mcp-integration';
+import { McpAuthTypes, McpTransportTypes, type McpAuthType, type McpTransportType } from '@/features/integrations/mcp/interfaces/mcp.interface';
+import {
   useCreateOpenApiIntegration,
   useParseOpenApiSpec,
-  useTestDatabaseConnection,
-  useTestMcpConnection,
-} from '@/features/integrations/hooks/use-integrations';
-import {
-  DatabaseOperations,
-  McpAuthTypes,
-  McpTransportTypes,
-  OpenApiAuthTypes,
-  type DatabaseOperation,
-  type IntegrationProvider,
-  type McpAuthType,
-  type McpTransportType,
-  type OpenApiAuthType,
-} from '@/features/integrations/interfaces/integration.interface';
+} from '@/features/integrations/openapi/hooks/use-openapi-integration';
+import { OpenApiAuthTypes, type OpenApiAuthType } from '@/features/integrations/openapi/interfaces/openapi.interface';
+import { useTestSmtpConnection } from '@/features/integrations/smtp/hooks/use-smtp-integration';
 import {
   createIntegrationSchema,
   type CreateIntegrationFormData,
@@ -46,6 +44,7 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
   const createOpenApiIntegrationMutation = useCreateOpenApiIntegration(organizationUuid);
   const createMcpIntegrationMutation = useCreateMcpIntegration(organizationUuid);
   const testDatabaseConnectionMutation = useTestDatabaseConnection(organizationUuid);
+  const testSmtpConnectionMutation = useTestSmtpConnection(organizationUuid);
   const parseOpenApiMutation = useParseOpenApiSpec(organizationUuid);
   const testMcpConnectionMutation = useTestMcpConnection(organizationUuid);
   const [openApiMode, setOpenApiMode] = useState<'url' | 'json'>('url');
@@ -70,12 +69,14 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
   const isDatabase = isDatabaseProvider(provider);
   const isOpenApi = isOpenApiProvider(provider);
   const isMcp = isMcpProvider(provider);
+  const isSMTP = provider === IntegrationProviders.SMTP;
   const busy =
     createIntegrationMutation.isPending ||
     createDatabaseIntegrationMutation.isPending ||
     createOpenApiIntegrationMutation.isPending ||
     createMcpIntegrationMutation.isPending ||
     testDatabaseConnectionMutation.isPending ||
+    testSmtpConnectionMutation.isPending ||
     parseOpenApiMutation.isPending ||
     testMcpConnectionMutation.isPending;
 
@@ -139,6 +140,17 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
     await testDatabaseConnectionMutation.mutateAsync({
       provider: provider as Extract<IntegrationProvider, 'DATABASE_PG' | 'DATABASE_MYSQL' | 'DATABASE_MONGO'>,
       connectionString: String(config.connectionString ?? ''),
+    });
+  }
+
+  async function testSmtpConnection() {
+    const config = buildConfig(form.getValues('config') ?? {}, configFields);
+    await testSmtpConnectionMutation.mutateAsync({
+      host: String(config.host ?? ''),
+      port: Number(config.port ?? 587),
+      user: config.user ? String(config.user) : undefined,
+      password: config.password ? String(config.password) : undefined,
+      from: String(config.from ?? ''),
     });
   }
 
@@ -249,7 +261,7 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
                     control={form.control}
                     name={`config.${configField.key}` as any}
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className={configField.span === 'full' ? 'sm:col-span-2' : undefined}>
                         <FormLabel>{configField.label}</FormLabel>
                         <FormControl>
                           <Input
@@ -257,6 +269,7 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
                             value={(field.value as string | number | undefined) ?? ''}
                             type={configField.type}
                             autoComplete="off"
+                            placeholder={configField.placeholder}
                           />
                         </FormControl>
                         <FormMessage />
@@ -409,6 +422,31 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
                     </label>
                   ))}
                 </div>
+                <div className="border-t border-border pt-3">
+                  <p className="mb-2 text-xs font-medium text-foreground">Always-enabled actions</p>
+                  <div className="grid gap-2">
+                    {[
+                      { label: 'Get database schema', description: 'Inspect the table and column structure.' },
+                      { label: 'Query database', description: 'Execute read queries against the database.' },
+                    ].map((item) => (
+                      <div key={item.label} className="flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-foreground">{item.label}</p>
+                          <p className="text-xs text-muted">{item.description}</p>
+                        </div>
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked
+                          disabled
+                          className="relative inline-flex h-5 w-9 shrink-0 cursor-not-allowed items-center rounded-full bg-accent opacity-60"
+                        >
+                          <span className="pointer-events-none block h-4 w-4 translate-x-4 rounded-full bg-white shadow-sm" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <Button
                     type="button"
@@ -431,6 +469,34 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
                   <div className="max-h-56 overflow-auto rounded-md border border-border">
                     <SchemaTreeInline schema={testDatabaseConnectionMutation.data.schema} />
                   </div>
+                ) : null}
+              </div>
+            ) : null}
+
+            {isSMTP ? (
+              <div className="grid gap-3 rounded-lg border border-border p-3">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={testSmtpConnection}
+                    loading={testSmtpConnectionMutation.isPending}
+                    className="sm:w-auto"
+                  >
+                    <FlaskConical className="h-4 w-4" />
+                    Test connection
+                  </Button>
+                  {testSmtpConnectionMutation.data?.success ? (
+                    <span className="flex items-center gap-1.5 text-sm text-emerald-600 dark:text-emerald-300">
+                      <CheckCircle2 className="h-4 w-4" />
+                      SMTP server reachable
+                    </span>
+                  ) : null}
+                </div>
+                {testSmtpConnectionMutation.data && !testSmtpConnectionMutation.data.success ? (
+                  <p className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-600 dark:text-red-300">
+                    {testSmtpConnectionMutation.data.error ?? 'Connection failed'}
+                  </p>
                 ) : null}
               </div>
             ) : null}

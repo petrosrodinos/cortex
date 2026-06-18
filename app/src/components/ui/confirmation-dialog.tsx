@@ -8,6 +8,7 @@ interface ConfirmationDialogProps {
   confirmLabel?: string;
   cancelLabel?: string;
   loading?: boolean;
+  variant?: 'danger' | 'confirm';
   onConfirm: () => void | Promise<void>;
   onOpenChange: (open: boolean) => void;
 }
@@ -19,6 +20,7 @@ export function ConfirmationDialog({
   confirmLabel = 'Delete',
   cancelLabel = 'Cancel',
   loading = false,
+  variant = 'danger',
   onConfirm,
   onOpenChange,
 }: ConfirmationDialogProps) {
@@ -66,10 +68,12 @@ export function ConfirmationDialog({
             onClick={onConfirm}
             className={cn(
               'inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium transition-colors disabled:opacity-50',
-              'bg-red-500/90 text-white hover:bg-red-500',
+              variant === 'confirm'
+                ? 'bg-emerald-600/90 text-white hover:bg-emerald-600'
+                : 'bg-red-500/90 text-white hover:bg-red-500',
             )}
           >
-            {loading ? 'Deleting...' : confirmLabel}
+            {loading ? 'Please wait…' : confirmLabel}
           </button>
         </div>
       </section>

@@ -1,6 +1,6 @@
 import { BookOpen, ChevronDown, ExternalLink } from 'lucide-react';
 import { PROVIDER_SETUP_GUIDES } from '@/features/integrations/constants/provider-metadata';
-import type { IntegrationProvider } from '@/features/integrations/interfaces/integration.interface';
+import type { IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
 
 export function ProviderSetupGuide({ provider }: { provider: IntegrationProvider }) {
   const guide = PROVIDER_SETUP_GUIDES[provider];

@@ -1,4 +1,4 @@
-import { IntegrationProviders, type IntegrationProvider } from '@/features/integrations/interfaces/integration.interface';
+import { IntegrationProviders, type IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
 
 export const databaseProviders = [
   IntegrationProviders.DATABASE_PG,

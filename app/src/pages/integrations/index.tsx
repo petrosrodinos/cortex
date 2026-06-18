@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { useGetIntegrations } from '@/features/integrations/hooks/use-integrations';
-import type { Integration, IntegrationProvider } from '@/features/integrations/interfaces/integration.interface';
+import { useGetIntegrations } from '@/features/integrations/common/hooks/use-integrations';
+import type { Integration, IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
+import { providerLabels, PROVIDER_ICON_META } from '@/features/integrations/constants/provider-metadata';
 import { cn } from '@/lib/utils';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
@@ -32,49 +33,67 @@ export default function IntegrationsPage() {
     navigate(Routes.dashboard.integration(integration.uuid));
   }
 
+  const isDetailView = !!(integrationUuid && selectedIntegration);
+  const detailIconMeta = selectedIntegration ? PROVIDER_ICON_META[selectedIntegration.provider] : null;
+  const DetailIcon = detailIconMeta?.icon;
+
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-5">
-      <header>
-        <h1 className="text-xl font-semibold text-foreground">Integrations</h1>
-        <p className="mt-1 text-sm text-muted">Connect systems and choose which actions the agent can use.</p>
-      </header>
-
-      <div className="flex gap-1 rounded-lg border border-border bg-surface p-1 w-fit">
-        {(['integrations', 'ai-providers'] as const).map((tab) => (
+      {isDetailView && selectedIntegration ? (
+        <header className="flex items-center gap-3">
           <button
-            key={tab}
             type="button"
-            onClick={() => setActiveTab(tab)}
-            className={cn(
-              'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-              activeTab === tab
-                ? 'bg-surface-secondary text-foreground'
-                : 'text-muted hover:text-foreground',
-            )}
+            onClick={() => navigate(Routes.dashboard.integrations)}
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-muted hover:bg-surface-secondary hover:text-foreground"
           >
-            {tab === 'integrations' ? 'Integrations' : 'AI Providers'}
+            <ArrowLeft className="h-4 w-4" />
           </button>
-        ))}
-      </div>
+          <div
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md"
+            style={{ backgroundColor: detailIconMeta?.bg ?? '#6b7280' }}
+          >
+            {DetailIcon ? <DetailIcon size={16} className="text-white" /> : null}
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs text-muted">{providerLabels[selectedIntegration.provider]}</p>
+            <h1 className="text-base font-semibold leading-tight text-foreground">{selectedIntegration.name}</h1>
+          </div>
+        </header>
+      ) : (
+        <header>
+          <h1 className="text-xl font-semibold text-foreground">Integrations</h1>
+          <p className="mt-1 text-sm text-muted">Connect systems and choose which actions the agent can use.</p>
+        </header>
+      )}
 
-      {activeTab === 'ai-providers' ? (
+      {!isDetailView ? (
+        <div className="flex gap-1 rounded-lg border border-border bg-surface p-1 w-fit">
+          {(['integrations', 'ai-providers'] as const).map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setActiveTab(tab)}
+              className={cn(
+                'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                activeTab === tab
+                  ? 'bg-surface-secondary text-foreground'
+                  : 'text-muted hover:text-foreground',
+              )}
+            >
+              {tab === 'integrations' ? 'Integrations' : 'AI Providers'}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      {activeTab === 'ai-providers' && !isDetailView ? (
         <AiProvidersPage />
       ) : !currentOrganization ? (
         <NoOrgPanel />
       ) : integrationsQuery.isLoading ? (
         <IntegrationsSkeleton />
-      ) : integrationUuid && selectedIntegration ? (
-        <div className="flex flex-col gap-4">
-          <button
-            type="button"
-            onClick={() => navigate(Routes.dashboard.integrations)}
-            className="inline-flex w-fit items-center gap-2 text-sm text-muted hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            All integrations
-          </button>
-          <IntegrationDetail organizationUuid={currentOrganization.uuid} integration={selectedIntegration} />
-        </div>
+      ) : isDetailView && selectedIntegration ? (
+        <IntegrationDetail organizationUuid={currentOrganization.uuid} integration={selectedIntegration} />
       ) : (
         <ProviderCatalog
           integrations={integrations}

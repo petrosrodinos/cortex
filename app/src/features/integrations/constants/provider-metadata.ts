@@ -1,9 +1,13 @@
 import type { ComponentType } from 'react';
 import { Mail, Cpu, FileCode2 } from 'lucide-react';
 import { SiGithub, SiSlack, SiStripe, SiHubspot, SiLinear, SiNotion, SiGoogledrive, SiGmail, SiPosthog, SiIntercom, SiPostgresql, SiMysql, SiMongodb } from 'react-icons/si';
-import type { IntegrationProvider } from '@/features/integrations/interfaces/integration.interface';
-import type { DatabaseOperation, McpAuthType, OpenApiAuthType } from '@/features/integrations/interfaces/integration.interface';
-import { DatabaseOperations, McpAuthTypes, OpenApiAuthTypes } from '@/features/integrations/interfaces/integration.interface';
+import type { IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
+import type { DatabaseOperation } from '@/features/integrations/database/interfaces/database.interface';
+import { DatabaseOperations } from '@/features/integrations/database/interfaces/database.interface';
+import type { McpAuthType } from '@/features/integrations/mcp/interfaces/mcp.interface';
+import { McpAuthTypes } from '@/features/integrations/mcp/interfaces/mcp.interface';
+import type { OpenApiAuthType } from '@/features/integrations/openapi/interfaces/openapi.interface';
+import { OpenApiAuthTypes } from '@/features/integrations/openapi/interfaces/openapi.interface';
 
 export type ProviderIcon = ComponentType<{ size?: number; className?: string }>;
 

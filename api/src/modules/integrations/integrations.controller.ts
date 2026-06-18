@@ -3,6 +3,7 @@ import { OrganizationPermission } from '@/shared/decorators/organization-permiss
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
 import { CreateIntegrationDto } from './dto/create-integration.dto';
+import { TestSmtpConnectionDto } from './dto/test-smtp-connection.dto';
 import { ToggleIntegrationActionDto } from './dto/toggle-integration-action.dto';
 import { UpdateIntegrationDto } from './dto/update-integration.dto';
 import { IntegrationActionsService } from './integration-actions.service';
@@ -30,6 +31,12 @@ export class IntegrationsController {
   @Get('tools')
   async getEnabledTools(@Param('organization_uuid') organization_uuid: string) {
     return await this.integrations_service.getEnabledTools(organization_uuid);
+  }
+
+  @Post('smtp/test')
+  @OrganizationPermission('org:integrations:manage')
+  async testSmtpDraftConnection(@Body() dto: TestSmtpConnectionDto) {
+    return await this.integrations_service.testSmtpDraftConnection(dto);
   }
 
   @Get(':integration_uuid')

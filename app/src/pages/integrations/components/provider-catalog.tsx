@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { IntegrationProviders, type Integration, type IntegrationProvider } from '@/features/integrations/interfaces/integration.interface';
+import { IntegrationProviders, type Integration, type IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
 import { PROVIDER_ICON_META, providerLabels, providerDescriptions } from '@/features/integrations/constants/provider-metadata';
 
 interface ProviderCatalogProps {
@@ -7,6 +7,40 @@ interface ProviderCatalogProps {
   onConnect: (provider: IntegrationProvider) => void;
   onManage: (integration: Integration) => void;
 }
+
+const PROVIDER_CATEGORIES: { label: string; providers: IntegrationProvider[] }[] = [
+  {
+    label: 'SaaS',
+    providers: [
+      IntegrationProviders.GITHUB,
+      IntegrationProviders.SLACK,
+      IntegrationProviders.STRIPE,
+      IntegrationProviders.HUBSPOT,
+      IntegrationProviders.LINEAR,
+      IntegrationProviders.NOTION,
+      IntegrationProviders.GOOGLE_DRIVE,
+      IntegrationProviders.GMAIL,
+      IntegrationProviders.SMTP,
+      IntegrationProviders.POSTHOG,
+      IntegrationProviders.INTERCOM,
+    ],
+  },
+  {
+    label: 'Databases',
+    providers: [
+      IntegrationProviders.DATABASE_PG,
+      IntegrationProviders.DATABASE_MYSQL,
+      IntegrationProviders.DATABASE_MONGO,
+    ],
+  },
+  {
+    label: 'Custom',
+    providers: [
+      IntegrationProviders.OPENAPI,
+      IntegrationProviders.MCP,
+    ],
+  },
+];
 
 export function ProviderCatalog({ integrations, onConnect, onManage }: ProviderCatalogProps) {
   const connectedByProvider = useMemo(() => {
@@ -20,19 +54,26 @@ export function ProviderCatalog({ integrations, onConnect, onManage }: ProviderC
   }, [integrations]);
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {Object.values(IntegrationProviders).map((provider) => {
-        const connected = connectedByProvider.get(provider) ?? [];
-        return (
-          <ProviderCatalogCard
-            key={provider}
-            provider={provider}
-            connected={connected}
-            onConnect={() => onConnect(provider)}
-            onManage={() => onManage(connected[0])}
-          />
-        );
-      })}
+    <div className="flex flex-col gap-8">
+      {PROVIDER_CATEGORIES.map((category) => (
+        <div key={category.label}>
+          <h2 className="mb-3 text-sm font-semibold text-foreground">{category.label}</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {category.providers.map((provider) => {
+              const connected = connectedByProvider.get(provider) ?? [];
+              return (
+                <ProviderCatalogCard
+                  key={provider}
+                  provider={provider}
+                  connected={connected}
+                  onConnect={() => onConnect(provider)}
+                  onManage={() => onManage(connected[0])}
+                />
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

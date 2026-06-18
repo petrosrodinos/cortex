@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { IntegrationStatuses } from '@/features/integrations/interfaces/integration.interface';
+import { IntegrationStatuses } from '@/features/integrations/common/interfaces/integration.interface';
 
 export function StatusBadge({ status }: { status: string }) {
   const active = status === IntegrationStatuses.ACTIVE;

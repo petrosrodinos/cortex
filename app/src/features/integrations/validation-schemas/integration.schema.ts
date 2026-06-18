@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { DatabaseOperations, IntegrationProviders } from '../interfaces/integration.interface';
+import { IntegrationProviders } from '../common/interfaces/integration.interface';
+import { DatabaseOperations } from '../database/interfaces/database.interface';
 
 export const createIntegrationSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),

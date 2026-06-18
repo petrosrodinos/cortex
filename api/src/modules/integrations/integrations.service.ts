@@ -4,8 +4,10 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
 import { IntegrationProvider, IntegrationStatus } from 'generated/prisma';
 import { DATABASE_PROVIDERS } from './databases/database-integration.types';
 import { CreateIntegrationDto } from './dto/create-integration.dto';
+import { TestSmtpConnectionDto } from './dto/test-smtp-connection.dto';
 import { UpdateIntegrationDto } from './dto/update-integration.dto';
 import { IntegrationRegistry } from './framework/registry/integration-registry.service';
+import { buildTransport } from './saas/smtp/utils/smtp.utils';
 
 @Injectable()
 export class IntegrationsService {
@@ -135,6 +137,24 @@ export class IntegrationsService {
       return { success: await handler.testConnection(config) };
     } catch (error) {
       this.handleError(error);
+    }
+  }
+
+  async testSmtpDraftConnection(dto: TestSmtpConnectionDto) {
+    try {
+      const nodemailer = await import('nodemailer');
+      const transport = buildTransport(nodemailer, {
+        host: dto.host,
+        port: dto.port,
+        from: dto.from,
+        user: dto.user,
+        password: dto.password,
+      });
+      await transport.verify();
+      return { success: true };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Connection failed';
+      return { success: false, error: message };
     }
   }
 

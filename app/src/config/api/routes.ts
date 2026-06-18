@@ -40,6 +40,7 @@ export const ApiRoutes = {
         openApiIntegration: (organizationUuid: string, integrationUuid: string) => `/organizations/${organizationUuid}/openapi-integrations/${integrationUuid}`,
         openApiIntegrationRegenerate: (organizationUuid: string, integrationUuid: string) => `/organizations/${organizationUuid}/openapi-integrations/${integrationUuid}/regenerate`,
         openApiIntegrationTest: (organizationUuid: string, integrationUuid: string) => `/organizations/${organizationUuid}/openapi-integrations/${integrationUuid}/test`,
+        smtpIntegrationTest: (organizationUuid: string) => `/organizations/${organizationUuid}/integrations/smtp/test`,
         mcpIntegrations: (organizationUuid: string) => `/organizations/${organizationUuid}/integrations/mcp`,
         mcpIntegrationTestConnection: (organizationUuid: string) => `/organizations/${organizationUuid}/integrations/mcp/test-connection`,
         mcpIntegration: (organizationUuid: string, integrationUuid: string) => `/organizations/${organizationUuid}/integrations/mcp/${integrationUuid}`,
