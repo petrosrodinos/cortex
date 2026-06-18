@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
 import { CreateConversationDto } from './dto/create-conversation.dto';
+import { UpdateConversationDto } from './dto/update-conversation.dto';
 import { SendMessageDto } from './dto/send-message.dto';
 import { ConversationsService } from './conversations.service';
 import { MessagesService } from './messages.service';
@@ -37,6 +38,16 @@ export class ConversationsController {
     @Param('conversation_uuid') conversationUuid: string,
   ) {
     return this.conversations.findOne(userUuid, organizationUuid, conversationUuid);
+  }
+
+  @Patch(':conversation_uuid')
+  update(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Param('conversation_uuid') conversationUuid: string,
+    @Body() dto: UpdateConversationDto,
+  ) {
+    return this.conversations.update(userUuid, organizationUuid, conversationUuid, dto);
   }
 
   @Delete(':conversation_uuid')

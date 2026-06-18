@@ -2,28 +2,29 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { MessageSquarePlus, Paperclip, Send, X } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import rehypeSanitize from 'rehype-sanitize';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
+import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { useOrganizationStore } from '@/stores/organization';
 import { Routes } from '@/routes/routes';
 import {
   useApproveExecution,
   useCreateConversation,
+  useDeleteConversation,
   useGetConversations,
   useGetMessages,
   useRejectExecution,
   useSendMessage,
+  useUpdateConversation,
   conversationsQueryKey,
 } from '@/features/conversations/hooks/use-conversations';
 import { useExecution } from '@/features/conversations/hooks/use-execution';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
 import { useUploadDocument } from '@/features/files/hooks/use-files';
-import { cn } from '@/lib/utils';
-import { AiTypingIndicator } from './components/ai-typing-indicator';
+import { ConversationEmptyState } from './components/conversation-empty-state';
+import { ConversationHeader } from './components/conversation-header';
+import { ConversationInput } from './components/conversation-input';
+import { ConversationMessages } from './components/conversation-messages';
+import { ConversationSidebar } from './components/conversation-sidebar';
+import { ConversationSidebarSkeleton } from './components/conversation-sidebar-skeleton';
 
 interface AttachedFile {
   file: File;
@@ -39,11 +40,14 @@ const ConversationsPage: FC = () => {
   const [activeExecutionId, setActiveExecutionId] = useState<string | null>(null);
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
   const [pendingUserMessage, setPendingUserMessage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [deleteTargetUuid, setDeleteTargetUuid] = useState<string | null>(null);
+  const autoCreateStarted = useRef(false);
 
   const { data: conversations = [], isLoading: conversationsLoading } = useGetConversations(organizationUuid);
-  const { data: messages = [] } = useGetMessages(organizationUuid, conversationUuid);
+  const { data: messages = [], isLoading: messagesLoading } = useGetMessages(organizationUuid, conversationUuid);
   const createConversation = useCreateConversation(organizationUuid);
+  const deleteConversation = useDeleteConversation(organizationUuid);
+  const updateConversation = useUpdateConversation(organizationUuid);
   const sendMessage = useSendMessage(organizationUuid, conversationUuid);
   const approveExecution = useApproveExecution(organizationUuid);
   const rejectExecution = useRejectExecution(organizationUuid);
@@ -51,6 +55,24 @@ const ConversationsPage: FC = () => {
 
   const execution = useExecution(organizationUuid, activeExecutionId);
   const { isComplete, reset: resetExecution, assistantContent, isRunning, toolCalls, approvalRequest, error: executionError } = execution;
+
+  const activeConversation = useMemo(
+    () => conversations.find((c) => c.uuid === conversationUuid),
+    [conversations, conversationUuid],
+  );
+
+  useEffect(() => {
+    if (!organizationUuid || conversationsLoading || autoCreateStarted.current) {
+      return;
+    }
+
+    if (conversations.length === 0) {
+      autoCreateStarted.current = true;
+      void createConversation.mutateAsync('New conversation').then((created) => {
+        navigate(Routes.dashboard.conversation(created.uuid), { replace: true });
+      });
+    }
+  }, [organizationUuid, conversationsLoading, conversations.length, createConversation, navigate]);
 
   useEffect(() => {
     if (!isComplete || !conversationUuid || !organizationUuid) {
@@ -128,7 +150,7 @@ const ConversationsPage: FC = () => {
       setAttachedFiles((prev) => prev.filter((f) => f.file !== file));
     }
 
-    if (fileInputRef.current) fileInputRef.current.value = '';
+    event.target.value = '';
   };
 
   const removeAttachedFile = (file: File) => {
@@ -142,6 +164,7 @@ const ConversationsPage: FC = () => {
 
     const content = draft.trim();
     const documentUuids = attachedFiles.filter((f) => f.uuid).map((f) => f.uuid as string);
+    const isFirstMessage = messages.length === 0;
     setDraft('');
     setAttachedFiles([]);
     setPendingUserMessage(content);
@@ -149,6 +172,12 @@ const ConversationsPage: FC = () => {
     try {
       const response = await sendMessage.mutateAsync({ content, documentUuids });
       setActiveExecutionId(response.executionId);
+
+      if (isFirstMessage) {
+        window.setTimeout(() => {
+          void queryClient.invalidateQueries({ queryKey: conversationsQueryKey });
+        }, 2500);
+      }
     } catch {
       setPendingUserMessage(null);
     }
@@ -173,6 +202,33 @@ const ConversationsPage: FC = () => {
     setActiveExecutionId(null);
   };
 
+  const handleRename = (uuid: string, title: string) => {
+    void updateConversation.mutateAsync({ conversationUuid: uuid, title });
+  };
+
+  const handleDeleteRequest = (uuid: string) => {
+    setDeleteTargetUuid(uuid);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTargetUuid) return;
+
+    const remaining = sortedConversations.filter((c) => c.uuid !== deleteTargetUuid);
+    await deleteConversation.mutateAsync(deleteTargetUuid);
+
+    if (deleteTargetUuid === conversationUuid) {
+      if (remaining.length > 0) {
+        navigate(Routes.dashboard.conversation(remaining[0].uuid));
+      } else {
+        autoCreateStarted.current = false;
+        const created = await createConversation.mutateAsync('New conversation');
+        navigate(Routes.dashboard.conversation(created.uuid), { replace: true });
+      }
+    }
+
+    setDeleteTargetUuid(null);
+  };
+
   if (!organizationUuid) {
     return (
       <div className="text-muted">
@@ -181,238 +237,81 @@ const ConversationsPage: FC = () => {
     );
   }
 
+  const showCreatingState = createConversation.isPending && !conversationUuid;
+
   return (
     <div className="flex h-[calc(100vh-8rem)] gap-4">
-      <aside className="w-72 shrink-0 flex flex-col gap-3">
-        <Button onClick={handleCreateConversation} disabled={createConversation.isPending} className="w-full">
-          <MessageSquarePlus className="mr-2 h-4 w-4" />
-          New chat
-        </Button>
-
-        <div className="flex-1 overflow-y-auto space-y-1">
-          {conversationsLoading && <p className="text-sm text-muted">Loading...</p>}
-          {sortedConversations.map((conversation) => (
-            <button
-              key={conversation.uuid}
-              type="button"
-              onClick={() => navigate(Routes.dashboard.conversation(conversation.uuid))}
-              className={cn(
-                'w-full rounded-xl px-3 py-2 text-left text-sm transition-colors',
-                conversation.uuid === conversationUuid
-                  ? 'bg-surface-secondary text-foreground'
-                  : 'text-muted hover:bg-surface-secondary hover:text-foreground',
-              )}
-            >
-              <p className="truncate font-medium">{conversation.title || 'Untitled chat'}</p>
-              <p className="truncate text-xs opacity-70">
-                {conversation.messages?.[0]?.content || 'No messages yet'}
-              </p>
-            </button>
-          ))}
-        </div>
-      </aside>
+      {conversationsLoading ? (
+        <aside className="flex w-72 shrink-0 flex-col gap-3">
+          <div className="h-10 animate-pulse rounded-md bg-surface-secondary" />
+          <ConversationSidebarSkeleton />
+        </aside>
+      ) : (
+        <ConversationSidebar
+          conversations={sortedConversations}
+          activeConversationUuid={conversationUuid}
+          isCreating={createConversation.isPending}
+          onSelect={(uuid) => navigate(Routes.dashboard.conversation(uuid))}
+          onCreate={() => void handleCreateConversation()}
+          onRename={handleRename}
+          onDelete={handleDeleteRequest}
+        />
+      )}
 
       <section className="flex min-w-0 flex-1 flex-col rounded-2xl border border-border bg-surface">
-        {!conversationUuid ? (
-          <div className="flex flex-1 items-center justify-center text-muted">
-            Choose or create a conversation to begin.
-          </div>
+        {showCreatingState ? (
+          <div className="flex flex-1 items-center justify-center text-sm text-muted">Starting a new chat…</div>
+        ) : !conversationUuid ? (
+          <ConversationEmptyState />
         ) : (
           <>
-            <div className="flex-1 space-y-4 overflow-y-auto p-4">
-              {messages.map((message) => (
-                <div
-                  key={message.uuid}
-                  className={cn(
-                    'max-w-[85%] rounded-2xl px-4 py-3 text-sm',
-                    message.role === MessageRoles.USER
-                      ? 'ml-auto bg-accent/15 text-foreground whitespace-pre-wrap'
-                      : 'mr-auto bg-surface-secondary text-foreground',
-                  )}
-                >
-                  {message.role === MessageRoles.ASSISTANT ? (
-                    <div className="prose prose-sm prose-invert max-w-none">
-                      <ReactMarkdown rehypePlugins={[rehypeSanitize]}>{message.content}</ReactMarkdown>
-                    </div>
-                  ) : (
-                    message.content
-                  )}
+            <ConversationHeader
+              title={activeConversation?.title || 'Untitled chat'}
+              onRename={(title) => handleRename(conversationUuid, title)}
+              onDelete={() => handleDeleteRequest(conversationUuid)}
+            />
 
-                  {message.role === MessageRoles.ASSISTANT && message.metadata && (() => {
-                    const meta = message.metadata as { outputType?: string; files?: string[] };
-                    const outputType = meta.outputType;
-                    const files = meta.files ?? [];
+            <ConversationMessages
+              conversationUuid={conversationUuid}
+              messages={messages}
+              isLoading={messagesLoading}
+              pendingUserMessage={isPendingUserMessageVisible ? pendingUserMessage : null}
+              pendingAssistantContent={pendingAssistantContent}
+              showTypingIndicator={showTypingIndicator}
+              toolCalls={toolCalls}
+              approvalRequest={approvalRequest}
+              executionError={executionError}
+              isApproving={approveExecution.isPending}
+              isRejecting={rejectExecution.isPending}
+              onApprove={() => void handleApprove()}
+              onReject={() => void handleReject()}
+            />
 
-                    if (
-                      (outputType === 'FILE_PDF' || outputType === 'FILE_EXCEL' || outputType === 'FILE_WORD') &&
-                      files.length > 0
-                    ) {
-                      return (
-                        <div className="mt-3 flex flex-col gap-2">
-                          {files.map((fileUrl, i) => {
-                            const filename = fileUrl.split('/').pop() ?? `file-${i + 1}`;
-                            return (
-                              <a
-                                key={fileUrl}
-                                href={fileUrl}
-                                download={filename}
-                                className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs text-accent hover:underline"
-                              >
-                                <span>📄</span>
-                                <span className="truncate">{filename}</span>
-                              </a>
-                            );
-                          })}
-                        </div>
-                      );
-                    }
-
-                    if (outputType === 'CHART' && files.length > 0) {
-                      return (
-                        <div className="mt-3">
-                          <img
-                            src={files[0]}
-                            alt="Generated visual"
-                            className="max-h-64 max-w-[240px] w-auto rounded-lg object-contain"
-                          />
-                        </div>
-                      );
-                    }
-
-                    if (outputType === 'WIDGET' && files.length > 0) {
-                      return (
-                        <div className="mt-3">
-                          <iframe
-                            src={files[0]}
-                            sandbox="allow-scripts"
-                            className="w-full h-64 rounded-lg border border-border"
-                            title="widget"
-                          />
-                        </div>
-                      );
-                    }
-
-                    return null;
-                  })()}
-                </div>
-              ))}
-
-              {isPendingUserMessageVisible && (
-                <div className="ml-auto max-w-[85%] rounded-2xl bg-accent/15 px-4 py-3 text-sm text-foreground whitespace-pre-wrap">
-                  {pendingUserMessage}
-                </div>
-              )}
-
-              {pendingAssistantContent != null && (
-                <div className="mr-auto max-w-[85%] rounded-2xl bg-surface-secondary px-4 py-3 text-sm text-foreground">
-                  <div className="prose prose-sm prose-invert max-w-none">
-                    <ReactMarkdown rehypePlugins={[rehypeSanitize]}>{pendingAssistantContent}</ReactMarkdown>
-                  </div>
-                </div>
-              )}
-
-              {showTypingIndicator && (
-                <div className="mr-auto flex w-fit flex-col gap-2">
-                  <div className="rounded-2xl bg-surface-secondary px-3 py-2.5">
-                    <AiTypingIndicator />
-                  </div>
-                  {toolCalls.length > 0 && (
-                    <div className="max-w-[85%] space-y-1">
-                      {toolCalls.map((tool, index) => (
-                        <p key={`${tool.toolName}-${index}`} className="text-xs text-muted">
-                          {tool.toolName}
-                          <span className="ml-1.5 capitalize opacity-70">{tool.status}</span>
-                        </p>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {approvalRequest && (
-                <Card className="mr-auto max-w-[85%] border-amber-500/30 bg-amber-500/5 p-4">
-                  <p className="font-medium">Approval required</p>
-                  <p className="mt-1 text-sm text-muted">
-                    Tool <span className="font-mono">{approvalRequest.toolName}</span> wants to run with sensitive input.
-                  </p>
-                  <pre className="mt-3 overflow-x-auto rounded-lg bg-surface-secondary p-3 text-xs">
-                    {JSON.stringify(approvalRequest.input, null, 2)}
-                  </pre>
-                  <div className="mt-4 flex gap-2">
-                    <Button onClick={handleApprove} disabled={approveExecution.isPending}>
-                      Approve
-                    </Button>
-                    <Button variant="outline" onClick={handleReject} disabled={rejectExecution.isPending}>
-                      Reject
-                    </Button>
-                  </div>
-                </Card>
-              )}
-
-              {executionError && (
-                <Card className="mr-auto max-w-[85%] border-red-500/30 bg-red-500/5 p-4 text-sm text-red-500">
-                  {executionError}
-                </Card>
-              )}
-            </div>
-
-            <div className="border-t border-border p-4">
-              {attachedFiles.length > 0 && (
-                <div className="mb-2 flex flex-wrap gap-2">
-                  {attachedFiles.map((f) => (
-                    <span
-                      key={f.file.name + f.file.lastModified}
-                      className="flex items-center gap-1 rounded-full border border-border bg-surface-secondary px-2.5 py-1 text-xs text-foreground"
-                    >
-                      {f.uuid ? f.file.name : `${f.file.name} (uploading...)`}
-                      <button
-                        type="button"
-                        onClick={() => removeAttachedFile(f.file)}
-                        className="ml-0.5 text-muted hover:text-foreground"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-              <form
-                className="flex gap-2"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  void handleSend();
-                }}
-              >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileSelect}
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-9 w-9 p-0 shrink-0"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={sendMessage.isPending || isRunning || uploadDocument.isPending}
-                  title="Attach file"
-                >
-                  <Paperclip className="h-4 w-4" />
-                </Button>
-                <Input
-                  value={draft}
-                  onChange={(event) => setDraft(event.target.value)}
-                  placeholder="Ask Cortex anything..."
-                  disabled={sendMessage.isPending || isRunning}
-                />
-                <Button type="submit" disabled={!draft.trim() || sendMessage.isPending || isRunning}>
-                  <Send className="h-4 w-4" />
-                </Button>
-              </form>
-            </div>
+            <ConversationInput
+              draft={draft}
+              attachedFiles={attachedFiles}
+              disabled={sendMessage.isPending || isRunning}
+              isUploading={uploadDocument.isPending}
+              onDraftChange={setDraft}
+              onSend={() => void handleSend()}
+              onFileSelect={(event) => void handleFileSelect(event)}
+              onRemoveFile={removeAttachedFile}
+            />
           </>
         )}
       </section>
+
+      <ConfirmationDialog
+        open={deleteTargetUuid != null}
+        title="Delete conversation?"
+        description="This will permanently delete the conversation and all its messages."
+        confirmLabel="Delete"
+        loading={deleteConversation.isPending}
+        onConfirm={() => void handleDeleteConfirm()}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTargetUuid(null);
+        }}
+      />
     </div>
   );
 };

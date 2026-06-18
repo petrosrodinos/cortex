@@ -3,6 +3,7 @@ import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { OrganizationsService } from '@/modules/organizations/organizations.service';
 import { ConversationMemoryService } from '@/shared/services/ai/memory/conversation-memory.service';
 import { CreateConversationDto } from './dto/create-conversation.dto';
+import { UpdateConversationDto } from './dto/update-conversation.dto';
 
 @Injectable()
 export class ConversationsService {
@@ -42,6 +43,21 @@ export class ConversationsService {
   async findOne(userUuid: string, organizationUuid: string, conversationUuid: string) {
     await this.organizations.requireActiveMember(userUuid, organizationUuid);
     return this.getConversation(userUuid, organizationUuid, conversationUuid);
+  }
+
+  async update(
+    userUuid: string,
+    organizationUuid: string,
+    conversationUuid: string,
+    dto: UpdateConversationDto,
+  ) {
+    await this.organizations.requireActiveMember(userUuid, organizationUuid);
+    const conversation = await this.getConversation(userUuid, organizationUuid, conversationUuid);
+
+    return this.prisma.conversation.update({
+      where: { uuid: conversation.uuid },
+      data: { title: dto.title.trim() },
+    });
   }
 
   async delete(userUuid: string, organizationUuid: string, conversationUuid: string) {

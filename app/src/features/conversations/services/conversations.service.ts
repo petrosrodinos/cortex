@@ -37,6 +37,22 @@ export const deleteConversation = async (organizationUuid: string, conversationU
   }
 };
 
+export const updateConversation = async (
+  organizationUuid: string,
+  conversationUuid: string,
+  title: string,
+): Promise<Conversation> => {
+  try {
+    const response = await axiosInstance.patch(
+      ApiRoutes.organizations.conversation(organizationUuid, conversationUuid),
+      { title },
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to update conversation.');
+  }
+};
+
 export const getMessages = async (organizationUuid: string, conversationUuid: string): Promise<Message[]> => {
   try {
     const response = await axiosInstance.get(ApiRoutes.organizations.conversationMessages(organizationUuid, conversationUuid));

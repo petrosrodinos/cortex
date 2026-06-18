@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Building2, Check, ChevronsUpDown, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/stores/auth';
@@ -13,6 +13,7 @@ export default function OrganizationSwitcher({ collapsed = false }: Organization
   const [open, setOpen] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [newOrgName, setNewOrgName] = useState('');
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const {
     current_organization: currentOrganization,
@@ -30,6 +31,21 @@ export default function OrganizationSwitcher({ collapsed = false }: Organization
   useEffect(() => {
     if (organizationsQuery.data) setOrganizations(organizationsQuery.data);
   }, [organizationsQuery.data, setOrganizations]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpen(false);
+        setShowCreate(false);
+        setNewOrgName('');
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [open]);
 
   const initials = useMemo(() => {
     const source = currentOrganization?.name ?? 'Organization';
@@ -81,7 +97,7 @@ export default function OrganizationSwitcher({ collapsed = false }: Organization
   }
 
   return (
-    <div className="relative">
+    <div ref={containerRef} className="relative">
       <button
         type="button"
         title={collapsed ? currentOrganization?.name ?? 'Organizations' : undefined}

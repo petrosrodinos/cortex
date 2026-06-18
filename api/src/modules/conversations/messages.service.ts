@@ -1,13 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
+import { generateText } from 'ai';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { AgentExecutionStatus, MessageRole } from 'generated/prisma';
 import { ConversationMemoryService } from '@/shared/services/ai/memory/conversation-memory.service';
+import { AiProviderFactoryService } from '@/shared/services/ai/providers/ai-provider-factory.service';
 import { OrganizationsService } from '@/modules/organizations/organizations.service';
 import { AGENT_RUN_QUEUE } from '@/core/queues/queues.constants';
 import type { AgentRunJobData } from '@/core/queues/processors/agent.processor';
 import { SendMessageDto } from './dto/send-message.dto';
+
+const DEFAULT_CONVERSATION_TITLE = 'New conversation';
 
 @Injectable()
 export class MessagesService {
@@ -15,6 +19,7 @@ export class MessagesService {
     private readonly prisma: PrismaService,
     private readonly organizations: OrganizationsService,
     private readonly memory: ConversationMemoryService,
+    private readonly providerFactory: AiProviderFactoryService,
     @InjectQueue(AGENT_RUN_QUEUE) private readonly agentQueue: Queue<AgentRunJobData>,
   ) {}
 
@@ -76,10 +81,56 @@ export class MessagesService {
       data: { updated_at: new Date() },
     });
 
+    const messageCount = await this.prisma.message.count({
+      where: { conversation_uuid: conversation.uuid },
+    });
+
+    if (messageCount === 1 && (!conversation.title || conversation.title === DEFAULT_CONVERSATION_TITLE)) {
+      setImmediate(() => {
+        void this.generateAndSetTitle(organizationUuid, conversation.uuid, dto.content);
+      });
+    }
+
     return {
       executionId: execution.uuid,
       messageId: userMessage.uuid,
     };
+  }
+
+  private async generateAndSetTitle(organizationUuid: string, conversationUuid: string, userMessage: string) {
+    try {
+      const title = await this.generateTitleFromMessage(organizationUuid, userMessage);
+      await this.prisma.conversation.update({
+        where: { uuid: conversationUuid },
+        data: { title },
+      });
+    } catch {}
+  }
+
+  private async generateTitleFromMessage(organizationUuid: string, message: string): Promise<string> {
+    const fallback = message.trim().slice(0, 60) || DEFAULT_CONVERSATION_TITLE;
+
+    try {
+      const resolved = await this.providerFactory.resolveProvider(organizationUuid);
+      const { text } = await generateText({
+        model: resolved.model,
+        system:
+          'Generate a short, descriptive chat title from the user message. Return only the title (max 6 words). No quotes or punctuation at the end.',
+        prompt: message.slice(0, 500),
+        maxOutputTokens: 24,
+        temperature: 0.3,
+      });
+
+      const cleaned = text
+        .trim()
+        .replace(/^["']|["']$/g, '')
+        .replace(/\.$/, '')
+        .slice(0, 80);
+
+      return cleaned || fallback;
+    } catch {
+      return fallback;
+    }
   }
 
   private async getConversation(userUuid: string, organizationUuid: string, conversationUuid: string) {

@@ -9,6 +9,7 @@ import {
   getMessages,
   rejectExecution,
   sendMessage,
+  updateConversation,
 } from '../services/conversations.service';
 
 export const conversationsQueryKey = ['conversations'] as const;
@@ -67,6 +68,22 @@ export function useDeleteConversation(organizationUuid?: string) {
   });
 }
 
+export function useUpdateConversation(organizationUuid?: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ conversationUuid, title }: { conversationUuid: string; title: string }) =>
+      updateConversation(organizationUuid as string, conversationUuid, title),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: conversationsQueryKey });
+      toast({ title: 'Conversation updated', duration: 2000 });
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Could not update conversation', description: error.message, variant: 'error' });
+    },
+  });
+}
+
 export function useSendMessage(organizationUuid?: string, conversationUuid?: string) {
   const queryClient = useQueryClient();
 
@@ -75,6 +92,7 @@ export function useSendMessage(organizationUuid?: string, conversationUuid?: str
       sendMessage(organizationUuid as string, conversationUuid as string, content, documentUuids),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['messages', organizationUuid, conversationUuid] });
+      queryClient.invalidateQueries({ queryKey: conversationsQueryKey });
     },
     onError: (error: Error) => {
       toast({ title: 'Could not send message', description: error.message, variant: 'error' });

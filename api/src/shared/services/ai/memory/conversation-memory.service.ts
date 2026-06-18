@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { CacheService } from '@/shared/services/cache/cache.service';
 import { MessageRole } from 'generated/prisma';
@@ -10,8 +10,6 @@ const MESSAGE_LIMIT = 100;
 
 @Injectable()
 export class ConversationMemoryService implements ConversationMemory {
-  private readonly logger = new Logger(ConversationMemoryService.name);
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly cache: CacheService,
@@ -26,12 +24,10 @@ export class ConversationMemoryService implements ConversationMemory {
     const cached = await this.cache.get<ModelMessage[]>(key);
 
     if (cached) {
-      this.logger.debug(`Cache hit for ${key}`);
       await this.cache.set(key, cached, CACHE_TTL_MS);
       return cached;
     }
 
-    this.logger.debug(`Cache miss for ${key}, loading from Postgres`);
     const rows = await this.prisma.message.findMany({
       where: { conversation_uuid: conversationId },
       orderBy: { created_at: 'asc' },
