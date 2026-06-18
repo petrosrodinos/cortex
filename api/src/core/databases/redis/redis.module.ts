@@ -2,6 +2,7 @@ import { Module, Global, Logger } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { REDIS_OPTIONS } from './redis.constants';
 import type { RedisOptions } from 'ioredis';
+import { RedisConnectionService } from './redis-connection.service';
 
 @Global()
 @Module({
@@ -31,6 +32,7 @@ import type { RedisOptions } from 'ioredis';
             },
             inject: [ConfigService],
         },
+        RedisConnectionService,
     ],
     exports: [REDIS_OPTIONS],
 })
