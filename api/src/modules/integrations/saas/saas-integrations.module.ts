@@ -9,6 +9,8 @@ import { NotionIntegrationModule } from './notion/notion.module';
 import { PostHogIntegrationModule } from './posthog/posthog.module';
 import { SlackIntegrationModule } from './slack/slack.module';
 import { SmtpIntegrationModule } from './smtp/smtp.module';
+import { ResendIntegrationModule } from './resend/resend.module';
+import { SendGridIntegrationModule } from './sendgrid/sendgrid.module';
 import { StripeIntegrationModule } from './stripe/stripe.module';
 
 @Module({
@@ -21,6 +23,8 @@ import { StripeIntegrationModule } from './stripe/stripe.module';
     NotionIntegrationModule,
     GoogleDriveIntegrationModule,
     SmtpIntegrationModule,
+    ResendIntegrationModule,
+    SendGridIntegrationModule,
     GmailIntegrationModule,
     PostHogIntegrationModule,
     IntercomIntegrationModule,

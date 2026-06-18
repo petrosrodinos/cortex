@@ -28,6 +28,14 @@ export const PROVIDER_CONFIG_FIELDS: Record<IntegrationProvider, ProviderConfigF
     { key: 'password', label: 'Password', type: 'password', placeholder: '••••••••' },
     { key: 'from', label: 'From email', type: 'text', span: 'full', placeholder: 'noreply@example.com' },
   ],
+  [IntegrationProviders.RESEND]: [
+    { key: 'apiKey', label: 'API key', type: 'password', span: 'full', placeholder: 're_xxxxxxxxxxxxxxxxxxxx' },
+    { key: 'from', label: 'From email', type: 'text', span: 'full', placeholder: 'hello@yourdomain.com' },
+  ],
+  [IntegrationProviders.SENDGRID]: [
+    { key: 'apiKey', label: 'API key', type: 'password', span: 'full', placeholder: 'SG.xxxxxxxxxxxxxxxxxxxx' },
+    { key: 'from', label: 'From email', type: 'text', span: 'full', placeholder: 'hello@yourdomain.com' },
+  ],
   [IntegrationProviders.GMAIL]: [
     { key: 'accessToken', label: 'Access token', type: 'password', span: 'full', placeholder: 'ya29.xxxxxxxxxxxxxxxxxxxx' },
     { key: 'refreshToken', label: 'Refresh token', type: 'password', span: 'full', placeholder: '1//xxxxxxxxxxxxxxxxxxxx' },

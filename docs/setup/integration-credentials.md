@@ -199,10 +199,32 @@ SMTP credentials depend on your mail provider.
 3. Use `smtp.gmail.com`, port `587` (STARTTLS) or `465` (SSL/TLS).
 4. Username: your Gmail address. Password: the generated app password (not your account password).
 
-**SendGrid**:
+**SendGrid (SMTP relay)**:
 1. Go to **SendGrid → Settings → API Keys → Create API Key** with "Mail Send" permission.
 2. Host: `smtp.sendgrid.net`, port `587`. Username: `apikey`. Password: your API key.
 
 **Mailgun**:
 1. Go to **Mailgun → Sending → Domains → your domain → SMTP credentials**.
 2. Use the provided hostname, port, login, and password.
+
+---
+
+## Resend
+
+Native Resend API integration (recommended over SMTP when using Resend).
+
+1. Sign in at [resend.com](https://resend.com) and verify your sending domain under **Domains**.
+2. Go to **API Keys** and create a key with sending access.
+3. Copy the API key (starts with `re_`) into the Cortex integration form.
+4. Set **From email** to an address on your verified domain (e.g. `hello@yourdomain.com`).
+
+---
+
+## SendGrid
+
+Native SendGrid API integration (recommended over SMTP when using SendGrid).
+
+1. Sign in to SendGrid and complete sender authentication for your domain or single sender.
+2. Go to **Settings → API Keys → Create API Key** with **Mail Send** permission.
+3. Copy the API key (starts with `SG.`) into the Cortex integration form.
+4. Set **From email** to your verified sender address.

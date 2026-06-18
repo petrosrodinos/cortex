@@ -47,6 +47,8 @@ enum IntegrationProvider {
   GOOGLE_DRIVE
   SMTP
   GMAIL
+  RESEND
+  SENDGRID
   POSTHOG
   INTERCOM
   DATABASE_PG

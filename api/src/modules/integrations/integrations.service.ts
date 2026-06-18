@@ -5,9 +5,13 @@ import { IntegrationProvider, IntegrationStatus } from 'generated/prisma';
 import { DATABASE_PROVIDERS } from './databases/database-integration.types';
 import { CreateIntegrationDto } from './dto/create-integration.dto';
 import { TestSmtpConnectionDto } from './dto/test-smtp-connection.dto';
+import { TestResendConnectionDto } from './dto/test-resend-connection.dto';
+import { TestSendGridConnectionDto } from './dto/test-sendgrid-connection.dto';
 import { UpdateIntegrationDto } from './dto/update-integration.dto';
 import { IntegrationRegistry } from './framework/registry/integration-registry.service';
 import { buildTransport } from './saas/smtp/utils/smtp.utils';
+import { verifyResendApiKey } from './saas/resend/utils/resend.utils';
+import { verifySendGridApiKey } from './saas/sendgrid/utils/sendgrid.utils';
 
 @Injectable()
 export class IntegrationsService {
@@ -152,6 +156,34 @@ export class IntegrationsService {
       });
       await transport.verify();
       return { success: true };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Connection failed';
+      return { success: false, error: message };
+    }
+  }
+
+  async testResendDraftConnection(dto: TestResendConnectionDto) {
+    try {
+      if (!dto.apiKey || !dto.from) {
+        return { success: false, error: 'API key and from email are required' };
+      }
+
+      const success = await verifyResendApiKey(dto.apiKey);
+      return success ? { success: true } : { success: false, error: 'Invalid Resend API key' };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Connection failed';
+      return { success: false, error: message };
+    }
+  }
+
+  async testSendGridDraftConnection(dto: TestSendGridConnectionDto) {
+    try {
+      if (!dto.apiKey || !dto.from) {
+        return { success: false, error: 'API key and from email are required' };
+      }
+
+      const success = await verifySendGridApiKey(dto.apiKey);
+      return success ? { success: true } : { success: false, error: 'Invalid SendGrid API key' };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Connection failed';
       return { success: false, error: message };

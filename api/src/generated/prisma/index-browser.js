@@ -389,6 +389,8 @@ exports.IntegrationProvider = exports.$Enums.IntegrationProvider = {
   GOOGLE_DRIVE: 'GOOGLE_DRIVE',
   SMTP: 'SMTP',
   GMAIL: 'GMAIL',
+  RESEND: 'RESEND',
+  SENDGRID: 'SENDGRID',
   POSTHOG: 'POSTHOG',
   INTERCOM: 'INTERCOM',
   DATABASE_PG: 'DATABASE_PG',

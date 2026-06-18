@@ -11,6 +11,18 @@ import { SmtpIntegration } from './smtp/smtp.integration';
 import { GmailIntegration } from './gmail/gmail.integration';
 import { PostHogIntegration } from './posthog/posthog.integration';
 import { IntercomIntegration } from './intercom/intercom.integration';
+import { ResendIntegration } from './resend/resend.integration';
+import { SendGridIntegration } from './sendgrid/sendgrid.integration';
+
+jest.mock('./resend/utils/resend.utils', () => ({
+  ...jest.requireActual('./resend/utils/resend.utils'),
+  verifyResendApiKey: jest.fn().mockResolvedValue(true),
+}));
+
+jest.mock('./sendgrid/utils/sendgrid.utils', () => ({
+  ...jest.requireActual('./sendgrid/utils/sendgrid.utils'),
+  verifySendGridApiKey: jest.fn().mockResolvedValue(true),
+}));
 
 const providerCases = [
   [IntegrationProvider.GITHUB, GitHubIntegration, 'github__list_repos', 'accessToken'],
@@ -22,6 +34,8 @@ const providerCases = [
   [IntegrationProvider.GOOGLE_DRIVE, GoogleDriveIntegration, 'google_drive__list_files', 'accessToken'],
   [IntegrationProvider.SMTP, SmtpIntegration, 'smtp__send_email', 'host'],
   [IntegrationProvider.GMAIL, GmailIntegration, 'gmail__list_messages', 'accessToken'],
+  [IntegrationProvider.RESEND, ResendIntegration, 'resend__send_email', 'apiKey'],
+  [IntegrationProvider.SENDGRID, SendGridIntegration, 'sendgrid__send_email', 'apiKey'],
   [IntegrationProvider.POSTHOG, PostHogIntegration, 'posthog__get_events', 'apiKey'],
   [IntegrationProvider.INTERCOM, IntercomIntegration, 'intercom__list_conversations', 'accessToken'],
 ] as const;

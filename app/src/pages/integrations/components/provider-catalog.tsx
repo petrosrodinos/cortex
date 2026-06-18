@@ -21,6 +21,8 @@ const PROVIDER_CATEGORIES: { label: string; providers: IntegrationProvider[] }[]
       IntegrationProviders.GOOGLE_DRIVE,
       IntegrationProviders.GMAIL,
       IntegrationProviders.SMTP,
+      IntegrationProviders.RESEND,
+      IntegrationProviders.SENDGRID,
       IntegrationProviders.POSTHOG,
       IntegrationProviders.INTERCOM,
     ],

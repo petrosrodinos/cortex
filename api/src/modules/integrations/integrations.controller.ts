@@ -4,6 +4,8 @@ import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
 import { CreateIntegrationDto } from './dto/create-integration.dto';
 import { TestSmtpConnectionDto } from './dto/test-smtp-connection.dto';
+import { TestResendConnectionDto } from './dto/test-resend-connection.dto';
+import { TestSendGridConnectionDto } from './dto/test-sendgrid-connection.dto';
 import { ToggleIntegrationActionDto } from './dto/toggle-integration-action.dto';
 import { UpdateIntegrationDto } from './dto/update-integration.dto';
 import { IntegrationActionsService } from './integration-actions.service';
@@ -37,6 +39,18 @@ export class IntegrationsController {
   @OrganizationPermission('org:integrations:manage')
   async testSmtpDraftConnection(@Body() dto: TestSmtpConnectionDto) {
     return await this.integrations_service.testSmtpDraftConnection(dto);
+  }
+
+  @Post('resend/test')
+  @OrganizationPermission('org:integrations:manage')
+  async testResendDraftConnection(@Body() dto: TestResendConnectionDto) {
+    return await this.integrations_service.testResendDraftConnection(dto);
+  }
+
+  @Post('sendgrid/test')
+  @OrganizationPermission('org:integrations:manage')
+  async testSendGridDraftConnection(@Body() dto: TestSendGridConnectionDto) {
+    return await this.integrations_service.testSendGridDraftConnection(dto);
   }
 
   @Get(':integration_uuid')
