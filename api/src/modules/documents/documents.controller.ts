@@ -1,0 +1,38 @@
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { OrganizationGuard } from '@/shared/guards/organization.guard';
+import { DocumentsService } from './documents.service';
+
+@Controller('organizations/:organization_uuid/documents')
+@UseGuards(JwtGuard, OrganizationGuard)
+export class DocumentsController {
+  constructor(private readonly documents: DocumentsService) {}
+
+  @Post()
+  @UseInterceptors(FileInterceptor('file'))
+  upload(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @UploadedFile() file: { buffer: Buffer; originalname: string; mimetype: string; size: number },
+  ) {
+    return this.documents.upload(userUuid, organizationUuid, file);
+  }
+
+  @Get()
+  findAll(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+  ) {
+    return this.documents.findAll(userUuid, organizationUuid);
+  }
+}

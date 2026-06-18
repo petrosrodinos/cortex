@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MessageSquarePlus, Send } from 'lucide-react';
+import { MessageSquarePlus, Paperclip, Send, X } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import rehypeSanitize from 'rehype-sanitize';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -17,7 +19,13 @@ import {
 } from '@/features/conversations/hooks/use-conversations';
 import { useExecution } from '@/features/conversations/hooks/use-execution';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
+import { useUploadDocument } from '@/features/files/hooks/use-files';
 import { cn } from '@/lib/utils';
+
+interface AttachedFile {
+  file: File;
+  uuid?: string;
+}
 
 const ConversationsPage: FC = () => {
   const navigate = useNavigate();
@@ -25,6 +33,8 @@ const ConversationsPage: FC = () => {
   const organizationUuid = useOrganizationStore((state) => state.current_organization?.uuid);
   const [draft, setDraft] = useState('');
   const [activeExecutionId, setActiveExecutionId] = useState<string | null>(null);
+  const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: conversations = [], isLoading: conversationsLoading } = useGetConversations(organizationUuid);
   const { data: messages = [], refetch: refetchMessages } = useGetMessages(organizationUuid, conversationUuid);
@@ -32,6 +42,7 @@ const ConversationsPage: FC = () => {
   const sendMessage = useSendMessage(organizationUuid, conversationUuid);
   const approveExecution = useApproveExecution(organizationUuid);
   const rejectExecution = useRejectExecution(organizationUuid);
+  const uploadDocument = useUploadDocument(organizationUuid);
 
   const execution = useExecution(organizationUuid, activeExecutionId);
 
@@ -52,14 +63,39 @@ const ConversationsPage: FC = () => {
     navigate(Routes.dashboard.conversation(created.uuid));
   };
 
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !organizationUuid) return;
+
+    const placeholder: AttachedFile = { file };
+    setAttachedFiles((prev) => [...prev, placeholder]);
+
+    try {
+      const doc = await uploadDocument.mutateAsync(file);
+      setAttachedFiles((prev) =>
+        prev.map((f) => (f.file === file ? { file, uuid: doc.uuid } : f)),
+      );
+    } catch {
+      setAttachedFiles((prev) => prev.filter((f) => f.file !== file));
+    }
+
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const removeAttachedFile = (file: File) => {
+    setAttachedFiles((prev) => prev.filter((f) => f.file !== file));
+  };
+
   const handleSend = async () => {
     if (!draft.trim() || !conversationUuid) {
       return;
     }
 
     const content = draft.trim();
+    const documentUuids = attachedFiles.filter((f) => f.uuid).map((f) => f.uuid as string);
     setDraft('');
-    const response = await sendMessage.mutateAsync(content);
+    setAttachedFiles([]);
+    const response = await sendMessage.mutateAsync({ content, documentUuids });
     setActiveExecutionId(response.executionId);
   };
 
@@ -133,13 +169,72 @@ const ConversationsPage: FC = () => {
                 <div
                   key={message.uuid}
                   className={cn(
-                    'max-w-[85%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap',
+                    'max-w-[85%] rounded-2xl px-4 py-3 text-sm',
                     message.role === MessageRoles.USER
-                      ? 'ml-auto bg-accent/15 text-foreground'
+                      ? 'ml-auto bg-accent/15 text-foreground whitespace-pre-wrap'
                       : 'mr-auto bg-surface-secondary text-foreground',
                   )}
                 >
-                  {message.content}
+                  {message.role === MessageRoles.ASSISTANT ? (
+                    <div className="prose prose-sm prose-invert max-w-none">
+                      <ReactMarkdown rehypePlugins={[rehypeSanitize]}>{message.content}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    message.content
+                  )}
+
+                  {message.role === MessageRoles.ASSISTANT && message.metadata && (() => {
+                    const meta = message.metadata as { outputType?: string; files?: string[] };
+                    const outputType = meta.outputType;
+                    const files = meta.files ?? [];
+
+                    if (
+                      (outputType === 'FILE_PDF' || outputType === 'FILE_EXCEL' || outputType === 'FILE_WORD') &&
+                      files.length > 0
+                    ) {
+                      return (
+                        <div className="mt-3 flex flex-col gap-2">
+                          {files.map((fileUrl, i) => {
+                            const filename = fileUrl.split('/').pop() ?? `file-${i + 1}`;
+                            return (
+                              <a
+                                key={fileUrl}
+                                href={fileUrl}
+                                download={filename}
+                                className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs text-accent hover:underline"
+                              >
+                                <span>📄</span>
+                                <span className="truncate">{filename}</span>
+                              </a>
+                            );
+                          })}
+                        </div>
+                      );
+                    }
+
+                    if (outputType === 'CHART' && files.length > 0) {
+                      return (
+                        <div className="mt-3">
+                          <img src={files[0]} alt="chart" className="max-w-full rounded-lg" />
+                        </div>
+                      );
+                    }
+
+                    if (outputType === 'WIDGET' && files.length > 0) {
+                      return (
+                        <div className="mt-3">
+                          <iframe
+                            src={files[0]}
+                            sandbox="allow-scripts"
+                            className="w-full h-64 rounded-lg border border-border"
+                            title="widget"
+                          />
+                        </div>
+                      );
+                    }
+
+                    return null;
+                  })()}
                 </div>
               ))}
 
@@ -190,6 +285,25 @@ const ConversationsPage: FC = () => {
             </div>
 
             <div className="border-t border-border p-4">
+              {attachedFiles.length > 0 && (
+                <div className="mb-2 flex flex-wrap gap-2">
+                  {attachedFiles.map((f) => (
+                    <span
+                      key={f.file.name + f.file.lastModified}
+                      className="flex items-center gap-1 rounded-full border border-border bg-surface-secondary px-2.5 py-1 text-xs text-foreground"
+                    >
+                      {f.uuid ? f.file.name : `${f.file.name} (uploading...)`}
+                      <button
+                        type="button"
+                        onClick={() => removeAttachedFile(f.file)}
+                        className="ml-0.5 text-muted hover:text-foreground"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
               <form
                 className="flex gap-2"
                 onSubmit={(event) => {
@@ -197,6 +311,22 @@ const ConversationsPage: FC = () => {
                   void handleSend();
                 }}
               >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  onChange={handleFileSelect}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-9 w-9 p-0 shrink-0"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={sendMessage.isPending || execution.isRunning || uploadDocument.isPending}
+                  title="Attach file"
+                >
+                  <Paperclip className="h-4 w-4" />
+                </Button>
                 <Input
                   value={draft}
                   onChange={(event) => setDraft(event.target.value)}

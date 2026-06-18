@@ -9,6 +9,13 @@ import DashboardHome from "@/pages/dashboard";
 import OrganizationsPage from "@/pages/organizations";
 import IntegrationsPage from "@/pages/integrations";
 import ConversationsPage from "@/pages/conversations";
+import FilesPage from "@/pages/files";
+import SettingsLayout from "@/pages/settings";
+import OrganizationSettingsPage from "@/pages/settings/organization";
+import AiProvidersPage from "@/pages/integrations/ai-providers";
+import UsagePage from "@/pages/settings/usage";
+import AuditLogsPage from "@/pages/settings/audit-logs";
+import ExecutionDetailPage from "@/pages/executions";
 
 export default function AppRoutes() {
   return (
@@ -44,6 +51,15 @@ export default function AppRoutes() {
         <Route path="conversations/:conversationUuid" element={<ConversationsPage />} />
         <Route path="organizations/members" element={<Navigate to={Routes.dashboard.organizations} replace />} />
         <Route path="organizations/roles" element={<Navigate to={Routes.dashboard.organizations} replace />} />
+        <Route path="files" element={<FilesPage />} />
+        <Route path="settings" element={<SettingsLayout />}>
+          <Route index element={<Navigate to={Routes.dashboard.settingsOrganization} replace />} />
+          <Route path="organization" element={<OrganizationSettingsPage />} />
+          <Route path="ai-providers" element={<AiProvidersPage />} />
+          <Route path="usage" element={<UsagePage />} />
+          <Route path="audit-logs" element={<AuditLogsPage />} />
+        </Route>
+        <Route path="executions/:executionUuid" element={<ExecutionDetailPage />} />
       </Route>
 
       {/* Default redirect */}

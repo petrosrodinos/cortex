@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
@@ -72,6 +72,11 @@ export class ConversationsController {
 @UseGuards(JwtGuard, OrganizationGuard)
 export class ExecutionsController {
   constructor(private readonly executions: ExecutionsService) {}
+
+  @Get('usage')
+  getUsage(@CurrentUser('uuid') userUuid: string, @Param('organization_uuid') organizationUuid: string) {
+    return this.executions.getUsage(userUuid, organizationUuid);
+  }
 
   @Get()
   findAll(@CurrentUser('uuid') userUuid: string, @Param('organization_uuid') organizationUuid: string) {

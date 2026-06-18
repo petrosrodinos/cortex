@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Building2, Check, ChevronsUpDown } from 'lucide-react';
+import { Building2, Check, ChevronsUpDown, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/stores/auth';
 import { useOrganizationStore } from '@/stores/organization';
-import { useGetOrganizations, useSwitchOrganization } from '@/features/organizations/hooks/use-organizations';
+import { useCreateOrganization, useGetOrganizations, useSwitchOrganization } from '@/features/organizations/hooks/use-organizations';
 
 interface OrganizationSwitcherProps {
   collapsed?: boolean;
@@ -11,6 +11,9 @@ interface OrganizationSwitcherProps {
 
 export default function OrganizationSwitcher({ collapsed = false }: OrganizationSwitcherProps) {
   const [open, setOpen] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
+  const [newOrgName, setNewOrgName] = useState('');
+
   const {
     current_organization: currentOrganization,
     organizations,
@@ -20,6 +23,7 @@ export default function OrganizationSwitcher({ collapsed = false }: Organization
   const updateUser = useAuthStore((state) => state.update_user);
   const organizationsQuery = useGetOrganizations();
   const switchOrganizationMutation = useSwitchOrganization();
+  const createOrganizationMutation = useCreateOrganization();
   const loading = organizationsQuery.isLoading || switchOrganizationMutation.isPending;
   const error = organizationsQuery.error?.message ?? switchOrganizationMutation.error?.message ?? null;
 
@@ -45,6 +49,31 @@ export default function OrganizationSwitcher({ collapsed = false }: Organization
       const scopedAuth = await switchOrganizationMutation.mutateAsync({ organization_uuid: organizationUuid });
       updateUser(scopedAuth);
       setCurrentOrganization(organization);
+      setOpen(false);
+    } catch {
+      return;
+    }
+  }
+
+  async function handleCreateOrganization() {
+    if (!newOrgName.trim()) return;
+
+    try {
+      const created = await createOrganizationMutation.mutateAsync({ name: newOrgName.trim() });
+      setNewOrgName('');
+      setShowCreate(false);
+
+      const refreshed = organizationsQuery.data ?? organizations;
+      const found = [...refreshed].find((o) => o.uuid === created.uuid) ?? created;
+
+      try {
+        const scopedAuth = await switchOrganizationMutation.mutateAsync({ organization_uuid: found.uuid });
+        updateUser(scopedAuth);
+        setCurrentOrganization(found);
+      } catch {
+        setCurrentOrganization(found);
+      }
+
       setOpen(false);
     } catch {
       return;
@@ -116,6 +145,52 @@ export default function OrganizationSwitcher({ collapsed = false }: Organization
               ))
             )}
           </div>
+
+          <div className="mt-1 border-t border-border pt-1">
+            {showCreate ? (
+              <div className="flex flex-col gap-2 px-1 py-1">
+                <input
+                  autoFocus
+                  type="text"
+                  value={newOrgName}
+                  onChange={(e) => setNewOrgName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') void handleCreateOrganization();
+                    if (e.key === 'Escape') { setShowCreate(false); setNewOrgName(''); }
+                  }}
+                  placeholder="Organization name"
+                  className="w-full rounded-lg border border-border bg-surface px-2.5 py-1.5 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent"
+                />
+                <div className="flex gap-1.5">
+                  <button
+                    type="button"
+                    disabled={createOrganizationMutation.isPending || !newOrgName.trim()}
+                    onClick={handleCreateOrganization}
+                    className="flex-1 rounded-lg bg-accent px-2 py-1.5 text-xs font-medium text-white disabled:opacity-50"
+                  >
+                    {createOrganizationMutation.isPending ? 'Creating...' : 'Create'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setShowCreate(false); setNewOrgName(''); }}
+                    className="rounded-lg border border-border px-2 py-1.5 text-xs text-muted hover:text-foreground"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowCreate(true)}
+                className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm text-muted hover:bg-surface-secondary hover:text-foreground"
+              >
+                <Plus className="h-4 w-4" />
+                Create organization
+              </button>
+            )}
+          </div>
+
           {error && <p className="mt-2 px-1 text-xs text-red-400">{error}</p>}
         </div>
       )}

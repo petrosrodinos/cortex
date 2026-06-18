@@ -18,6 +18,7 @@ import { ConversationsModule } from './modules/conversations/conversations.modul
 import { WebsocketsModule } from './core/websockets/websockets.module';
 import { QueuesModule } from './core/queues/queues.module';
 import { AgentQueueModule } from './core/queues/agent-queue.module';
+import { DocumentsModule } from './modules/documents/documents.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { AgentQueueModule } from './core/queues/agent-queue.module';
     WebsocketsModule,
     QueuesModule,
     AgentQueueModule,
+    DocumentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

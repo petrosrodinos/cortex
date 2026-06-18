@@ -50,11 +50,12 @@ export const sendMessage = async (
   organizationUuid: string,
   conversationUuid: string,
   content: string,
+  documentUuids?: string[],
 ): Promise<SendMessageResponse> => {
   try {
     const response = await axiosInstance.post(
       ApiRoutes.organizations.conversationMessages(organizationUuid, conversationUuid),
-      { content },
+      { content, documentUuids },
     );
     return response.data;
   } catch (error: any) {

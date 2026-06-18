@@ -85,6 +85,74 @@ export class ExecutionsService {
     return { rejected: true, executionId: execution.uuid };
   }
 
+  async getUsage(
+    userUuid: string,
+    organizationUuid: string,
+  ): Promise<{
+    total_tokens: number;
+    total_cost_usd: number;
+    total_executions: number;
+    daily: Array<{ date: string; tokens: number; cost_usd: number; count: number }>;
+  }> {
+    await this.organizations.requireActiveMember(userUuid, organizationUuid);
+
+    const aggregate = await this.prisma.agentExecution.aggregate({
+      where: {
+        org_uuid: organizationUuid,
+        user_uuid: userUuid,
+        status: AgentExecutionStatus.COMPLETED,
+      },
+      _sum: { tokens_used: true, cost_usd: true },
+      _count: true,
+    });
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const recentExecutions = await this.prisma.agentExecution.findMany({
+      where: {
+        org_uuid: organizationUuid,
+        user_uuid: userUuid,
+        status: AgentExecutionStatus.COMPLETED,
+        created_at: { gte: thirtyDaysAgo },
+      },
+      select: { created_at: true, tokens_used: true, cost_usd: true },
+    });
+
+    const dailyMap = new Map<string, { tokens: number; cost_usd: number; count: number }>();
+
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      dailyMap.set(key, { tokens: 0, cost_usd: 0, count: 0 });
+    }
+
+    for (const exec of recentExecutions) {
+      const key = exec.created_at.toISOString().slice(0, 10);
+      if (dailyMap.has(key)) {
+        const entry = dailyMap.get(key)!;
+        entry.tokens += exec.tokens_used ?? 0;
+        entry.cost_usd += Number(exec.cost_usd ?? 0);
+        entry.count += 1;
+      }
+    }
+
+    const daily = Array.from(dailyMap.entries()).map(([date, val]) => ({
+      date,
+      tokens: val.tokens,
+      cost_usd: val.cost_usd,
+      count: val.count,
+    }));
+
+    return {
+      total_tokens: aggregate._sum.tokens_used ?? 0,
+      total_cost_usd: Number(aggregate._sum.cost_usd ?? 0),
+      total_executions: aggregate._count,
+      daily,
+    };
+  }
+
   private async getExecution(userUuid: string, organizationUuid: string, executionUuid: string) {
     const execution = await this.prisma.agentExecution.findFirst({
       where: {

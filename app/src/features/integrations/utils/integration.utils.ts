@@ -1,0 +1,19 @@
+import { IntegrationProviders, type IntegrationProvider } from '@/features/integrations/interfaces/integration.interface';
+
+export const databaseProviders = [
+  IntegrationProviders.DATABASE_PG,
+  IntegrationProviders.DATABASE_MYSQL,
+  IntegrationProviders.DATABASE_MONGO,
+] as const;
+
+export function isDatabaseProvider(provider: IntegrationProvider): provider is (typeof databaseProviders)[number] {
+  return databaseProviders.includes(provider as (typeof databaseProviders)[number]);
+}
+
+export function isOpenApiProvider(provider: IntegrationProvider) {
+  return provider === IntegrationProviders.OPENAPI;
+}
+
+export function isMcpProvider(provider: IntegrationProvider) {
+  return provider === IntegrationProviders.MCP;
+}
