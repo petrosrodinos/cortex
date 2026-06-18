@@ -103,6 +103,11 @@ export type AgentExecution = $Result.DefaultSelection<Prisma.$AgentExecutionPayl
  * 
  */
 export type ToolCall = $Result.DefaultSelection<Prisma.$ToolCallPayload>
+/**
+ * Model ConversationPersonalization
+ * 
+ */
+export type ConversationPersonalization = $Result.DefaultSelection<Prisma.$ConversationPersonalizationPayload>
 
 /**
  * Enums
@@ -272,6 +277,28 @@ export const OutputType: {
 
 export type OutputType = (typeof OutputType)[keyof typeof OutputType]
 
+
+export const ResponseStyle: {
+  DEFAULT: 'DEFAULT',
+  PROFESSIONAL: 'PROFESSIONAL',
+  FRIENDLY: 'FRIENDLY',
+  CANDID: 'CANDID',
+  QUIRKY: 'QUIRKY',
+  EFFICIENT: 'EFFICIENT',
+  CYNICAL: 'CYNICAL'
+};
+
+export type ResponseStyle = (typeof ResponseStyle)[keyof typeof ResponseStyle]
+
+
+export const CharacteristicLevel: {
+  LESS: 'LESS',
+  DEFAULT: 'DEFAULT',
+  MORE: 'MORE'
+};
+
+export type CharacteristicLevel = (typeof CharacteristicLevel)[keyof typeof CharacteristicLevel]
+
 }
 
 export type AuthRole = $Enums.AuthRole
@@ -333,6 +360,14 @@ export const ToolCallStatus: typeof $Enums.ToolCallStatus
 export type OutputType = $Enums.OutputType
 
 export const OutputType: typeof $Enums.OutputType
+
+export type ResponseStyle = $Enums.ResponseStyle
+
+export const ResponseStyle: typeof $Enums.ResponseStyle
+
+export type CharacteristicLevel = $Enums.CharacteristicLevel
+
+export const CharacteristicLevel: typeof $Enums.CharacteristicLevel
 
 /**
  * ##  Prisma Client ʲˢ
@@ -630,6 +665,16 @@ export class PrismaClient<
     * ```
     */
   get toolCall(): Prisma.ToolCallDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.conversationPersonalization`: Exposes CRUD operations for the **ConversationPersonalization** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ConversationPersonalizations
+    * const conversationPersonalizations = await prisma.conversationPersonalization.findMany()
+    * ```
+    */
+  get conversationPersonalization(): Prisma.ConversationPersonalizationDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1081,7 +1126,8 @@ export namespace Prisma {
     Conversation: 'Conversation',
     Message: 'Message',
     AgentExecution: 'AgentExecution',
-    ToolCall: 'ToolCall'
+    ToolCall: 'ToolCall',
+    ConversationPersonalization: 'ConversationPersonalization'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1097,7 +1143,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "databaseIntegration" | "openApiIntegration" | "mcpIntegration" | "integrationAction" | "document" | "aiProvider" | "conversation" | "message" | "agentExecution" | "toolCall"
+      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "databaseIntegration" | "openApiIntegration" | "mcpIntegration" | "integrationAction" | "document" | "aiProvider" | "conversation" | "message" | "agentExecution" | "toolCall" | "conversationPersonalization"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2433,6 +2479,80 @@ export namespace Prisma {
           }
         }
       }
+      ConversationPersonalization: {
+        payload: Prisma.$ConversationPersonalizationPayload<ExtArgs>
+        fields: Prisma.ConversationPersonalizationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ConversationPersonalizationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPersonalizationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ConversationPersonalizationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPersonalizationPayload>
+          }
+          findFirst: {
+            args: Prisma.ConversationPersonalizationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPersonalizationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ConversationPersonalizationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPersonalizationPayload>
+          }
+          findMany: {
+            args: Prisma.ConversationPersonalizationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPersonalizationPayload>[]
+          }
+          create: {
+            args: Prisma.ConversationPersonalizationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPersonalizationPayload>
+          }
+          createMany: {
+            args: Prisma.ConversationPersonalizationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ConversationPersonalizationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPersonalizationPayload>[]
+          }
+          delete: {
+            args: Prisma.ConversationPersonalizationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPersonalizationPayload>
+          }
+          update: {
+            args: Prisma.ConversationPersonalizationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPersonalizationPayload>
+          }
+          deleteMany: {
+            args: Prisma.ConversationPersonalizationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ConversationPersonalizationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ConversationPersonalizationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPersonalizationPayload>[]
+          }
+          upsert: {
+            args: Prisma.ConversationPersonalizationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPersonalizationPayload>
+          }
+          aggregate: {
+            args: Prisma.ConversationPersonalizationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateConversationPersonalization>
+          }
+          groupBy: {
+            args: Prisma.ConversationPersonalizationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ConversationPersonalizationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ConversationPersonalizationCountArgs<ExtArgs>
+            result: $Utils.Optional<ConversationPersonalizationCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2559,6 +2679,7 @@ export namespace Prisma {
     message?: MessageOmit
     agentExecution?: AgentExecutionOmit
     toolCall?: ToolCallOmit
+    conversationPersonalization?: ConversationPersonalizationOmit
   }
 
   /* Types for Logging */
@@ -2643,6 +2764,7 @@ export namespace Prisma {
     audit_logs: number
     conversations: number
     agent_executions: number
+    conversation_personalizations: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2650,6 +2772,7 @@ export namespace Prisma {
     audit_logs?: boolean | UserCountOutputTypeCountAudit_logsArgs
     conversations?: boolean | UserCountOutputTypeCountConversationsArgs
     agent_executions?: boolean | UserCountOutputTypeCountAgent_executionsArgs
+    conversation_personalizations?: boolean | UserCountOutputTypeCountConversation_personalizationsArgs
   }
 
   // Custom InputTypes
@@ -2691,6 +2814,13 @@ export namespace Prisma {
     where?: AgentExecutionWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountConversation_personalizationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationPersonalizationWhereInput
+  }
+
 
   /**
    * Count Type OrganizationCountOutputType
@@ -2704,6 +2834,7 @@ export namespace Prisma {
     ai_providers: number
     conversations: number
     agent_executions: number
+    conversation_personalizations: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2714,6 +2845,7 @@ export namespace Prisma {
     ai_providers?: boolean | OrganizationCountOutputTypeCountAi_providersArgs
     conversations?: boolean | OrganizationCountOutputTypeCountConversationsArgs
     agent_executions?: boolean | OrganizationCountOutputTypeCountAgent_executionsArgs
+    conversation_personalizations?: boolean | OrganizationCountOutputTypeCountConversation_personalizationsArgs
   }
 
   // Custom InputTypes
@@ -2774,6 +2906,13 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountAgent_executionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AgentExecutionWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountConversation_personalizationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationPersonalizationWhereInput
   }
 
 
@@ -3236,6 +3375,7 @@ export namespace Prisma {
     audit_logs?: boolean | User$audit_logsArgs<ExtArgs>
     conversations?: boolean | User$conversationsArgs<ExtArgs>
     agent_executions?: boolean | User$agent_executionsArgs<ExtArgs>
+    conversation_personalizations?: boolean | User$conversation_personalizationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3284,6 +3424,7 @@ export namespace Prisma {
     audit_logs?: boolean | User$audit_logsArgs<ExtArgs>
     conversations?: boolean | User$conversationsArgs<ExtArgs>
     agent_executions?: boolean | User$agent_executionsArgs<ExtArgs>
+    conversation_personalizations?: boolean | User$conversation_personalizationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3296,6 +3437,7 @@ export namespace Prisma {
       audit_logs: Prisma.$AuditLogPayload<ExtArgs>[]
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
       agent_executions: Prisma.$AgentExecutionPayload<ExtArgs>[]
+      conversation_personalizations: Prisma.$ConversationPersonalizationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -3706,6 +3848,7 @@ export namespace Prisma {
     audit_logs<T extends User$audit_logsArgs<ExtArgs> = {}>(args?: Subset<T, User$audit_logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     conversations<T extends User$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, User$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     agent_executions<T extends User$agent_executionsArgs<ExtArgs> = {}>(args?: Subset<T, User$agent_executionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    conversation_personalizations<T extends User$conversation_personalizationsArgs<ExtArgs> = {}>(args?: Subset<T, User$conversation_personalizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4229,6 +4372,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.conversation_personalizations
+   */
+  export type User$conversation_personalizationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationInclude<ExtArgs> | null
+    where?: ConversationPersonalizationWhereInput
+    orderBy?: ConversationPersonalizationOrderByWithRelationInput | ConversationPersonalizationOrderByWithRelationInput[]
+    cursor?: ConversationPersonalizationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ConversationPersonalizationScalarFieldEnum | ConversationPersonalizationScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4468,6 +4635,7 @@ export namespace Prisma {
     ai_providers?: boolean | Organization$ai_providersArgs<ExtArgs>
     conversations?: boolean | Organization$conversationsArgs<ExtArgs>
     agent_executions?: boolean | Organization$agent_executionsArgs<ExtArgs>
+    conversation_personalizations?: boolean | Organization$conversation_personalizationsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -4510,6 +4678,7 @@ export namespace Prisma {
     ai_providers?: boolean | Organization$ai_providersArgs<ExtArgs>
     conversations?: boolean | Organization$conversationsArgs<ExtArgs>
     agent_executions?: boolean | Organization$agent_executionsArgs<ExtArgs>
+    conversation_personalizations?: boolean | Organization$conversation_personalizationsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4525,6 +4694,7 @@ export namespace Prisma {
       ai_providers: Prisma.$AiProviderPayload<ExtArgs>[]
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
       agent_executions: Prisma.$AgentExecutionPayload<ExtArgs>[]
+      conversation_personalizations: Prisma.$ConversationPersonalizationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -4935,6 +5105,7 @@ export namespace Prisma {
     ai_providers<T extends Organization$ai_providersArgs<ExtArgs> = {}>(args?: Subset<T, Organization$ai_providersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiProviderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     conversations<T extends Organization$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     agent_executions<T extends Organization$agent_executionsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$agent_executionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    conversation_personalizations<T extends Organization$conversation_personalizationsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$conversation_personalizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5524,6 +5695,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AgentExecutionScalarFieldEnum | AgentExecutionScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.conversation_personalizations
+   */
+  export type Organization$conversation_personalizationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationInclude<ExtArgs> | null
+    where?: ConversationPersonalizationWhereInput
+    orderBy?: ConversationPersonalizationOrderByWithRelationInput | ConversationPersonalizationOrderByWithRelationInput[]
+    cursor?: ConversationPersonalizationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ConversationPersonalizationScalarFieldEnum | ConversationPersonalizationScalarFieldEnum[]
   }
 
   /**
@@ -24225,6 +24420,1197 @@ export namespace Prisma {
 
 
   /**
+   * Model ConversationPersonalization
+   */
+
+  export type AggregateConversationPersonalization = {
+    _count: ConversationPersonalizationCountAggregateOutputType | null
+    _avg: ConversationPersonalizationAvgAggregateOutputType | null
+    _sum: ConversationPersonalizationSumAggregateOutputType | null
+    _min: ConversationPersonalizationMinAggregateOutputType | null
+    _max: ConversationPersonalizationMaxAggregateOutputType | null
+  }
+
+  export type ConversationPersonalizationAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ConversationPersonalizationSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ConversationPersonalizationMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    user_uuid: string | null
+    org_uuid: string | null
+    response_style: $Enums.ResponseStyle | null
+    warm: $Enums.CharacteristicLevel | null
+    enthusiastic: $Enums.CharacteristicLevel | null
+    headers_lists: $Enums.CharacteristicLevel | null
+    emoji: $Enums.CharacteristicLevel | null
+    custom_instructions: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ConversationPersonalizationMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    user_uuid: string | null
+    org_uuid: string | null
+    response_style: $Enums.ResponseStyle | null
+    warm: $Enums.CharacteristicLevel | null
+    enthusiastic: $Enums.CharacteristicLevel | null
+    headers_lists: $Enums.CharacteristicLevel | null
+    emoji: $Enums.CharacteristicLevel | null
+    custom_instructions: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ConversationPersonalizationCountAggregateOutputType = {
+    id: number
+    uuid: number
+    user_uuid: number
+    org_uuid: number
+    response_style: number
+    warm: number
+    enthusiastic: number
+    headers_lists: number
+    emoji: number
+    custom_instructions: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type ConversationPersonalizationAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type ConversationPersonalizationSumAggregateInputType = {
+    id?: true
+  }
+
+  export type ConversationPersonalizationMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    user_uuid?: true
+    org_uuid?: true
+    response_style?: true
+    warm?: true
+    enthusiastic?: true
+    headers_lists?: true
+    emoji?: true
+    custom_instructions?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ConversationPersonalizationMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    user_uuid?: true
+    org_uuid?: true
+    response_style?: true
+    warm?: true
+    enthusiastic?: true
+    headers_lists?: true
+    emoji?: true
+    custom_instructions?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ConversationPersonalizationCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    user_uuid?: true
+    org_uuid?: true
+    response_style?: true
+    warm?: true
+    enthusiastic?: true
+    headers_lists?: true
+    emoji?: true
+    custom_instructions?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type ConversationPersonalizationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ConversationPersonalization to aggregate.
+     */
+    where?: ConversationPersonalizationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationPersonalizations to fetch.
+     */
+    orderBy?: ConversationPersonalizationOrderByWithRelationInput | ConversationPersonalizationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ConversationPersonalizationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationPersonalizations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationPersonalizations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ConversationPersonalizations
+    **/
+    _count?: true | ConversationPersonalizationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ConversationPersonalizationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ConversationPersonalizationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ConversationPersonalizationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ConversationPersonalizationMaxAggregateInputType
+  }
+
+  export type GetConversationPersonalizationAggregateType<T extends ConversationPersonalizationAggregateArgs> = {
+        [P in keyof T & keyof AggregateConversationPersonalization]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateConversationPersonalization[P]>
+      : GetScalarType<T[P], AggregateConversationPersonalization[P]>
+  }
+
+
+
+
+  export type ConversationPersonalizationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationPersonalizationWhereInput
+    orderBy?: ConversationPersonalizationOrderByWithAggregationInput | ConversationPersonalizationOrderByWithAggregationInput[]
+    by: ConversationPersonalizationScalarFieldEnum[] | ConversationPersonalizationScalarFieldEnum
+    having?: ConversationPersonalizationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ConversationPersonalizationCountAggregateInputType | true
+    _avg?: ConversationPersonalizationAvgAggregateInputType
+    _sum?: ConversationPersonalizationSumAggregateInputType
+    _min?: ConversationPersonalizationMinAggregateInputType
+    _max?: ConversationPersonalizationMaxAggregateInputType
+  }
+
+  export type ConversationPersonalizationGroupByOutputType = {
+    id: number
+    uuid: string
+    user_uuid: string
+    org_uuid: string
+    response_style: $Enums.ResponseStyle
+    warm: $Enums.CharacteristicLevel
+    enthusiastic: $Enums.CharacteristicLevel
+    headers_lists: $Enums.CharacteristicLevel
+    emoji: $Enums.CharacteristicLevel
+    custom_instructions: string | null
+    created_at: Date
+    updated_at: Date
+    _count: ConversationPersonalizationCountAggregateOutputType | null
+    _avg: ConversationPersonalizationAvgAggregateOutputType | null
+    _sum: ConversationPersonalizationSumAggregateOutputType | null
+    _min: ConversationPersonalizationMinAggregateOutputType | null
+    _max: ConversationPersonalizationMaxAggregateOutputType | null
+  }
+
+  type GetConversationPersonalizationGroupByPayload<T extends ConversationPersonalizationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ConversationPersonalizationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ConversationPersonalizationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ConversationPersonalizationGroupByOutputType[P]>
+            : GetScalarType<T[P], ConversationPersonalizationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ConversationPersonalizationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    user_uuid?: boolean
+    org_uuid?: boolean
+    response_style?: boolean
+    warm?: boolean
+    enthusiastic?: boolean
+    headers_lists?: boolean
+    emoji?: boolean
+    custom_instructions?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["conversationPersonalization"]>
+
+  export type ConversationPersonalizationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    user_uuid?: boolean
+    org_uuid?: boolean
+    response_style?: boolean
+    warm?: boolean
+    enthusiastic?: boolean
+    headers_lists?: boolean
+    emoji?: boolean
+    custom_instructions?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["conversationPersonalization"]>
+
+  export type ConversationPersonalizationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    user_uuid?: boolean
+    org_uuid?: boolean
+    response_style?: boolean
+    warm?: boolean
+    enthusiastic?: boolean
+    headers_lists?: boolean
+    emoji?: boolean
+    custom_instructions?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["conversationPersonalization"]>
+
+  export type ConversationPersonalizationSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    user_uuid?: boolean
+    org_uuid?: boolean
+    response_style?: boolean
+    warm?: boolean
+    enthusiastic?: boolean
+    headers_lists?: boolean
+    emoji?: boolean
+    custom_instructions?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type ConversationPersonalizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "user_uuid" | "org_uuid" | "response_style" | "warm" | "enthusiastic" | "headers_lists" | "emoji" | "custom_instructions" | "created_at" | "updated_at", ExtArgs["result"]["conversationPersonalization"]>
+  export type ConversationPersonalizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type ConversationPersonalizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type ConversationPersonalizationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+
+  export type $ConversationPersonalizationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ConversationPersonalization"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      user_uuid: string
+      org_uuid: string
+      response_style: $Enums.ResponseStyle
+      warm: $Enums.CharacteristicLevel
+      enthusiastic: $Enums.CharacteristicLevel
+      headers_lists: $Enums.CharacteristicLevel
+      emoji: $Enums.CharacteristicLevel
+      custom_instructions: string | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["conversationPersonalization"]>
+    composites: {}
+  }
+
+  type ConversationPersonalizationGetPayload<S extends boolean | null | undefined | ConversationPersonalizationDefaultArgs> = $Result.GetResult<Prisma.$ConversationPersonalizationPayload, S>
+
+  type ConversationPersonalizationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ConversationPersonalizationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ConversationPersonalizationCountAggregateInputType | true
+    }
+
+  export interface ConversationPersonalizationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ConversationPersonalization'], meta: { name: 'ConversationPersonalization' } }
+    /**
+     * Find zero or one ConversationPersonalization that matches the filter.
+     * @param {ConversationPersonalizationFindUniqueArgs} args - Arguments to find a ConversationPersonalization
+     * @example
+     * // Get one ConversationPersonalization
+     * const conversationPersonalization = await prisma.conversationPersonalization.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ConversationPersonalizationFindUniqueArgs>(args: SelectSubset<T, ConversationPersonalizationFindUniqueArgs<ExtArgs>>): Prisma__ConversationPersonalizationClient<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ConversationPersonalization that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ConversationPersonalizationFindUniqueOrThrowArgs} args - Arguments to find a ConversationPersonalization
+     * @example
+     * // Get one ConversationPersonalization
+     * const conversationPersonalization = await prisma.conversationPersonalization.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ConversationPersonalizationFindUniqueOrThrowArgs>(args: SelectSubset<T, ConversationPersonalizationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ConversationPersonalizationClient<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ConversationPersonalization that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationPersonalizationFindFirstArgs} args - Arguments to find a ConversationPersonalization
+     * @example
+     * // Get one ConversationPersonalization
+     * const conversationPersonalization = await prisma.conversationPersonalization.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ConversationPersonalizationFindFirstArgs>(args?: SelectSubset<T, ConversationPersonalizationFindFirstArgs<ExtArgs>>): Prisma__ConversationPersonalizationClient<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ConversationPersonalization that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationPersonalizationFindFirstOrThrowArgs} args - Arguments to find a ConversationPersonalization
+     * @example
+     * // Get one ConversationPersonalization
+     * const conversationPersonalization = await prisma.conversationPersonalization.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ConversationPersonalizationFindFirstOrThrowArgs>(args?: SelectSubset<T, ConversationPersonalizationFindFirstOrThrowArgs<ExtArgs>>): Prisma__ConversationPersonalizationClient<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ConversationPersonalizations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationPersonalizationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ConversationPersonalizations
+     * const conversationPersonalizations = await prisma.conversationPersonalization.findMany()
+     * 
+     * // Get first 10 ConversationPersonalizations
+     * const conversationPersonalizations = await prisma.conversationPersonalization.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const conversationPersonalizationWithIdOnly = await prisma.conversationPersonalization.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ConversationPersonalizationFindManyArgs>(args?: SelectSubset<T, ConversationPersonalizationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ConversationPersonalization.
+     * @param {ConversationPersonalizationCreateArgs} args - Arguments to create a ConversationPersonalization.
+     * @example
+     * // Create one ConversationPersonalization
+     * const ConversationPersonalization = await prisma.conversationPersonalization.create({
+     *   data: {
+     *     // ... data to create a ConversationPersonalization
+     *   }
+     * })
+     * 
+     */
+    create<T extends ConversationPersonalizationCreateArgs>(args: SelectSubset<T, ConversationPersonalizationCreateArgs<ExtArgs>>): Prisma__ConversationPersonalizationClient<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ConversationPersonalizations.
+     * @param {ConversationPersonalizationCreateManyArgs} args - Arguments to create many ConversationPersonalizations.
+     * @example
+     * // Create many ConversationPersonalizations
+     * const conversationPersonalization = await prisma.conversationPersonalization.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ConversationPersonalizationCreateManyArgs>(args?: SelectSubset<T, ConversationPersonalizationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ConversationPersonalizations and returns the data saved in the database.
+     * @param {ConversationPersonalizationCreateManyAndReturnArgs} args - Arguments to create many ConversationPersonalizations.
+     * @example
+     * // Create many ConversationPersonalizations
+     * const conversationPersonalization = await prisma.conversationPersonalization.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ConversationPersonalizations and only return the `id`
+     * const conversationPersonalizationWithIdOnly = await prisma.conversationPersonalization.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ConversationPersonalizationCreateManyAndReturnArgs>(args?: SelectSubset<T, ConversationPersonalizationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ConversationPersonalization.
+     * @param {ConversationPersonalizationDeleteArgs} args - Arguments to delete one ConversationPersonalization.
+     * @example
+     * // Delete one ConversationPersonalization
+     * const ConversationPersonalization = await prisma.conversationPersonalization.delete({
+     *   where: {
+     *     // ... filter to delete one ConversationPersonalization
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ConversationPersonalizationDeleteArgs>(args: SelectSubset<T, ConversationPersonalizationDeleteArgs<ExtArgs>>): Prisma__ConversationPersonalizationClient<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ConversationPersonalization.
+     * @param {ConversationPersonalizationUpdateArgs} args - Arguments to update one ConversationPersonalization.
+     * @example
+     * // Update one ConversationPersonalization
+     * const conversationPersonalization = await prisma.conversationPersonalization.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ConversationPersonalizationUpdateArgs>(args: SelectSubset<T, ConversationPersonalizationUpdateArgs<ExtArgs>>): Prisma__ConversationPersonalizationClient<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ConversationPersonalizations.
+     * @param {ConversationPersonalizationDeleteManyArgs} args - Arguments to filter ConversationPersonalizations to delete.
+     * @example
+     * // Delete a few ConversationPersonalizations
+     * const { count } = await prisma.conversationPersonalization.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ConversationPersonalizationDeleteManyArgs>(args?: SelectSubset<T, ConversationPersonalizationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ConversationPersonalizations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationPersonalizationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ConversationPersonalizations
+     * const conversationPersonalization = await prisma.conversationPersonalization.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ConversationPersonalizationUpdateManyArgs>(args: SelectSubset<T, ConversationPersonalizationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ConversationPersonalizations and returns the data updated in the database.
+     * @param {ConversationPersonalizationUpdateManyAndReturnArgs} args - Arguments to update many ConversationPersonalizations.
+     * @example
+     * // Update many ConversationPersonalizations
+     * const conversationPersonalization = await prisma.conversationPersonalization.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ConversationPersonalizations and only return the `id`
+     * const conversationPersonalizationWithIdOnly = await prisma.conversationPersonalization.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ConversationPersonalizationUpdateManyAndReturnArgs>(args: SelectSubset<T, ConversationPersonalizationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ConversationPersonalization.
+     * @param {ConversationPersonalizationUpsertArgs} args - Arguments to update or create a ConversationPersonalization.
+     * @example
+     * // Update or create a ConversationPersonalization
+     * const conversationPersonalization = await prisma.conversationPersonalization.upsert({
+     *   create: {
+     *     // ... data to create a ConversationPersonalization
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ConversationPersonalization we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ConversationPersonalizationUpsertArgs>(args: SelectSubset<T, ConversationPersonalizationUpsertArgs<ExtArgs>>): Prisma__ConversationPersonalizationClient<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ConversationPersonalizations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationPersonalizationCountArgs} args - Arguments to filter ConversationPersonalizations to count.
+     * @example
+     * // Count the number of ConversationPersonalizations
+     * const count = await prisma.conversationPersonalization.count({
+     *   where: {
+     *     // ... the filter for the ConversationPersonalizations we want to count
+     *   }
+     * })
+    **/
+    count<T extends ConversationPersonalizationCountArgs>(
+      args?: Subset<T, ConversationPersonalizationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ConversationPersonalizationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ConversationPersonalization.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationPersonalizationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ConversationPersonalizationAggregateArgs>(args: Subset<T, ConversationPersonalizationAggregateArgs>): Prisma.PrismaPromise<GetConversationPersonalizationAggregateType<T>>
+
+    /**
+     * Group by ConversationPersonalization.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationPersonalizationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ConversationPersonalizationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ConversationPersonalizationGroupByArgs['orderBy'] }
+        : { orderBy?: ConversationPersonalizationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ConversationPersonalizationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetConversationPersonalizationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ConversationPersonalization model
+   */
+  readonly fields: ConversationPersonalizationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ConversationPersonalization.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ConversationPersonalizationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ConversationPersonalization model
+   */
+  interface ConversationPersonalizationFieldRefs {
+    readonly id: FieldRef<"ConversationPersonalization", 'Int'>
+    readonly uuid: FieldRef<"ConversationPersonalization", 'String'>
+    readonly user_uuid: FieldRef<"ConversationPersonalization", 'String'>
+    readonly org_uuid: FieldRef<"ConversationPersonalization", 'String'>
+    readonly response_style: FieldRef<"ConversationPersonalization", 'ResponseStyle'>
+    readonly warm: FieldRef<"ConversationPersonalization", 'CharacteristicLevel'>
+    readonly enthusiastic: FieldRef<"ConversationPersonalization", 'CharacteristicLevel'>
+    readonly headers_lists: FieldRef<"ConversationPersonalization", 'CharacteristicLevel'>
+    readonly emoji: FieldRef<"ConversationPersonalization", 'CharacteristicLevel'>
+    readonly custom_instructions: FieldRef<"ConversationPersonalization", 'String'>
+    readonly created_at: FieldRef<"ConversationPersonalization", 'DateTime'>
+    readonly updated_at: FieldRef<"ConversationPersonalization", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ConversationPersonalization findUnique
+   */
+  export type ConversationPersonalizationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationPersonalization to fetch.
+     */
+    where: ConversationPersonalizationWhereUniqueInput
+  }
+
+  /**
+   * ConversationPersonalization findUniqueOrThrow
+   */
+  export type ConversationPersonalizationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationPersonalization to fetch.
+     */
+    where: ConversationPersonalizationWhereUniqueInput
+  }
+
+  /**
+   * ConversationPersonalization findFirst
+   */
+  export type ConversationPersonalizationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationPersonalization to fetch.
+     */
+    where?: ConversationPersonalizationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationPersonalizations to fetch.
+     */
+    orderBy?: ConversationPersonalizationOrderByWithRelationInput | ConversationPersonalizationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ConversationPersonalizations.
+     */
+    cursor?: ConversationPersonalizationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationPersonalizations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationPersonalizations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ConversationPersonalizations.
+     */
+    distinct?: ConversationPersonalizationScalarFieldEnum | ConversationPersonalizationScalarFieldEnum[]
+  }
+
+  /**
+   * ConversationPersonalization findFirstOrThrow
+   */
+  export type ConversationPersonalizationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationPersonalization to fetch.
+     */
+    where?: ConversationPersonalizationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationPersonalizations to fetch.
+     */
+    orderBy?: ConversationPersonalizationOrderByWithRelationInput | ConversationPersonalizationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ConversationPersonalizations.
+     */
+    cursor?: ConversationPersonalizationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationPersonalizations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationPersonalizations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ConversationPersonalizations.
+     */
+    distinct?: ConversationPersonalizationScalarFieldEnum | ConversationPersonalizationScalarFieldEnum[]
+  }
+
+  /**
+   * ConversationPersonalization findMany
+   */
+  export type ConversationPersonalizationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationInclude<ExtArgs> | null
+    /**
+     * Filter, which ConversationPersonalizations to fetch.
+     */
+    where?: ConversationPersonalizationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ConversationPersonalizations to fetch.
+     */
+    orderBy?: ConversationPersonalizationOrderByWithRelationInput | ConversationPersonalizationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ConversationPersonalizations.
+     */
+    cursor?: ConversationPersonalizationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ConversationPersonalizations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ConversationPersonalizations.
+     */
+    skip?: number
+    distinct?: ConversationPersonalizationScalarFieldEnum | ConversationPersonalizationScalarFieldEnum[]
+  }
+
+  /**
+   * ConversationPersonalization create
+   */
+  export type ConversationPersonalizationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ConversationPersonalization.
+     */
+    data: XOR<ConversationPersonalizationCreateInput, ConversationPersonalizationUncheckedCreateInput>
+  }
+
+  /**
+   * ConversationPersonalization createMany
+   */
+  export type ConversationPersonalizationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ConversationPersonalizations.
+     */
+    data: ConversationPersonalizationCreateManyInput | ConversationPersonalizationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ConversationPersonalization createManyAndReturn
+   */
+  export type ConversationPersonalizationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * The data used to create many ConversationPersonalizations.
+     */
+    data: ConversationPersonalizationCreateManyInput | ConversationPersonalizationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ConversationPersonalization update
+   */
+  export type ConversationPersonalizationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ConversationPersonalization.
+     */
+    data: XOR<ConversationPersonalizationUpdateInput, ConversationPersonalizationUncheckedUpdateInput>
+    /**
+     * Choose, which ConversationPersonalization to update.
+     */
+    where: ConversationPersonalizationWhereUniqueInput
+  }
+
+  /**
+   * ConversationPersonalization updateMany
+   */
+  export type ConversationPersonalizationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ConversationPersonalizations.
+     */
+    data: XOR<ConversationPersonalizationUpdateManyMutationInput, ConversationPersonalizationUncheckedUpdateManyInput>
+    /**
+     * Filter which ConversationPersonalizations to update
+     */
+    where?: ConversationPersonalizationWhereInput
+    /**
+     * Limit how many ConversationPersonalizations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ConversationPersonalization updateManyAndReturn
+   */
+  export type ConversationPersonalizationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * The data used to update ConversationPersonalizations.
+     */
+    data: XOR<ConversationPersonalizationUpdateManyMutationInput, ConversationPersonalizationUncheckedUpdateManyInput>
+    /**
+     * Filter which ConversationPersonalizations to update
+     */
+    where?: ConversationPersonalizationWhereInput
+    /**
+     * Limit how many ConversationPersonalizations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ConversationPersonalization upsert
+   */
+  export type ConversationPersonalizationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ConversationPersonalization to update in case it exists.
+     */
+    where: ConversationPersonalizationWhereUniqueInput
+    /**
+     * In case the ConversationPersonalization found by the `where` argument doesn't exist, create a new ConversationPersonalization with this data.
+     */
+    create: XOR<ConversationPersonalizationCreateInput, ConversationPersonalizationUncheckedCreateInput>
+    /**
+     * In case the ConversationPersonalization was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ConversationPersonalizationUpdateInput, ConversationPersonalizationUncheckedUpdateInput>
+  }
+
+  /**
+   * ConversationPersonalization delete
+   */
+  export type ConversationPersonalizationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationInclude<ExtArgs> | null
+    /**
+     * Filter which ConversationPersonalization to delete.
+     */
+    where: ConversationPersonalizationWhereUniqueInput
+  }
+
+  /**
+   * ConversationPersonalization deleteMany
+   */
+  export type ConversationPersonalizationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ConversationPersonalizations to delete
+     */
+    where?: ConversationPersonalizationWhereInput
+    /**
+     * Limit how many ConversationPersonalizations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ConversationPersonalization without action
+   */
+  export type ConversationPersonalizationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationPersonalization
+     */
+    select?: ConversationPersonalizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ConversationPersonalization
+     */
+    omit?: ConversationPersonalizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationPersonalizationInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -24509,6 +25895,24 @@ export namespace Prisma {
   };
 
   export type ToolCallScalarFieldEnum = (typeof ToolCallScalarFieldEnum)[keyof typeof ToolCallScalarFieldEnum]
+
+
+  export const ConversationPersonalizationScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    user_uuid: 'user_uuid',
+    org_uuid: 'org_uuid',
+    response_style: 'response_style',
+    warm: 'warm',
+    enthusiastic: 'enthusiastic',
+    headers_lists: 'headers_lists',
+    emoji: 'emoji',
+    custom_instructions: 'custom_instructions',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type ConversationPersonalizationScalarFieldEnum = (typeof ConversationPersonalizationScalarFieldEnum)[keyof typeof ConversationPersonalizationScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -24838,6 +26242,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ResponseStyle'
+   */
+  export type EnumResponseStyleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResponseStyle'>
+    
+
+
+  /**
+   * Reference to a field of type 'ResponseStyle[]'
+   */
+  export type ListEnumResponseStyleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResponseStyle[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'CharacteristicLevel'
+   */
+  export type EnumCharacteristicLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CharacteristicLevel'>
+    
+
+
+  /**
+   * Reference to a field of type 'CharacteristicLevel[]'
+   */
+  export type ListEnumCharacteristicLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CharacteristicLevel[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -24872,6 +26304,7 @@ export namespace Prisma {
     audit_logs?: AuditLogListRelationFilter
     conversations?: ConversationListRelationFilter
     agent_executions?: AgentExecutionListRelationFilter
+    conversation_personalizations?: ConversationPersonalizationListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -24889,6 +26322,7 @@ export namespace Prisma {
     audit_logs?: AuditLogOrderByRelationAggregateInput
     conversations?: ConversationOrderByRelationAggregateInput
     agent_executions?: AgentExecutionOrderByRelationAggregateInput
+    conversation_personalizations?: ConversationPersonalizationOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -24909,6 +26343,7 @@ export namespace Prisma {
     audit_logs?: AuditLogListRelationFilter
     conversations?: ConversationListRelationFilter
     agent_executions?: AgentExecutionListRelationFilter
+    conversation_personalizations?: ConversationPersonalizationListRelationFilter
   }, "id" | "uuid" | "email" | "phone">
 
   export type UserOrderByWithAggregationInput = {
@@ -24963,6 +26398,7 @@ export namespace Prisma {
     ai_providers?: AiProviderListRelationFilter
     conversations?: ConversationListRelationFilter
     agent_executions?: AgentExecutionListRelationFilter
+    conversation_personalizations?: ConversationPersonalizationListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -24980,6 +26416,7 @@ export namespace Prisma {
     ai_providers?: AiProviderOrderByRelationAggregateInput
     conversations?: ConversationOrderByRelationAggregateInput
     agent_executions?: AgentExecutionOrderByRelationAggregateInput
+    conversation_personalizations?: ConversationPersonalizationOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -25000,6 +26437,7 @@ export namespace Prisma {
     ai_providers?: AiProviderListRelationFilter
     conversations?: ConversationListRelationFilter
     agent_executions?: AgentExecutionListRelationFilter
+    conversation_personalizations?: ConversationPersonalizationListRelationFilter
   }, "id" | "uuid" | "slug">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -26344,6 +27782,102 @@ export namespace Prisma {
     created_at?: DateTimeWithAggregatesFilter<"ToolCall"> | Date | string
   }
 
+  export type ConversationPersonalizationWhereInput = {
+    AND?: ConversationPersonalizationWhereInput | ConversationPersonalizationWhereInput[]
+    OR?: ConversationPersonalizationWhereInput[]
+    NOT?: ConversationPersonalizationWhereInput | ConversationPersonalizationWhereInput[]
+    id?: IntFilter<"ConversationPersonalization"> | number
+    uuid?: StringFilter<"ConversationPersonalization"> | string
+    user_uuid?: StringFilter<"ConversationPersonalization"> | string
+    org_uuid?: StringFilter<"ConversationPersonalization"> | string
+    response_style?: EnumResponseStyleFilter<"ConversationPersonalization"> | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    custom_instructions?: StringNullableFilter<"ConversationPersonalization"> | string | null
+    created_at?: DateTimeFilter<"ConversationPersonalization"> | Date | string
+    updated_at?: DateTimeFilter<"ConversationPersonalization"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }
+
+  export type ConversationPersonalizationOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    user_uuid?: SortOrder
+    org_uuid?: SortOrder
+    response_style?: SortOrder
+    warm?: SortOrder
+    enthusiastic?: SortOrder
+    headers_lists?: SortOrder
+    emoji?: SortOrder
+    custom_instructions?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    user?: UserOrderByWithRelationInput
+    organization?: OrganizationOrderByWithRelationInput
+  }
+
+  export type ConversationPersonalizationWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    user_uuid_org_uuid?: ConversationPersonalizationUser_uuidOrg_uuidCompoundUniqueInput
+    AND?: ConversationPersonalizationWhereInput | ConversationPersonalizationWhereInput[]
+    OR?: ConversationPersonalizationWhereInput[]
+    NOT?: ConversationPersonalizationWhereInput | ConversationPersonalizationWhereInput[]
+    user_uuid?: StringFilter<"ConversationPersonalization"> | string
+    org_uuid?: StringFilter<"ConversationPersonalization"> | string
+    response_style?: EnumResponseStyleFilter<"ConversationPersonalization"> | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    custom_instructions?: StringNullableFilter<"ConversationPersonalization"> | string | null
+    created_at?: DateTimeFilter<"ConversationPersonalization"> | Date | string
+    updated_at?: DateTimeFilter<"ConversationPersonalization"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }, "id" | "uuid" | "user_uuid_org_uuid">
+
+  export type ConversationPersonalizationOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    user_uuid?: SortOrder
+    org_uuid?: SortOrder
+    response_style?: SortOrder
+    warm?: SortOrder
+    enthusiastic?: SortOrder
+    headers_lists?: SortOrder
+    emoji?: SortOrder
+    custom_instructions?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: ConversationPersonalizationCountOrderByAggregateInput
+    _avg?: ConversationPersonalizationAvgOrderByAggregateInput
+    _max?: ConversationPersonalizationMaxOrderByAggregateInput
+    _min?: ConversationPersonalizationMinOrderByAggregateInput
+    _sum?: ConversationPersonalizationSumOrderByAggregateInput
+  }
+
+  export type ConversationPersonalizationScalarWhereWithAggregatesInput = {
+    AND?: ConversationPersonalizationScalarWhereWithAggregatesInput | ConversationPersonalizationScalarWhereWithAggregatesInput[]
+    OR?: ConversationPersonalizationScalarWhereWithAggregatesInput[]
+    NOT?: ConversationPersonalizationScalarWhereWithAggregatesInput | ConversationPersonalizationScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ConversationPersonalization"> | number
+    uuid?: StringWithAggregatesFilter<"ConversationPersonalization"> | string
+    user_uuid?: StringWithAggregatesFilter<"ConversationPersonalization"> | string
+    org_uuid?: StringWithAggregatesFilter<"ConversationPersonalization"> | string
+    response_style?: EnumResponseStyleWithAggregatesFilter<"ConversationPersonalization"> | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelWithAggregatesFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelWithAggregatesFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelWithAggregatesFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelWithAggregatesFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    custom_instructions?: StringNullableWithAggregatesFilter<"ConversationPersonalization"> | string | null
+    created_at?: DateTimeWithAggregatesFilter<"ConversationPersonalization"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"ConversationPersonalization"> | Date | string
+  }
+
   export type UserCreateInput = {
     uuid?: string
     email: string
@@ -26358,6 +27892,7 @@ export namespace Prisma {
     audit_logs?: AuditLogCreateNestedManyWithoutUserInput
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -26375,6 +27910,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -26391,6 +27927,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -26408,6 +27945,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -26462,6 +28000,7 @@ export namespace Prisma {
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -26479,6 +28018,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -26495,6 +28035,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -26512,6 +28053,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -27892,6 +29434,106 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ConversationPersonalizationCreateInput = {
+    uuid?: string
+    response_style?: $Enums.ResponseStyle
+    warm?: $Enums.CharacteristicLevel
+    enthusiastic?: $Enums.CharacteristicLevel
+    headers_lists?: $Enums.CharacteristicLevel
+    emoji?: $Enums.CharacteristicLevel
+    custom_instructions?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    user: UserCreateNestedOneWithoutConversation_personalizationsInput
+    organization: OrganizationCreateNestedOneWithoutConversation_personalizationsInput
+  }
+
+  export type ConversationPersonalizationUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    user_uuid: string
+    org_uuid: string
+    response_style?: $Enums.ResponseStyle
+    warm?: $Enums.CharacteristicLevel
+    enthusiastic?: $Enums.CharacteristicLevel
+    headers_lists?: $Enums.CharacteristicLevel
+    emoji?: $Enums.CharacteristicLevel
+    custom_instructions?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ConversationPersonalizationUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    response_style?: EnumResponseStyleFieldUpdateOperationsInput | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    custom_instructions?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutConversation_personalizationsNestedInput
+    organization?: OrganizationUpdateOneRequiredWithoutConversation_personalizationsNestedInput
+  }
+
+  export type ConversationPersonalizationUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    response_style?: EnumResponseStyleFieldUpdateOperationsInput | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    custom_instructions?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationPersonalizationCreateManyInput = {
+    id?: number
+    uuid?: string
+    user_uuid: string
+    org_uuid: string
+    response_style?: $Enums.ResponseStyle
+    warm?: $Enums.CharacteristicLevel
+    enthusiastic?: $Enums.CharacteristicLevel
+    headers_lists?: $Enums.CharacteristicLevel
+    emoji?: $Enums.CharacteristicLevel
+    custom_instructions?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ConversationPersonalizationUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    response_style?: EnumResponseStyleFieldUpdateOperationsInput | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    custom_instructions?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationPersonalizationUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    response_style?: EnumResponseStyleFieldUpdateOperationsInput | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    custom_instructions?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -27975,6 +29617,12 @@ export namespace Prisma {
     none?: AgentExecutionWhereInput
   }
 
+  export type ConversationPersonalizationListRelationFilter = {
+    every?: ConversationPersonalizationWhereInput
+    some?: ConversationPersonalizationWhereInput
+    none?: ConversationPersonalizationWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -27993,6 +29641,10 @@ export namespace Prisma {
   }
 
   export type AgentExecutionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ConversationPersonalizationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -29447,6 +31099,98 @@ export namespace Prisma {
     _max?: NestedEnumToolCallStatusFilter<$PrismaModel>
   }
 
+  export type EnumResponseStyleFilter<$PrismaModel = never> = {
+    equals?: $Enums.ResponseStyle | EnumResponseStyleFieldRefInput<$PrismaModel>
+    in?: $Enums.ResponseStyle[] | ListEnumResponseStyleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ResponseStyle[] | ListEnumResponseStyleFieldRefInput<$PrismaModel>
+    not?: NestedEnumResponseStyleFilter<$PrismaModel> | $Enums.ResponseStyle
+  }
+
+  export type EnumCharacteristicLevelFilter<$PrismaModel = never> = {
+    equals?: $Enums.CharacteristicLevel | EnumCharacteristicLevelFieldRefInput<$PrismaModel>
+    in?: $Enums.CharacteristicLevel[] | ListEnumCharacteristicLevelFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CharacteristicLevel[] | ListEnumCharacteristicLevelFieldRefInput<$PrismaModel>
+    not?: NestedEnumCharacteristicLevelFilter<$PrismaModel> | $Enums.CharacteristicLevel
+  }
+
+  export type ConversationPersonalizationUser_uuidOrg_uuidCompoundUniqueInput = {
+    user_uuid: string
+    org_uuid: string
+  }
+
+  export type ConversationPersonalizationCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    user_uuid?: SortOrder
+    org_uuid?: SortOrder
+    response_style?: SortOrder
+    warm?: SortOrder
+    enthusiastic?: SortOrder
+    headers_lists?: SortOrder
+    emoji?: SortOrder
+    custom_instructions?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ConversationPersonalizationAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ConversationPersonalizationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    user_uuid?: SortOrder
+    org_uuid?: SortOrder
+    response_style?: SortOrder
+    warm?: SortOrder
+    enthusiastic?: SortOrder
+    headers_lists?: SortOrder
+    emoji?: SortOrder
+    custom_instructions?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ConversationPersonalizationMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    user_uuid?: SortOrder
+    org_uuid?: SortOrder
+    response_style?: SortOrder
+    warm?: SortOrder
+    enthusiastic?: SortOrder
+    headers_lists?: SortOrder
+    emoji?: SortOrder
+    custom_instructions?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ConversationPersonalizationSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type EnumResponseStyleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ResponseStyle | EnumResponseStyleFieldRefInput<$PrismaModel>
+    in?: $Enums.ResponseStyle[] | ListEnumResponseStyleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ResponseStyle[] | ListEnumResponseStyleFieldRefInput<$PrismaModel>
+    not?: NestedEnumResponseStyleWithAggregatesFilter<$PrismaModel> | $Enums.ResponseStyle
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumResponseStyleFilter<$PrismaModel>
+    _max?: NestedEnumResponseStyleFilter<$PrismaModel>
+  }
+
+  export type EnumCharacteristicLevelWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CharacteristicLevel | EnumCharacteristicLevelFieldRefInput<$PrismaModel>
+    in?: $Enums.CharacteristicLevel[] | ListEnumCharacteristicLevelFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CharacteristicLevel[] | ListEnumCharacteristicLevelFieldRefInput<$PrismaModel>
+    not?: NestedEnumCharacteristicLevelWithAggregatesFilter<$PrismaModel> | $Enums.CharacteristicLevel
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCharacteristicLevelFilter<$PrismaModel>
+    _max?: NestedEnumCharacteristicLevelFilter<$PrismaModel>
+  }
+
   export type OrganizationMemberCreateNestedManyWithoutUserInput = {
     create?: XOR<OrganizationMemberCreateWithoutUserInput, OrganizationMemberUncheckedCreateWithoutUserInput> | OrganizationMemberCreateWithoutUserInput[] | OrganizationMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutUserInput | OrganizationMemberCreateOrConnectWithoutUserInput[]
@@ -29475,6 +31219,13 @@ export namespace Prisma {
     connect?: AgentExecutionWhereUniqueInput | AgentExecutionWhereUniqueInput[]
   }
 
+  export type ConversationPersonalizationCreateNestedManyWithoutUserInput = {
+    create?: XOR<ConversationPersonalizationCreateWithoutUserInput, ConversationPersonalizationUncheckedCreateWithoutUserInput> | ConversationPersonalizationCreateWithoutUserInput[] | ConversationPersonalizationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ConversationPersonalizationCreateOrConnectWithoutUserInput | ConversationPersonalizationCreateOrConnectWithoutUserInput[]
+    createMany?: ConversationPersonalizationCreateManyUserInputEnvelope
+    connect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+  }
+
   export type OrganizationMemberUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OrganizationMemberCreateWithoutUserInput, OrganizationMemberUncheckedCreateWithoutUserInput> | OrganizationMemberCreateWithoutUserInput[] | OrganizationMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutUserInput | OrganizationMemberCreateOrConnectWithoutUserInput[]
@@ -29501,6 +31252,13 @@ export namespace Prisma {
     connectOrCreate?: AgentExecutionCreateOrConnectWithoutUserInput | AgentExecutionCreateOrConnectWithoutUserInput[]
     createMany?: AgentExecutionCreateManyUserInputEnvelope
     connect?: AgentExecutionWhereUniqueInput | AgentExecutionWhereUniqueInput[]
+  }
+
+  export type ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ConversationPersonalizationCreateWithoutUserInput, ConversationPersonalizationUncheckedCreateWithoutUserInput> | ConversationPersonalizationCreateWithoutUserInput[] | ConversationPersonalizationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ConversationPersonalizationCreateOrConnectWithoutUserInput | ConversationPersonalizationCreateOrConnectWithoutUserInput[]
+    createMany?: ConversationPersonalizationCreateManyUserInputEnvelope
+    connect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -29575,6 +31333,20 @@ export namespace Prisma {
     deleteMany?: AgentExecutionScalarWhereInput | AgentExecutionScalarWhereInput[]
   }
 
+  export type ConversationPersonalizationUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ConversationPersonalizationCreateWithoutUserInput, ConversationPersonalizationUncheckedCreateWithoutUserInput> | ConversationPersonalizationCreateWithoutUserInput[] | ConversationPersonalizationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ConversationPersonalizationCreateOrConnectWithoutUserInput | ConversationPersonalizationCreateOrConnectWithoutUserInput[]
+    upsert?: ConversationPersonalizationUpsertWithWhereUniqueWithoutUserInput | ConversationPersonalizationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ConversationPersonalizationCreateManyUserInputEnvelope
+    set?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    disconnect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    delete?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    connect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    update?: ConversationPersonalizationUpdateWithWhereUniqueWithoutUserInput | ConversationPersonalizationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ConversationPersonalizationUpdateManyWithWhereWithoutUserInput | ConversationPersonalizationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ConversationPersonalizationScalarWhereInput | ConversationPersonalizationScalarWhereInput[]
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -29639,6 +31411,20 @@ export namespace Prisma {
     deleteMany?: AgentExecutionScalarWhereInput | AgentExecutionScalarWhereInput[]
   }
 
+  export type ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ConversationPersonalizationCreateWithoutUserInput, ConversationPersonalizationUncheckedCreateWithoutUserInput> | ConversationPersonalizationCreateWithoutUserInput[] | ConversationPersonalizationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ConversationPersonalizationCreateOrConnectWithoutUserInput | ConversationPersonalizationCreateOrConnectWithoutUserInput[]
+    upsert?: ConversationPersonalizationUpsertWithWhereUniqueWithoutUserInput | ConversationPersonalizationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ConversationPersonalizationCreateManyUserInputEnvelope
+    set?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    disconnect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    delete?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    connect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    update?: ConversationPersonalizationUpdateWithWhereUniqueWithoutUserInput | ConversationPersonalizationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ConversationPersonalizationUpdateManyWithWhereWithoutUserInput | ConversationPersonalizationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ConversationPersonalizationScalarWhereInput | ConversationPersonalizationScalarWhereInput[]
+  }
+
   export type OrganizationMemberCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMemberCreateWithoutOrganizationInput, OrganizationMemberUncheckedCreateWithoutOrganizationInput> | OrganizationMemberCreateWithoutOrganizationInput[] | OrganizationMemberUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutOrganizationInput | OrganizationMemberCreateOrConnectWithoutOrganizationInput[]
@@ -29688,6 +31474,13 @@ export namespace Prisma {
     connect?: AgentExecutionWhereUniqueInput | AgentExecutionWhereUniqueInput[]
   }
 
+  export type ConversationPersonalizationCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ConversationPersonalizationCreateWithoutOrganizationInput, ConversationPersonalizationUncheckedCreateWithoutOrganizationInput> | ConversationPersonalizationCreateWithoutOrganizationInput[] | ConversationPersonalizationUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ConversationPersonalizationCreateOrConnectWithoutOrganizationInput | ConversationPersonalizationCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ConversationPersonalizationCreateManyOrganizationInputEnvelope
+    connect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+  }
+
   export type OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMemberCreateWithoutOrganizationInput, OrganizationMemberUncheckedCreateWithoutOrganizationInput> | OrganizationMemberCreateWithoutOrganizationInput[] | OrganizationMemberUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutOrganizationInput | OrganizationMemberCreateOrConnectWithoutOrganizationInput[]
@@ -29735,6 +31528,13 @@ export namespace Prisma {
     connectOrCreate?: AgentExecutionCreateOrConnectWithoutOrganizationInput | AgentExecutionCreateOrConnectWithoutOrganizationInput[]
     createMany?: AgentExecutionCreateManyOrganizationInputEnvelope
     connect?: AgentExecutionWhereUniqueInput | AgentExecutionWhereUniqueInput[]
+  }
+
+  export type ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ConversationPersonalizationCreateWithoutOrganizationInput, ConversationPersonalizationUncheckedCreateWithoutOrganizationInput> | ConversationPersonalizationCreateWithoutOrganizationInput[] | ConversationPersonalizationUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ConversationPersonalizationCreateOrConnectWithoutOrganizationInput | ConversationPersonalizationCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ConversationPersonalizationCreateManyOrganizationInputEnvelope
+    connect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
   }
 
   export type OrganizationMemberUpdateManyWithoutOrganizationNestedInput = {
@@ -29835,6 +31635,20 @@ export namespace Prisma {
     deleteMany?: AgentExecutionScalarWhereInput | AgentExecutionScalarWhereInput[]
   }
 
+  export type ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ConversationPersonalizationCreateWithoutOrganizationInput, ConversationPersonalizationUncheckedCreateWithoutOrganizationInput> | ConversationPersonalizationCreateWithoutOrganizationInput[] | ConversationPersonalizationUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ConversationPersonalizationCreateOrConnectWithoutOrganizationInput | ConversationPersonalizationCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ConversationPersonalizationUpsertWithWhereUniqueWithoutOrganizationInput | ConversationPersonalizationUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ConversationPersonalizationCreateManyOrganizationInputEnvelope
+    set?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    disconnect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    delete?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    connect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    update?: ConversationPersonalizationUpdateWithWhereUniqueWithoutOrganizationInput | ConversationPersonalizationUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ConversationPersonalizationUpdateManyWithWhereWithoutOrganizationInput | ConversationPersonalizationUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ConversationPersonalizationScalarWhereInput | ConversationPersonalizationScalarWhereInput[]
+  }
+
   export type OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMemberCreateWithoutOrganizationInput, OrganizationMemberUncheckedCreateWithoutOrganizationInput> | OrganizationMemberCreateWithoutOrganizationInput[] | OrganizationMemberUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutOrganizationInput | OrganizationMemberCreateOrConnectWithoutOrganizationInput[]
@@ -29931,6 +31745,20 @@ export namespace Prisma {
     update?: AgentExecutionUpdateWithWhereUniqueWithoutOrganizationInput | AgentExecutionUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: AgentExecutionUpdateManyWithWhereWithoutOrganizationInput | AgentExecutionUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: AgentExecutionScalarWhereInput | AgentExecutionScalarWhereInput[]
+  }
+
+  export type ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ConversationPersonalizationCreateWithoutOrganizationInput, ConversationPersonalizationUncheckedCreateWithoutOrganizationInput> | ConversationPersonalizationCreateWithoutOrganizationInput[] | ConversationPersonalizationUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ConversationPersonalizationCreateOrConnectWithoutOrganizationInput | ConversationPersonalizationCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ConversationPersonalizationUpsertWithWhereUniqueWithoutOrganizationInput | ConversationPersonalizationUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ConversationPersonalizationCreateManyOrganizationInputEnvelope
+    set?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    disconnect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    delete?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    connect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+    update?: ConversationPersonalizationUpdateWithWhereUniqueWithoutOrganizationInput | ConversationPersonalizationUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ConversationPersonalizationUpdateManyWithWhereWithoutOrganizationInput | ConversationPersonalizationUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ConversationPersonalizationScalarWhereInput | ConversationPersonalizationScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutMembersInput = {
@@ -30820,6 +32648,42 @@ export namespace Prisma {
     update?: XOR<XOR<IntegrationUpdateToOneWithWhereWithoutTool_callsInput, IntegrationUpdateWithoutTool_callsInput>, IntegrationUncheckedUpdateWithoutTool_callsInput>
   }
 
+  export type UserCreateNestedOneWithoutConversation_personalizationsInput = {
+    create?: XOR<UserCreateWithoutConversation_personalizationsInput, UserUncheckedCreateWithoutConversation_personalizationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutConversation_personalizationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type OrganizationCreateNestedOneWithoutConversation_personalizationsInput = {
+    create?: XOR<OrganizationCreateWithoutConversation_personalizationsInput, OrganizationUncheckedCreateWithoutConversation_personalizationsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutConversation_personalizationsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type EnumResponseStyleFieldUpdateOperationsInput = {
+    set?: $Enums.ResponseStyle
+  }
+
+  export type EnumCharacteristicLevelFieldUpdateOperationsInput = {
+    set?: $Enums.CharacteristicLevel
+  }
+
+  export type UserUpdateOneRequiredWithoutConversation_personalizationsNestedInput = {
+    create?: XOR<UserCreateWithoutConversation_personalizationsInput, UserUncheckedCreateWithoutConversation_personalizationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutConversation_personalizationsInput
+    upsert?: UserUpsertWithoutConversation_personalizationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutConversation_personalizationsInput, UserUpdateWithoutConversation_personalizationsInput>, UserUncheckedUpdateWithoutConversation_personalizationsInput>
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutConversation_personalizationsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutConversation_personalizationsInput, OrganizationUncheckedCreateWithoutConversation_personalizationsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutConversation_personalizationsInput
+    upsert?: OrganizationUpsertWithoutConversation_personalizationsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutConversation_personalizationsInput, OrganizationUpdateWithoutConversation_personalizationsInput>, OrganizationUncheckedUpdateWithoutConversation_personalizationsInput>
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -31342,6 +33206,40 @@ export namespace Prisma {
     _max?: NestedEnumToolCallStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumResponseStyleFilter<$PrismaModel = never> = {
+    equals?: $Enums.ResponseStyle | EnumResponseStyleFieldRefInput<$PrismaModel>
+    in?: $Enums.ResponseStyle[] | ListEnumResponseStyleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ResponseStyle[] | ListEnumResponseStyleFieldRefInput<$PrismaModel>
+    not?: NestedEnumResponseStyleFilter<$PrismaModel> | $Enums.ResponseStyle
+  }
+
+  export type NestedEnumCharacteristicLevelFilter<$PrismaModel = never> = {
+    equals?: $Enums.CharacteristicLevel | EnumCharacteristicLevelFieldRefInput<$PrismaModel>
+    in?: $Enums.CharacteristicLevel[] | ListEnumCharacteristicLevelFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CharacteristicLevel[] | ListEnumCharacteristicLevelFieldRefInput<$PrismaModel>
+    not?: NestedEnumCharacteristicLevelFilter<$PrismaModel> | $Enums.CharacteristicLevel
+  }
+
+  export type NestedEnumResponseStyleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ResponseStyle | EnumResponseStyleFieldRefInput<$PrismaModel>
+    in?: $Enums.ResponseStyle[] | ListEnumResponseStyleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ResponseStyle[] | ListEnumResponseStyleFieldRefInput<$PrismaModel>
+    not?: NestedEnumResponseStyleWithAggregatesFilter<$PrismaModel> | $Enums.ResponseStyle
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumResponseStyleFilter<$PrismaModel>
+    _max?: NestedEnumResponseStyleFilter<$PrismaModel>
+  }
+
+  export type NestedEnumCharacteristicLevelWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CharacteristicLevel | EnumCharacteristicLevelFieldRefInput<$PrismaModel>
+    in?: $Enums.CharacteristicLevel[] | ListEnumCharacteristicLevelFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CharacteristicLevel[] | ListEnumCharacteristicLevelFieldRefInput<$PrismaModel>
+    not?: NestedEnumCharacteristicLevelWithAggregatesFilter<$PrismaModel> | $Enums.CharacteristicLevel
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCharacteristicLevelFilter<$PrismaModel>
+    _max?: NestedEnumCharacteristicLevelFilter<$PrismaModel>
+  }
+
   export type OrganizationMemberCreateWithoutUserInput = {
     uuid?: string
     status?: $Enums.OrganizationMemberStatus
@@ -31478,6 +33376,43 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ConversationPersonalizationCreateWithoutUserInput = {
+    uuid?: string
+    response_style?: $Enums.ResponseStyle
+    warm?: $Enums.CharacteristicLevel
+    enthusiastic?: $Enums.CharacteristicLevel
+    headers_lists?: $Enums.CharacteristicLevel
+    emoji?: $Enums.CharacteristicLevel
+    custom_instructions?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutConversation_personalizationsInput
+  }
+
+  export type ConversationPersonalizationUncheckedCreateWithoutUserInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    response_style?: $Enums.ResponseStyle
+    warm?: $Enums.CharacteristicLevel
+    enthusiastic?: $Enums.CharacteristicLevel
+    headers_lists?: $Enums.CharacteristicLevel
+    emoji?: $Enums.CharacteristicLevel
+    custom_instructions?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ConversationPersonalizationCreateOrConnectWithoutUserInput = {
+    where: ConversationPersonalizationWhereUniqueInput
+    create: XOR<ConversationPersonalizationCreateWithoutUserInput, ConversationPersonalizationUncheckedCreateWithoutUserInput>
+  }
+
+  export type ConversationPersonalizationCreateManyUserInputEnvelope = {
+    data: ConversationPersonalizationCreateManyUserInput | ConversationPersonalizationCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationMemberUpsertWithWhereUniqueWithoutUserInput = {
     where: OrganizationMemberWhereUniqueInput
     update: XOR<OrganizationMemberUpdateWithoutUserInput, OrganizationMemberUncheckedUpdateWithoutUserInput>
@@ -31603,6 +33538,40 @@ export namespace Prisma {
     completed_at?: DateTimeNullableFilter<"AgentExecution"> | Date | string | null
     error?: StringNullableFilter<"AgentExecution"> | string | null
     created_at?: DateTimeFilter<"AgentExecution"> | Date | string
+  }
+
+  export type ConversationPersonalizationUpsertWithWhereUniqueWithoutUserInput = {
+    where: ConversationPersonalizationWhereUniqueInput
+    update: XOR<ConversationPersonalizationUpdateWithoutUserInput, ConversationPersonalizationUncheckedUpdateWithoutUserInput>
+    create: XOR<ConversationPersonalizationCreateWithoutUserInput, ConversationPersonalizationUncheckedCreateWithoutUserInput>
+  }
+
+  export type ConversationPersonalizationUpdateWithWhereUniqueWithoutUserInput = {
+    where: ConversationPersonalizationWhereUniqueInput
+    data: XOR<ConversationPersonalizationUpdateWithoutUserInput, ConversationPersonalizationUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ConversationPersonalizationUpdateManyWithWhereWithoutUserInput = {
+    where: ConversationPersonalizationScalarWhereInput
+    data: XOR<ConversationPersonalizationUpdateManyMutationInput, ConversationPersonalizationUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ConversationPersonalizationScalarWhereInput = {
+    AND?: ConversationPersonalizationScalarWhereInput | ConversationPersonalizationScalarWhereInput[]
+    OR?: ConversationPersonalizationScalarWhereInput[]
+    NOT?: ConversationPersonalizationScalarWhereInput | ConversationPersonalizationScalarWhereInput[]
+    id?: IntFilter<"ConversationPersonalization"> | number
+    uuid?: StringFilter<"ConversationPersonalization"> | string
+    user_uuid?: StringFilter<"ConversationPersonalization"> | string
+    org_uuid?: StringFilter<"ConversationPersonalization"> | string
+    response_style?: EnumResponseStyleFilter<"ConversationPersonalization"> | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelFilter<"ConversationPersonalization"> | $Enums.CharacteristicLevel
+    custom_instructions?: StringNullableFilter<"ConversationPersonalization"> | string | null
+    created_at?: DateTimeFilter<"ConversationPersonalization"> | Date | string
+    updated_at?: DateTimeFilter<"ConversationPersonalization"> | Date | string
   }
 
   export type OrganizationMemberCreateWithoutOrganizationInput = {
@@ -31850,6 +33819,43 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ConversationPersonalizationCreateWithoutOrganizationInput = {
+    uuid?: string
+    response_style?: $Enums.ResponseStyle
+    warm?: $Enums.CharacteristicLevel
+    enthusiastic?: $Enums.CharacteristicLevel
+    headers_lists?: $Enums.CharacteristicLevel
+    emoji?: $Enums.CharacteristicLevel
+    custom_instructions?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    user: UserCreateNestedOneWithoutConversation_personalizationsInput
+  }
+
+  export type ConversationPersonalizationUncheckedCreateWithoutOrganizationInput = {
+    id?: number
+    uuid?: string
+    user_uuid: string
+    response_style?: $Enums.ResponseStyle
+    warm?: $Enums.CharacteristicLevel
+    enthusiastic?: $Enums.CharacteristicLevel
+    headers_lists?: $Enums.CharacteristicLevel
+    emoji?: $Enums.CharacteristicLevel
+    custom_instructions?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ConversationPersonalizationCreateOrConnectWithoutOrganizationInput = {
+    where: ConversationPersonalizationWhereUniqueInput
+    create: XOR<ConversationPersonalizationCreateWithoutOrganizationInput, ConversationPersonalizationUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ConversationPersonalizationCreateManyOrganizationInputEnvelope = {
+    data: ConversationPersonalizationCreateManyOrganizationInput | ConversationPersonalizationCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationMemberUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: OrganizationMemberWhereUniqueInput
     update: XOR<OrganizationMemberUpdateWithoutOrganizationInput, OrganizationMemberUncheckedUpdateWithoutOrganizationInput>
@@ -32008,6 +34014,22 @@ export namespace Prisma {
     data: XOR<AgentExecutionUpdateManyMutationInput, AgentExecutionUncheckedUpdateManyWithoutOrganizationInput>
   }
 
+  export type ConversationPersonalizationUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ConversationPersonalizationWhereUniqueInput
+    update: XOR<ConversationPersonalizationUpdateWithoutOrganizationInput, ConversationPersonalizationUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ConversationPersonalizationCreateWithoutOrganizationInput, ConversationPersonalizationUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ConversationPersonalizationUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ConversationPersonalizationWhereUniqueInput
+    data: XOR<ConversationPersonalizationUpdateWithoutOrganizationInput, ConversationPersonalizationUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ConversationPersonalizationUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ConversationPersonalizationScalarWhereInput
+    data: XOR<ConversationPersonalizationUpdateManyMutationInput, ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
   export type OrganizationCreateWithoutMembersInput = {
     uuid?: string
     name: string
@@ -32021,6 +34043,7 @@ export namespace Prisma {
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMembersInput = {
@@ -32037,6 +34060,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMembersInput = {
@@ -32057,6 +34081,7 @@ export namespace Prisma {
     audit_logs?: AuditLogCreateNestedManyWithoutUserInput
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrganization_membersInput = {
@@ -32073,6 +34098,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOrganization_membersInput = {
@@ -32126,6 +34152,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMembersInput = {
@@ -32142,6 +34169,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutOrganization_membersInput = {
@@ -32168,6 +34196,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganization_membersInput = {
@@ -32184,6 +34213,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganizationRoleUpsertWithoutMembersInput = {
@@ -32227,6 +34257,7 @@ export namespace Prisma {
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutRolesInput = {
@@ -32243,6 +34274,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutRolesInput = {
@@ -32324,6 +34356,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutRolesInput = {
@@ -32340,6 +34373,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationMemberUpsertWithWhereUniqueWithoutRoleInput = {
@@ -32530,6 +34564,7 @@ export namespace Prisma {
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAudit_logsInput = {
@@ -32546,6 +34581,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAudit_logsInput = {
@@ -32566,6 +34602,7 @@ export namespace Prisma {
     organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAudit_logsInput = {
@@ -32582,6 +34619,7 @@ export namespace Prisma {
     organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAudit_logsInput = {
@@ -32613,6 +34651,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAudit_logsInput = {
@@ -32629,6 +34668,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutAudit_logsInput = {
@@ -32655,6 +34695,7 @@ export namespace Prisma {
     organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAudit_logsInput = {
@@ -32671,6 +34712,7 @@ export namespace Prisma {
     organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganizationCreateWithoutIntegrationsInput = {
@@ -32686,6 +34728,7 @@ export namespace Prisma {
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutIntegrationsInput = {
@@ -32702,6 +34745,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutIntegrationsInput = {
@@ -32893,6 +34937,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutIntegrationsInput = {
@@ -32909,6 +34954,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type IntegrationActionUpsertWithWhereUniqueWithoutIntegrationInput = {
@@ -33442,6 +35488,7 @@ export namespace Prisma {
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAi_providersInput = {
@@ -33458,6 +35505,7 @@ export namespace Prisma {
     integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAi_providersInput = {
@@ -33489,6 +35537,7 @@ export namespace Prisma {
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAi_providersInput = {
@@ -33505,6 +35554,7 @@ export namespace Prisma {
     integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutConversationsInput = {
@@ -33520,6 +35570,7 @@ export namespace Prisma {
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutConversationsInput = {
@@ -33536,6 +35587,7 @@ export namespace Prisma {
     integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutConversationsInput = {
@@ -33556,6 +35608,7 @@ export namespace Prisma {
     organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
     audit_logs?: AuditLogCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutConversationsInput = {
@@ -33572,6 +35625,7 @@ export namespace Prisma {
     organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutConversationsInput = {
@@ -33677,6 +35731,7 @@ export namespace Prisma {
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutConversationsInput = {
@@ -33693,6 +35748,7 @@ export namespace Prisma {
     integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutConversationsInput = {
@@ -33719,6 +35775,7 @@ export namespace Prisma {
     organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
     audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutConversationsInput = {
@@ -33735,6 +35792,7 @@ export namespace Prisma {
     organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
@@ -33964,6 +36022,7 @@ export namespace Prisma {
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAgent_executionsInput = {
@@ -33980,6 +36039,7 @@ export namespace Prisma {
     integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAgent_executionsInput = {
@@ -34000,6 +36060,7 @@ export namespace Prisma {
     organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
     audit_logs?: AuditLogCreateNestedManyWithoutUserInput
     conversations?: ConversationCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAgent_executionsInput = {
@@ -34016,6 +36077,7 @@ export namespace Prisma {
     organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAgent_executionsInput = {
@@ -34148,6 +36210,7 @@ export namespace Prisma {
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAgent_executionsInput = {
@@ -34164,6 +36227,7 @@ export namespace Prisma {
     integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutAgent_executionsInput = {
@@ -34190,6 +36254,7 @@ export namespace Prisma {
     organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
     audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
     conversations?: ConversationUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAgent_executionsInput = {
@@ -34206,6 +36271,7 @@ export namespace Prisma {
     organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ToolCallUpsertWithWhereUniqueWithoutExecutionInput = {
@@ -34396,6 +36462,170 @@ export namespace Prisma {
     mcp?: McpIntegrationUncheckedUpdateOneWithoutIntegrationNestedInput
   }
 
+  export type UserCreateWithoutConversation_personalizationsInput = {
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
+    audit_logs?: AuditLogCreateNestedManyWithoutUserInput
+    conversations?: ConversationCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutConversation_personalizationsInput = {
+    id?: number
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutConversation_personalizationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutConversation_personalizationsInput, UserUncheckedCreateWithoutConversation_personalizationsInput>
+  }
+
+  export type OrganizationCreateWithoutConversation_personalizationsInput = {
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutConversation_personalizationsInput = {
+    id?: number
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutConversation_personalizationsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutConversation_personalizationsInput, OrganizationUncheckedCreateWithoutConversation_personalizationsInput>
+  }
+
+  export type UserUpsertWithoutConversation_personalizationsInput = {
+    update: XOR<UserUpdateWithoutConversation_personalizationsInput, UserUncheckedUpdateWithoutConversation_personalizationsInput>
+    create: XOR<UserCreateWithoutConversation_personalizationsInput, UserUncheckedCreateWithoutConversation_personalizationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutConversation_personalizationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutConversation_personalizationsInput, UserUncheckedUpdateWithoutConversation_personalizationsInput>
+  }
+
+  export type UserUpdateWithoutConversation_personalizationsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutConversation_personalizationsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type OrganizationUpsertWithoutConversation_personalizationsInput = {
+    update: XOR<OrganizationUpdateWithoutConversation_personalizationsInput, OrganizationUncheckedUpdateWithoutConversation_personalizationsInput>
+    create: XOR<OrganizationCreateWithoutConversation_personalizationsInput, OrganizationUncheckedCreateWithoutConversation_personalizationsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutConversation_personalizationsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutConversation_personalizationsInput, OrganizationUncheckedUpdateWithoutConversation_personalizationsInput>
+  }
+
+  export type OrganizationUpdateWithoutConversation_personalizationsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutConversation_personalizationsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
   export type OrganizationMemberCreateManyUserInput = {
     id?: number
     uuid?: string
@@ -34441,6 +36671,20 @@ export namespace Prisma {
     completed_at?: Date | string | null
     error?: string | null
     created_at?: Date | string
+  }
+
+  export type ConversationPersonalizationCreateManyUserInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    response_style?: $Enums.ResponseStyle
+    warm?: $Enums.CharacteristicLevel
+    enthusiastic?: $Enums.CharacteristicLevel
+    headers_lists?: $Enums.CharacteristicLevel
+    emoji?: $Enums.CharacteristicLevel
+    custom_instructions?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type OrganizationMemberUpdateWithoutUserInput = {
@@ -34586,6 +36830,47 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ConversationPersonalizationUpdateWithoutUserInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    response_style?: EnumResponseStyleFieldUpdateOperationsInput | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    custom_instructions?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutConversation_personalizationsNestedInput
+  }
+
+  export type ConversationPersonalizationUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    response_style?: EnumResponseStyleFieldUpdateOperationsInput | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    custom_instructions?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationPersonalizationUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    response_style?: EnumResponseStyleFieldUpdateOperationsInput | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    custom_instructions?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrganizationMemberCreateManyOrganizationInput = {
     id?: number
     uuid?: string
@@ -34665,6 +36950,20 @@ export namespace Prisma {
     completed_at?: Date | string | null
     error?: string | null
     created_at?: Date | string
+  }
+
+  export type ConversationPersonalizationCreateManyOrganizationInput = {
+    id?: number
+    uuid?: string
+    user_uuid: string
+    response_style?: $Enums.ResponseStyle
+    warm?: $Enums.CharacteristicLevel
+    enthusiastic?: $Enums.CharacteristicLevel
+    headers_lists?: $Enums.CharacteristicLevel
+    emoji?: $Enums.CharacteristicLevel
+    custom_instructions?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type OrganizationMemberUpdateWithoutOrganizationInput = {
@@ -34921,6 +37220,47 @@ export namespace Prisma {
     completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     error?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationPersonalizationUpdateWithoutOrganizationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    response_style?: EnumResponseStyleFieldUpdateOperationsInput | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    custom_instructions?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutConversation_personalizationsNestedInput
+  }
+
+  export type ConversationPersonalizationUncheckedUpdateWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    response_style?: EnumResponseStyleFieldUpdateOperationsInput | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    custom_instructions?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    response_style?: EnumResponseStyleFieldUpdateOperationsInput | $Enums.ResponseStyle
+    warm?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    enthusiastic?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    headers_lists?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    emoji?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
+    custom_instructions?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OrganizationMemberCreateManyRoleInput = {

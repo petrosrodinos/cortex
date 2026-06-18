@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 
 const settingsNav = [
   { label: 'Profile', href: Routes.dashboard.settingsProfile },
+  { label: 'Personalization', href: Routes.dashboard.settingsPersonalization },
   { label: 'Usage', href: Routes.dashboard.settingsUsage },
 ];
 

@@ -4,6 +4,8 @@ import { IntegrationStatus } from 'generated/prisma';
 import type { AttachedDocumentMeta } from '../documents/document-content.types';
 import { DocumentReaderService } from '../documents/document-reader.service';
 import { AgentActorService } from '../actor/agent-actor.service';
+import { ConversationPersonalizationService } from '@/modules/conversation-personalization/conversation-personalization.service';
+import { buildPersonalizationPromptBlock } from './personalization-prompt';
 
 const NO_AI_CONNECTOR_MESSAGE =
   'Cortex needs an AI provider before it can respond. Go to Integrations in your dashboard and connect OpenAI, Claude, or Grok.';
@@ -14,6 +16,7 @@ export class SystemPromptBuilder {
     private readonly prisma: PrismaService,
     private readonly documentReader: DocumentReaderService,
     private readonly agentActor: AgentActorService,
+    private readonly personalization: ConversationPersonalizationService,
   ) {}
 
   async getNoAiConnectorMessage(organizationUuid: string): Promise<string | null> {
@@ -68,6 +71,8 @@ export class SystemPromptBuilder {
 
     const today = new Date().toISOString().split('T')[0];
     const documentBlock = this.documentReader.formatMetadataForPrompt(attachedDocuments);
+    const personalizationSettings = await this.personalization.getForPrompt(userUuid, organizationUuid);
+    const personalizationBlock = buildPersonalizationPromptBlock(personalizationSettings);
 
     return [
       `You are Cortex, an AI business operations copilot for ${organization?.name ?? 'the organization'}.`,
@@ -91,6 +96,7 @@ export class SystemPromptBuilder {
       '',
       documentBlock ? `Attached documents (use document__read_* tools to load content):\n${documentBlock}` : '',
       schemaBlocks.length > 0 ? 'Database schemas:\n' + schemaBlocks.join('\n\n') : '',
+      personalizationBlock ?? '',
     ]
       .filter(Boolean)
       .join('\n');

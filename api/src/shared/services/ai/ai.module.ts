@@ -34,10 +34,11 @@ import { ExecutionToolIdempotencyService } from './agents/tools/execution-tool-i
 import { AgentActorService } from './agents/actor/agent-actor.service';
 import { OrganizationToolsFactory } from './agents/organization/organization-tools.factory';
 import { OrganizationToolsService } from './agents/organization/organization-tools.service';
+import { ConversationPersonalizationModule } from '@/modules/conversation-personalization/conversation-personalization.module';
 import { EncryptionService } from '@/shared/utils/encryption.service';
 
 @Module({
-  imports: [PrismaModule, AppCacheModule, IntegrationFrameworkModule, WebsocketsModule, GcsIntegrationModule],
+  imports: [PrismaModule, AppCacheModule, IntegrationFrameworkModule, WebsocketsModule, GcsIntegrationModule, ConversationPersonalizationModule],
   providers: [
     EncryptionService,
     OpenAiProviderAdapter,

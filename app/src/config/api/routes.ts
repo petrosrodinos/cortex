@@ -60,6 +60,7 @@ export const ApiRoutes = {
         conversations: (organizationUuid: string) => `/organizations/${organizationUuid}/conversations`,
         conversation: (organizationUuid: string, conversationUuid: string) => `/organizations/${organizationUuid}/conversations/${conversationUuid}`,
         conversationMessages: (organizationUuid: string, conversationUuid: string) => `/organizations/${organizationUuid}/conversations/${conversationUuid}/messages`,
+        conversationPersonalization: (organizationUuid: string) => `/organizations/${organizationUuid}/conversation-personalization`,
         executions: (organizationUuid: string) => `/organizations/${organizationUuid}/executions`,
         execution: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}`,
         executionApprove: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}/approve`,

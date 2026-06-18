@@ -20,6 +20,7 @@ import { QueuesModule } from './core/queues/queues.module';
 import { AgentQueueModule } from './core/queues/agent-queue.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { UsersModule } from './modules/users/users.module';
+import { ConversationPersonalizationModule } from './modules/conversation-personalization/conversation-personalization.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { UsersModule } from './modules/users/users.module';
     AgentQueueModule,
     DocumentsModule,
     UsersModule,
+    ConversationPersonalizationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -133,6 +133,22 @@ enum OutputType {
   WIDGET
 }
 
+enum ResponseStyle {
+  DEFAULT
+  PROFESSIONAL
+  FRIENDLY
+  CANDID
+  QUIRKY
+  EFFICIENT
+  CYNICAL
+}
+
+enum CharacteristicLevel {
+  LESS
+  DEFAULT
+  MORE
+}
+
 model User {
   id         Int     @id @default(autoincrement())
   uuid       String  @unique @default(uuid())
@@ -146,10 +162,11 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  organization_members OrganizationMember[]
-  audit_logs           AuditLog[]
-  conversations        Conversation[]
-  agent_executions     AgentExecution[]
+  organization_members          OrganizationMember[]
+  audit_logs                    AuditLog[]
+  conversations                 Conversation[]
+  agent_executions              AgentExecution[]
+  conversation_personalizations ConversationPersonalization[]
 
   @@index([email])
   @@index([phone])
@@ -166,13 +183,14 @@ model Organization {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  members          OrganizationMember[]
-  roles            OrganizationRole[]
-  audit_logs       AuditLog[]
-  integrations     Integration[]
-  ai_providers     AiProvider[]
-  conversations    Conversation[]
-  agent_executions AgentExecution[]
+  members                       OrganizationMember[]
+  roles                         OrganizationRole[]
+  audit_logs                    AuditLog[]
+  integrations                  Integration[]
+  ai_providers                  AiProvider[]
+  conversations                 Conversation[]
+  agent_executions              AgentExecution[]
+  conversation_personalizations ConversationPersonalization[]
 
   @@index([uuid])
   @@index([slug])
@@ -496,4 +514,27 @@ model ToolCall {
   @@index([integration_uuid])
   @@index([created_at])
   @@map("tool_calls")
+}
+
+model ConversationPersonalization {
+  id                  Int                 @id @default(autoincrement())
+  uuid                String              @unique @default(uuid())
+  user_uuid           String
+  org_uuid            String
+  response_style      ResponseStyle       @default(DEFAULT)
+  warm                CharacteristicLevel @default(DEFAULT)
+  enthusiastic        CharacteristicLevel @default(DEFAULT)
+  headers_lists       CharacteristicLevel @default(DEFAULT)
+  emoji               CharacteristicLevel @default(DEFAULT)
+  custom_instructions String?
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+
+  user         User         @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade)
+  organization Organization @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+
+  @@unique([user_uuid, org_uuid])
+  @@index([user_uuid])
+  @@index([org_uuid])
+  @@map("conversation_personalizations")
 }

@@ -26,6 +26,12 @@ import { ConversationDocumentsModal } from './components/conversation-documents-
 import { ConversationHeader } from './components/conversation-header';
 import { ConversationInput } from './components/conversation-input';
 import { getToolEligibleIntegrations } from './components/conversation-tools-menu';
+import {
+  createEmptyDraft,
+  draftPartsToPlainText,
+  getDraftIntegrationUuids,
+  type DraftPart,
+} from './components/conversation-draft-editor';
 import { ConversationMessages } from './components/conversation-messages';
 import { ConversationSidebar } from './components/conversation-sidebar';
 import { ConversationSidebarSkeleton } from './components/conversation-sidebar-skeleton';
@@ -41,7 +47,7 @@ const ConversationsPage: FC = () => {
   const queryClient = useQueryClient();
   const { conversationUuid } = useParams<{ conversationUuid?: string }>();
   const organizationUuid = useOrganizationStore((state) => state.current_organization?.uuid);
-  const [draft, setDraft] = useState('');
+  const [draftParts, setDraftParts] = useState<DraftPart[]>(() => createEmptyDraft());
   const [activeExecutionId, setActiveExecutionId] = useState<string | null>(null);
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
   const [selectedIntegrationUuids, setSelectedIntegrationUuids] = useState<string[]>([]);
@@ -82,18 +88,26 @@ const ConversationsPage: FC = () => {
     [toolEligibleIntegrations],
   );
 
+  const toolEligibleIntegrationUuidsRef = useRef<string[]>([]);
+
   useEffect(() => {
+    const previousEligible = new Set(toolEligibleIntegrationUuidsRef.current);
+    const currentEligible = toolEligibleIntegrationUuids;
+
     setSelectedIntegrationUuids((prev) => {
-      const available = new Set(toolEligibleIntegrationUuids);
+      const available = new Set(currentEligible);
 
       if (prev.length === 0) {
-        return toolEligibleIntegrationUuids;
+        return currentEligible;
       }
 
       const kept = prev.filter((uuid) => available.has(uuid));
-      const added = toolEligibleIntegrationUuids.filter((uuid) => !prev.includes(uuid));
-      return [...kept, ...added];
+      const newlyEligible = currentEligible.filter((uuid) => !previousEligible.has(uuid));
+
+      return [...kept, ...newlyEligible];
     });
+
+    toolEligibleIntegrationUuidsRef.current = currentEligible;
   }, [toolEligibleIntegrationUuids]);
 
   useEffect(() => {
@@ -202,11 +216,13 @@ const ConversationsPage: FC = () => {
   };
 
   const handleSend = async () => {
-    if (!draft.trim() || !conversationUuid) {
+    const content = draftPartsToPlainText(draftParts);
+    const draftIntegrationUuids = getDraftIntegrationUuids(draftParts);
+    if ((!content && draftIntegrationUuids.length === 0) || !conversationUuid) {
       return;
     }
-
-    const content = draft.trim();
+    const integrationUuids =
+      draftIntegrationUuids.length > 0 ? draftIntegrationUuids : selectedIntegrationUuids;
     const documentUuids = attachedFiles.filter((f) => f.uuid).map((f) => f.uuid as string);
     const sentAttachments: MessageAttachment[] = attachedFiles
       .filter((f) => f.uuid)
@@ -217,7 +233,7 @@ const ConversationsPage: FC = () => {
         url: f.url,
       }));
     const isFirstMessage = messages.length === 0;
-    setDraft('');
+    setDraftParts(createEmptyDraft());
     setAttachedFiles([]);
     setPendingUserMessage(content);
     setPendingUserAttachments(sentAttachments);
@@ -226,7 +242,7 @@ const ConversationsPage: FC = () => {
       const response = await sendMessage.mutateAsync({
         content,
         documentUuids,
-        integrationUuids: selectedIntegrationUuids,
+        integrationUuids,
       });
       setActiveExecutionId(response.executionId);
 
@@ -398,13 +414,13 @@ const ConversationsPage: FC = () => {
             />
 
             <ConversationInput
-              draft={draft}
+              draftParts={draftParts}
               attachedFiles={attachedFiles}
               integrations={integrations}
               selectedIntegrationUuids={selectedIntegrationUuids}
               disabled={sendMessage.isPending || isRunning}
               isUploading={uploadDocument.isPending}
-              onDraftChange={setDraft}
+              onDraftPartsChange={setDraftParts}
               onSend={() => void handleSend()}
               onFileSelect={(event) => void handleFileSelect(event)}
               onRemoveFile={removeAttachedFile}

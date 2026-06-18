@@ -339,6 +339,21 @@ exports.Prisma.ToolCallScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.ConversationPersonalizationScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  user_uuid: 'user_uuid',
+  org_uuid: 'org_uuid',
+  response_style: 'response_style',
+  warm: 'warm',
+  enthusiastic: 'enthusiastic',
+  headers_lists: 'headers_lists',
+  emoji: 'emoji',
+  custom_instructions: 'custom_instructions',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -478,6 +493,22 @@ exports.ToolCallStatus = exports.$Enums.ToolCallStatus = {
   FAILED: 'FAILED'
 };
 
+exports.ResponseStyle = exports.$Enums.ResponseStyle = {
+  DEFAULT: 'DEFAULT',
+  PROFESSIONAL: 'PROFESSIONAL',
+  FRIENDLY: 'FRIENDLY',
+  CANDID: 'CANDID',
+  QUIRKY: 'QUIRKY',
+  EFFICIENT: 'EFFICIENT',
+  CYNICAL: 'CYNICAL'
+};
+
+exports.CharacteristicLevel = exports.$Enums.CharacteristicLevel = {
+  LESS: 'LESS',
+  DEFAULT: 'DEFAULT',
+  MORE: 'MORE'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Organization: 'Organization',
@@ -496,7 +527,8 @@ exports.Prisma.ModelName = {
   Conversation: 'Conversation',
   Message: 'Message',
   AgentExecution: 'AgentExecution',
-  ToolCall: 'ToolCall'
+  ToolCall: 'ToolCall',
+  ConversationPersonalization: 'ConversationPersonalization'
 };
 
 /**

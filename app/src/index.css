@@ -111,3 +111,13 @@ body {
 .typing-dot {
   animation: typing-dot-pulse 1.2s ease-in-out infinite;
 }
+
+.integration-chip {
+  background: color-mix(in srgb, var(--chip-brand) 16%, var(--surface-secondary));
+  color: color-mix(in srgb, var(--chip-brand) 88%, black);
+}
+
+.dark .integration-chip {
+  background: color-mix(in srgb, var(--chip-brand) 30%, transparent);
+  color: color-mix(in srgb, var(--chip-brand) 72%, white);
+}

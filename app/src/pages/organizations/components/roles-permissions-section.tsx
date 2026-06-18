@@ -250,13 +250,26 @@ export function RolesPermissionsSection() {
                           role.permissions?.some((p) => p.permission.key === permission.key) ?? false;
                         return (
                           <td key={role.uuid} className="px-3 py-3 text-center">
-                            <input
-                              type="checkbox"
-                              checked={checked}
+                            <button
+                              type="button"
+                              role="switch"
+                              aria-checked={checked}
+                              aria-label={`${permission.label} for ${role.name}`}
                               disabled={loading}
-                              onChange={() => toggleRolePermission(role, permission.key)}
-                              className="h-4 w-4 cursor-pointer accent-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-50"
-                            />
+                              onClick={() => toggleRolePermission(role, permission.key)}
+                              className={cn(
+                                'relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors',
+                                checked ? 'bg-accent' : 'bg-border',
+                                loading && 'cursor-not-allowed opacity-60',
+                              )}
+                            >
+                              <span
+                                className={cn(
+                                  'pointer-events-none block h-4 w-4 translate-x-0.5 rounded-full bg-white shadow-sm transition-transform',
+                                  checked && 'translate-x-4',
+                                )}
+                              />
+                            </button>
                           </td>
                         );
                       })}
@@ -298,7 +311,7 @@ function MatrixSkeleton() {
       {[0, 1, 2, 3, 4].map((row) => (
         <div key={row} className="grid grid-cols-[200px_repeat(3,_1fr)] items-center border-b border-border/40 px-4 py-3 gap-4 last:border-0">
           <SkeletonLine className="h-4 w-36" />
-          {[0, 1, 2].map((col) => <SkeletonLine key={col} className="h-4 w-4 mx-auto rounded" />)}
+          {[0, 1, 2].map((col) => <SkeletonLine key={col} className="h-5 w-9 mx-auto rounded-full" />)}
         </div>
       ))}
     </div>

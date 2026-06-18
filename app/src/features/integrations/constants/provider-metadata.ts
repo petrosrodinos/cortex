@@ -13,6 +13,15 @@ import { OpenApiAuthTypes } from '@/features/integrations/openapi/interfaces/ope
 
 export type ProviderIcon = ComponentType<{ size?: number; className?: string }>;
 
+export type ProviderVisualMeta = {
+  bg: string;
+  icon: ProviderIcon;
+};
+
+function createProviderMeta(bg: string, icon: ProviderIcon): ProviderVisualMeta {
+  return { bg, icon };
+}
+
 const integrationProviderLabels: Record<IntegrationProvider, string> = {
   GITHUB: 'GitHub',
   SLACK: 'Slack',
@@ -73,34 +82,38 @@ export const catalogProviderDescriptions: Record<CatalogProvider, string> = {
   [AiProviderTypes.GROK]: 'xAI models for fast chat and reasoning',
 };
 
-const integrationProviderIconMeta: Record<IntegrationProvider, { bg: string; icon: ProviderIcon }> = {
-  GITHUB: { bg: '#24292f', icon: SiGithub },
-  SLACK: { bg: '#4a154b', icon: SiSlack },
-  STRIPE: { bg: '#635bff', icon: SiStripe },
-  HUBSPOT: { bg: '#e8714a', icon: SiHubspot },
-  LINEAR: { bg: '#5e6ad2', icon: SiLinear },
-  NOTION: { bg: '#373530', icon: SiNotion },
-  GOOGLE_DRIVE: { bg: '#4285f4', icon: SiGoogledrive },
-  GMAIL: { bg: '#ea4335', icon: SiGmail },
-  SMTP: { bg: '#6b7a8d', icon: Mail },
-  RESEND: { bg: '#000000', icon: Mail },
-  SENDGRID: { bg: '#1a82e2', icon: Mail },
-  POSTHOG: { bg: '#e4511e', icon: SiPosthog },
-  INTERCOM: { bg: '#1f8ded', icon: SiIntercom },
-  DATABASE_PG: { bg: '#336791', icon: SiPostgresql },
-  DATABASE_MYSQL: { bg: '#00758f', icon: SiMysql },
-  DATABASE_MONGO: { bg: '#13aa52', icon: SiMongodb },
-  OPENAPI: { bg: '#0d9488', icon: FileCode2 },
-  MCP: { bg: '#7c3aed', icon: Cpu },
+const integrationProviderIconMeta: Record<IntegrationProvider, ProviderVisualMeta> = {
+  GITHUB: createProviderMeta('#24292f', SiGithub),
+  SLACK: createProviderMeta('#4a154b', SiSlack),
+  STRIPE: createProviderMeta('#635bff', SiStripe),
+  HUBSPOT: createProviderMeta('#e8714a', SiHubspot),
+  LINEAR: createProviderMeta('#5e6ad2', SiLinear),
+  NOTION: createProviderMeta('#373530', SiNotion),
+  GOOGLE_DRIVE: createProviderMeta('#4285f4', SiGoogledrive),
+  GMAIL: createProviderMeta('#ea4335', SiGmail),
+  SMTP: createProviderMeta('#6b7a8d', Mail),
+  RESEND: createProviderMeta('#000000', Mail),
+  SENDGRID: createProviderMeta('#1a82e2', Mail),
+  POSTHOG: createProviderMeta('#e4511e', SiPosthog),
+  INTERCOM: createProviderMeta('#1f8ded', SiIntercom),
+  DATABASE_PG: createProviderMeta('#336791', SiPostgresql),
+  DATABASE_MYSQL: createProviderMeta('#00758f', SiMysql),
+  DATABASE_MONGO: createProviderMeta('#13aa52', SiMongodb),
+  OPENAPI: createProviderMeta('#0d9488', FileCode2),
+  MCP: createProviderMeta('#7c3aed', Cpu),
 };
 
 export const PROVIDER_ICON_META = integrationProviderIconMeta;
 
-export const CATALOG_PROVIDER_ICON_META: Record<CatalogProvider, { bg: string; icon: ProviderIcon }> = {
+export function getProviderBrandColor(provider: IntegrationProvider): string {
+  return PROVIDER_ICON_META[provider].bg;
+}
+
+export const CATALOG_PROVIDER_ICON_META: Record<CatalogProvider, ProviderVisualMeta> = {
   ...integrationProviderIconMeta,
-  [AiProviderTypes.OPENAI]: { bg: '#10a37f', icon: SiOpenai },
-  [AiProviderTypes.CLAUDE]: { bg: '#d97706', icon: Bot },
-  [AiProviderTypes.GROK]: { bg: '#111827', icon: Zap },
+  [AiProviderTypes.OPENAI]: createProviderMeta('#10a37f', SiOpenai),
+  [AiProviderTypes.CLAUDE]: createProviderMeta('#d97706', Bot),
+  [AiProviderTypes.GROK]: createProviderMeta('#111827', Zap),
 };
 
 export const aiProviderModelOptions: Record<(typeof AiProviderTypes)[keyof typeof AiProviderTypes], { value: string; label: string }[]> = {

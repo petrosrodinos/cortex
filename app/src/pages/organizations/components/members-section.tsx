@@ -16,6 +16,7 @@ import {
 import { useGetRoles } from '@/features/roles/hooks/use-roles';
 import { cn } from '@/lib/utils';
 import { useOrganizationStore } from '@/stores/organization';
+import { MemberRoleDropdown } from './member-role-dropdown';
 
 type MemberActionTarget = { uuid: string; label: string } | null;
 
@@ -189,17 +190,13 @@ export function MembersSection() {
               placeholder="colleague@company.com"
               className="h-9 min-w-0 flex-1 rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted outline-none transition-all focus:border-accent/60 focus:ring-2 focus:ring-accent/20"
             />
-            <select
+            <MemberRoleDropdown
+              roles={roles}
               value={memberRoleUuid}
-              onChange={(event) => setMemberRoleUuid(event.target.value)}
-              className="h-9 rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-all focus:border-accent/60 focus:ring-2 focus:ring-accent/20"
-            >
-              {roles.map((role) => (
-                <option key={role.uuid} value={role.uuid}>
-                  {role.name}
-                </option>
-              ))}
-            </select>
+              onChange={setMemberRoleUuid}
+              disabled={loading}
+              aria-label="Select role for invite"
+            />
             <button
               type="submit"
               disabled={loading || !email.trim() || !memberRoleUuid}
@@ -270,18 +267,14 @@ export function MembersSection() {
                           Owner
                         </span>
                       ) : (
-                        <select
+                        <MemberRoleDropdown
+                          roles={roles}
                           value={member.role_uuid}
-                          onChange={(event) => updateMember(member, event.target.value)}
+                          onChange={(roleUuid) => updateMember(member, roleUuid)}
                           disabled={loading}
-                          className="h-7 rounded-md border border-border bg-background px-2 text-xs text-foreground outline-none transition-all focus:ring-1 focus:ring-accent disabled:opacity-60"
-                        >
-                          {roles.map((role) => (
-                            <option key={role.uuid} value={role.uuid}>
-                              {role.name}
-                            </option>
-                          ))}
-                        </select>
+                          triggerClassName="h-7 px-2 text-xs"
+                          aria-label={`Select role for ${memberEmail}`}
+                        />
                       )}
                     </td>
                     <td className="px-4 py-3">

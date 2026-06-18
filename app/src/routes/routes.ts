@@ -13,6 +13,7 @@ export const Routes = {
         aiProvider: (aiProviderUuid: string) => `/dashboard/integrations/ai/${aiProviderUuid}`,
         settings: '/dashboard/settings',
         settingsProfile: '/dashboard/settings/profile',
+        settingsPersonalization: '/dashboard/settings/personalization',
         settingsAiProviders: '/dashboard/integrations',
         settingsUsage: '/dashboard/settings/usage',
         settingsAuditLogs: '/dashboard/settings/audit-logs',
