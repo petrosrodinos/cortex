@@ -3,9 +3,9 @@ import { Routes } from '@/routes/routes';
 import { cn } from '@/lib/utils';
 
 const settingsNav = [
-  { label: 'Organization', href: Routes.dashboard.settingsOrganization },
+  { label: 'Profile', href: Routes.dashboard.settingsProfile },
+  { label: 'Password', href: Routes.dashboard.settingsPassword },
   { label: 'Usage', href: Routes.dashboard.settingsUsage },
-  { label: 'Audit Logs', href: Routes.dashboard.settingsAuditLogs },
 ];
 
 export default function SettingsLayout() {
@@ -13,7 +13,7 @@ export default function SettingsLayout() {
     <div className="mx-auto flex max-w-5xl flex-col gap-6">
       <header>
         <h1 className="text-lg font-semibold tracking-tight text-foreground">Settings</h1>
-        <p className="mt-0.5 text-sm text-muted">Manage your organization settings and preferences.</p>
+        <p className="mt-0.5 text-sm text-muted">Manage your account and organization settings.</p>
       </header>
 
       <div className="flex gap-6">

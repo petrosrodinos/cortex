@@ -3,9 +3,20 @@ export interface User {
     id: string;
     uuid: string;
     email: string;
+    phone: string | null;
     role: RoleType;
     created_at: string;
     updated_at: string;
+}
+
+export interface UpdateUserDto {
+    email?: string;
+    phone?: string | null;
+}
+
+export interface UpdatePasswordDto {
+    current_password: string;
+    new_password: string;
 }
 
 

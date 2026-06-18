@@ -4,7 +4,7 @@ import { Button, Dropdown, Label } from '@heroui/react';
 import { ChevronsUpDown, RotateCcw } from 'lucide-react';
 import type { OrganizationMember } from '@/features/members/interfaces/member.interfaces';
 import type { UsageQuery } from '@/features/settings/interfaces/usage.interfaces';
-import { Input } from '@/components/ui/input';
+import { DatePickerField } from '@/components/ui/date-picker-field';
 import { cn } from '@/lib/utils';
 
 export interface UsageFiltersValue {
@@ -62,23 +62,19 @@ export function UsageFilters({
           showMemberFilter ? 'md:grid-cols-[1fr_1fr_1.2fr_auto]' : 'md:grid-cols-[1fr_1fr_auto]',
         )}
       >
-        <label className="flex flex-col gap-1.5">
-          <span className="text-xs font-medium text-muted">From</span>
-          <Input
-            type="date"
-            value={value.date_from ?? ''}
-            onChange={(event) => updateField('date_from', event.target.value)}
-          />
-        </label>
+        <DatePickerField
+          label="From"
+          value={value.date_from}
+          maxValue={value.date_to}
+          onChange={(nextValue) => updateField('date_from', nextValue)}
+        />
 
-        <label className="flex flex-col gap-1.5">
-          <span className="text-xs font-medium text-muted">To</span>
-          <Input
-            type="date"
-            value={value.date_to ?? ''}
-            onChange={(event) => updateField('date_to', event.target.value)}
-          />
-        </label>
+        <DatePickerField
+          label="To"
+          value={value.date_to}
+          minValue={value.date_from}
+          onChange={(nextValue) => updateField('date_to', nextValue)}
+        />
 
         {showMemberFilter ? (
           <label className="flex flex-col gap-1.5">

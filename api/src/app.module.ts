@@ -19,6 +19,7 @@ import { WebsocketsModule } from './core/websockets/websockets.module';
 import { QueuesModule } from './core/queues/queues.module';
 import { AgentQueueModule } from './core/queues/agent-queue.module';
 import { DocumentsModule } from './modules/documents/documents.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { DocumentsModule } from './modules/documents/documents.module';
     QueuesModule,
     AgentQueueModule,
     DocumentsModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
