@@ -1,4 +1,5 @@
 import type { LoggedInUser } from "@/features/user/interfaces/user.interface";
+import { formatUserFullName } from "@/features/user/utils/user.utils";
 
 export const generateInitials = (value: string) => {
     if (!value) return "AN";
@@ -14,7 +15,7 @@ export const formatAuthUser = (data: any): LoggedInUser => {
         access_token: data.access_token,
         expires_in: data.expires_in,
         avatar: data?.user?.avatar?.url ?? null,
-        full_name: data?.user?.full_name ?? data?.user?.email?.split("@")[0] ?? "A/N",
+        full_name: formatUserFullName(data.user),
         role: data?.user?.role ?? null,
         organization_uuid: data?.organization_uuid ?? null,
         organization_role: data?.organization_role ?? null,

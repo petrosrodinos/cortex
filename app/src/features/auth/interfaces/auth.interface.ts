@@ -5,6 +5,8 @@ export interface SignInUser {
 }
 
 export interface SignUpUser {
+    first_name: string;
+    last_name: string;
     email: string;
     password: string;
 }

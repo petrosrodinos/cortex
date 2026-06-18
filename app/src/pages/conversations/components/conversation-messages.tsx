@@ -11,6 +11,11 @@ import { ConversationMessagesSkeleton } from './conversation-messages-skeleton';
 import { ConversationNoMessagesState } from './conversation-no-messages-state';
 import { getMessageAttachments, MessageAttachments } from './message-attachments';
 
+const markdownClassName =
+  'prose prose-sm prose-invert max-w-none min-w-0 break-words [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&_code]:break-words';
+
+const messageBubbleClassName = 'min-w-0 max-w-[min(92%,100%)] break-words overflow-hidden rounded-2xl px-3 py-2.5 text-sm sm:max-w-[85%] sm:px-4 sm:py-3';
+
 interface ConversationMessagesProps {
   conversationUuid: string;
   messages: Message[];
@@ -78,19 +83,23 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
   }
 
   return (
-    <div ref={scrollContainerRef} className="flex-1 space-y-4 overflow-y-auto p-4">
+    <div
+      ref={scrollContainerRef}
+      className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-y-contain"
+    >
+      <div className="space-y-4 p-3 md:p-4">
       {messages.map((message) => (
         <div
           key={message.uuid}
           className={cn(
-            'max-w-[85%] rounded-2xl px-4 py-3 text-sm',
+            messageBubbleClassName,
             message.role === MessageRoles.USER
-              ? 'ml-auto bg-accent/15 text-foreground whitespace-pre-wrap'
-              : 'mr-auto bg-surface-secondary text-foreground',
+              ? 'ml-auto bg-accent/15 text-foreground whitespace-pre-wrap [overflow-wrap:anywhere]'
+              : 'mr-auto w-full bg-surface-secondary text-foreground',
           )}
         >
           {message.role === MessageRoles.ASSISTANT ? (
-            <div className="prose prose-sm prose-invert max-w-none">
+            <div className={markdownClassName}>
               <ReactMarkdown rehypePlugins={[rehypeSanitize]}>{message.content}</ReactMarkdown>
             </div>
           ) : (
@@ -138,7 +147,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
                   <img
                     src={files[0]}
                     alt="Generated visual"
-                    className="max-h-64 max-w-[240px] w-auto rounded-lg object-contain"
+                    className="max-h-64 w-full max-w-full rounded-lg object-contain sm:max-w-[240px] sm:w-auto"
                   />
                 </div>
               );
@@ -163,22 +172,22 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
       ))}
 
       {pendingUserMessage && (
-        <div className="ml-auto max-w-[85%] rounded-2xl bg-accent/15 px-4 py-3 text-sm text-foreground whitespace-pre-wrap">
+        <div className={cn(messageBubbleClassName, 'ml-auto bg-accent/15 text-foreground whitespace-pre-wrap [overflow-wrap:anywhere]')}>
           {pendingUserMessage}
           <MessageAttachments attachments={pendingUserAttachments} />
         </div>
       )}
 
       {pendingAssistantContent != null && (
-        <div className="mr-auto max-w-[85%] rounded-2xl bg-surface-secondary px-4 py-3 text-sm text-foreground">
-          <div className="prose prose-sm prose-invert max-w-none">
+        <div className={cn(messageBubbleClassName, 'mr-auto w-full bg-surface-secondary text-foreground')}>
+          <div className={markdownClassName}>
             <ReactMarkdown rehypePlugins={[rehypeSanitize]}>{pendingAssistantContent}</ReactMarkdown>
           </div>
         </div>
       )}
 
       {showTypingIndicator && (
-        <div className="mr-auto flex w-fit flex-col gap-2">
+        <div className="mr-auto flex min-w-0 max-w-full w-fit flex-col gap-2">
           <div className="rounded-2xl bg-surface-secondary px-3 py-2.5">
             <AiTypingIndicator />
           </div>
@@ -196,19 +205,19 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
       )}
 
       {approvalRequest && (
-        <Card className="mr-auto max-w-[85%] border-amber-500/30 bg-amber-500/5 p-4">
+        <Card className={cn(messageBubbleClassName, 'mr-auto w-full border-amber-500/30 bg-amber-500/5 sm:p-4')}>
           <p className="font-medium">Approval required</p>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 break-words text-sm text-muted">
             Tool <span className="font-mono">{approvalRequest.toolName}</span> wants to run with sensitive input.
           </p>
-          <pre className="mt-3 overflow-x-auto rounded-lg bg-surface-secondary p-3 text-xs">
+          <pre className="mt-3 max-w-full overflow-x-auto rounded-lg bg-surface-secondary p-3 text-xs whitespace-pre-wrap break-words">
             {JSON.stringify(approvalRequest.input, null, 2)}
           </pre>
-          <div className="mt-4 flex gap-2">
-            <Button onClick={onApprove} disabled={isApproving} className="w-auto">
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+            <Button onClick={onApprove} disabled={isApproving} className="w-full sm:w-auto">
               Approve
             </Button>
-            <Button variant="outline" onClick={onReject} disabled={isRejecting} className="w-auto">
+            <Button variant="outline" onClick={onReject} disabled={isRejecting} className="w-full sm:w-auto">
               Reject
             </Button>
           </div>
@@ -216,12 +225,13 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
       )}
 
       {executionError && (
-        <Card className="mr-auto max-w-[85%] border-red-500/30 bg-red-500/5 p-4 text-sm text-red-500">
+        <Card className={cn(messageBubbleClassName, 'mr-auto w-full border-red-500/30 bg-red-500/5 text-red-500 sm:p-4')}>
           {executionError}
         </Card>
       )}
 
       <div ref={bottomRef} />
+      </div>
     </div>
   );
 };

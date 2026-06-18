@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { Sparkles } from 'lucide-react';
 
 export const ConversationNoMessagesState: FC = () => (
-  <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
+  <div className="flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center gap-3 overflow-hidden px-4 text-center sm:px-6">
     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-secondary text-muted">
       <Sparkles className="h-7 w-7" />
     </div>

@@ -134,11 +134,13 @@ enum OutputType {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  uuid     String  @unique @default(uuid())
-  email    String  @unique
-  phone    String? @unique
-  password String
+  id         Int     @id @default(autoincrement())
+  uuid       String  @unique @default(uuid())
+  email      String  @unique
+  phone      String? @unique
+  first_name String?
+  last_name  String?
+  password   String
 
   role       AuthRole
   created_at DateTime @default(now())

@@ -86,7 +86,21 @@ describe('EmailAuthService switchOrganization', () => {
     });
     const service = new EmailAuthService(prisma, jwt_service, mail_service, organizations_service);
 
-    const result = await service.registerWithEmail({ email: 'person@example.com', password: 'password123' });
+    const result = await service.registerWithEmail({
+      first_name: 'John',
+      last_name: 'Doe',
+      email: 'person@example.com',
+      password: 'password123',
+    });
+
+    expect(prisma.user.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        first_name: 'John',
+        last_name: 'Doe',
+        email: 'person@example.com',
+        role: 'USER',
+      }),
+    });
 
     expect(organizations_service.create).toHaveBeenCalledWith('user-uuid', { name: 'Default Organisation' });
     expect(result).toMatchObject({

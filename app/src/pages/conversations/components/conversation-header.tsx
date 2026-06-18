@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FC, type KeyboardEvent } from 'react';
-import { FileText, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { FileText, Menu, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ConversationHeaderProps {
@@ -7,6 +7,7 @@ interface ConversationHeaderProps {
   onRename: (title: string) => void;
   onDelete: () => void;
   onOpenDocuments: () => void;
+  onOpenChats?: () => void;
 }
 
 export const ConversationHeader: FC<ConversationHeaderProps> = ({
@@ -14,6 +15,7 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({
   onRename,
   onDelete,
   onOpenDocuments,
+  onOpenChats,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
@@ -70,7 +72,18 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({
   };
 
   return (
-    <header className="flex shrink-0 items-center gap-2 border-b border-border px-4 py-3">
+    <header className="flex shrink-0 min-w-0 items-center gap-2 border-b border-border px-3 py-3 md:px-4">
+      {onOpenChats ? (
+        <button
+          type="button"
+          onClick={onOpenChats}
+          className="rounded-md p-1.5 text-muted transition-colors hover:bg-surface-secondary hover:text-foreground md:hidden"
+          aria-label="Open chats"
+        >
+          <Menu className="h-4 w-4" />
+        </button>
+      ) : null}
+
       {isEditing ? (
         <input
           ref={inputRef}

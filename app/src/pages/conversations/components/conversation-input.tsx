@@ -32,7 +32,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   const canSend = draft.trim().length > 0 && !disabled;
 
   return (
-    <div className="border-t border-border p-4">
+    <div className="shrink-0 min-w-0 border-t border-border p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:p-4">
       {attachedFiles.length > 0 && (
         <div className="mb-2 flex flex-wrap gap-2">
           {attachedFiles.map((f) => (

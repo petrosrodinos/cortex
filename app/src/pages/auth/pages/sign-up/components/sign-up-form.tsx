@@ -22,16 +22,15 @@ export function SignUpForm() {
   const isInvitationFlow = Boolean(invitationToken);
   const isPending = signupMutation.isPending || registerInvitationMutation.isPending || invitationQuery.isLoading;
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
 
   const standardForm = useForm<SignUpFormValues>({
     resolver: zodResolver(SignUpSchema),
-    defaultValues: { email: "", password: "", confirm_password: "" },
+    defaultValues: { first_name: "", last_name: "", email: "", password: "" },
   });
 
   const invitationForm = useForm<InvitationSignUpFormValues>({
     resolver: zodResolver(InvitationSignUpSchema),
-    defaultValues: { password: "", confirm_password: "" },
+    defaultValues: { password: "" },
   });
 
   if (isInvitationFlow && invitationQuery.isError) {
@@ -94,29 +93,6 @@ export function SignUpForm() {
           {errors.password && <FieldError>{errors.password.message}</FieldError>}
         </div>
 
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="signup-confirm">Confirm Password</Label>
-          <div className="relative">
-            <Input
-              id="signup-confirm"
-              {...register("confirm_password")}
-              type={showConfirm ? "text" : "password"}
-              placeholder="********"
-              fullWidth
-              className="pr-10"
-            />
-            <button
-              type="button"
-              tabIndex={-1}
-              onClick={() => setShowConfirm((v) => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-default"
-            >
-              {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
-            </button>
-          </div>
-          {errors.confirm_password && <FieldError>{errors.confirm_password.message}</FieldError>}
-        </div>
-
         <ActionButtonWithPending
           type="submit"
           isDisabled={isPending || !invitationQuery.data}
@@ -137,11 +113,40 @@ export function SignUpForm() {
   } = standardForm;
 
   function onSubmit(data: SignUpFormValues) {
-    signupMutation.mutate({ email: data.email, password: data.password });
+    signupMutation.mutate({
+      first_name: data.first_name.trim(),
+      last_name: data.last_name.trim(),
+      email: data.email,
+      password: data.password,
+    });
   }
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 text-left">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="signup-first-name">First name</Label>
+          <Input
+            id="signup-first-name"
+            {...register("first_name")}
+            placeholder="John"
+            fullWidth
+          />
+          {errors.first_name && <FieldError>{errors.first_name.message}</FieldError>}
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="signup-last-name">Last name</Label>
+          <Input
+            id="signup-last-name"
+            {...register("last_name")}
+            placeholder="Doe"
+            fullWidth
+          />
+          {errors.last_name && <FieldError>{errors.last_name.message}</FieldError>}
+        </div>
+      </div>
+
       <div className="flex flex-col gap-1">
         <Label htmlFor="signup-email">Email</Label>
         <Input
@@ -175,29 +180,6 @@ export function SignUpForm() {
           </button>
         </div>
         {errors.password && <FieldError>{errors.password.message}</FieldError>}
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <Label htmlFor="signup-confirm">Confirm Password</Label>
-        <div className="relative">
-          <Input
-            id="signup-confirm"
-            {...register("confirm_password")}
-            type={showConfirm ? "text" : "password"}
-            placeholder="********"
-            fullWidth
-            className="pr-10"
-          />
-          <button
-            type="button"
-            tabIndex={-1}
-            onClick={() => setShowConfirm((v) => !v)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-default"
-          >
-            {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
-          </button>
-        </div>
-        {errors.confirm_password && <FieldError>{errors.confirm_password.message}</FieldError>}
       </div>
 
       <ActionButtonWithPending

@@ -4,12 +4,16 @@ export interface User {
     uuid: string;
     email: string;
     phone: string | null;
+    first_name: string | null;
+    last_name: string | null;
     role: RoleType;
     created_at: string;
     updated_at: string;
 }
 
 export interface UpdateUserDto {
+    first_name?: string | null;
+    last_name?: string | null;
     email?: string;
     phone?: string | null;
 }

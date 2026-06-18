@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import { useAuthStore } from '@/stores/auth';
 import type { UpdatePasswordDto, UpdateUserDto } from '../interfaces/user.interface';
+import { formatUserFullName } from '../utils/user.utils';
 import { getCurrentUser, updateCurrentUser, updateCurrentUserPassword } from '../services/user.service';
 
 export const currentUserQueryKey = ['currentUser'] as const;
@@ -21,7 +22,10 @@ export function useUpdateCurrentUser() {
     mutationFn: (payload: UpdateUserDto) => updateCurrentUser(payload),
     onSuccess: (user) => {
       queryClient.invalidateQueries({ queryKey: currentUserQueryKey });
-      updateUser({ email: user.email });
+      updateUser({
+        email: user.email,
+        full_name: formatUserFullName(user),
+      });
       toast({ title: 'Profile updated', duration: 2000 });
     },
     onError: (error: Error) => {

@@ -58,6 +58,8 @@ export class UsersService {
     const updated = await this.prisma.user.update({
       where: { uuid: user_uuid },
       data: {
+        ...(dto.first_name !== undefined ? { first_name: this.normalizeOptionalString(dto.first_name) } : {}),
+        ...(dto.last_name !== undefined ? { last_name: this.normalizeOptionalString(dto.last_name) } : {}),
         ...(dto.email !== undefined ? { email: dto.email } : {}),
         ...(dto.phone !== undefined ? { phone: dto.phone || null } : {}),
       },
@@ -95,10 +97,17 @@ export class UsersService {
     return { message: 'Password updated successfully' };
   }
 
+  private normalizeOptionalString(value: string | null) {
+    const trimmed = value?.trim();
+    return trimmed ? trimmed : null;
+  }
+
   private toPublicUser(user: {
     uuid: string;
     email: string;
     phone: string | null;
+    first_name: string | null;
+    last_name: string | null;
     role: string;
     created_at: Date;
     updated_at: Date;
@@ -107,6 +116,8 @@ export class UsersService {
       uuid: user.uuid,
       email: user.email,
       phone: user.phone,
+      first_name: user.first_name,
+      last_name: user.last_name,
       role: user.role,
       created_at: user.created_at,
       updated_at: user.updated_at,

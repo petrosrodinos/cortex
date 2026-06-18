@@ -11,7 +11,6 @@ import IntegrationsPage from "@/pages/integrations";
 import ConversationsPage from "@/pages/conversations";
 import SettingsLayout from "@/pages/settings";
 import ProfilePage from "@/pages/settings/profile";
-import PasswordPage from "@/pages/settings/password";
 import UsagePage from "@/pages/settings/usage";
 import AuditLogsPage from "@/pages/settings/audit-logs";
 import ExecutionDetailPage from "@/pages/executions";
@@ -54,7 +53,7 @@ export default function AppRoutes() {
         <Route path="settings" element={<SettingsLayout />}>
           <Route index element={<Navigate to={Routes.dashboard.settingsProfile} replace />} />
           <Route path="profile" element={<ProfilePage />} />
-          <Route path="password" element={<PasswordPage />} />
+          <Route path="password" element={<Navigate to={Routes.dashboard.settingsProfile} replace />} />
           <Route path="ai-providers" element={<Navigate to={Routes.dashboard.integrations} replace />} />
           <Route path="usage" element={<UsagePage />} />
           <Route path="audit-logs" element={<AuditLogsPage />} />
