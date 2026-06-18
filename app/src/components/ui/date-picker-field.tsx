@@ -65,7 +65,7 @@ export function DatePickerField({
       <DateField.Group
         fullWidth
         variant="secondary"
-        className="h-10 rounded-md border border-border bg-surface shadow-none"
+        className="h-10 rounded-field border border-border bg-surface shadow-none"
       >
         <DateField.Input className="text-sm">
           {(segment) => <DateField.Segment segment={segment} />}

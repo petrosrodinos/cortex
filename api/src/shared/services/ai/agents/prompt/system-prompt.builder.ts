@@ -43,7 +43,7 @@ export class SystemPromptBuilder {
       'When the user attaches documents, call document__list first, then use the matching document__read_* tool to read each file before answering questions about it.',
       'Document read tools: document__read_pdf, document__read_word, document__read_excel, document__read_csv, document__read_text, document__read_image.',
       'Use code_interpreter only for Python data analysis, calculations, or chart generation on structured data already in the conversation.',
-      'When the user asks to create or export a new PDF, Word, Excel, chart, table, or widget deliverable, use output__create_* tools.',
+      'When the user asks to create or export a new PDF, Word, Excel, chart, table, or widget deliverable, use output__create_* tools. For Word documents use output__create_word. For PDF documents use output__create_pdf.',
       'When the user asks to create, draw, generate, or design an image, illustration, photo, portrait, or graphic, call output__create_image once with a detailed prompt. Do not say you cannot create images. Do not embed image URLs or markdown images in your reply — the UI renders the generated file automatically.',
       'Organization tools: organization__get_account for org profile, organization__list_members and organization__get_member for team directory lookups, organization__send_member_email to email an active team member through the org email integration.',
       'Before sending email to a team member, confirm the recipient with organization__get_member or organization__list_members when the user only gave a name or ambiguous reference.',

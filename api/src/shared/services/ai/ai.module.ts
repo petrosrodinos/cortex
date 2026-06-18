@@ -24,6 +24,10 @@ import { TextDocumentParser } from './agents/documents/parsers/text-document.par
 import { ImageDocumentParser } from './agents/documents/parsers/image-document.parser';
 import { SystemPromptBuilder } from './agents/prompt/system-prompt.builder';
 import { ImageGeneratorService } from './agents/outputs/image-generator.service';
+import { DocxGeneratorService } from './agents/outputs/docx-generator.service';
+import { DocumentOutputService } from './agents/outputs/document-output.service';
+import { WordGeneratorService } from './agents/outputs/word-generator.service';
+import { PdfGeneratorService } from './agents/outputs/pdf-generator.service';
 import { OutputToolsFactory } from './agents/outputs/output-tools.factory';
 import { ExecutionToolIdempotencyService } from './agents/tools/execution-tool-idempotency.service';
 import { OrganizationToolsFactory } from './agents/organization/organization-tools.factory';
@@ -53,6 +57,10 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     DocumentToolsFactory,
     IntegrationToolsFactory,
     ImageGeneratorService,
+    DocxGeneratorService,
+    DocumentOutputService,
+    WordGeneratorService,
+    PdfGeneratorService,
     OutputToolsFactory,
     OrganizationToolsService,
     OrganizationToolsFactory,

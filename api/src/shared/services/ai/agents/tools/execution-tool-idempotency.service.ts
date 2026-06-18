@@ -4,7 +4,7 @@ import { ToolCallStatus } from 'generated/prisma';
 import { createHash } from 'node:crypto';
 
 const SIDE_EFFECT_TOOL_PATTERN =
-  /^(output__create_image|organization__send_member_email|.+__(send_email|send_message|send_html_email|send_bulk_email|send_email_with_attachments))$/;
+  /^(output__create_image|output__create_word|output__create_pdf|organization__send_member_email|.+__(send_email|send_message|send_html_email|send_bulk_email|send_email_with_attachments))$/;
 
 @Injectable()
 export class ExecutionToolIdempotencyService {

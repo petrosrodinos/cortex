@@ -65,6 +65,13 @@ export function detectOutputType(userMessage: string, assistantContent: string, 
         imageFileUrl = payload.file_url;
       }
 
+      if (
+        (toolName === 'output__create_pdf' || toolName === 'output__create_word') &&
+        typeof payload.file_url === 'string'
+      ) {
+        files.push(payload.file_url);
+      }
+
       if (typeof payload.filename === 'string' && typeof payload.file_url === 'string') {
         files.push(payload.file_url);
       } else if (typeof payload.file_url === 'string' && !files.includes(payload.file_url)) {

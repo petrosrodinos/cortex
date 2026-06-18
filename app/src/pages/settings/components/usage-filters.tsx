@@ -83,7 +83,7 @@ export function UsageFilters({
               <Button
                 aria-label="Select member"
                 variant="secondary"
-                className="h-10 w-full justify-between rounded-md border border-border bg-surface px-3 text-sm font-normal text-foreground shadow-none"
+                className="h-10 w-full justify-between rounded-field border border-border bg-surface px-3 text-sm font-normal text-foreground shadow-none"
                 isDisabled={isLoadingMembers}
               >
                 <span className="truncate">{selectedMemberLabel}</span>
@@ -123,7 +123,7 @@ export function UsageFilters({
           <Button
             aria-label="Reset filters"
             variant="secondary"
-            className="h-10 w-10 min-w-10 border border-border bg-surface text-foreground shadow-none"
+            className="h-10 w-10 min-w-10 rounded-field border border-border bg-surface text-foreground shadow-none"
             onPress={onReset}
           >
             <RotateCcw className="h-4 w-4" />
