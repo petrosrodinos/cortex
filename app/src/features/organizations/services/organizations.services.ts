@@ -1,5 +1,6 @@
 import axiosInstance from '@/config/api/axios';
 import { ApiRoutes } from '@/config/api/routes';
+import { uploadDocument } from '@/features/files/services/files.service';
 import type {
   CreateOrganizationDto,
   Organization,
@@ -33,6 +34,18 @@ export const updateOrganization = async (organization_uuid: string, payload: Upd
   } catch (error: any) {
     throw new Error(error?.response?.data?.message || 'Failed to update organization. Please try again.');
   }
+};
+
+export const uploadOrganizationLogo = async (organization_uuid: string, file: File): Promise<Organization> => {
+  const document = await uploadDocument(organization_uuid, file);
+  if (!document.url) {
+    throw new Error('Upload succeeded but no file URL was returned.');
+  }
+  return updateOrganization(organization_uuid, { logo_url: document.url });
+};
+
+export const removeOrganizationLogo = async (organization_uuid: string): Promise<Organization> => {
+  return updateOrganization(organization_uuid, { logo_url: null });
 };
 
 export const deleteOrganization = async (organization_uuid: string): Promise<void> => {

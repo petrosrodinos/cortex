@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MinLength } from 'class-validator';
+import { IsOptional, IsString, MinLength, ValidateIf } from 'class-validator';
 
 export class UpdateOrganizationDto {
   @IsOptional()
@@ -7,6 +7,7 @@ export class UpdateOrganizationDto {
   name?: string;
 
   @IsOptional()
+  @ValidateIf((_, value) => value !== null)
   @IsString()
-  logo_url?: string;
+  logo_url?: string | null;
 }

@@ -11,8 +11,10 @@ import {
   createOrganization,
   deleteOrganization,
   getOrganizations,
+  removeOrganizationLogo,
   switchOrganization,
   updateOrganization,
+  uploadOrganizationLogo,
 } from '../services/organizations.services';
 
 export const organizationsQueryKey = ['organizations'] as const;
@@ -75,6 +77,37 @@ export function useSwitchOrganization() {
     mutationFn: ({ organization_uuid }: SwitchOrganizationDto) => switchOrganization(organization_uuid),
     onError: (error: Error) => {
       toast({ title: 'Could not switch organization', description: error.message, variant: 'error', duration: 3000 });
+    },
+  });
+}
+
+export function useUploadOrganizationLogo() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ organization_uuid, file }: { organization_uuid: string; file: File }) =>
+      uploadOrganizationLogo(organization_uuid, file),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: organizationsQueryKey });
+      toast({ title: 'Logo updated', description: 'The organisation logo was saved.', duration: 2000 });
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Could not update logo', description: error.message, variant: 'error', duration: 3000 });
+    },
+  });
+}
+
+export function useRemoveOrganizationLogo() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ organization_uuid }: { organization_uuid: string }) => removeOrganizationLogo(organization_uuid),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: organizationsQueryKey });
+      toast({ title: 'Logo removed', description: 'The organisation logo was cleared.', duration: 2000 });
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Could not remove logo', description: error.message, variant: 'error', duration: 3000 });
     },
   });
 }
