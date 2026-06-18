@@ -14,14 +14,20 @@ import { AiProviderModelSelect, DefaultAiProviderToggle } from './ai-provider-fo
 interface AddAiProviderModalProps {
   organizationUuid: string;
   provider: AiProviderType;
+  isFirstAiProvider: boolean;
   onClose: () => void;
 }
 
-export function AddAiProviderModal({ organizationUuid, provider, onClose }: AddAiProviderModalProps) {
+export function AddAiProviderModal({
+  organizationUuid,
+  provider,
+  isFirstAiProvider,
+  onClose,
+}: AddAiProviderModalProps) {
   const createProvider = useCreateAiProvider(organizationUuid);
   const [apiKey, setApiKey] = useState('');
   const [defaultModel, setDefaultModel] = useState(aiProviderDefaultModels[provider]);
-  const [isDefault, setIsDefault] = useState(false);
+  const [isDefault, setIsDefault] = useState(isFirstAiProvider);
   const [usageLimitTokens, setUsageLimitTokens] = useState('');
   const [usageLimitCostUsd, setUsageLimitCostUsd] = useState('');
 
@@ -34,7 +40,7 @@ export function AddAiProviderModal({ organizationUuid, provider, onClose }: AddA
       provider,
       api_key: apiKey.trim(),
       default_model: defaultModel,
-      is_default: isDefault,
+      is_default: isFirstAiProvider || isDefault,
       usage_limit_tokens: usageLimitTokens ? Number(usageLimitTokens) : undefined,
       usage_limit_cost_usd: usageLimitCostUsd ? Number(usageLimitCostUsd) : undefined,
     });
@@ -108,7 +114,11 @@ export function AddAiProviderModal({ organizationUuid, provider, onClose }: AddA
             </label>
           </div>
 
-          <DefaultAiProviderToggle checked={isDefault} onChange={setIsDefault} />
+          <DefaultAiProviderToggle
+            checked={isDefault}
+            onChange={setIsDefault}
+            disabled={isFirstAiProvider}
+          />
 
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <Button type="button" variant="outline" onClick={onClose} className="sm:w-auto">

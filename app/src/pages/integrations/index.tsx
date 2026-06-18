@@ -6,6 +6,7 @@ import type { Integration } from '@/features/integrations/common/interfaces/inte
 import type { CatalogProvider } from '@/features/integrations/constants/catalog-provider';
 import {
   CATALOG_PROVIDER_ICON_META,
+  catalogProviderDescriptions,
   catalogProviderLabels,
   PROVIDER_ICON_META,
   providerLabels,
@@ -71,7 +72,7 @@ export default function IntegrationsPage() {
   const detailSubtitle = isIntegrationDetail
     ? providerLabels[selectedIntegration.provider]
     : isAiProviderDetail
-      ? selectedAiProvider.default_model
+      ? catalogProviderDescriptions[selectedAiProvider.provider as CatalogProvider] ?? selectedAiProvider.default_model
       : '';
 
   const loading = integrationsQuery.isLoading || aiProvidersQuery.isLoading;
@@ -79,23 +80,23 @@ export default function IntegrationsPage() {
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-5">
       {isDetailView ? (
-        <header className="flex items-center gap-3">
+        <header className="flex items-start gap-3">
           <button
             type="button"
             onClick={() => navigate(Routes.dashboard.integrations)}
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-muted hover:bg-surface-secondary hover:text-foreground"
+            className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-md text-muted transition-colors hover:bg-surface-secondary hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
           </button>
           <div
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm"
             style={{ backgroundColor: detailIconMeta?.bg ?? '#6b7280' }}
           >
-            {DetailIcon ? <DetailIcon size={16} className="text-white" /> : null}
+            {DetailIcon ? <DetailIcon size={18} className="text-white" /> : null}
           </div>
-          <div className="min-w-0">
-            <p className="text-xs text-muted">{detailSubtitle}</p>
-            <h1 className="text-base font-semibold leading-tight text-foreground">{detailTitle}</h1>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-lg font-semibold leading-tight text-foreground">{detailTitle}</h1>
+            <p className="mt-1 max-w-2xl text-sm text-muted">{detailSubtitle}</p>
           </div>
         </header>
       ) : (
@@ -127,6 +128,7 @@ export default function IntegrationsPage() {
         <AddAiProviderModal
           organizationUuid={currentOrganization.uuid}
           provider={connectingProvider}
+          isFirstAiProvider={aiProviders.length === 0}
           onClose={() => setConnectingProvider(null)}
         />
       ) : null}
