@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException, ConflictException, BadRequestException, ForbiddenException, HttpException } from '@nestjs/common';
 import { RegisterEmailDto } from '../dto/register-email.dto';
+import { RegisterInvitationDto } from '../dto/register-invitation.dto';
 import { LoginEmailDto } from '../dto/login-email.dto';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -11,6 +12,8 @@ import { EmailConfig } from '@/shared/constants/email';
 import { SwitchOrganizationDto } from '../dto/switch-organization.dto';
 import { OrganizationMemberStatus } from 'generated/prisma';
 import { OrganizationsService } from '@/modules/organizations/organizations.service';
+
+const INVITATION_TOKEN_TYPE = 'organization_invitation';
 
 @Injectable()
 export class EmailAuthService {
@@ -31,6 +34,10 @@ export class EmailAuthService {
             });
 
             if (existing_user) {
+                if (!existing_user.password) {
+                    throw new ConflictException('This email has a pending organization invitation. Use the invitation link to create your account.');
+                }
+
                 throw new ConflictException('User with this email already exists');
             }
 
@@ -126,6 +133,104 @@ export class EmailAuthService {
         } catch (error) {
             throw new BadRequestException('Failed to waitlist user', error.message);
         }
+    }
+
+    async getInvitationDetails(invitation_token: string) {
+        try {
+            const payload = await this.verifyInvitationToken(invitation_token);
+            const member = await this.prisma.organizationMember.findFirst({
+                where: {
+                    uuid: payload.member_uuid,
+                    user_uuid: payload.user_uuid,
+                    org_uuid: payload.organization_uuid,
+                    status: OrganizationMemberStatus.INVITED,
+                },
+                include: {
+                    user: true,
+                    organization: true,
+                },
+            });
+
+            if (!member || member.user.password) {
+                throw new BadRequestException('Invitation is no longer valid');
+            }
+
+            return {
+                email: member.user.email,
+                organization_uuid: member.organization.uuid,
+                organization_name: member.organization.name,
+            };
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
+
+    async registerFromInvitation(dto: RegisterInvitationDto) {
+        try {
+            const payload = await this.verifyInvitationToken(dto.invitation_token);
+            const member = await this.prisma.organizationMember.findFirst({
+                where: {
+                    uuid: payload.member_uuid,
+                    user_uuid: payload.user_uuid,
+                    org_uuid: payload.organization_uuid,
+                    status: OrganizationMemberStatus.INVITED,
+                },
+                include: {
+                    user: true,
+                },
+            });
+
+            if (!member || member.user.password) {
+                throw new BadRequestException('Invitation is no longer valid');
+            }
+
+            const hashed_password = await bcrypt.hash(dto.password, 10);
+
+            const user = await this.prisma.user.update({
+                where: { uuid: member.user_uuid },
+                data: { password: hashed_password },
+            });
+
+            await this.prisma.organizationMember.update({
+                where: { uuid: member.uuid },
+                data: {
+                    status: OrganizationMemberStatus.ACTIVE,
+                    joined_at: new Date(),
+                },
+            });
+
+            const scoped_auth = await this.switchOrganization(user.uuid, {
+                organization_uuid: payload.organization_uuid,
+            });
+
+            delete user.password;
+
+            return { ...scoped_auth, user };
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
+
+    private async verifyInvitationToken(invitation_token: string) {
+        const payload = await this.jwt_service.verifyToken(invitation_token);
+
+        if (
+            payload?.type !== INVITATION_TOKEN_TYPE ||
+            !payload?.member_uuid ||
+            !payload?.user_uuid ||
+            !payload?.organization_uuid ||
+            !payload?.email
+        ) {
+            throw new BadRequestException('Invalid invitation token');
+        }
+
+        return payload as {
+            type: string;
+            member_uuid: string;
+            user_uuid: string;
+            organization_uuid: string;
+            email: string;
+        };
     }
 
     async switchOrganization(user_uuid: string, dto: SwitchOrganizationDto) {

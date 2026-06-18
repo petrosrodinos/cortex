@@ -1,7 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import type { DeleteMemberDto, InviteMemberDto, OrganizationMembersQuery, UpdateMemberDto } from '../interfaces/member.interfaces';
-import { deleteMember, getMembers, inviteMember, updateMember } from '../services/members.services';
+import {
+  deleteMember,
+  getMemberInvitationUrl,
+  getMembers,
+  inviteMember,
+  resendMemberInvitation,
+  updateMember,
+} from '../services/members.services';
 
 export const membersQueryKey = ['members'] as const;
 
@@ -55,6 +62,36 @@ export function useDeleteMember() {
     },
     onError: (error: Error) => {
       toast({ title: 'Could not remove member', description: error.message, variant: 'error', duration: 3000 });
+    },
+  });
+}
+
+export function useResendMemberInvitation(organization_uuid?: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (organization_member_uuid: string) => resendMemberInvitation(organization_uuid!, organization_member_uuid),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: membersQueryKey });
+      toast({ title: 'Invitation resent', description: 'A new invitation email was sent.', duration: 2000 });
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Could not resend invitation', description: error.message, variant: 'error', duration: 3000 });
+    },
+  });
+}
+
+export function useCopyMemberInvitationUrl(organization_uuid?: string) {
+  return useMutation({
+    mutationFn: async (organization_member_uuid: string) => {
+      const { invitation_url } = await getMemberInvitationUrl(organization_uuid!, organization_member_uuid);
+      await navigator.clipboard.writeText(invitation_url);
+    },
+    onSuccess: () => {
+      toast({ title: 'Invitation link copied', description: 'The link is ready to share.', duration: 2000 });
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Could not copy invitation link', description: error.message, variant: 'error', duration: 3000 });
     },
   });
 }

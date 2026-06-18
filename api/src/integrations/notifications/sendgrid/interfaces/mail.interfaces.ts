@@ -48,6 +48,7 @@ export const EmailTemplates = {
     CHAT_INTERNAL_MESSAGE: 'chat-internal-message',
     CHAT_CLIENT_MESSAGE_CONFIRMATION: 'chat-client-message-confirmation',
     CAMPAIGN_MESSAGE: 'campaign-message',
+    ORGANIZATION_MEMBER_INVITATION: 'organization-member-invitation',
 } as const;
 
 export type EmailTemplate = (typeof EmailTemplates)[keyof typeof EmailTemplates];

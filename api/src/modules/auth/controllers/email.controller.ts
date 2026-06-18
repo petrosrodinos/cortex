@@ -1,8 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { EmailAuthService } from '../services/email.service';
 import { RegisterEmailDto } from '../dto/register-email.dto';
+import { RegisterInvitationDto } from '../dto/register-invitation.dto';
 import { LoginEmailDto } from '../dto/login-email.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { AuthResponse } from '../entities/auth-response.entity';
 import { WaitlistDto } from '../dto/waitlist.dto';
 
@@ -53,5 +54,19 @@ export class EmailAuthController {
     })
     async waitlist(@Body() dto: WaitlistDto) {
         return this.authService.waitlist(dto);
+    }
+
+    @Get('invitation')
+    @ApiOperation({ summary: 'Get organization invitation details from token' })
+    @ApiQuery({ name: 'invitation_token', required: true })
+    async getInvitationDetails(@Query('invitation_token') invitation_token: string) {
+        return this.authService.getInvitationDetails(invitation_token);
+    }
+
+    @Post('register-invitation')
+    @ApiOperation({ summary: 'Complete account setup from an organization invitation' })
+    @ApiBody({ type: RegisterInvitationDto })
+    async registerFromInvitation(@Body() dto: RegisterInvitationDto) {
+        return this.authService.registerFromInvitation(dto);
     }
 }

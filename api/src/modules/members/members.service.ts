@@ -1,15 +1,25 @@
 import { BadRequestException, ForbiddenException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { OrganizationsService } from '@/modules/organizations/organizations.service';
+import { CreateJwtService } from '@/shared/utils/jwt/jwt.service';
+import { AuthRoles } from '@/modules/auth/interfaces/auth.interface';
 import { InviteMemberDto } from './dto/invite-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
+import { AppUrls } from '@/shared/config/app-urls';
+import { MemberInvitationMailService } from './services/member-invitation-mail.service';
 import { OrganizationMemberStatus } from 'generated/prisma';
+
+const INVITATION_TOKEN_TYPE = 'organization_invitation';
 
 @Injectable()
 export class MembersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly organizations_service: OrganizationsService,
+    private readonly jwt_service: CreateJwtService,
+    private readonly member_invitation_mail_service: MemberInvitationMailService,
+    private readonly config_service: ConfigService,
   ) {}
 
   async findAll(user_uuid: string, organization_uuid: string) {
@@ -31,13 +41,31 @@ export class MembersService {
       await this.requireManager(user_uuid, organization_uuid);
       const organization = await this.getOrganization(organization_uuid);
       const role = await this.getOrganizationRole(organization.uuid, dto.organization_role_uuid);
-      const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+      const normalized_email = dto.email.trim().toLowerCase();
+      const inviter = await this.prisma.user.findUnique({ where: { uuid: user_uuid } });
 
-      if (!user) {
-        throw new NotFoundException('User must register before they can be invited');
+      if (!inviter) {
+        throw new NotFoundException('Inviting user not found');
       }
 
-      return await this.prisma.organizationMember.upsert({
+      if (inviter.email === normalized_email) {
+        throw new BadRequestException('You cannot invite yourself');
+      }
+
+      let user = await this.prisma.user.findUnique({ where: { email: normalized_email } });
+      const has_registered_account = Boolean(user?.password);
+
+      if (!user) {
+        user = await this.prisma.user.create({
+          data: {
+            email: normalized_email,
+            password: '',
+            role: AuthRoles.USER,
+          },
+        });
+      }
+
+      const member = await this.prisma.organizationMember.upsert({
         where: {
           org_uuid_user_uuid: {
             org_uuid: organization.uuid,
@@ -48,19 +76,79 @@ export class MembersService {
           org_uuid: organization.uuid,
           user_uuid: user.uuid,
           role_uuid: role.uuid,
-          status: OrganizationMemberStatus.ACTIVE,
-          joined_at: new Date(),
+          status: has_registered_account ? OrganizationMemberStatus.ACTIVE : OrganizationMemberStatus.INVITED,
+          joined_at: has_registered_account ? new Date() : null,
         },
         update: {
           role_uuid: role.uuid,
-          status: OrganizationMemberStatus.ACTIVE,
-          joined_at: new Date(),
+          status: has_registered_account ? OrganizationMemberStatus.ACTIVE : OrganizationMemberStatus.INVITED,
+          joined_at: has_registered_account ? new Date() : null,
         },
         include: { role: true, user: true },
       });
+
+      if (!has_registered_account) {
+        await this.sendInvitationEmail(user_uuid, organization, member, user);
+      }
+
+      return member;
     } catch (error) {
       this.handleError(error);
     }
+  }
+
+  async resendInvitation(user_uuid: string, organization_uuid: string, organization_member_uuid: string) {
+    try {
+      const { organization, member } = await this.requirePendingInvitationMember(
+        user_uuid,
+        organization_uuid,
+        organization_member_uuid,
+      );
+
+      await this.sendInvitationEmail(user_uuid, organization, member, member.user);
+
+      return member;
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  async getInvitationUrl(user_uuid: string, organization_uuid: string, organization_member_uuid: string) {
+    try {
+      const { organization, member } = await this.requirePendingInvitationMember(
+        user_uuid,
+        organization_uuid,
+        organization_member_uuid,
+      );
+
+      const invitation_token = await this.createInvitationToken(organization, member, member.user);
+
+      return { invitation_url: AppUrls.invitationSignUp(invitation_token) };
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+
+  private async sendInvitationEmail(
+    inviter_user_uuid: string,
+    organization: { uuid: string; name: string },
+    member: { uuid: string },
+    invited_user: { uuid: string; email: string },
+  ) {
+    const inviter = await this.prisma.user.findUnique({ where: { uuid: inviter_user_uuid } });
+
+    if (!inviter) {
+      throw new NotFoundException('Inviting user not found');
+    }
+
+    const invitation_token = await this.createInvitationToken(organization, member, invited_user);
+
+    await this.member_invitation_mail_service.sendInvitationEmail({
+      to: invited_user.email,
+      organization_name: organization.name,
+      inviter_email: inviter.email,
+      invitation_token,
+    });
   }
 
   async update(user_uuid: string, organization_uuid: string, organization_member_uuid: string, dto: UpdateMemberDto) {
@@ -110,6 +198,50 @@ export class MembersService {
     } catch (error) {
       this.handleError(error);
     }
+  }
+
+  private async requirePendingInvitationMember(
+    user_uuid: string,
+    organization_uuid: string,
+    organization_member_uuid: string,
+  ) {
+    await this.requireManager(user_uuid, organization_uuid);
+    const organization = await this.getOrganization(organization_uuid);
+    const member = await this.prisma.organizationMember.findFirst({
+      where: { uuid: organization_member_uuid, org_uuid: organization.uuid },
+      include: { role: true, user: true },
+    });
+
+    if (!member) {
+      throw new NotFoundException('Member not found in this organization');
+    }
+
+    if (member.status !== OrganizationMemberStatus.INVITED) {
+      throw new BadRequestException('Only invited members have an invitation link');
+    }
+
+    if (member.user.password) {
+      throw new BadRequestException('This member already has an account');
+    }
+
+    return { organization, member };
+  }
+
+  private async createInvitationToken(
+    organization: { uuid: string },
+    member: { uuid: string },
+    invited_user: { uuid: string; email: string },
+  ) {
+    return this.jwt_service.signToken(
+      {
+        type: INVITATION_TOKEN_TYPE,
+        member_uuid: member.uuid,
+        user_uuid: invited_user.uuid,
+        email: invited_user.email,
+        organization_uuid: organization.uuid,
+      },
+      this.config_service.get<string>('JWT_INVITATION_EXPIRATION_TIME') ?? '7d',
+    );
   }
 
   private async requireManager(user_uuid: string, organization_uuid: string) {

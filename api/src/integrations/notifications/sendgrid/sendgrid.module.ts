@@ -16,6 +16,6 @@ import { SendGridListService } from './services/list.service';
         Logger,
         SendGridListService
     ],
-    exports: [SendgridMailService, SendGridListService],
+    exports: [SendgridMailService, SendGridListService, TemplateService],
 })
 export class SendgridModule { }

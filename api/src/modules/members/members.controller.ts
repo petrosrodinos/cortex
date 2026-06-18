@@ -28,6 +28,32 @@ export class MembersController {
     }
   }
 
+  @Get(':organization_member_uuid/invitation-url')
+  async getInvitationUrl(
+    @CurrentUser('uuid') user_uuid: string,
+    @Param('organization_uuid') organization_uuid: string,
+    @Param('organization_member_uuid') organization_member_uuid: string,
+  ) {
+    try {
+      return await this.members_service.getInvitationUrl(user_uuid, organization_uuid, organization_member_uuid);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post(':organization_member_uuid/resend-invitation')
+  async resendInvitation(
+    @CurrentUser('uuid') user_uuid: string,
+    @Param('organization_uuid') organization_uuid: string,
+    @Param('organization_member_uuid') organization_member_uuid: string,
+  ) {
+    try {
+      return await this.members_service.resendInvitation(user_uuid, organization_uuid, organization_member_uuid);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @Patch(':organization_member_uuid')
   async update(
     @CurrentUser('uuid') user_uuid: string,

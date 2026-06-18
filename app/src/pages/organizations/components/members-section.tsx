@@ -1,7 +1,14 @@
-import { useEffect, useState } from 'react';
-import { UserPlus, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Copy, Mail, MoreHorizontal, Trash2, UserPlus, X } from 'lucide-react';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
-import { useDeleteMember, useGetMembers, useInviteMember, useUpdateMember } from '@/features/members/hooks/use-members';
+import {
+  useCopyMemberInvitationUrl,
+  useDeleteMember,
+  useGetMembers,
+  useInviteMember,
+  useResendMemberInvitation,
+  useUpdateMember,
+} from '@/features/members/hooks/use-members';
 import {
   OrganizationMemberStatuses,
   type OrganizationMember,
@@ -10,7 +17,7 @@ import { useGetRoles } from '@/features/roles/hooks/use-roles';
 import { cn } from '@/lib/utils';
 import { useOrganizationStore } from '@/stores/organization';
 
-type DeleteMemberTarget = { uuid: string; label: string } | null;
+type MemberActionTarget = { uuid: string; label: string } | null;
 
 function memberInitials(email: string) {
   const local = email.split('@')[0];
@@ -28,12 +35,17 @@ export function MembersSection() {
   const [memberRoleUuid, setMemberRoleUuid] = useState('');
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<DeleteMemberTarget>(null);
+  const [deleteTarget, setDeleteTarget] = useState<MemberActionTarget>(null);
+  const [resendTarget, setResendTarget] = useState<MemberActionTarget>(null);
+  const [menuOpenUuid, setMenuOpenUuid] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const membersQuery = useGetMembers(currentOrganization?.uuid);
   const rolesQuery = useGetRoles(currentOrganization?.uuid);
   const inviteMemberMutation = useInviteMember(currentOrganization?.uuid);
   const updateMemberMutation = useUpdateMember(currentOrganization?.uuid);
   const deleteMemberMutation = useDeleteMember();
+  const resendInvitationMutation = useResendMemberInvitation(currentOrganization?.uuid);
+  const copyInvitationUrlMutation = useCopyMemberInvitationUrl(currentOrganization?.uuid);
   const members = membersQuery.data ?? [];
   const roles = rolesQuery.data ?? [];
   const loading =
@@ -42,7 +54,9 @@ export function MembersSection() {
     rolesQuery.isLoading ||
     inviteMemberMutation.isPending ||
     updateMemberMutation.isPending ||
-    deleteMemberMutation.isPending;
+    deleteMemberMutation.isPending ||
+    resendInvitationMutation.isPending ||
+    copyInvitationUrlMutation.isPending;
   const queryError = membersQuery.error?.message ?? rolesQuery.error?.message ?? null;
 
   useEffect(() => {
@@ -51,6 +65,17 @@ export function MembersSection() {
       return roles.find((role) => role.name === 'Employee')?.uuid ?? roles[0]?.uuid ?? '';
     });
   }, [roles]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpenUuid(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   async function inviteMember(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -102,6 +127,20 @@ export function MembersSection() {
     } finally {
       setIsBusy(false);
       setDeleteTarget(null);
+    }
+  }
+
+  async function confirmResendInvitation() {
+    if (!resendTarget) return;
+    setIsBusy(true);
+    setError(null);
+    try {
+      await resendInvitationMutation.mutateAsync(resendTarget.uuid);
+    } catch (err: any) {
+      setError(err?.message ?? 'Unable to resend invitation');
+    } finally {
+      setIsBusy(false);
+      setResendTarget(null);
     }
   }
 
@@ -210,6 +249,7 @@ export function MembersSection() {
               {members.map((member) => {
                 const memberEmail = member.user?.email ?? member.user_uuid;
                 const isOwner = member.role?.name === 'Owner';
+                const canResendInvitation = member.status === OrganizationMemberStatuses.INVITED;
 
                 return (
                   <tr
@@ -275,16 +315,65 @@ export function MembersSection() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       {!isOwner && (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setDeleteTarget({ uuid: member.uuid, label: memberEmail })
-                          }
-                          title="Remove member"
-                          className="inline-grid h-7 w-7 place-items-center rounded-md text-muted transition-colors hover:bg-surface-secondary hover:text-foreground"
+                        <div
+                          className="relative inline-flex justify-end"
+                          ref={menuOpenUuid === member.uuid ? menuRef : undefined}
                         >
-                          <X className="h-4 w-4" />
-                        </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setMenuOpenUuid(menuOpenUuid === member.uuid ? null : member.uuid)
+                            }
+                            disabled={loading}
+                            aria-label="Member actions"
+                            className="inline-grid h-7 w-7 place-items-center rounded-md text-muted transition-colors hover:bg-surface-secondary hover:text-foreground disabled:opacity-60"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </button>
+
+                          {menuOpenUuid === member.uuid && (
+                            <div className="absolute right-0 top-full z-20 mt-1 min-w-[180px] overflow-hidden rounded-lg border border-border bg-surface py-1 shadow-lg">
+                              {canResendInvitation && (
+                                <>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setMenuOpenUuid(null);
+                                      copyInvitationUrlMutation.mutate(member.uuid);
+                                    }}
+                                    disabled={copyInvitationUrlMutation.isPending}
+                                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-surface-secondary disabled:opacity-60"
+                                  >
+                                    <Copy className="h-3.5 w-3.5" />
+                                    Copy invitation link
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setMenuOpenUuid(null);
+                                      setResendTarget({ uuid: member.uuid, label: memberEmail });
+                                    }}
+                                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-surface-secondary"
+                                  >
+                                    <Mail className="h-3.5 w-3.5" />
+                                    Resend invitation
+                                  </button>
+                                </>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setMenuOpenUuid(null);
+                                  setDeleteTarget({ uuid: member.uuid, label: memberEmail });
+                                }}
+                                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-400 hover:bg-surface-secondary"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                                Remove member
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       )}
                     </td>
                   </tr>
@@ -294,6 +383,23 @@ export function MembersSection() {
           </table>
         </div>
       )}
+
+      <ConfirmationDialog
+        open={Boolean(resendTarget)}
+        title="Resend invitation"
+        description={
+          resendTarget
+            ? `Send a new invitation email to ${resendTarget.label}? They will receive a fresh link to join this workspace.`
+            : ''
+        }
+        confirmLabel="Resend invitation"
+        variant="confirm"
+        loading={loading}
+        onConfirm={confirmResendInvitation}
+        onOpenChange={(open) => {
+          if (!open && !loading) setResendTarget(null);
+        }}
+      />
 
       <ConfirmationDialog
         open={Boolean(deleteTarget)}

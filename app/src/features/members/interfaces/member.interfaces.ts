@@ -45,3 +45,7 @@ export interface DeleteMemberDto {
   organization_uuid: string;
   organization_member_uuid: string;
 }
+
+export interface MemberInvitationUrlResponse {
+  invitation_url: string;
+}

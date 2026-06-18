@@ -1,6 +1,6 @@
 import { formatAuthUser } from "../utils/auth.utils";
 import axiosInstance from "@/config/api/axios";
-import type { SignInUser, SignUpUser } from "../interfaces/auth.interface";
+import type { SignInUser, SignUpUser, RegisterInvitationUser, InvitationDetails } from "../interfaces/auth.interface";
 import { ApiRoutes } from "@/config/api/routes";
 import type { LoggedInUser } from "@/features/user/interfaces/user.interface";
 
@@ -35,6 +35,38 @@ export const signUp = async ({ email, password }: SignUpUser): Promise<LoggedInU
     } catch (error: any) {
         throw new Error(
             error?.response?.data?.message || "Failed to sign up. Please try again.",
+        );
+    }
+};
+
+export const getInvitationDetails = async (invitation_token: string): Promise<InvitationDetails> => {
+    try {
+        const response = await axiosInstance.get(ApiRoutes.auth.email.invitation, {
+            params: { invitation_token },
+        });
+        return response.data;
+    } catch (error: any) {
+        throw new Error(
+            error?.response?.data?.message || "Failed to load invitation details. Please try again.",
+        );
+    }
+};
+
+export const registerFromInvitation = async ({
+    invitation_token,
+    password,
+}: RegisterInvitationUser): Promise<LoggedInUser> => {
+    try {
+        const response = await axiosInstance.post(ApiRoutes.auth.email.register_invitation, {
+            invitation_token,
+            password,
+        });
+
+        const auth_response = response.data;
+        return formatAuthUser(auth_response);
+    } catch (error: any) {
+        throw new Error(
+            error?.response?.data?.message || "Failed to complete invitation signup. Please try again.",
         );
     }
 };

@@ -4,6 +4,8 @@ export const ApiRoutes = {
         email: {
             login: "/auth/email/login",
             register: "/auth/email/register",
+            register_invitation: "/auth/email/register-invitation",
+            invitation: "/auth/email/invitation",
             refresh_token: "/auth/email/refresh-token",
             admin_login_to_account: (account_uuid: string) => `/auth/email/${account_uuid}/admin-login`,
             forgot_password: "/auth/forgot-password",
@@ -24,6 +26,10 @@ export const ApiRoutes = {
         by_uuid: (organizationUuid: string) => `/organizations/${organizationUuid}`,
         members: (organizationUuid: string) => `/organizations/${organizationUuid}/members`,
         member: (organizationUuid: string, organizationMemberUuid: string) => `/organizations/${organizationUuid}/members/${organizationMemberUuid}`,
+        resendMemberInvitation: (organizationUuid: string, organizationMemberUuid: string) =>
+            `/organizations/${organizationUuid}/members/${organizationMemberUuid}/resend-invitation`,
+        memberInvitationUrl: (organizationUuid: string, organizationMemberUuid: string) =>
+            `/organizations/${organizationUuid}/members/${organizationMemberUuid}/invitation-url`,
         roles: (organizationUuid: string) => `/organizations/${organizationUuid}/roles`,
         role: (organizationUuid: string, organizationRoleUuid: string) => `/organizations/${organizationUuid}/roles/${organizationRoleUuid}`,
         rolePermissions: (organizationUuid: string, organizationRoleUuid: string) => `/organizations/${organizationUuid}/roles/${organizationRoleUuid}/permissions`,

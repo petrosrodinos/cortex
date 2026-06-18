@@ -13,7 +13,8 @@ export class ResendMailService {
       return await this.resendAdapter.sendEmail(createEmail);
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException('Failed to send email with Resend');
+      const message = error instanceof Error ? error.message : 'Failed to send email with Resend';
+      throw new InternalServerErrorException(message);
     }
   }
 
@@ -23,7 +24,8 @@ export class ResendMailService {
       return await Promise.all(promises);
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException('Failed to send bulk emails with Resend');
+      const message = error instanceof Error ? error.message : 'Failed to send bulk emails with Resend';
+      throw new InternalServerErrorException(message);
     }
   }
 }

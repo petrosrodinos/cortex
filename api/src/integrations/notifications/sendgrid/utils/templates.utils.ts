@@ -7,11 +7,22 @@ import { EmailTemplate } from '../interfaces/mail.interfaces';
 @Injectable()
 export class TemplateService {
     private readonly logger = new Logger(TemplateService.name);
-    private readonly templatesPath = path.join(process.cwd(), 'dist', 'integrations', 'notifications', 'sendgrid', 'templates');
+    private readonly templatesPath = this.resolveTemplatesPath();
     private compiledTemplates = new Map<string, HandlebarsTemplateDelegate>();
 
     constructor() {
         this.registerHelpers();
+    }
+
+    private resolveTemplatesPath() {
+        const distPath = path.join(process.cwd(), 'dist', 'src', 'integrations', 'notifications', 'sendgrid', 'templates');
+        const srcPath = path.join(process.cwd(), 'src', 'integrations', 'notifications', 'sendgrid', 'templates');
+
+        if (fs.existsSync(distPath)) {
+            return distPath;
+        }
+
+        return srcPath;
     }
 
     private registerHelpers() {

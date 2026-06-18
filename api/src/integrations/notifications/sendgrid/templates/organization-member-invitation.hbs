@@ -1,0 +1,102 @@
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <title>You're invited to join {{organization.name}}</title>
+    <style>
+      body {
+        font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+        background-color: #1a1f2e;
+        margin: 0;
+        padding: 32px 20px;
+        color: #edf0f5;
+      }
+      .email {
+        background: #222836;
+        border: 1px solid #3d4559;
+        border-radius: 12px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.25);
+        max-width: 640px;
+        margin: auto;
+        overflow: hidden;
+      }
+      .header {
+        background: linear-gradient(135deg, rgba(62, 233, 176, 0.16) 0%, #2a3142 100%);
+        border-bottom: 1px solid rgba(62, 233, 176, 0.48);
+        color: #edf0f5;
+        padding: 28px 32px;
+      }
+      .brand {
+        display: inline-block;
+        margin-bottom: 12px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #3ee9b0;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 1.3;
+        color: #edf0f5;
+      }
+      .body {
+        padding: 32px;
+      }
+      .body p {
+        margin: 0 0 16px;
+        font-size: 15px;
+        line-height: 1.65;
+        color: #9aa3b2;
+      }
+      .body strong {
+        color: #edf0f5;
+        font-weight: 600;
+      }
+      .cta {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 12px 24px;
+        background: #3ee9b0;
+        color: #1a1f2e !important;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .footer {
+        padding: 20px 32px;
+        border-top: 1px solid #3d4559;
+        font-size: 13px;
+        line-height: 1.5;
+        color: #7d8798;
+        background: #1e2433;
+      }
+    </style>
+  </head>
+  <body>
+    <div class='email'>
+      <div class='header'>
+        <span class='brand'>Cortex</span>
+        <h1>You're invited</h1>
+      </div>
+      <div class='body'>
+        <p>
+          <strong>{{inviter_email}}</strong>
+          invited you to join
+          <strong>{{organization.name}}</strong>
+          on Cortex.
+        </p>
+        <p>
+          Accept the invitation to create your account and start collaborating with your team.
+        </p>
+        <a class='cta' href='{{accept_url}}'>Accept invitation</a>
+      </div>
+      <div class='footer'>
+        If you were not expecting this invitation, you can safely ignore this email.
+      </div>
+    </div>
+  </body>
+</html>

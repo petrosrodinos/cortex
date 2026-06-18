@@ -1,8 +1,8 @@
-import { adminLoginToAccount, refreshAccountToken, signIn, signUp } from "../services/auth";
-import { useMutation } from "@tanstack/react-query";
+import { adminLoginToAccount, getInvitationDetails, refreshAccountToken, registerFromInvitation, signIn, signUp } from "../services/auth";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/stores/auth";
 import { useNavigate } from "react-router-dom";
-import type { SignInUser, SignUpUser } from "../interfaces/auth.interface";
+import type { SignInUser, SignUpUser, RegisterInvitationUser } from "../interfaces/auth.interface";
 import { Routes } from "@/routes/routes";
 import type { LoggedInUser } from "@/features/user/interfaces/user.interface";
 import { toast } from "@/hooks/use-toast";
@@ -59,6 +59,44 @@ export function useSignup() {
         onError: (error) => {
             toast({
                 title: "Could not sign up",
+                description: error.message,
+                duration: 3000,
+                variant: "error",
+            });
+        },
+    });
+}
+
+export function useGetInvitationDetails(invitation_token?: string) {
+    return useQuery({
+        queryKey: ["invitation", invitation_token],
+        queryFn: () => getInvitationDetails(invitation_token as string),
+        enabled: !!invitation_token,
+        retry: false,
+    });
+}
+
+export function useRegisterInvitation() {
+    const { login } = useAuthStore((state) => state);
+    const navigate = useNavigate();
+
+    return useMutation({
+        mutationFn: (data: RegisterInvitationUser) => registerFromInvitation(data),
+        onSuccess: (data) => {
+            login({
+                ...data,
+                isLoggedIn: true,
+            });
+            toast({
+                title: "Account created",
+                description: "Your invitation has been accepted",
+                duration: 2000,
+            });
+            navigate(Routes.dashboard.root);
+        },
+        onError: (error) => {
+            toast({
+                title: "Could not complete invitation",
                 description: error.message,
                 duration: 3000,
                 variant: "error",
