@@ -3,18 +3,20 @@ import ReactMarkdown from 'react-markdown';
 import rehypeSanitize from 'rehype-sanitize';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import type { Message } from '@/features/conversations/interfaces/conversation.interfaces';
+import type { Message, MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
 import { cn } from '@/lib/utils';
 import { AiTypingIndicator } from './ai-typing-indicator';
 import { ConversationMessagesSkeleton } from './conversation-messages-skeleton';
 import { ConversationNoMessagesState } from './conversation-no-messages-state';
+import { getMessageAttachments, MessageAttachments } from './message-attachments';
 
 interface ConversationMessagesProps {
   conversationUuid: string;
   messages: Message[];
   isLoading: boolean;
   pendingUserMessage: string | null;
+  pendingUserAttachments: MessageAttachment[];
   pendingAssistantContent: string | null;
   showTypingIndicator: boolean;
   toolCalls: Array<{ toolName: string; status: string }>;
@@ -31,6 +33,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
   messages,
   isLoading,
   pendingUserMessage,
+  pendingUserAttachments,
   pendingAssistantContent,
   showTypingIndicator,
   toolCalls,
@@ -56,7 +59,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
 
   useEffect(() => {
     scrollToBottom('smooth');
-  }, [messages, pendingUserMessage, pendingAssistantContent, showTypingIndicator, approvalRequest, executionError]);
+  }, [messages, pendingUserMessage, pendingUserAttachments, pendingAssistantContent, showTypingIndicator, approvalRequest, executionError]);
 
   if (isLoading) {
     return <ConversationMessagesSkeleton />;
@@ -91,7 +94,12 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
               <ReactMarkdown rehypePlugins={[rehypeSanitize]}>{message.content}</ReactMarkdown>
             </div>
           ) : (
-            message.content
+            <>
+              {message.content}
+              {message.role === MessageRoles.USER && (
+                <MessageAttachments attachments={getMessageAttachments(message.metadata)} />
+              )}
+            </>
           )}
 
           {message.role === MessageRoles.ASSISTANT && message.metadata && (() => {
@@ -156,6 +164,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
       {pendingUserMessage && (
         <div className="ml-auto max-w-[85%] rounded-2xl bg-accent/15 px-4 py-3 text-sm text-foreground whitespace-pre-wrap">
           {pendingUserMessage}
+          <MessageAttachments attachments={pendingUserAttachments} />
         </div>
       )}
 

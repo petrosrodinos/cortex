@@ -50,6 +50,7 @@ export class DocumentsService {
       filename: document.filename,
       mimetype: document.mimetype,
       size: document.size,
+      url: document.url,
     };
   }
 

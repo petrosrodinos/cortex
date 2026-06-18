@@ -27,6 +27,13 @@ export interface Conversation {
   messages?: Message[];
 }
 
+export interface MessageAttachment {
+  uuid: string;
+  filename: string;
+  url?: string;
+  mimetype?: string;
+}
+
 export interface Message {
   uuid: string;
   conversation_uuid: string;

@@ -17,7 +17,7 @@ import {
   conversationsQueryKey,
 } from '@/features/conversations/hooks/use-conversations';
 import { useExecution } from '@/features/conversations/hooks/use-execution';
-import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
+import { MessageRoles, type MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { useUploadDocument } from '@/features/files/hooks/use-files';
 import { ConversationEmptyState } from './components/conversation-empty-state';
 import { ConversationHeader } from './components/conversation-header';
@@ -29,6 +29,7 @@ import { ConversationSidebarSkeleton } from './components/conversation-sidebar-s
 interface AttachedFile {
   file: File;
   uuid?: string;
+  url?: string;
 }
 
 const ConversationsPage: FC = () => {
@@ -40,6 +41,7 @@ const ConversationsPage: FC = () => {
   const [activeExecutionId, setActiveExecutionId] = useState<string | null>(null);
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
   const [pendingUserMessage, setPendingUserMessage] = useState<string | null>(null);
+  const [pendingUserAttachments, setPendingUserAttachments] = useState<MessageAttachment[]>([]);
   const [deleteTargetUuid, setDeleteTargetUuid] = useState<string | null>(null);
   const autoCreateStarted = useRef(false);
 
@@ -126,6 +128,7 @@ const ConversationsPage: FC = () => {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage?.role === MessageRoles.USER && lastMessage.content === pendingUserMessage) {
       setPendingUserMessage(null);
+      setPendingUserAttachments([]);
     }
   }, [messages, pendingUserMessage]);
 
@@ -144,7 +147,7 @@ const ConversationsPage: FC = () => {
     try {
       const doc = await uploadDocument.mutateAsync(file);
       setAttachedFiles((prev) =>
-        prev.map((f) => (f.file === file ? { file, uuid: doc.uuid } : f)),
+        prev.map((f) => (f.file === file ? { file, uuid: doc.uuid, url: doc.url } : f)),
       );
     } catch {
       setAttachedFiles((prev) => prev.filter((f) => f.file !== file));
@@ -164,10 +167,19 @@ const ConversationsPage: FC = () => {
 
     const content = draft.trim();
     const documentUuids = attachedFiles.filter((f) => f.uuid).map((f) => f.uuid as string);
+    const sentAttachments: MessageAttachment[] = attachedFiles
+      .filter((f) => f.uuid)
+      .map((f) => ({
+        uuid: f.uuid as string,
+        filename: f.file.name,
+        mimetype: f.file.type,
+        url: f.url,
+      }));
     const isFirstMessage = messages.length === 0;
     setDraft('');
     setAttachedFiles([]);
     setPendingUserMessage(content);
+    setPendingUserAttachments(sentAttachments);
 
     try {
       const response = await sendMessage.mutateAsync({ content, documentUuids });
@@ -180,6 +192,7 @@ const ConversationsPage: FC = () => {
       }
     } catch {
       setPendingUserMessage(null);
+      setPendingUserAttachments([]);
     }
   };
 
@@ -276,6 +289,7 @@ const ConversationsPage: FC = () => {
               messages={messages}
               isLoading={messagesLoading}
               pendingUserMessage={isPendingUserMessageVisible ? pendingUserMessage : null}
+              pendingUserAttachments={isPendingUserMessageVisible ? pendingUserAttachments : []}
               pendingAssistantContent={pendingAssistantContent}
               showTypingIndicator={showTypingIndicator}
               toolCalls={toolCalls}

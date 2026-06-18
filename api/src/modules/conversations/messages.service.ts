@@ -36,12 +36,14 @@ export class MessagesService {
   async sendMessage(userUuid: string, organizationUuid: string, conversationUuid: string, dto: SendMessageDto) {
     await this.organizations.requireActiveMember(userUuid, organizationUuid);
     const conversation = await this.getConversation(userUuid, organizationUuid, conversationUuid);
+    const attachments = await this.resolveMessageAttachments(userUuid, dto.documentUuids ?? []);
 
     const userMessage = await this.prisma.message.create({
       data: {
         conversation_uuid: conversation.uuid,
         role: MessageRole.USER,
         content: dto.content,
+        ...(attachments ? { metadata: { attachments } } : {}),
       },
     });
 
@@ -131,6 +133,25 @@ export class MessagesService {
     } catch {
       return fallback;
     }
+  }
+
+  private async resolveMessageAttachments(userUuid: string, documentUuids: string[]) {
+    if (documentUuids.length === 0) {
+      return null;
+    }
+
+    const documents = await this.prisma.document.findMany({
+      where: { uuid: { in: documentUuids }, user_uuid: userUuid },
+      select: { uuid: true, filename: true, url: true, mimetype: true },
+    });
+
+    if (documents.length !== documentUuids.length) {
+      const found = new Set(documents.map((document) => document.uuid));
+      const missing = documentUuids.filter((uuid) => !found.has(uuid));
+      throw new NotFoundException(`Documents not found: ${missing.join(', ')}`);
+    }
+
+    return documents;
   }
 
   private async getConversation(userUuid: string, organizationUuid: string, conversationUuid: string) {
