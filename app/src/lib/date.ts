@@ -34,7 +34,7 @@ export function formatDateTime(value: string | Date): string {
   }
 
   if (date.hasSame(now, 'day')) {
-    return date.toRelative({ base: now, round: 'floor' }) ?? '';
+    return date.toRelative({ base: now }) ?? '';
   }
 
   return date.toLocaleString(DateTime.DATE_MED);
