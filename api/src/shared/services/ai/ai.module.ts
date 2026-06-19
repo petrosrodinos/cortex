@@ -30,6 +30,7 @@ import { WordGeneratorService } from './agents/outputs/word/word-generator.servi
 import { PdfGeneratorService } from './agents/outputs/pdf/pdf-generator.service';
 import { ExcelGeneratorService } from './agents/outputs/excel/excel-generator.service';
 import { WidgetGeneratorService } from './agents/outputs/widget/widget-generator.service';
+import { WidgetHtmlDebugService } from './agents/outputs/widget/widget-html-debug.service';
 import { OutputToolsFactory } from './agents/outputs/tools/output-tools.factory';
 import { ExecutionToolIdempotencyService } from './agents/tools/execution-tool-idempotency.service';
 import { EmailToolPreprocessorService } from './agents/tools/email-tool-preprocessor.service';
@@ -69,6 +70,7 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     PdfGeneratorService,
     ExcelGeneratorService,
     WidgetGeneratorService,
+    WidgetHtmlDebugService,
     OutputToolsFactory,
     AgentActorService,
     OrganizationToolsService,

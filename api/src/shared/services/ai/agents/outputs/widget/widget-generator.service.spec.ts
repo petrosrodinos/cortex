@@ -2,7 +2,11 @@ import { BadRequestException } from '@nestjs/common';
 import { WidgetGeneratorService } from './widget-generator.service';
 
 describe('WidgetGeneratorService', () => {
-  const service = new WidgetGeneratorService({} as any);
+  const widgetHtmlDebug = {
+    fixHtml: jest.fn(async (_organizationUuid: string, html: string) => html),
+  };
+
+  const service = new WidgetGeneratorService({} as any, widgetHtmlDebug as any);
 
   it('assembles a complete HTML document from fragments', () => {
     const document = service.buildDocument({
@@ -104,5 +108,38 @@ describe('WidgetGeneratorService', () => {
     expect(document).toContain('function renderTableRows');
     expect(document).toContain('function widgetRecords');
     expect(document).toContain('function formatWidgetCurrency');
+  });
+
+  it('runs html debug validation during generate', async () => {
+    const documentOutput = {
+      persist: jest.fn().mockResolvedValue({
+        file_url: 'https://example.com/widget.html',
+        filename: 'widget.html',
+        document_uuid: 'doc-1',
+        media_type: 'text/html',
+      }),
+    };
+    const generator = new WidgetGeneratorService(documentOutput as any, widgetHtmlDebug as any);
+    const params = {
+      title: 'Sales Widget',
+      html: '<div id="app">Hello</div>',
+      css: 'body { color: red; }',
+      js: 'console.log("ready");',
+    };
+
+    await generator.generate('org-1', 'user-1', params);
+
+    expect(widgetHtmlDebug.fixHtml).toHaveBeenCalledWith(
+      'org-1',
+      expect.stringContaining('<!DOCTYPE html>'),
+    );
+    expect(documentOutput.persist).toHaveBeenCalledWith(
+      'org-1',
+      'user-1',
+      expect.any(Buffer),
+      'html',
+      'text/html',
+      'WIDGET',
+    );
   });
 });
