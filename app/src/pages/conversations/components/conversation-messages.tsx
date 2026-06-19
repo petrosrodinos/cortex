@@ -13,8 +13,9 @@ import { ConversationMessagesSkeleton } from './conversation-messages-skeleton';
 import { ConversationNoMessagesState } from './conversation-no-messages-state';
 import { getMessageAttachments, MessageAttachments } from './message-attachments';
 import { ExecutionApprovalCard } from './execution-approval-card';
+import { MessageCopyButton } from './message-copy-button';
 import { MessageMarkdown } from './message-markdown';
-import { getFilePreviewUrl, prepareAssistantMarkdown } from './message-markdown.utils';
+import { getFilePreviewUrl, prepareAssistantMarkdown } from '../utils/message-markdown.utils';
 import { WidgetPreview } from './widget-preview';
 
 const messageBubbleClassName = 'min-w-0 max-w-[min(92%,100%)] break-words overflow-hidden rounded-2xl px-3 py-2.5 text-sm sm:max-w-[85%] sm:px-4 sm:py-3';
@@ -109,21 +110,26 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
                 : 'mr-auto w-full bg-surface-secondary text-foreground',
             )}
           >
-          {message.role === MessageRoles.ASSISTANT ? (
-            <MessageMarkdown
-              content={prepareAssistantMarkdown(
-                message.content,
-                (message.metadata as { files?: string[] } | null | undefined)?.files ?? [],
+          <div className="flex items-start gap-1">
+            <div className="min-w-0 flex-1">
+              {message.role === MessageRoles.ASSISTANT ? (
+                <MessageMarkdown
+                  content={prepareAssistantMarkdown(
+                    message.content,
+                    (message.metadata as { files?: string[] } | null | undefined)?.files ?? [],
+                  )}
+                />
+              ) : (
+                <>
+                  {message.content}
+                  {message.role === MessageRoles.USER && (
+                    <MessageAttachments attachments={getMessageAttachments(message.metadata)} />
+                  )}
+                </>
               )}
-            />
-          ) : (
-            <>
-              {message.content}
-              {message.role === MessageRoles.USER && (
-                <MessageAttachments attachments={getMessageAttachments(message.metadata)} />
-              )}
-            </>
-          )}
+            </div>
+            <MessageCopyButton content={message.content} className="mt-0.5 shrink-0" />
+          </div>
 
           {message.role === MessageRoles.ASSISTANT && message.metadata && (() => {
             const meta = message.metadata as {

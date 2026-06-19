@@ -30,3 +30,25 @@ export function enrichMarkdownWithFileLinks(content: string, files: string[]): s
 export function prepareAssistantMarkdown(content: string, files: string[] = []): string {
   return normalizeMarkdownTables(enrichMarkdownWithFileLinks(content, files));
 }
+
+export function stripMarkdownForPreview(content: string): string {
+  return content
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^>\s?/gm, '')
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/^\s*\d+\.\s+/gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/_([^_]+)_/g, '$1')
+    .replace(/~~([^~]+)~~/g, '$1')
+    .replace(/^\|?[\s:-]+\|?[\s|:-]*$/gm, ' ')
+    .replace(/\|/g, ' ')
+    .replace(/[-]{3,}/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}

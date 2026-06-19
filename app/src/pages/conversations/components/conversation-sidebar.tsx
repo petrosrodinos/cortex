@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, type FC, type KeyboardEvent } from 'react';
 import { MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { Conversation } from '@/features/conversations/interfaces/conversation.interfaces';
+import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
 import { cn } from '@/lib/utils';
+import { stripMarkdownForPreview } from '../utils/message-markdown.utils';
 
 interface ConversationSidebarProps {
   conversations: Conversation[];
@@ -67,6 +69,20 @@ export const ConversationSidebar: FC<ConversationSidebarProps> = ({
       setEditingUuid(null);
       setEditTitle('');
     }
+  };
+
+  const getLastMessagePreview = (conversation: Conversation) => {
+    const lastMessage = conversation.messages?.[0];
+
+    if (!lastMessage?.content) {
+      return 'No messages yet';
+    }
+
+    if (lastMessage.role === MessageRoles.ASSISTANT) {
+      return stripMarkdownForPreview(lastMessage.content) || 'No messages yet';
+    }
+
+    return lastMessage.content;
   };
 
   return (
@@ -144,7 +160,7 @@ export const ConversationSidebar: FC<ConversationSidebarProps> = ({
                 >
                   <p className="truncate font-medium text-foreground">{conversation.title || 'Untitled chat'}</p>
                   <p className="truncate text-xs text-muted">
-                    {conversation.messages?.[0]?.content || 'No messages yet'}
+                    {getLastMessagePreview(conversation)}
                   </p>
                 </button>
               )}

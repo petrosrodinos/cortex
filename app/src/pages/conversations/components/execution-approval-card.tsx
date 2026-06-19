@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { Check, Loader2, X } from 'lucide-react';
 import type { ExecutionApprovalRequest } from '@/features/conversations/interfaces/conversation.interfaces';
 import { cn } from '@/lib/utils';
-import { formatExecutionApproval } from './format-execution-approval';
+import { formatExecutionApproval } from '../utils/format-execution-approval';
 
 interface ExecutionApprovalCardProps {
   approvalRequest: ExecutionApprovalRequest;
