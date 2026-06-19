@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FC, type KeyboardEvent } from 'react';
-import { MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
+import { MoreHorizontal, PanelLeftClose, PanelLeftOpen, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { Conversation } from '@/features/conversations/interfaces/conversation.interfaces';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
 import { cn } from '@/lib/utils';
@@ -15,6 +15,8 @@ interface ConversationSidebarProps {
   onDelete: (uuid: string) => void;
   className?: string;
   showHeader?: boolean;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 export const ConversationSidebar: FC<ConversationSidebarProps> = ({
@@ -27,6 +29,8 @@ export const ConversationSidebar: FC<ConversationSidebarProps> = ({
   onDelete,
   className,
   showHeader = true,
+  collapsed = false,
+  onToggleCollapse,
 }) => {
   const [menuOpenUuid, setMenuOpenUuid] = useState<string | null>(null);
   const [editingUuid, setEditingUuid] = useState<string | null>(null);
@@ -88,30 +92,64 @@ export const ConversationSidebar: FC<ConversationSidebarProps> = ({
   return (
     <aside
       className={cn(
-        'flex w-full shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface md:w-72',
+        'flex shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-300 ease-in-out',
+        collapsed ? 'w-14' : 'w-full md:w-72',
         className,
       )}
     >
       {showHeader ? (
-        <header className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-3 md:px-4">
-          <div className="min-w-0 flex-1">
-            <h2 className="text-sm font-medium text-foreground">Chats</h2>
-            <p className="text-xs text-muted">
-              {conversations.length} {conversations.length === 1 ? 'chat' : 'chats'} created
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onCreate}
-            disabled={isCreating}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-secondary text-foreground transition-colors hover:bg-surface hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
-            aria-label="New chat"
-          >
-            <Plus className="h-4 w-4" />
-          </button>
-        </header>
+        collapsed ? (
+          <header className="flex shrink-0 flex-col items-center gap-2 border-b border-border px-2 py-3">
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-secondary hover:text-foreground"
+              aria-label="Expand chats panel"
+            >
+              <PanelLeftOpen className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={onCreate}
+              disabled={isCreating}
+              className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-secondary text-foreground transition-colors hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
+              aria-label="New chat"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+          </header>
+        ) : (
+          <header className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-3 md:px-4">
+            <div className="min-w-0 flex-1">
+              <h2 className="text-sm font-medium text-foreground">Chats</h2>
+              <p className="text-xs text-muted">
+                {conversations.length} {conversations.length === 1 ? 'chat' : 'chats'} created
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onCreate}
+              disabled={isCreating}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-secondary text-foreground transition-colors hover:bg-surface hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+              aria-label="New chat"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+            {onToggleCollapse ? (
+              <button
+                type="button"
+                onClick={onToggleCollapse}
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-secondary hover:text-foreground"
+                aria-label="Collapse chats panel"
+              >
+                <PanelLeftClose className="h-4 w-4" />
+              </button>
+            ) : null}
+          </header>
+        )
       ) : null}
 
+      {!collapsed ? (
       <div className="flex min-h-0 flex-1 flex-col">
         {!showHeader ? (
           <div className="flex shrink-0 items-center justify-end border-b border-border px-3 py-2">
@@ -214,6 +252,7 @@ export const ConversationSidebar: FC<ConversationSidebarProps> = ({
         })}
         </div>
       </div>
+      ) : null}
     </aside>
   );
 };

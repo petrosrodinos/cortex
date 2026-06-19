@@ -18,7 +18,7 @@ import { MessageMarkdown } from './message-markdown';
 import { getFilePreviewUrl, prepareAssistantMarkdown } from '../utils/message-markdown.utils';
 import { WidgetPreview } from './widget-preview';
 
-const messageBubbleClassName = 'min-w-0 max-w-[min(92%,100%)] break-words overflow-hidden rounded-2xl px-3 py-2.5 text-sm sm:max-w-[85%] sm:px-4 sm:py-3';
+const messageBubbleClassName = 'min-w-0 max-w-[min(92%,100%)] rounded-2xl px-3 py-2.5 text-sm sm:max-w-[85%] sm:px-4 sm:py-3';
 
 interface ConversationMessagesProps {
   conversationUuid: string;
@@ -106,8 +106,8 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
             className={cn(
               messageBubbleClassName,
               message.role === MessageRoles.USER
-                ? 'ml-auto bg-accent/15 text-foreground whitespace-pre-wrap [overflow-wrap:anywhere]'
-                : 'mr-auto w-full bg-surface-secondary text-foreground',
+                ? 'ml-auto overflow-hidden break-words bg-accent/15 text-foreground whitespace-pre-wrap [overflow-wrap:anywhere]'
+                : 'mr-auto w-full overflow-x-auto bg-surface-secondary text-foreground',
             )}
           >
           <div className="flex items-start gap-1">
@@ -202,14 +202,14 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
       ))}
 
       {pendingUserMessage && (
-        <div className={cn(messageBubbleClassName, 'ml-auto bg-accent/15 text-foreground whitespace-pre-wrap [overflow-wrap:anywhere]')}>
+        <div className={cn(messageBubbleClassName, 'ml-auto overflow-hidden break-words bg-accent/15 text-foreground whitespace-pre-wrap [overflow-wrap:anywhere]')}>
           {pendingUserMessage}
           <MessageAttachments attachments={pendingUserAttachments} />
         </div>
       )}
 
       {pendingAssistantContent != null && (
-        <div className={cn(messageBubbleClassName, 'mr-auto w-full bg-surface-secondary text-foreground')}>
+        <div className={cn(messageBubbleClassName, 'mr-auto w-full overflow-x-auto bg-surface-secondary text-foreground')}>
           <MessageMarkdown content={prepareAssistantMarkdown(pendingAssistantContent)} />
         </div>
       )}

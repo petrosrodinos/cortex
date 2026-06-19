@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FC, type KeyboardEvent } from 'react';
-import { FileText, Menu, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { FileText, Menu, MoreHorizontal, PanelLeftOpen, Pencil, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ConversationHeaderProps {
@@ -8,6 +8,8 @@ interface ConversationHeaderProps {
   onDelete: () => void;
   onOpenDocuments: () => void;
   onOpenChats?: () => void;
+  chatsPanelCollapsed?: boolean;
+  onToggleChatsPanel?: () => void;
 }
 
 export const ConversationHeader: FC<ConversationHeaderProps> = ({
@@ -16,6 +18,8 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({
   onDelete,
   onOpenDocuments,
   onOpenChats,
+  chatsPanelCollapsed = false,
+  onToggleChatsPanel,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
@@ -81,6 +85,17 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({
           aria-label="Open chats"
         >
           <Menu className="h-4 w-4" />
+        </button>
+      ) : null}
+
+      {onToggleChatsPanel && chatsPanelCollapsed ? (
+        <button
+          type="button"
+          onClick={onToggleChatsPanel}
+          className="hidden rounded-md p-1.5 text-muted transition-colors hover:bg-surface-secondary hover:text-foreground md:inline-flex"
+          aria-label="Expand chats panel"
+        >
+          <PanelLeftOpen className="h-4 w-4" />
         </button>
       ) : null}
 

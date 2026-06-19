@@ -21,6 +21,7 @@ import {
 import { useExecution } from '@/features/conversations/hooks/use-execution';
 import { MessageRoles, type MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { useUploadDocument } from '@/features/files/hooks/use-files';
+import { cn } from '@/lib/utils';
 import { ConversationEmptyState } from './components/conversation-empty-state';
 import { ConversationDocumentsModal } from './components/conversation-documents-modal';
 import { ConversationHeader } from './components/conversation-header';
@@ -35,6 +36,10 @@ import {
 import { ConversationMessages } from './components/conversation-messages';
 import { ConversationSidebar } from './components/conversation-sidebar';
 import { ConversationSidebarSkeleton } from './components/conversation-sidebar-skeleton';
+import {
+  CONVERSATIONS_SIDEBAR_STORAGE_KEY,
+  getInitialConversationsSidebarCollapsed,
+} from './utils/conversations-sidebar.utils';
 
 interface AttachedFile {
   file: File;
@@ -55,6 +60,7 @@ const ConversationsPage: FC = () => {
   const [pendingUserAttachments, setPendingUserAttachments] = useState<MessageAttachment[]>([]);
   const [deleteTargetUuid, setDeleteTargetUuid] = useState<string | null>(null);
   const [documentsOpen, setDocumentsOpen] = useState(false);
+  const [chatsPanelCollapsed, setChatsPanelCollapsed] = useState(getInitialConversationsSidebarCollapsed);
   const autoCreateStarted = useRef(false);
   const chatListDrawer = useOverlayState();
 
@@ -109,6 +115,14 @@ const ConversationsPage: FC = () => {
 
     toolEligibleIntegrationUuidsRef.current = currentEligible;
   }, [toolEligibleIntegrationUuids]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CONVERSATIONS_SIDEBAR_STORAGE_KEY, String(chatsPanelCollapsed));
+    } catch {
+      return;
+    }
+  }, [chatsPanelCollapsed]);
 
   useEffect(() => {
     if (!organizationUuid || conversationsLoading) {
@@ -327,21 +341,41 @@ const ConversationsPage: FC = () => {
   return (
     <div className="flex h-[calc(100dvh-5.75rem)] min-h-0 flex-col overflow-hidden sm:h-[calc(100dvh-6.75rem)] md:h-[calc(100vh-8rem)] md:flex-row md:gap-4">
       {conversationsLoading ? (
-        <aside className="hidden w-72 shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface md:flex">
-          <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-            <div className="flex-1 space-y-1.5">
-              <div className="h-4 w-12 animate-pulse rounded bg-surface-secondary" />
-              <div className="h-3 w-20 animate-pulse rounded bg-surface-secondary" />
+        <aside
+          className={cn(
+            'hidden shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-300 ease-in-out md:flex',
+            chatsPanelCollapsed ? 'w-14' : 'w-72',
+          )}
+        >
+          {chatsPanelCollapsed ? (
+            <div className="flex flex-col items-center gap-2 border-b border-border px-2 py-3">
+              <div className="h-8 w-8 animate-pulse rounded-lg bg-surface-secondary" />
+              <div className="h-8 w-8 animate-pulse rounded-lg bg-surface-secondary" />
             </div>
-            <div className="h-8 w-8 shrink-0 animate-pulse rounded-lg bg-surface-secondary" />
-          </div>
-          <div className="flex-1 p-2">
-            <ConversationSidebarSkeleton />
-          </div>
+          ) : (
+            <>
+              <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-4 w-12 animate-pulse rounded bg-surface-secondary" />
+                  <div className="h-3 w-20 animate-pulse rounded bg-surface-secondary" />
+                </div>
+                <div className="h-8 w-8 shrink-0 animate-pulse rounded-lg bg-surface-secondary" />
+                <div className="h-8 w-8 shrink-0 animate-pulse rounded-lg bg-surface-secondary" />
+              </div>
+              <div className="flex-1 p-2">
+                <ConversationSidebarSkeleton />
+              </div>
+            </>
+          )}
         </aside>
       ) : (
         <>
-          <ConversationSidebar {...sidebarProps} className="hidden md:flex" />
+          <ConversationSidebar
+            {...sidebarProps}
+            className="hidden md:flex"
+            collapsed={chatsPanelCollapsed}
+            onToggleCollapse={() => setChatsPanelCollapsed((value) => !value)}
+          />
 
           <Drawer state={chatListDrawer}>
             <Drawer.Backdrop
@@ -389,6 +423,8 @@ const ConversationsPage: FC = () => {
               onDelete={() => handleDeleteRequest(conversationUuid)}
               onOpenDocuments={() => setDocumentsOpen(true)}
               onOpenChats={chatListDrawer.open}
+              chatsPanelCollapsed={chatsPanelCollapsed}
+              onToggleChatsPanel={() => setChatsPanelCollapsed((value) => !value)}
             />
 
             <ConversationDocumentsModal

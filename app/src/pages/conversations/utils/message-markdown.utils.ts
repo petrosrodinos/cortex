@@ -14,7 +14,9 @@ export function getFilePreviewUrl(url: string): string {
 }
 
 export function normalizeMarkdownTables(content: string): string {
-  return content.replace(/\|\s+\|/g, '|\n|');
+  return content
+    .replace(/\|\|/g, '|\n|')
+    .replace(/([^\n])\n(\|[^\n]+\|)\n(\|[-:| ]+\|)/g, '$1\n\n$2\n$3');
 }
 
 export function enrichMarkdownWithFileLinks(content: string, files: string[]): string {
