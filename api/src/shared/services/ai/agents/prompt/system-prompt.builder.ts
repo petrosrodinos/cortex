@@ -43,7 +43,7 @@ export class SystemPromptBuilder {
         where: {
           org_uuid: organizationUuid,
           status: IntegrationStatus.ACTIVE,
-          ...(integrationUuids !== undefined ? { uuid: { in: integrationUuids } } : {}),
+          ...(integrationUuids?.length ? { uuid: { in: integrationUuids } } : {}),
         },
         include: { database: true, actions: { where: { enabled: true } } },
       }),
@@ -72,7 +72,7 @@ export class SystemPromptBuilder {
       `- member_uuid: ${actor.memberUuid}`,
       `- email: ${actor.email}`,
       `- role: ${actor.roleName}`,
-      'Use available tools to retrieve data and take actions. Never invent credentials or integration secrets.',
+      'Use available tools to retrieve data and take actions. For any question about counts, records, amounts, or data from connected systems, always query with the appropriate tool — never guess or estimate. Never invent credentials, integration secrets, or data values. If no tool can answer a question, say so explicitly.',
       'When destructive actions require approval, wait for explicit user approval before proceeding.',
       'When the user attaches documents, call document__list first, then use the matching document__read_* tool to read each file before answering questions about it.',
       'Document read tools: document__read_pdf, document__read_word, document__read_excel, document__read_csv, document__read_text, document__read_image.',

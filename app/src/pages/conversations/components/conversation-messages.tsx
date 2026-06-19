@@ -6,6 +6,7 @@ import type {
   MessageAttachment,
 } from '@/features/conversations/interfaces/conversation.interfaces';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
+import { formatDateTime } from '@/lib/date';
 import { cn } from '@/lib/utils';
 import { AiTypingIndicator } from './ai-typing-indicator';
 import { ConversationMessagesSkeleton } from './conversation-messages-skeleton';
@@ -96,12 +97,18 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
         <div
           key={message.uuid}
           className={cn(
-            messageBubbleClassName,
-            message.role === MessageRoles.USER
-              ? 'ml-auto bg-accent/15 text-foreground whitespace-pre-wrap [overflow-wrap:anywhere]'
-              : 'mr-auto w-full bg-surface-secondary text-foreground',
+            'flex flex-col gap-1',
+            message.role === MessageRoles.USER ? 'items-end' : 'items-start',
           )}
         >
+          <div
+            className={cn(
+              messageBubbleClassName,
+              message.role === MessageRoles.USER
+                ? 'ml-auto bg-accent/15 text-foreground whitespace-pre-wrap [overflow-wrap:anywhere]'
+                : 'mr-auto w-full bg-surface-secondary text-foreground',
+            )}
+          >
           {message.role === MessageRoles.ASSISTANT ? (
             <MessageMarkdown
               content={prepareAssistantMarkdown(
@@ -181,6 +188,10 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
 
             return null;
           })()}
+          </div>
+          <time dateTime={message.created_at} className="px-1 text-xs text-muted">
+            {formatDateTime(message.created_at)}
+          </time>
         </div>
       ))}
 

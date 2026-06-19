@@ -162,9 +162,13 @@ export const IntegrationToolsList: FC<IntegrationToolsListProps> = ({
             )}
             onMouseDown={(event) => {
               event.preventDefault();
+              event.stopPropagation();
             }}
             onMouseEnter={() => onHighlight?.(integration.uuid)}
-            onClick={() => onSelect(integration.uuid)}
+            onClick={(event) => {
+              event.stopPropagation();
+              onSelect(integration.uuid);
+            }}
           >
             <IntegrationToolRow
               integration={integration}
