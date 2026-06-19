@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Header,
   Param,
   Post,
   UploadedFile,
@@ -34,5 +35,15 @@ export class DocumentsController {
     @Param('organization_uuid') organizationUuid: string,
   ) {
     return this.documents.findAll(userUuid, organizationUuid);
+  }
+
+  @Get(':document_uuid/widget-content')
+  @Header('Content-Type', 'text/html; charset=utf-8')
+  getWidgetContent(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Param('document_uuid') documentUuid: string,
+  ) {
+    return this.documents.getWidgetContent(userUuid, organizationUuid, documentUuid);
   }
 }

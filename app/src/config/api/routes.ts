@@ -75,4 +75,6 @@ export const ApiRoutes = {
     usageRecords: (orgUuid: string) => `/organizations/${orgUuid}/executions/usage/records`,
     auditLogs: (orgUuid: string) => `/organizations/${orgUuid}/audit-logs`,
     documents: (orgUuid: string) => `/organizations/${orgUuid}/documents`,
+    documentWidgetContent: (orgUuid: string, documentUuid: string) =>
+        `/organizations/${orgUuid}/documents/${documentUuid}/widget-content`,
 }

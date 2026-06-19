@@ -32,3 +32,14 @@ export const getDocuments = async (orgUuid: string): Promise<Document[]> => {
     throw new Error(error?.response?.data?.message || 'Failed to load documents.');
   }
 };
+
+export const getWidgetContent = async (orgUuid: string, documentUuid: string): Promise<string> => {
+  try {
+    const response = await axiosInstance.get(ApiRoutes.documentWidgetContent(orgUuid, documentUuid), {
+      responseType: 'text',
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to load widget.');
+  }
+};

@@ -28,6 +28,7 @@ enum DocumentType {
   AUDIO
   PDF
   DOCUMENT
+  WIDGET
   OTHER
 }
 

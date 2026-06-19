@@ -11,6 +11,8 @@ import { PdfGeneratorService } from '../pdf/pdf-generator.service';
 import type { GeneratedFileResult } from '../shared/generated-file.types';
 import type { DocxGenerateParams } from '../word/docx.types';
 import { WordGeneratorService } from '../word/word-generator.service';
+import { WidgetGeneratorService } from '../widget/widget-generator.service';
+import type { WidgetGenerateParams } from '../widget/widget.types';
 import { ExecutionToolIdempotencyService } from '../../tools/execution-tool-idempotency.service';
 
 export interface OutputToolsContext {
@@ -94,6 +96,36 @@ const EXCEL_TOOL_SCHEMA = jsonSchema({
   required: ['sheets'],
 });
 
+const WIDGET_TOOL_SCHEMA = jsonSchema({
+  type: 'object',
+  properties: {
+    title: {
+      type: 'string',
+      description: 'Widget title shown at the top (e.g. "Monthly Sales Simulator")',
+    },
+    data: {
+      description:
+        'Full structured dataset from integration/database tools. Include every record and field needed — not samples. Available in js as WIDGET_DATA.',
+    },
+    html: {
+      type: 'string',
+      description:
+        'Body HTML only (no html/head/body tags). Build a complete UI: header, metric cards, controls the user asked for, tables/charts, and result panels. Use semantic structure and descriptive labels.',
+    },
+    css: {
+      type: 'string',
+      description:
+        'Styles for layout and polish: card grid, spacing, slider styling, tables, emphasis states, responsive widths. Platform base typography is applied automatically.',
+    },
+    js: {
+      type: 'string',
+      description:
+        'Interactivity: read WIDGET_DATA, wire sliders/toggles/buttons to update metrics live, format currency/percentages, recalculate projections. Implement every behavior the user requested.',
+    },
+  },
+  required: ['title', 'html', 'css', 'js', 'data'],
+});
+
 const OUTPUT_FORMAT_PATTERNS: Array<{ toolName: string; patterns: RegExp[] }> = [
   {
     toolName: 'output__create_excel',
@@ -110,6 +142,19 @@ const OUTPUT_FORMAT_PATTERNS: Array<{ toolName: string; patterns: RegExp[] }> = 
   {
     toolName: 'output__create_image',
     patterns: [/\bimage\b/i, /\bpicture\b/i, /\bphoto\b/i, /\billustration\b/i, /\bgraphic\b/i, /\bportrait\b/i],
+  },
+  {
+    toolName: 'output__create_widget',
+    patterns: [
+      /\bwidget\b/i,
+      /\binteractive\b/i,
+      /\bdashboard\b/i,
+      /\bslider\b/i,
+      /\bcalculator\b/i,
+      /\bsimulator\b/i,
+      /\bmake it into a widget\b/i,
+      /\bturn (?:it|that|this) into\b/i,
+    ],
   },
 ];
 
@@ -137,6 +182,9 @@ export function isExportFollowUpRequest(userMessage?: string): boolean {
 const EXPORT_FROM_CONVERSATION_GUIDANCE =
   'When the user asks to export or convert content already shown in this conversation, extract the relevant rows or sections from the most recent assistant reply or tool results and call this tool immediately. Re-run the same lookup tools if needed. Never ask the user to re-enter data that is already visible in the chat history.';
 
+const WIDGET_CREATION_GUIDANCE =
+  'Create a rich interactive widget that fully matches the user request. Step 1: fetch real data with integration, database, document, or code_interpreter tools unless the conversation already has the full dataset. Step 2: call this tool with title, data (full records), html (complete UI with every control and label the user asked for), css (polished card layout), and js (live interactivity via WIDGET_DATA). Never use placeholder data or minimal stubs.';
+
 @Injectable()
 export class OutputToolsFactory {
   constructor(
@@ -144,6 +192,7 @@ export class OutputToolsFactory {
     private readonly wordGenerator: WordGeneratorService,
     private readonly pdfGenerator: PdfGeneratorService,
     private readonly excelGenerator: ExcelGeneratorService,
+    private readonly widgetGenerator: WidgetGeneratorService,
     private readonly prisma: PrismaService,
     private readonly idempotency: ExecutionToolIdempotencyService,
   ) {}
@@ -238,6 +287,20 @@ export class OutputToolsFactory {
             executionUuid,
             onToolEvent,
             run: () => this.excelGenerator.generate(organizationUuid, userUuid, input),
+          });
+        },
+      }),
+
+      output__create_widget: tool({
+        description: `Create an interactive HTML/CSS/JavaScript widget rendered inline in chat. Use for sliders, toggles, calculators, simulators, and mini-dashboards — not for static PDF/Excel exports. ${WIDGET_CREATION_GUIDANCE} ${EXPORT_FROM_CONVERSATION_GUIDANCE} The platform applies Inter and modern base typography automatically. Do not paste raw HTML in the chat reply.`,
+        inputSchema: WIDGET_TOOL_SCHEMA,
+        execute: async (input: WidgetGenerateParams) => {
+          return this.executeSideEffectTool({
+            toolName: 'output__create_widget',
+            input,
+            executionUuid,
+            onToolEvent,
+            run: () => this.widgetGenerator.generate(organizationUuid, userUuid, input),
           });
         },
       }),

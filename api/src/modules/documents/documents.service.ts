@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { OrganizationsService } from '@/modules/organizations/organizations.service';
 import { GcsService } from '@/integrations/storage/gcs/services/gcs.service';
@@ -59,6 +59,7 @@ export class DocumentsService {
     if (mimetype.startsWith('video/')) return DocumentType.VIDEO;
     if (mimetype.startsWith('audio/')) return DocumentType.AUDIO;
     if (mimetype === 'application/pdf') return DocumentType.PDF;
+    if (mimetype === 'text/html') return DocumentType.WIDGET;
     return DocumentType.DOCUMENT;
   }
 
@@ -70,5 +71,32 @@ export class DocumentsService {
       orderBy: { created_at: 'desc' },
       take: 50,
     });
+  }
+
+  async getWidgetContent(
+    userUuid: string,
+    organizationUuid: string,
+    documentUuid: string,
+  ): Promise<string> {
+    await this.organizations.requireActiveMember(userUuid, organizationUuid);
+
+    const document = await this.prisma.document.findUnique({
+      where: { uuid: documentUuid },
+    });
+
+    if (!document) {
+      throw new NotFoundException('Document not found');
+    }
+
+    if (document.type !== DocumentType.WIDGET && document.mimetype !== 'text/html') {
+      throw new BadRequestException('Document is not a widget');
+    }
+
+    if (!document.path.includes(organizationUuid)) {
+      throw new NotFoundException('Document not found');
+    }
+
+    const downloaded = await this.gcs.downloadImage({ filename: document.path });
+    return downloaded.buffer.toString('utf-8');
   }
 }

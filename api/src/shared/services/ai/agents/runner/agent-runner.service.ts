@@ -9,6 +9,12 @@ import { SystemPromptBuilder } from '../prompt/system-prompt.builder';
 import { detectOutputType } from '../prompt/output-detector';
 import { isExportFollowUpRequest } from '../outputs/tools/output-tools.factory';
 import { extractGeneratedDocuments, isEmailSendRequest } from '../prompt/email-send.utils';
+import {
+  isWidgetFollowUpRequest,
+  isWidgetRequest,
+  WIDGET_AGENT_GUIDANCE,
+  WIDGET_FOLLOW_UP_GUIDANCE,
+} from '../prompt/widget-request.utils';
 import { WsEventsService } from '@/core/websockets/ws-events.service';
 import { ToolDispatcherService } from '../tools/tool-dispatcher.service';
 import { SandboxCodeService } from '../sandbox/sandbox-code.service';
@@ -421,6 +427,14 @@ export class AgentRunnerService {
       );
     }
 
+    if (this.shouldApplyWidgetGuidance(userMessage)) {
+      guidance.push(...WIDGET_AGENT_GUIDANCE);
+
+      if (isWidgetFollowUpRequest(userMessage) && messagesForAgent.some((message) => message.role === 'assistant')) {
+        guidance.push(...WIDGET_FOLLOW_UP_GUIDANCE);
+      }
+    }
+
     if (guidance.length === 0) {
       return instructions;
     }
@@ -442,6 +456,10 @@ export class AgentRunnerService {
     }
 
     return messagesForAgent.some((message) => message.role === 'assistant');
+  }
+
+  private shouldApplyWidgetGuidance(userMessage: string) {
+    return isWidgetRequest(userMessage);
   }
 
   private buildAgentMessages(

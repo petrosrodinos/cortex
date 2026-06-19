@@ -46,6 +46,7 @@ export function detectOutputType(userMessage: string, assistantContent: string, 
   let usedCodeInterpreter = false;
   let readUploadedDocument = false;
   let imageFileUrl: string | null = null;
+  let widgetFileUrl: string | null = null;
 
   for (const result of toolResults) {
     if (result && typeof result === 'object') {
@@ -63,6 +64,10 @@ export function detectOutputType(userMessage: string, assistantContent: string, 
 
       if (toolName === 'output__create_image' && typeof payload.file_url === 'string' && !imageFileUrl) {
         imageFileUrl = payload.file_url;
+      }
+
+      if (toolName === 'output__create_widget' && typeof payload.file_url === 'string' && !widgetFileUrl) {
+        widgetFileUrl = payload.file_url;
       }
 
       if (
@@ -90,8 +95,16 @@ export function detectOutputType(userMessage: string, assistantContent: string, 
     }
   }
 
-  const uniqueFiles = imageFileUrl ? [imageFileUrl] : [...new Set(files)];
+  const uniqueFiles = widgetFileUrl
+    ? [widgetFileUrl]
+    : imageFileUrl
+      ? [imageFileUrl]
+      : [...new Set(files)];
   const hasFiles = uniqueFiles.length > 0;
+
+  if (widgetFileUrl) {
+    return { outputType: OutputType.WIDGET, files: uniqueFiles };
+  }
 
   if (imageFileUrl) {
     return { outputType: OutputType.CHART, files: uniqueFiles };

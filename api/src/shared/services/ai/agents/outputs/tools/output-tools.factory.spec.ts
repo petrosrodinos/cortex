@@ -1,7 +1,7 @@
 import { getRequestedOutputToolNames, isExportFollowUpRequest, OutputToolsFactory } from './output-tools.factory';
 
 describe('OutputToolsFactory', () => {
-  const factory = new OutputToolsFactory({} as any, {} as any, {} as any, {} as any, {} as any, {
+  const factory = new OutputToolsFactory({} as any, {} as any, {} as any, {} as any, {} as any, {} as any, {
     getCachedResult: jest.fn().mockResolvedValue(null),
   } as any);
 
@@ -39,14 +39,32 @@ describe('OutputToolsFactory', () => {
       'output__create_excel',
       'output__create_image',
       'output__create_pdf',
+      'output__create_widget',
       'output__create_word',
     ]);
+  });
+
+  it('exposes only widget generation when the user asks for a widget', () => {
+    const tools = factory.buildTools({
+      organizationUuid: 'org-uuid',
+      userUuid: 'user-uuid',
+      executionUuid: 'execution-uuid',
+      userMessage: 'create a widget with sliders for next month sales',
+    });
+
+    expect(Object.keys(tools)).toEqual(['output__create_widget']);
   });
 });
 
 describe('getRequestedOutputToolNames', () => {
   it('returns null when there is no explicit output format', () => {
     expect(getRequestedOutputToolNames('show me the organization members')).toBeNull();
+  });
+
+  it('detects widget requests', () => {
+    expect(getRequestedOutputToolNames('create an interactive dashboard widget')).toEqual(
+      new Set(['output__create_widget']),
+    );
   });
 });
 

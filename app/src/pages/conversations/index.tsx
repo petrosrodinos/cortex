@@ -400,6 +400,7 @@ const ConversationsPage: FC = () => {
 
             <ConversationMessages
               conversationUuid={conversationUuid}
+              organizationUuid={organizationUuid}
               messages={messages}
               isLoading={messagesLoading}
               pendingUserMessage={isPendingUserMessageVisible ? pendingUserMessage : null}

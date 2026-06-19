@@ -77,7 +77,8 @@ export function extractGeneratedDocuments(toolResults: unknown[]) {
       toolName !== 'output__create_excel' &&
       toolName !== 'output__create_pdf' &&
       toolName !== 'output__create_word' &&
-      toolName !== 'output__create_image'
+      toolName !== 'output__create_image' &&
+      toolName !== 'output__create_widget'
     ) {
       continue;
     }

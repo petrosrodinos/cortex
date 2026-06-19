@@ -14,11 +14,13 @@ import { getMessageAttachments, MessageAttachments } from './message-attachments
 import { ExecutionApprovalCard } from './execution-approval-card';
 import { MessageMarkdown } from './message-markdown';
 import { getFilePreviewUrl, prepareAssistantMarkdown } from './message-markdown.utils';
+import { WidgetPreview } from './widget-preview';
 
 const messageBubbleClassName = 'min-w-0 max-w-[min(92%,100%)] break-words overflow-hidden rounded-2xl px-3 py-2.5 text-sm sm:max-w-[85%] sm:px-4 sm:py-3';
 
 interface ConversationMessagesProps {
   conversationUuid: string;
+  organizationUuid?: string;
   messages: Message[];
   isLoading: boolean;
   pendingUserMessage: string | null;
@@ -36,6 +38,7 @@ interface ConversationMessagesProps {
 
 export const ConversationMessages: FC<ConversationMessagesProps> = ({
   conversationUuid,
+  organizationUuid,
   messages,
   isLoading,
   pendingUserMessage,
@@ -116,9 +119,17 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
           )}
 
           {message.role === MessageRoles.ASSISTANT && message.metadata && (() => {
-            const meta = message.metadata as { outputType?: string; files?: string[] };
+            const meta = message.metadata as {
+              outputType?: string;
+              files?: string[];
+              generatedDocuments?: Array<{ document_uuid?: string; file_url?: string }>;
+            };
             const outputType = meta.outputType;
             const files = meta.files ?? [];
+            const widgetDocument =
+              meta.generatedDocuments?.find((doc) => doc.file_url && files.includes(doc.file_url)) ??
+              meta.generatedDocuments?.find((doc) => doc.document_uuid);
+            const widgetDocumentUuid = widgetDocument?.document_uuid;
 
             if (
               (outputType === 'FILE_PDF' || outputType === 'FILE_EXCEL' || outputType === 'FILE_WORD') &&
@@ -159,14 +170,12 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
 
             if (outputType === 'WIDGET' && files.length > 0) {
               return (
-                <div className="mt-3">
-                  <iframe
-                    src={files[0]}
-                    sandbox="allow-scripts"
-                    className="h-64 w-full rounded-lg border border-border"
-                    title="widget"
-                  />
-                </div>
+                <WidgetPreview
+                  fileUrl={files[0]}
+                  organizationUuid={organizationUuid}
+                  documentUuid={widgetDocumentUuid}
+                  title="Interactive widget"
+                />
               );
             }
 

@@ -464,6 +464,7 @@ exports.DocumentType = exports.$Enums.DocumentType = {
   AUDIO: 'AUDIO',
   PDF: 'PDF',
   DOCUMENT: 'DOCUMENT',
+  WIDGET: 'WIDGET',
   OTHER: 'OTHER'
 };
 
