@@ -3,7 +3,7 @@ import { MoreHorizontal, PanelLeftClose, PanelLeftOpen, Pencil, Plus, Trash2 } f
 import type { Conversation } from '@/features/conversations/interfaces/conversation.interfaces';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
 import { cn } from '@/lib/utils';
-import { stripMarkdownForPreview } from '../utils/message-markdown.utils';
+import { stripMarkdownForPreview } from '@/lib/message-markdown.utils';
 
 interface ConversationSidebarProps {
   conversations: Conversation[];

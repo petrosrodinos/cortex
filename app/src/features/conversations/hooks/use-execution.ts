@@ -1,27 +1,30 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
+import { WEBSOCKET_EVENTS } from '@/features/websocket/interfaces/websocket-events.constants';
 import {
   websocketJoinRoom,
   websocketLeaveRoom,
   websocketSubscribe,
 } from '@/features/websocket/services/websocket.service';
+import { useWebsocketStore } from '@/stores/websocket.store';
 import { getExecution } from '../services/conversations.service';
-import { AgentExecutionStatuses } from '../interfaces/conversation.interfaces';
-import type {
-  AgentCompleteEvent,
-  AgentExecution,
-  ExecutionApprovalRequest,
-  ToolCallProgress,
+import {
+  AgentExecutionStatuses,
+  type AgentCompleteEvent,
+  type AgentExecution,
+  type ExecutionApprovalRequest,
+  type ExecutionToolCall,
 } from '../interfaces/conversation.interfaces';
+import {
+  agentProgressReducer,
+  initialAgentProgressState,
+} from '../utils/agent-progress.reducer';
+import { isDisplayableToolName } from '../utils/agent-progress-labels';
 
-const AGENT_EVENTS = {
-  TOOL_START: 'tool:start',
-  TOOL_COMPLETE: 'tool:complete',
-  AGENT_COMPLETE: 'agent:complete',
-  AGENT_ERROR: 'agent:error',
-  APPROVAL_REQUIRED: 'agent:approval_required',
-} as const;
+const EXECUTION_POLL_INTERVAL_MS = 1000;
 
-const EXECUTION_POLL_INTERVAL_MS = 2000;
+function conversationRoom(organizationUuid: string, conversationUuid: string) {
+  return `org:${organizationUuid}:conversation:${conversationUuid}`;
+}
 
 function parseApprovalRequest(execution: AgentExecution): ExecutionApprovalRequest | null {
   if (execution.status !== AgentExecutionStatuses.AWAITING_APPROVAL) {
@@ -39,137 +42,185 @@ function parseApprovalRequest(execution: AgentExecution): ExecutionApprovalReque
   };
 }
 
-export function useExecution(organizationUuid?: string, executionId?: string | null) {
-  const [toolCalls, setToolCalls] = useState<ToolCallProgress[]>([]);
-  const [isRunning, setIsRunning] = useState(false);
-  const [assistantContent, setAssistantContent] = useState<string | null>(null);
-  const [isComplete, setIsComplete] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [approvalRequest, setApprovalRequest] = useState<ExecutionApprovalRequest | null>(null);
+function mapExecutionToolCalls(toolCalls: ExecutionToolCall[]) {
+  return toolCalls
+    .filter((toolCall) => isDisplayableToolName(toolCall.tool_name))
+    .map((toolCall) => ({
+      callId: toolCall.uuid,
+      toolName: toolCall.tool_name,
+      status: toolCall.status === 'FAILED' ? ('failed' as const) : ('completed' as const),
+      durationMs: toolCall.duration_ms,
+      success: toolCall.status === 'SUCCESS',
+    }));
+}
+
+export function useExecution(
+  organizationUuid?: string,
+  conversationUuid?: string,
+  executionId?: string | null,
+) {
+  const { is_connected } = useWebsocketStore();
+  const [state, dispatch] = useReducer(agentProgressReducer, initialAgentProgressState);
   const completedRef = useRef(false);
-
-  const markComplete = useCallback((content: string) => {
-    if (completedRef.current) {
-      return;
-    }
-
-    completedRef.current = true;
-    setAssistantContent(content);
-    setIsRunning(false);
-    setIsComplete(true);
-    setApprovalRequest(null);
-  }, []);
-
-  const markError = useCallback((message: string) => {
-    if (completedRef.current) {
-      return;
-    }
-
-    completedRef.current = true;
-    setError(message);
-    setIsRunning(false);
-    setApprovalRequest(null);
-  }, []);
+  const executionIdRef = useRef<string | null>(null);
 
   const reset = useCallback(() => {
     completedRef.current = false;
-    setToolCalls([]);
-    setIsRunning(false);
-    setAssistantContent(null);
-    setIsComplete(false);
-    setError(null);
-    setApprovalRequest(null);
+    executionIdRef.current = null;
+    dispatch({ type: 'reset' });
   }, []);
 
   useEffect(() => {
-    if (!organizationUuid || !executionId) {
-      reset();
+    executionIdRef.current = executionId ?? null;
+  }, [executionId]);
+
+  useEffect(() => {
+    if (!organizationUuid || !conversationUuid || !is_connected) {
       return;
     }
 
-    reset();
-    setIsRunning(true);
-
-    const room = `org:${organizationUuid}:execution:${executionId}`;
+    const room = conversationRoom(organizationUuid, conversationUuid);
     websocketJoinRoom(room);
 
+    const matchesExecution = (payloadExecutionId?: string) => {
+      const activeExecutionId = executionIdRef.current;
+      return activeExecutionId != null && payloadExecutionId === activeExecutionId;
+    };
+
     const subscriptions = [
-      websocketSubscribe<{ toolName: string; input?: unknown }>(AGENT_EVENTS.TOOL_START, (payload) => {
-        setIsRunning(true);
-        setToolCalls((current) => [
-          ...current,
-          { toolName: payload.toolName, input: payload.input, status: 'running' },
-        ]);
-      }),
-      websocketSubscribe<{ toolName: string; result?: unknown; durationMs?: number; success?: boolean }>(
-        AGENT_EVENTS.TOOL_COMPLETE,
+      websocketSubscribe<{ callId?: string; toolName?: string; input?: unknown; executionId?: string }>(
+        WEBSOCKET_EVENTS.AGENT.TOOL_START,
         (payload) => {
-          setToolCalls((current) =>
-            current.map((item) =>
-              item.toolName === payload.toolName && item.status === 'running'
-                ? {
-                    ...item,
-                    result: payload.result,
-                    durationMs: payload.durationMs,
-                    success: payload.success,
-                    status: payload.success === false ? 'failed' : 'completed',
-                  }
-                : item,
-            ),
-          );
+          if (!matchesExecution(payload.executionId) || !payload.callId || !payload.toolName) {
+            return;
+          }
+
+          if (!isDisplayableToolName(payload.toolName)) {
+            return;
+          }
+
+          dispatch({
+            type: 'tool_start',
+            callId: payload.callId,
+            toolName: payload.toolName,
+            input: payload.input,
+          });
         },
       ),
-      websocketSubscribe<AgentCompleteEvent>(AGENT_EVENTS.AGENT_COMPLETE, (payload) => {
-        markComplete(payload.content ?? '');
-      }),
-      websocketSubscribe<{ error: string }>(AGENT_EVENTS.AGENT_ERROR, (payload) => {
-        markError(payload.error);
-      }),
-      websocketSubscribe<ExecutionApprovalRequest>(AGENT_EVENTS.APPROVAL_REQUIRED, (payload) => {
-        setApprovalRequest({
-          ...payload,
-          executionId: payload.executionId ?? executionId,
+      websocketSubscribe<{
+        callId?: string;
+        toolName?: string;
+        result?: unknown;
+        durationMs?: number;
+        success?: boolean;
+        cached?: boolean;
+        executionId?: string;
+      }>(WEBSOCKET_EVENTS.AGENT.TOOL_COMPLETE, (payload) => {
+        if (!matchesExecution(payload.executionId) || !payload.callId || !payload.toolName) {
+          return;
+        }
+
+        if (!isDisplayableToolName(payload.toolName)) {
+          return;
+        }
+
+        dispatch({
+          type: 'tool_complete',
+          callId: payload.callId,
+          toolName: payload.toolName,
+          result: payload.result,
+          durationMs: payload.durationMs,
+          success: payload.success,
+          cached: payload.cached,
         });
-        setIsRunning(false);
       }),
+      websocketSubscribe<AgentCompleteEvent>(WEBSOCKET_EVENTS.AGENT.COMPLETE, (payload) => {
+        if (!matchesExecution(payload.executionId) || completedRef.current) {
+          return;
+        }
+
+        completedRef.current = true;
+        dispatch({ type: 'complete', content: payload.content ?? '' });
+      }),
+      websocketSubscribe<{ error: string; executionId?: string }>(WEBSOCKET_EVENTS.AGENT.ERROR, (payload) => {
+        if (!matchesExecution(payload.executionId) || completedRef.current) {
+          return;
+        }
+
+        completedRef.current = true;
+        dispatch({ type: 'error', error: payload.error });
+      }),
+      websocketSubscribe<ExecutionApprovalRequest & { executionId?: string }>(
+        WEBSOCKET_EVENTS.AGENT.APPROVAL_REQUIRED,
+        (payload) => {
+          const payloadExecutionId = payload.executionId ?? executionIdRef.current ?? undefined;
+          if (!matchesExecution(payloadExecutionId)) {
+            return;
+          }
+
+          dispatch({
+            type: 'approval_required',
+            request: {
+              ...payload,
+              executionId: payloadExecutionId ?? executionIdRef.current ?? '',
+            },
+          });
+        },
+      ),
     ];
 
+    return () => {
+      websocketLeaveRoom(room);
+      subscriptions.forEach((subscription) => subscription.unsubscribe());
+    };
+  }, [organizationUuid, conversationUuid, is_connected]);
+
+  useEffect(() => {
+    if (!organizationUuid || !executionId) {
+      completedRef.current = false;
+      dispatch({ type: 'reset' });
+      return;
+    }
+
+    completedRef.current = false;
+    dispatch({ type: 'running' });
+
     const pollExecution = () => {
-      if (completedRef.current) {
+      if (completedRef.current || executionIdRef.current !== executionId) {
         return;
       }
 
       void getExecution(organizationUuid, executionId)
         .then((execution) => {
-          if (completedRef.current) {
+          if (completedRef.current || executionIdRef.current !== executionId) {
             return;
+          }
+
+          if (execution.tool_calls?.length) {
+            dispatch({
+              type: 'sync_tool_calls',
+              toolCalls: mapExecutionToolCalls(execution.tool_calls),
+            });
           }
 
           if (execution.status === AgentExecutionStatuses.COMPLETED) {
             const output = execution.output as { content?: string } | null | undefined;
-            markComplete(output?.content ?? '');
+            completedRef.current = true;
+            dispatch({ type: 'complete', content: output?.content ?? '' });
             return;
           }
 
           if (execution.status === AgentExecutionStatuses.FAILED) {
-            markError(execution.error ?? 'Agent execution failed');
+            completedRef.current = true;
+            dispatch({ type: 'error', error: execution.error ?? 'Agent execution failed' });
             return;
           }
 
           if (execution.status === AgentExecutionStatuses.AWAITING_APPROVAL) {
             const request = parseApprovalRequest(execution);
             if (request) {
-              setApprovalRequest(request);
+              dispatch({ type: 'approval_required', request });
             }
-            setIsRunning(false);
-            return;
-          }
-
-          if (
-            execution.status === AgentExecutionStatuses.RUNNING ||
-            execution.status === AgentExecutionStatuses.PENDING
-          ) {
-            setIsRunning(true);
           }
         })
         .catch(() => {});
@@ -180,18 +231,16 @@ export function useExecution(organizationUuid?: string, executionId?: string | n
 
     return () => {
       window.clearInterval(pollInterval);
-      subscriptions.forEach((subscription) => subscription.unsubscribe());
-      websocketLeaveRoom(room);
     };
-  }, [organizationUuid, executionId, reset, markComplete, markError]);
+  }, [organizationUuid, executionId]);
 
   return {
-    toolCalls,
-    isRunning,
-    assistantContent,
-    isComplete,
-    error,
-    approvalRequest,
+    toolCalls: state.toolCalls,
+    isRunning: state.isRunning,
+    assistantContent: state.assistantContent,
+    isComplete: state.isComplete,
+    error: state.error,
+    approvalRequest: state.approvalRequest,
     reset,
   };
 }

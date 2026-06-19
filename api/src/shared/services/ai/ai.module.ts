@@ -9,6 +9,7 @@ import { ClaudeProviderAdapter } from './providers/claude-provider';
 import { GrokProviderAdapter } from './providers/grok-provider';
 import { AiProviderFactoryService } from './providers/ai-provider-factory.service';
 import { ConversationMemoryService } from './memory/conversation-memory.service';
+import { AgentProgressEmitterService } from './agents/progress/agent-progress-emitter.service';
 import { AgentRunnerService } from './agents/runner/agent-runner.service';
 import { ToolDispatcherService } from './agents/tools/tool-dispatcher.service';
 import { IntegrationToolsFactory } from './agents/tools/integration-tools.factory';
@@ -76,6 +77,7 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     OrganizationToolsService,
     OrganizationToolsFactory,
     SystemPromptBuilder,
+    AgentProgressEmitterService,
     AgentRunnerService,
   ],
   exports: [AgentRunnerService, ConversationMemoryService, AiProviderFactoryService],

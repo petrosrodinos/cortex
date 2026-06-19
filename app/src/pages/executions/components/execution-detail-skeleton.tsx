@@ -24,6 +24,11 @@ export function ExecutionDetailSkeleton() {
       </div>
 
       <div className="rounded-xl border border-border bg-surface p-5">
+        <Skeleton className="h-4 w-16 rounded" />
+        <Skeleton className="mt-4 h-24 w-full rounded-lg" />
+      </div>
+
+      <div className="rounded-xl border border-border bg-surface p-5">
         <Skeleton className="h-4 w-20 rounded" />
         <Skeleton className="mt-4 h-24 w-full rounded-lg" />
       </div>

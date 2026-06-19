@@ -35,6 +35,7 @@ export class ToolDispatcherService {
     input: Record<string, unknown>,
     executionUuid: string,
     userPermissions: string[] = [],
+    callId?: string,
   ): Promise<ToolDispatchResult> {
     const started = Date.now();
 
@@ -56,6 +57,7 @@ export class ToolDispatcherService {
 
       await this.prisma.toolCall.create({
         data: {
+          ...(callId ? { uuid: callId } : {}),
           execution_uuid: executionUuid,
           integration_uuid: integrationUuid,
           tool_name: prepared.toolName,
@@ -75,6 +77,7 @@ export class ToolDispatcherService {
 
       await this.prisma.toolCall.create({
         data: {
+          ...(callId ? { uuid: callId } : {}),
           execution_uuid: executionUuid,
           tool_name: toolName,
           input: input as object,

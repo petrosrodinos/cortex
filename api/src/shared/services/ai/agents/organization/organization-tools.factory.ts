@@ -3,6 +3,7 @@ import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { ToolCallStatus } from 'generated/prisma';
 import { jsonSchema, tool } from 'ai';
 import type { ToolSet } from 'ai';
+import type { AgentProgressScope } from '../progress/agent-progress-scope';
 import { ExecutionToolIdempotencyService } from '../tools/execution-tool-idempotency.service';
 import { OrganizationToolsService } from './organization-tools.service';
 
@@ -11,7 +12,7 @@ export interface OrganizationToolsFactoryContext {
   userUuid: string;
   executionUuid: string;
   userPermissions: string[];
-  onToolEvent?: (event: 'start' | 'complete', payload: Record<string, unknown>) => void;
+  progress?: AgentProgressScope;
 }
 
 @Injectable()
@@ -93,18 +94,21 @@ export class OrganizationToolsFactory {
     input: Record<string, unknown>,
     handler: () => Promise<T>,
   ) {
-    context.onToolEvent?.('start', { toolName, input });
+    const { progress, executionUuid } = context;
+    const callId = progress?.toolStart(toolName, input);
     const started = Date.now();
 
-    const cached = await this.idempotency.getCachedResult(context.executionUuid, toolName, input);
+    const cached = await this.idempotency.getCachedResult(executionUuid, toolName, input);
     if (cached) {
-      context.onToolEvent?.('complete', {
-        toolName,
-        result: cached,
-        durationMs: Date.now() - started,
-        success: true,
-        cached: true,
-      });
+      if (callId) {
+        progress?.toolComplete(callId, {
+          toolName,
+          result: cached,
+          durationMs: Date.now() - started,
+          success: true,
+          cached: true,
+        });
+      }
       return cached as T;
     }
 
@@ -112,7 +116,8 @@ export class OrganizationToolsFactory {
       const result = await handler();
       await this.prisma.toolCall.create({
         data: {
-          execution_uuid: context.executionUuid,
+          ...(callId ? { uuid: callId } : {}),
+          execution_uuid: executionUuid,
           tool_name: toolName,
           input: input as object,
           output: result as object,
@@ -120,19 +125,22 @@ export class OrganizationToolsFactory {
           duration_ms: Date.now() - started,
         },
       });
-      context.onToolEvent?.('complete', {
-        toolName,
-        result,
-        durationMs: Date.now() - started,
-        success: true,
-      });
+      if (callId) {
+        progress?.toolComplete(callId, {
+          toolName,
+          result,
+          durationMs: Date.now() - started,
+          success: true,
+        });
+      }
       return result;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Organization tool execution failed';
       const failure = { error: message };
       await this.prisma.toolCall.create({
         data: {
-          execution_uuid: context.executionUuid,
+          ...(callId ? { uuid: callId } : {}),
+          execution_uuid: executionUuid,
           tool_name: toolName,
           input: input as object,
           output: failure as object,
@@ -141,12 +149,14 @@ export class OrganizationToolsFactory {
           duration_ms: Date.now() - started,
         },
       });
-      context.onToolEvent?.('complete', {
-        toolName,
-        result: failure,
-        durationMs: Date.now() - started,
-        success: false,
-      });
+      if (callId) {
+        progress?.toolComplete(callId, {
+          toolName,
+          result: failure,
+          durationMs: Date.now() - started,
+          success: false,
+        });
+      }
       throw error instanceof Error ? error : new Error(message);
     }
   }

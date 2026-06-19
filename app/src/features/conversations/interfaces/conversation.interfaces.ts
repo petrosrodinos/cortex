@@ -52,6 +52,7 @@ export interface AgentExecution {
   uuid: string;
   status: AgentExecutionStatus;
   error?: string | null;
+  tool_calls?: ExecutionToolCall[];
   input?: {
     content?: string;
     approvalRequests?: Array<{
@@ -67,13 +68,31 @@ export interface AgentExecution {
   } | null;
 }
 
+export interface ExecutionToolCall {
+  uuid: string;
+  tool_name: string;
+  status: 'SUCCESS' | 'FAILED';
+  duration_ms: number;
+}
+
 export interface ToolCallProgress {
+  callId: string;
   toolName: string;
   input?: unknown;
   result?: unknown;
   durationMs?: number;
   success?: boolean;
+  cached?: boolean;
   status: 'running' | 'completed' | 'failed';
+}
+
+export interface AgentProgressState {
+  toolCalls: ToolCallProgress[];
+  assistantContent: string | null;
+  isComplete: boolean;
+  isRunning: boolean;
+  error: string | null;
+  approvalRequest: ExecutionApprovalRequest | null;
 }
 
 export interface ExecutionApprovalRequest {

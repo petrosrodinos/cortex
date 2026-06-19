@@ -10,6 +10,7 @@ import { CODE_INTERPRETER_DESCRIPTION } from '../sandbox/sandbox.config';
 import { DocumentToolsFactory } from '../documents/document-tools.factory';
 import { OutputToolsFactory } from '../outputs/tools/output-tools.factory';
 import { OrganizationToolsFactory } from '../organization/organization-tools.factory';
+import type { AgentProgressScope } from '../progress/agent-progress-scope';
 import { ToolDispatcherService } from './tool-dispatcher.service';
 
 const AGENT_HIDDEN_INTEGRATION_TOOL_KEYS = new Set([
@@ -41,10 +42,10 @@ export class IntegrationToolsFactory {
       documentUuids?: string[];
       integrationUuids?: string[];
       userMessage?: string;
-      onToolEvent?: (event: 'start' | 'complete', payload: Record<string, unknown>) => void;
+      progress?: AgentProgressScope;
     },
   ): Promise<ToolSet> {
-    const onToolEvent = options?.onToolEvent;
+    const progress = options?.progress;
     const aiTools = await this.registry.getAllTools(organizationUuid, options?.integrationUuids);
     const approvalMap = await this.loadApprovalMap(organizationUuid);
     const tools: ToolSet = {};
@@ -70,7 +71,7 @@ export class IntegrationToolsFactory {
         inputSchema: jsonSchema(parameters),
         needsApproval: approvalMap.get(name) ?? false,
         execute: async (input) => {
-          onToolEvent?.('start', { toolName: name, input });
+          const callId = progress?.toolStart(name, input);
           const started = Date.now();
           const result = await this.dispatcher.dispatch(
             organizationUuid,
@@ -79,13 +80,17 @@ export class IntegrationToolsFactory {
             input as Record<string, unknown>,
             executionUuid,
             userPermissions,
+            callId,
           );
-          onToolEvent?.('complete', {
-            toolName: name,
-            result: result.result ?? result.error,
-            durationMs: Date.now() - started,
-            success: result.success,
-          });
+
+          if (callId) {
+            progress?.toolComplete(callId, {
+              toolName: name,
+              result: result.result ?? result.error,
+              durationMs: Date.now() - started,
+              success: result.success,
+            });
+          }
 
           if (!result.success) {
             throw new Error(result.error ?? 'Tool execution failed');
@@ -105,23 +110,20 @@ export class IntegrationToolsFactory {
       }),
       execute: async (input: { code: string }) => {
         const { code } = input;
-        onToolEvent?.('start', { toolName: 'code_interpreter', input: { code } });
-        const started = Date.now();
-        const output = await this.sandboxCode.runPython(executionUuid, code);
-        onToolEvent?.('complete', {
-          toolName: 'code_interpreter',
-          result: output,
-          durationMs: Date.now() - started,
-          success: !output.stderr || output.exitCode === 0,
-        });
-        return output;
+        return progress?.trackTool('code_interpreter', { code }, async () => {
+          const output = await this.sandboxCode.runPython(executionUuid, code);
+          if (output.stderr && output.exitCode !== 0) {
+            throw new Error(output.stderr);
+          }
+          return output;
+        }) ?? this.sandboxCode.runPython(executionUuid, code);
       },
     });
 
     const documentTools = await this.documentToolsFactory.buildTools({
       organizationUuid,
       documentUuids: options?.documentUuids ?? [],
-      onToolEvent,
+      progress,
     });
 
     const outputTools = this.outputToolsFactory.buildTools({
@@ -129,7 +131,7 @@ export class IntegrationToolsFactory {
       userUuid,
       executionUuid,
       userMessage: options?.userMessage,
-      onToolEvent,
+      progress,
     });
 
     const organizationTools = this.organizationToolsFactory.buildTools({
@@ -137,7 +139,7 @@ export class IntegrationToolsFactory {
       userUuid,
       executionUuid,
       userPermissions,
-      onToolEvent,
+      progress,
     });
 
     return { ...tools, ...documentTools, ...outputTools, ...organizationTools };

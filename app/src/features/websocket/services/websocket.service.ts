@@ -116,7 +116,8 @@ export const websocketConnect = (connectOptions?: WebsocketConnectOptions): void
 
 
     currentAuthToken = authState.access_token;
-    socket = io(environments.API_URL, {
+    const socketUrl = environments.API_URL.replace(/\/$/, '');
+    socket = io(socketUrl, {
         auth: {
             token: authState.access_token,
         },

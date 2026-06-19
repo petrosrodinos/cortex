@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { MessageMarkdown } from '@/components/markdown/message-markdown';
 import { useOrganizationStore } from '@/stores/organization';
 import { useGetExecution } from '@/features/executions/hooks/use-executions';
+import { prepareAssistantMarkdown } from '@/lib/message-markdown.utils';
 import { formatUsd } from '@/lib/currency';
 import { Routes } from '@/routes/routes';
 import { ExecutionDetailSkeleton } from './components/execution-detail-skeleton';
@@ -91,11 +93,20 @@ export default function ExecutionDetailPage() {
         </div>
       )}
 
+      {execution.input?.content && (
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-5">
+          <h2 className="text-sm font-semibold text-foreground">Input</h2>
+          <MessageMarkdown content={prepareAssistantMarkdown(execution.input.content)} />
+        </div>
+      )}
+
       {execution.output && (
-        <div className="rounded-xl border border-border bg-surface p-5 flex flex-col gap-3">
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-5">
           <h2 className="text-sm font-semibold text-foreground">Output</h2>
           {execution.output.content && (
-            <p className="text-sm text-foreground whitespace-pre-wrap">{execution.output.content}</p>
+            <MessageMarkdown
+              content={prepareAssistantMarkdown(execution.output.content, execution.output.files)}
+            />
           )}
           {execution.output.files.length > 0 && (
             <div className="flex flex-col gap-1">

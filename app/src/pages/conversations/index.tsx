@@ -76,7 +76,7 @@ const ConversationsPage: FC = () => {
   const rejectExecution = useRejectExecution(organizationUuid);
   const uploadDocument = useUploadDocument(organizationUuid);
 
-  const execution = useExecution(organizationUuid, activeExecutionId);
+  const execution = useExecution(organizationUuid, conversationUuid, activeExecutionId);
   const { isComplete, reset: resetExecution, assistantContent, isRunning, toolCalls, approvalRequest, error: executionError } = execution;
 
   const activeConversation = useMemo(
@@ -184,6 +184,10 @@ const ConversationsPage: FC = () => {
     pendingAssistantContent == null &&
     (isPendingUserMessageVisible || (activeExecutionId != null && !sendMessage.isPending));
 
+  const showExecutionProgress =
+    (sendMessage.isPending || isRunning || approvalRequest != null) &&
+    pendingAssistantContent == null;
+
   useEffect(() => {
     if (!pendingUserMessage) {
       return;
@@ -278,7 +282,6 @@ const ConversationsPage: FC = () => {
     }
 
     resetExecution();
-    setActiveExecutionId(null);
     setPendingUserMessage(content);
     setPendingUserAttachments(attachments);
 
@@ -483,6 +486,8 @@ const ConversationsPage: FC = () => {
               pendingUserAttachments={isPendingUserMessageVisible ? pendingUserAttachments : []}
               pendingAssistantContent={pendingAssistantContent}
               showTypingIndicator={showTypingIndicator}
+              showExecutionProgress={showExecutionProgress}
+              isRunning={isRunning}
               toolCalls={toolCalls}
               approvalRequest={approvalRequest}
               executionError={executionError}

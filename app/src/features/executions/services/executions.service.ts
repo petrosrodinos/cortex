@@ -16,6 +16,12 @@ export interface ToolCall {
   created_at: string;
 }
 
+export interface ExecutionInput {
+  content?: string;
+  documentUuids?: string[];
+  integrationUuids?: string[];
+}
+
 export interface ExecutionOutput {
   content: string;
   files: string[];
@@ -30,6 +36,7 @@ export interface ExecutionDetail {
   created_at: string;
   completed_at?: string;
   error?: string;
+  input?: ExecutionInput;
   output?: ExecutionOutput;
   tool_calls: ToolCall[];
 }

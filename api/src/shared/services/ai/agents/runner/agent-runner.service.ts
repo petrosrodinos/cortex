@@ -15,7 +15,7 @@ import {
   WIDGET_AGENT_GUIDANCE,
   WIDGET_FOLLOW_UP_GUIDANCE,
 } from '../prompt/widget-request.utils';
-import { WsEventsService } from '@/core/websockets/ws-events.service';
+import { AgentProgressEmitterService } from '../progress/agent-progress-emitter.service';
 import { ToolDispatcherService } from '../tools/tool-dispatcher.service';
 import { SandboxCodeService } from '../sandbox/sandbox-code.service';
 import { DocumentReaderService } from '../documents/document-reader.service';
@@ -47,7 +47,7 @@ export class AgentRunnerService {
     private readonly memory: ConversationMemoryService,
     private readonly toolsFactory: IntegrationToolsFactory,
     private readonly systemPromptBuilder: SystemPromptBuilder,
-    private readonly wsEvents: WsEventsService,
+    private readonly progressEmitter: AgentProgressEmitterService,
     private readonly toolDispatcher: ToolDispatcherService,
     private readonly sandboxCode: SandboxCodeService,
     private readonly documentReader: DocumentReaderService,
@@ -102,6 +102,8 @@ export class AgentRunnerService {
       data: { status: AgentExecutionStatus.RUNNING, started_at: new Date() },
     });
 
+    const progress = this.progressEmitter.createScope(organizationUuid, conversationId, executionUuid);
+
     try {
       const noAiConnectorMessage = await this.systemPromptBuilder.getNoAiConnectorMessage(organizationUuid);
       if (noAiConnectorMessage) {
@@ -139,14 +141,7 @@ export class AgentRunnerService {
           documentUuids,
           integrationUuids,
           userMessage,
-          onToolEvent: (event, payload) => {
-            const room = this.wsEvents.executionRoom(organizationUuid, executionUuid);
-            if (event === 'start') {
-              this.wsEvents.emitToRoom(room, 'tool:start', payload);
-            } else {
-              this.wsEvents.emitToRoom(room, 'tool:complete', payload);
-            }
-          },
+          progress,
         },
       );
 
@@ -191,7 +186,7 @@ export class AgentRunnerService {
           },
         });
 
-        this.wsEvents.emitToRoom(this.wsEvents.executionRoom(organizationUuid, executionUuid), 'agent:approval_required', {
+        progress.emitApprovalRequired({
           toolName: approvalRequests[0]?.toolName,
           input: approvalRequests[0]?.input,
           executionId: executionUuid,
@@ -261,7 +256,7 @@ export class AgentRunnerService {
       ]);
       this.memory.scheduleHydrateCacheFromDb(organizationUuid, conversationId);
 
-      this.wsEvents.emitToRoom(this.wsEvents.executionRoom(organizationUuid, executionUuid), 'agent:complete', {
+      progress.emitComplete({
         content,
         files: detection.files,
         executionId: executionUuid,
@@ -295,10 +290,7 @@ export class AgentRunnerService {
         },
       });
 
-      this.wsEvents.emitToRoom(this.wsEvents.executionRoom(organizationUuid, executionUuid), 'agent:error', {
-        error: message,
-        executionId: executionUuid,
-      });
+      progress.emitError(message);
 
       throw error;
     } finally {
@@ -317,6 +309,7 @@ export class AgentRunnerService {
     executionUuid: string,
     content: string,
   ): Promise<AgentRunResult> {
+    const progress = this.progressEmitter.createScope(organizationUuid, conversationId, executionUuid);
     const usage = await this.toolDispatcher.syncExecutionUsageTotals(executionUuid).catch(() => ({
       tokensUsed: 0,
       costUsd: 0,
@@ -349,7 +342,7 @@ export class AgentRunnerService {
     ]);
     this.memory.scheduleHydrateCacheFromDb(organizationUuid, conversationId);
 
-    this.wsEvents.emitToRoom(this.wsEvents.executionRoom(organizationUuid, executionUuid), 'agent:complete', {
+    progress.emitComplete({
       content,
       files: [],
       executionId: executionUuid,

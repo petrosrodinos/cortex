@@ -2,7 +2,7 @@ import { Maximize2, X } from 'lucide-react';
 import { useCallback, useEffect, useState, type FC } from 'react';
 import { getWidgetContent } from '@/features/files/services/files.service';
 import { cn } from '@/lib/utils';
-import { getFilePreviewUrl } from '../utils/message-markdown.utils';
+import { getFilePreviewUrl } from '@/lib/message-markdown.utils';
 
 const IFRAME_SANDBOX = 'allow-scripts';
 

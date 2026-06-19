@@ -14,13 +14,14 @@ import { WordGeneratorService } from '../word/word-generator.service';
 import { WidgetGeneratorService } from '../widget/widget-generator.service';
 import type { WidgetGenerateParams } from '../widget/widget.types';
 import { ExecutionToolIdempotencyService } from '../../tools/execution-tool-idempotency.service';
+import type { AgentProgressScope } from '../../progress/agent-progress-scope';
 
 export interface OutputToolsContext {
   organizationUuid: string;
   userUuid: string;
   executionUuid: string;
   userMessage?: string;
-  onToolEvent?: (event: 'start' | 'complete', payload: Record<string, unknown>) => void;
+  progress?: AgentProgressScope;
 }
 
 const DOCUMENT_TOOL_SCHEMA = jsonSchema({
@@ -198,7 +199,7 @@ export class OutputToolsFactory {
   ) {}
 
   buildTools(context: OutputToolsContext): ToolSet {
-    const { organizationUuid, userUuid, executionUuid, onToolEvent } = context;
+    const { organizationUuid, userUuid, executionUuid, progress } = context;
     const requestedOutputTools = getRequestedOutputToolNames(context.userMessage);
 
     const tools: ToolSet = {
@@ -240,7 +241,7 @@ export class OutputToolsFactory {
             toolName: 'output__create_image',
             input,
             executionUuid,
-            onToolEvent,
+            progress,
             run: () => this.imageGenerator.generate(organizationUuid, userUuid, input),
           });
         },
@@ -255,7 +256,7 @@ export class OutputToolsFactory {
             toolName: 'output__create_word',
             input,
             executionUuid,
-            onToolEvent,
+            progress,
             run: () => this.wordGenerator.generate(organizationUuid, userUuid, input),
           });
         },
@@ -270,7 +271,7 @@ export class OutputToolsFactory {
             toolName: 'output__create_pdf',
             input,
             executionUuid,
-            onToolEvent,
+            progress,
             run: () => this.pdfGenerator.generate(organizationUuid, userUuid, input),
           });
         },
@@ -285,7 +286,7 @@ export class OutputToolsFactory {
             toolName: 'output__create_excel',
             input,
             executionUuid,
-            onToolEvent,
+            progress,
             run: () => this.excelGenerator.generate(organizationUuid, userUuid, input),
           });
         },
@@ -299,7 +300,7 @@ export class OutputToolsFactory {
             toolName: 'output__create_widget',
             input,
             executionUuid,
-            onToolEvent,
+            progress,
             run: () => this.widgetGenerator.generate(organizationUuid, userUuid, input),
           });
         },
@@ -319,11 +320,11 @@ export class OutputToolsFactory {
     toolName: string;
     input: T;
     executionUuid: string;
-    onToolEvent?: OutputToolsContext['onToolEvent'];
+    progress?: AgentProgressScope;
     run: () => Promise<GeneratedImageResult | GeneratedFileResult>;
   }) {
-    const { toolName, input, executionUuid, onToolEvent, run } = options;
-    onToolEvent?.('start', { toolName, input });
+    const { toolName, input, executionUuid, progress, run } = options;
+    const callId = progress?.toolStart(toolName, input);
     const started = Date.now();
 
     try {
@@ -333,18 +334,22 @@ export class OutputToolsFactory {
         input as Record<string, unknown>,
       );
       if (cached) {
-        onToolEvent?.('complete', {
-          toolName,
-          result: cached,
-          durationMs: Date.now() - started,
-          success: true,
-        });
+        if (callId) {
+          progress?.toolComplete(callId, {
+            toolName,
+            result: cached,
+            durationMs: Date.now() - started,
+            success: true,
+            cached: true,
+          });
+        }
         return cached;
       }
 
       const result = await run();
       await this.prisma.toolCall.create({
         data: {
+          ...(callId ? { uuid: callId } : {}),
           execution_uuid: executionUuid,
           tool_name: toolName,
           input: input as object,
@@ -353,18 +358,21 @@ export class OutputToolsFactory {
           duration_ms: Date.now() - started,
         },
       });
-      onToolEvent?.('complete', {
-        toolName,
-        result,
-        durationMs: Date.now() - started,
-        success: true,
-      });
+      if (callId) {
+        progress?.toolComplete(callId, {
+          toolName,
+          result,
+          durationMs: Date.now() - started,
+          success: true,
+        });
+      }
       return result;
     } catch (error) {
       const message = error instanceof Error ? error.message : `${toolName} failed`;
       const failure = { error: message };
       await this.prisma.toolCall.create({
         data: {
+          ...(callId ? { uuid: callId } : {}),
           execution_uuid: executionUuid,
           tool_name: toolName,
           input: input as object,
@@ -374,12 +382,14 @@ export class OutputToolsFactory {
           duration_ms: Date.now() - started,
         },
       });
-      onToolEvent?.('complete', {
-        toolName,
-        result: failure,
-        durationMs: Date.now() - started,
-        success: false,
-      });
+      if (callId) {
+        progress?.toolComplete(callId, {
+          toolName,
+          result: failure,
+          durationMs: Date.now() - started,
+          success: false,
+        });
+      }
       return failure;
     }
   }

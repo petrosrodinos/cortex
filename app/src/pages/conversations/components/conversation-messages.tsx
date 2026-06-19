@@ -4,19 +4,20 @@ import type {
   ExecutionApprovalRequest,
   Message,
   MessageAttachment,
+  ToolCallProgress,
 } from '@/features/conversations/interfaces/conversation.interfaces';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
 import { formatDateTime } from '@/lib/date';
 import { cn } from '@/lib/utils';
-import { AiTypingIndicator } from './ai-typing-indicator';
 import { ConversationMessagesSkeleton } from './conversation-messages-skeleton';
 import { ConversationNoMessagesState } from './conversation-no-messages-state';
 import { getMessageAttachments, MessageAttachments } from './message-attachments';
 import { ExecutionApprovalCard } from './execution-approval-card';
+import { ExecutionProgress } from './execution-progress';
 import { MessageCopyButton } from './message-copy-button';
 import { MessageRetryButton } from './message-retry-button';
-import { MessageMarkdown } from './message-markdown';
-import { getFilePreviewUrl, prepareAssistantMarkdown } from '../utils/message-markdown.utils';
+import { MessageMarkdown } from '@/components/markdown/message-markdown';
+import { prepareAssistantMarkdown, getFilePreviewUrl } from '@/lib/message-markdown.utils';
 import { WidgetPreview } from './widget-preview';
 
 const messageBubbleClassName = 'min-w-0 max-w-[min(92%,100%)] rounded-2xl px-3 py-2.5 text-sm sm:max-w-[85%] sm:px-4 sm:py-3';
@@ -30,7 +31,9 @@ interface ConversationMessagesProps {
   pendingUserAttachments: MessageAttachment[];
   pendingAssistantContent: string | null;
   showTypingIndicator: boolean;
-  toolCalls: Array<{ toolName: string; status: string }>;
+  showExecutionProgress: boolean;
+  isRunning: boolean;
+  toolCalls: ToolCallProgress[];
   approvalRequest: ExecutionApprovalRequest | null;
   executionError: string | null;
   isApproving: boolean;
@@ -50,6 +53,8 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
   pendingUserAttachments,
   pendingAssistantContent,
   showTypingIndicator,
+  showExecutionProgress,
+  isRunning,
   toolCalls,
   approvalRequest,
   executionError,
@@ -75,7 +80,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
 
   useEffect(() => {
     scrollToBottom('smooth');
-  }, [messages, pendingUserMessage, pendingUserAttachments, pendingAssistantContent, showTypingIndicator, approvalRequest, executionError]);
+  }, [messages, pendingUserMessage, pendingUserAttachments, pendingAssistantContent, showTypingIndicator, showExecutionProgress, toolCalls, approvalRequest, executionError]);
 
   if (isLoading) {
     return <ConversationMessagesSkeleton />;
@@ -86,6 +91,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
     pendingUserMessage != null ||
     pendingAssistantContent != null ||
     showTypingIndicator ||
+    showExecutionProgress ||
     approvalRequest != null ||
     executionError != null;
 
@@ -227,23 +233,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
         </div>
       )}
 
-      {showTypingIndicator && (
-        <div className="mr-auto flex min-w-0 max-w-full w-fit flex-col gap-2">
-          <div className="rounded-2xl bg-surface-secondary px-3 py-2.5">
-            <AiTypingIndicator />
-          </div>
-          {toolCalls.length > 0 && (
-            <div className="max-w-[85%] space-y-1">
-              {toolCalls.map((tool, index) => (
-                <p key={`${tool.toolName}-${index}`} className="text-xs text-muted">
-                  {tool.toolName}
-                  <span className="ml-1.5 capitalize opacity-70">{tool.status}</span>
-                </p>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+      {showExecutionProgress && <ExecutionProgress toolCalls={toolCalls} isRunning={isRunning} />}
 
       {approvalRequest && (
         <ExecutionApprovalCard
