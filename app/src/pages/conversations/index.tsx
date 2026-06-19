@@ -19,7 +19,7 @@ import {
   conversationsQueryKey,
 } from '@/features/conversations/hooks/use-conversations';
 import { useExecution } from '@/features/conversations/hooks/use-execution';
-import { MessageRoles, type MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
+import { MessageRoles, type Message, type MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { useUploadDocument } from '@/features/files/hooks/use-files';
 import { cn } from '@/lib/utils';
 import { ConversationEmptyState } from './components/conversation-empty-state';
@@ -34,6 +34,7 @@ import {
   type DraftPart,
 } from './components/conversation-draft-editor';
 import { ConversationMessages } from './components/conversation-messages';
+import { getMessageAttachments } from './components/message-attachments';
 import { ConversationSidebar } from './components/conversation-sidebar';
 import { ConversationSidebarSkeleton } from './components/conversation-sidebar-skeleton';
 import {
@@ -249,8 +250,37 @@ const ConversationsPage: FC = () => {
     const isFirstMessage = messages.length === 0;
     setDraftParts(createEmptyDraft());
     setAttachedFiles([]);
+
+    await submitMessage({
+      content,
+      documentUuids,
+      integrationUuids,
+      attachments: sentAttachments,
+      isFirstMessage,
+    });
+  };
+
+  const submitMessage = async ({
+    content,
+    documentUuids,
+    integrationUuids,
+    attachments,
+    isFirstMessage = false,
+  }: {
+    content: string;
+    documentUuids: string[];
+    integrationUuids: string[];
+    attachments: MessageAttachment[];
+    isFirstMessage?: boolean;
+  }) => {
+    if (!conversationUuid) {
+      return;
+    }
+
+    resetExecution();
+    setActiveExecutionId(null);
     setPendingUserMessage(content);
-    setPendingUserAttachments(sentAttachments);
+    setPendingUserAttachments(attachments);
 
     try {
       const response = await sendMessage.mutateAsync({
@@ -269,6 +299,16 @@ const ConversationsPage: FC = () => {
       setPendingUserMessage(null);
       setPendingUserAttachments([]);
     }
+  };
+
+  const handleRetryMessage = (message: Message) => {
+    const attachments = getMessageAttachments(message.metadata);
+    void submitMessage({
+      content: message.content,
+      documentUuids: attachments.map((attachment) => attachment.uuid),
+      integrationUuids: selectedIntegrationUuids,
+      attachments,
+    });
   };
 
   const handleApprove = async () => {
@@ -450,6 +490,8 @@ const ConversationsPage: FC = () => {
               isRejecting={rejectExecution.isPending}
               onApprove={() => void handleApprove()}
               onReject={() => void handleReject()}
+              isSendDisabled={sendMessage.isPending || isRunning}
+              onRetryMessage={handleRetryMessage}
             />
 
             <ConversationInput

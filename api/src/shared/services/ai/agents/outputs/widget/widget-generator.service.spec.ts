@@ -70,4 +70,39 @@ describe('WidgetGeneratorService', () => {
       }),
     ).toThrow(BadRequestException);
   });
+
+  it('closes unclosed table tags before the script block', () => {
+    const document = service.buildDocument({
+      html: "<table><thead><tr><th>ID</th></tr></thead><tbody>",
+      js: 'console.log("ready");',
+      data: [{ id: 1 }],
+    });
+
+    expect(document).toContain('</tbody></table></div>');
+    expect(document).toContain('<script>');
+    expect(document.indexOf('</tbody></table></div>')).toBeLessThan(document.indexOf('<script>'));
+  });
+
+  it('wraps user javascript in a DOMContentLoaded bootstrap', () => {
+    const document = service.buildDocument({
+      html: '<div id="app"></div>',
+      js: 'console.log("ready");',
+    });
+
+    expect(document).toContain('function runWidget()');
+    expect(document).toContain("document.addEventListener('DOMContentLoaded', init);");
+    expect(document).toContain('console.log("ready");');
+  });
+
+  it('injects table rendering helpers when data is provided', () => {
+    const document = service.buildDocument({
+      html: '<table><tbody id="rows"></tbody></table>',
+      js: 'renderTableRows("#rows", widgetRecords(), () => document.createElement("tr"));',
+      data: [{ id: 1, amount: 10 }],
+    });
+
+    expect(document).toContain('function renderTableRows');
+    expect(document).toContain('function widgetRecords');
+    expect(document).toContain('function formatWidgetCurrency');
+  });
 });

@@ -11,6 +11,38 @@ const WIDGET_FONT_LINKS = `<link rel="preconnect" href="https://fonts.googleapis
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">`;
 
+const TAGS_TO_BALANCE = ['tbody', 'table', 'thead', 'tfoot', 'div', 'section', 'main', 'ul', 'ol'] as const;
+
+const WIDGET_RUNTIME_HELPERS = `
+function widgetRecords() {
+  if (Array.isArray(WIDGET_DATA)) return WIDGET_DATA;
+  if (WIDGET_DATA && typeof WIDGET_DATA === 'object') {
+    for (const value of Object.values(WIDGET_DATA)) {
+      if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'object') return value;
+    }
+  }
+  return [];
+}
+function renderTableRows(tbodySelector, records, buildRow) {
+  const tbody = document.querySelector(tbodySelector);
+  if (!tbody || !Array.isArray(records)) return;
+  tbody.replaceChildren();
+  records.forEach((record, index) => {
+    const row = buildRow(record, index);
+    if (row) tbody.appendChild(row);
+  });
+}
+function formatWidgetCurrency(value) {
+  const amount = Number(value);
+  return Number.isFinite(amount) ? '$' + amount.toFixed(2) : '$0.00';
+}
+function formatWidgetDate(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? String(value) : date.toISOString().slice(0, 10);
+}
+`.trim();
+
 const WIDGET_BASE_CSS = `:root {
   color-scheme: light;
   font-synthesis: none;
@@ -106,6 +138,7 @@ export class WidgetGeneratorService {
 
     const styleBlock = `<style>${WIDGET_BASE_CSS}${css ? `\n${css}` : ''}</style>`;
     const scriptBlock = this.buildScriptBlock(js, params.data);
+    const bodyHtml = this.wrapBodyHtml(html);
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -117,7 +150,7 @@ ${WIDGET_FONT_LINKS}
 ${styleBlock}
 </head>
 <body>
-${html}
+${bodyHtml}
 ${scriptBlock}
 </body>
 </html>`;
@@ -132,13 +165,47 @@ ${scriptBlock}
 
     if (data !== undefined) {
       parts.push(`const WIDGET_DATA = ${JSON.stringify(data)};`);
+      parts.push(WIDGET_RUNTIME_HELPERS);
     }
 
     if (js) {
-      parts.push(js);
+      parts.push(this.wrapUserScript(js));
     }
 
     return parts.length > 0 ? `<script>${parts.join('\n')}</script>` : '';
+  }
+
+  private wrapBodyHtml(html: string): string {
+    return `<div id="widget-root">${this.closeOpenTags(html)}</div>`;
+  }
+
+  private closeOpenTags(html: string): string {
+    let result = html;
+
+    for (const tag of TAGS_TO_BALANCE) {
+      const opens = (result.match(new RegExp(`<${tag}(\\s|>|/)`, 'gi')) ?? []).length;
+      const closes = (result.match(new RegExp(`</${tag}>`, 'gi')) ?? []).length;
+      const diff = opens - closes;
+
+      if (diff > 0) {
+        result += `</${tag}>`.repeat(diff);
+      }
+    }
+
+    return result;
+  }
+
+  private wrapUserScript(js: string): string {
+    return `(function runWidget() {
+  function init() {
+${js}
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();`;
   }
 
   private assertWithinSizeLimit(html: string, css: string, js: string, dataJson = ''): void {

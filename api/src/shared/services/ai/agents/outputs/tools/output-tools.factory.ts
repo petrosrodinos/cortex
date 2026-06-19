@@ -120,7 +120,7 @@ const WIDGET_TOOL_SCHEMA = jsonSchema({
     js: {
       type: 'string',
       description:
-        'Interactivity: read WIDGET_DATA, wire sliders/toggles/buttons to update metrics live, format currency/percentages, recalculate projections. Implement every behavior the user requested.',
+        'Interactivity: MUST read WIDGET_DATA and build every row, checkbox, and control in DOM on init. Use renderTableRows(selector, widgetRecords(), buildRow) for tables. Never assume rows already exist in html. Wire change handlers to recalculate totals live.',
     },
   },
   required: ['title', 'html', 'css', 'js', 'data'],
@@ -183,7 +183,7 @@ const EXPORT_FROM_CONVERSATION_GUIDANCE =
   'When the user asks to export or convert content already shown in this conversation, extract the relevant rows or sections from the most recent assistant reply or tool results and call this tool immediately. Re-run the same lookup tools if needed. Never ask the user to re-enter data that is already visible in the chat history.';
 
 const WIDGET_CREATION_GUIDANCE =
-  'Create a rich interactive widget that fully matches the user request. Step 1: fetch real data with integration, database, document, or code_interpreter tools unless the conversation already has the full dataset. Step 2: call this tool with title, data (full records), html (complete UI with every control and label the user asked for), css (polished card layout), and js (live interactivity via WIDGET_DATA). Never use placeholder data or minimal stubs.';
+  'Create a rich interactive widget that fully matches the user request. Step 1: fetch real data with integration, database, document, or code_interpreter tools unless the conversation already has the full dataset. Step 2: call this tool with title, data (full records), html (shell layout with empty tbody/containers — close all tags), css (polished card layout), and js that builds all rows and controls from WIDGET_DATA on init using renderTableRows/widgetRecords/formatWidgetCurrency/formatWidgetDate helpers. Never use placeholder data, empty tables with only headers, or js that only attaches listeners to elements that were never created.';
 
 @Injectable()
 export class OutputToolsFactory {

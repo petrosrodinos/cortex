@@ -14,6 +14,7 @@ import { ConversationNoMessagesState } from './conversation-no-messages-state';
 import { getMessageAttachments, MessageAttachments } from './message-attachments';
 import { ExecutionApprovalCard } from './execution-approval-card';
 import { MessageCopyButton } from './message-copy-button';
+import { MessageRetryButton } from './message-retry-button';
 import { MessageMarkdown } from './message-markdown';
 import { getFilePreviewUrl, prepareAssistantMarkdown } from '../utils/message-markdown.utils';
 import { WidgetPreview } from './widget-preview';
@@ -36,6 +37,8 @@ interface ConversationMessagesProps {
   isRejecting: boolean;
   onApprove: () => void;
   onReject: () => void;
+  isSendDisabled: boolean;
+  onRetryMessage: (message: Message) => void;
 }
 
 export const ConversationMessages: FC<ConversationMessagesProps> = ({
@@ -54,6 +57,8 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
   isRejecting,
   onApprove,
   onReject,
+  isSendDisabled,
+  onRetryMessage,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -128,7 +133,15 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
                 </>
               )}
             </div>
-            <MessageCopyButton content={message.content} className="mt-0.5 shrink-0" />
+            <div className="mt-0.5 flex shrink-0 items-start gap-0.5">
+              {message.role === MessageRoles.USER && (
+                <MessageRetryButton
+                  disabled={isSendDisabled}
+                  onRetry={() => onRetryMessage(message)}
+                />
+              )}
+              <MessageCopyButton content={message.content} />
+            </div>
           </div>
 
           {message.role === MessageRoles.ASSISTANT && message.metadata && (() => {
