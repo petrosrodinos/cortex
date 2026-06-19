@@ -5,6 +5,7 @@ import { IntegrationProvider, IntegrationStatus, ToolCallStatus } from 'generate
 import { calculateAiCost } from '@/integrations/ai/utils/ai-cost';
 import { AiProviders } from '@/integrations/ai/interfaces/ai.interface';
 import { DATABASE_PROVIDERS } from '@/modules/integrations/databases/database-integration.types';
+import { toJsonValue } from '@/shared/utils/json-value.utils';
 import { ExecutionToolIdempotencyService } from './execution-tool-idempotency.service';
 import { EmailToolPreprocessorService } from './email-tool-preprocessor.service';
 
@@ -51,6 +52,7 @@ export class ToolDispatcherService {
 
       const integrationUuid = await this.resolveIntegrationUuid(organizationUuid, prepared.toolName);
       const result = await this.registry.executeTool(organizationUuid, prepared.toolName, prepared.input);
+      const serializedResult = toJsonValue(result);
       const durationMs = Date.now() - started;
       const tokensUsed = 0;
       const costUsd = 0;
@@ -62,7 +64,7 @@ export class ToolDispatcherService {
           integration_uuid: integrationUuid,
           tool_name: prepared.toolName,
           input: prepared.input as object,
-          output: result as object,
+          output: serializedResult as object,
           status: ToolCallStatus.SUCCESS,
           tokens_used: tokensUsed,
           cost_usd: costUsd,
@@ -70,7 +72,7 @@ export class ToolDispatcherService {
         },
       });
 
-      return { success: true, result, durationMs, tokensUsed, costUsd };
+      return { success: true, result: serializedResult, durationMs, tokensUsed, costUsd };
     } catch (error) {
       const durationMs = Date.now() - started;
       const message = error instanceof Error ? error.message : 'Tool execution failed';

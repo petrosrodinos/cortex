@@ -3,9 +3,14 @@ import { z } from 'zod';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
 import { IntegrationProvider } from 'generated/prisma';
-import { SaasActionDefinition, SaasIntegration, emptySchema, loadRuntimePackage, optionalNumber, optionalString } from '../saas-integration.base';
+import { SaasActionDefinition, SaasIntegration, emptySchema, loadRuntimePackage } from '../saas-integration.base';
 import { LINEAR_REQUIRED_CONFIG_KEYS } from './config/linear.config';
 import { LinearService } from './services/linear.service';
+import {
+  linearOptionalLabelIds,
+  linearOptionalNumber,
+  linearOptionalString,
+} from './utils/linear.utils';
 
 @Injectable()
 export class LinearIntegration extends SaasIntegration {
@@ -17,7 +22,7 @@ export class LinearIntegration extends SaasIntegration {
       key: 'list_issues',
       label: 'List issues',
       description: 'List Linear issues with optional filters.',
-      schema: z.object({ teamId: optionalString, assigneeId: optionalString, stateId: optionalString, labelId: optionalString, priority: optionalNumber, first: optionalNumber }),
+      schema: z.object({ teamId: linearOptionalString, assigneeId: linearOptionalString, stateId: linearOptionalString, labelId: linearOptionalString, priority: linearOptionalNumber, first: linearOptionalNumber }),
       parameters: this.jsonSchema({ teamId: { type: 'string' }, assigneeId: { type: 'string' }, stateId: { type: 'string' }, labelId: { type: 'string' }, priority: { type: 'number' }, first: { type: 'number' } }),
     },
     {
@@ -30,16 +35,16 @@ export class LinearIntegration extends SaasIntegration {
     {
       key: 'create_issue',
       label: 'Create issue',
-      description: 'Create a new Linear issue.',
-      schema: z.object({ teamId: z.string(), title: z.string(), description: optionalString, assigneeId: optionalString, stateId: optionalString, labelIds: z.array(z.string()).optional(), priority: optionalNumber, estimate: optionalNumber, cycleId: optionalString, projectId: optionalString, dueDate: optionalString }),
-      parameters: this.jsonSchema({ teamId: { type: 'string' }, title: { type: 'string' }, description: { type: 'string' }, assigneeId: { type: 'string' }, stateId: { type: 'string' }, labelIds: { type: 'array', items: { type: 'string' } }, priority: { type: 'number' }, estimate: { type: 'number' }, cycleId: { type: 'string' }, projectId: { type: 'string' }, dueDate: { type: 'string' } }, ['teamId', 'title']),
+      description: 'Create a new Linear issue. teamId and projectId accept names or UUIDs. labelIds accept label names or UUIDs. assigneeId accepts "me" or a user name/email/UUID. dueDate accepts YYYY-MM-DD or "today". Optional fields can be omitted.',
+      schema: z.object({ teamId: linearOptionalString, title: z.string(), description: linearOptionalString, assigneeId: linearOptionalString, stateId: linearOptionalString, labelIds: linearOptionalLabelIds, priority: linearOptionalNumber, estimate: linearOptionalNumber, cycleId: linearOptionalString, projectId: linearOptionalString, dueDate: linearOptionalString }),
+      parameters: this.jsonSchema({ teamId: { type: 'string' }, title: { type: 'string' }, description: { type: 'string' }, assigneeId: { type: 'string' }, stateId: { type: 'string' }, labelIds: { type: 'array', items: { type: 'string' } }, priority: { type: 'number' }, estimate: { type: 'number' }, cycleId: { type: 'string' }, projectId: { type: 'string' }, dueDate: { type: 'string' } }, ['title']),
     },
     {
       key: 'update_issue',
       label: 'Update issue',
       description: 'Update a Linear issue by ID.',
-      schema: z.object({ issueId: z.string(), title: optionalString, description: optionalString, assigneeId: optionalString, stateId: optionalString, priority: optionalNumber, estimate: optionalNumber, dueDate: optionalString }),
-      parameters: this.jsonSchema({ issueId: { type: 'string' }, title: { type: 'string' }, description: { type: 'string' }, assigneeId: { type: 'string' }, stateId: { type: 'string' }, priority: { type: 'number' }, estimate: { type: 'number' }, dueDate: { type: 'string' } }, ['issueId']),
+      schema: z.object({ issueId: z.string(), title: linearOptionalString, description: linearOptionalString, assigneeId: linearOptionalString, stateId: linearOptionalString, priority: linearOptionalNumber, estimate: linearOptionalNumber, dueDate: linearOptionalString, labelIds: linearOptionalLabelIds, cycleId: linearOptionalString, projectId: linearOptionalString }),
+      parameters: this.jsonSchema({ issueId: { type: 'string' }, title: { type: 'string' }, description: { type: 'string' }, assigneeId: { type: 'string' }, stateId: { type: 'string' }, priority: { type: 'number' }, estimate: { type: 'number' }, dueDate: { type: 'string' }, labelIds: { type: 'array', items: { type: 'string' } }, cycleId: { type: 'string' }, projectId: { type: 'string' } }, ['issueId']),
     },
     {
       key: 'delete_issue',
@@ -82,14 +87,14 @@ export class LinearIntegration extends SaasIntegration {
       key: 'create_project',
       label: 'Create project',
       description: 'Create a new Linear project.',
-      schema: z.object({ teamIds: z.array(z.string()), name: z.string(), description: optionalString, state: optionalString, targetDate: optionalString }),
+      schema: z.object({ teamIds: z.array(z.string()), name: z.string(), description: linearOptionalString, state: linearOptionalString, targetDate: linearOptionalString }),
       parameters: this.jsonSchema({ teamIds: { type: 'array', items: { type: 'string' } }, name: { type: 'string' }, description: { type: 'string' }, state: { type: 'string' }, targetDate: { type: 'string' } }, ['teamIds', 'name']),
     },
     {
       key: 'update_project',
       label: 'Update project',
       description: 'Update a Linear project by ID.',
-      schema: z.object({ projectId: z.string(), name: optionalString, description: optionalString, state: optionalString, targetDate: optionalString }),
+      schema: z.object({ projectId: z.string(), name: linearOptionalString, description: linearOptionalString, state: linearOptionalString, targetDate: linearOptionalString }),
       parameters: this.jsonSchema({ projectId: { type: 'string' }, name: { type: 'string' }, description: { type: 'string' }, state: { type: 'string' }, targetDate: { type: 'string' } }, ['projectId']),
     },
 
@@ -130,7 +135,7 @@ export class LinearIntegration extends SaasIntegration {
       key: 'list_cycles',
       label: 'List cycles',
       description: 'List Linear cycles, optionally filtered by team.',
-      schema: z.object({ teamId: optionalString }),
+      schema: z.object({ teamId: linearOptionalString }),
       parameters: this.jsonSchema({ teamId: { type: 'string' } }),
     },
     {
@@ -145,9 +150,9 @@ export class LinearIntegration extends SaasIntegration {
     {
       key: 'list_labels',
       label: 'List labels',
-      description: 'List Linear issue labels, optionally filtered by team.',
-      schema: z.object({ teamId: optionalString }),
-      parameters: this.jsonSchema({ teamId: { type: 'string' } }),
+      description: 'List Linear issue labels. Returns label id and name. Optional name filter accepts a label name.',
+      schema: z.object({ teamId: linearOptionalString, name: linearOptionalString }),
+      parameters: this.jsonSchema({ teamId: { type: 'string' }, name: { type: 'string' } }),
     },
 
     // ── Workflow States ───────────────────────────────────────────────────
@@ -155,7 +160,7 @@ export class LinearIntegration extends SaasIntegration {
       key: 'list_states',
       label: 'List workflow states',
       description: 'List Linear workflow states, optionally filtered by team.',
-      schema: z.object({ teamId: optionalString }),
+      schema: z.object({ teamId: linearOptionalString }),
       parameters: this.jsonSchema({ teamId: { type: 'string' } }),
     },
 

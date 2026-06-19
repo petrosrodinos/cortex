@@ -16,12 +16,21 @@ import {
   UpdateIssueInput,
   UpdateProjectInput,
 } from '../interfaces/linear.interfaces';
-import { buildIdFilter, wrapResult } from '../utils/linear.utils';
+import {
+  buildIdFilter,
+  buildIssueLabelFilter,
+  compactOptionalFields,
+  isLinearUuid,
+  normalizeDueDate,
+  serializeLinearConnection,
+  serializeLinearEntity,
+  wrapResult,
+} from '../utils/linear.utils';
+
+const ASSIGNEE_ALIASES = new Set(['me', 'self', 'current', 'viewer']);
 
 export class LinearService {
   constructor(private readonly client: any) {}
-
-  // ── Issues ────────────────────────────────────────────────────────────────
 
   async listIssues({ teamId, assigneeId, stateId, labelId, priority, first }: ListIssuesInput = {}) {
     const filter: any = {
@@ -29,19 +38,34 @@ export class LinearService {
     };
     if (labelId) filter.labels = { id: { eq: labelId } };
     if (priority !== undefined) filter.priority = { eq: priority };
-    return wrapResult(await this.client.issues({ filter, first: first ?? LINEAR_DEFAULTS.PAGE_SIZE }));
+    const connection = await this.client.issues({ filter, first: first ?? LINEAR_DEFAULTS.PAGE_SIZE });
+    return wrapResult(serializeLinearConnection(connection));
   }
 
   async getIssue({ issueId }: GetIssueInput) {
-    return wrapResult(await this.client.issue(issueId));
+    const issue = await this.client.issue(issueId);
+    return wrapResult(serializeLinearEntity(issue));
   }
 
-  async createIssue(input: CreateIssueInput) {
-    return wrapResult(await this.client.createIssue(input));
+  async createIssue(rawInput: CreateIssueInput) {
+    const input = await this.prepareIssueFields(rawInput);
+
+    if (!input.title) {
+      throw new Error('title is required');
+    }
+
+    if (!input.teamId && !input.projectId) {
+      throw new Error('teamId or projectId is required');
+    }
+
+    const payload = await this.client.createIssue(input);
+    const issue = payload?.issue ?? payload;
+    return wrapResult(serializeLinearEntity(issue));
   }
 
   async updateIssue({ issueId, ...rest }: UpdateIssueInput) {
-    return wrapResult(await this.client.updateIssue(issueId, rest));
+    const input = await this.prepareIssueFields(rest);
+    return wrapResult(await this.client.updateIssue(issueId, input));
   }
 
   async deleteIssue({ issueId }: DeleteIssueInput) {
@@ -50,79 +74,227 @@ export class LinearService {
 
   async listIssueComments({ issueId }: ListIssueCommentsInput) {
     const issue = await this.client.issue(issueId);
-    return wrapResult(await issue.comments());
+    const connection = await issue.comments();
+    return wrapResult(serializeLinearConnection(connection));
   }
 
   async createIssueComment({ issueId, body }: CreateIssueCommentInput) {
     return wrapResult(await this.client.createComment({ issueId, body }));
   }
 
-  // ── Projects ──────────────────────────────────────────────────────────────
-
   async listProjects() {
-    return wrapResult(await this.client.projects());
+    const connection = await this.client.projects({ first: LINEAR_DEFAULTS.PAGE_SIZE });
+    return wrapResult(serializeLinearConnection(connection));
   }
 
   async getProject({ projectId }: GetProjectInput) {
-    return wrapResult(await this.client.project(projectId));
+    const project = await this.client.project(projectId);
+    return wrapResult(serializeLinearEntity(project));
   }
 
   async createProject(input: CreateProjectInput) {
-    return wrapResult(await this.client.createProject(input));
+    return wrapResult(await this.client.createProject(compactOptionalFields({ ...input })));
   }
 
   async updateProject({ projectId, ...rest }: UpdateProjectInput) {
-    return wrapResult(await this.client.updateProject(projectId, rest));
+    return wrapResult(await this.client.updateProject(projectId, compactOptionalFields(rest)));
   }
 
-  // ── Teams ─────────────────────────────────────────────────────────────────
-
   async listTeams() {
-    return wrapResult(await this.client.teams());
+    const connection = await this.client.teams({ first: LINEAR_DEFAULTS.PAGE_SIZE });
+    return wrapResult(serializeLinearConnection(connection));
   }
 
   async getTeam({ teamId }: GetTeamInput) {
-    return wrapResult(await this.client.team(teamId));
+    const team = await this.client.team(teamId);
+    return wrapResult(serializeLinearEntity(team));
   }
 
-  // ── Users ─────────────────────────────────────────────────────────────────
-
   async listUsers() {
-    return wrapResult(await this.client.users());
+    const connection = await this.client.users({ first: LINEAR_DEFAULTS.PAGE_SIZE });
+    return wrapResult(serializeLinearConnection(connection));
   }
 
   async getViewer() {
-    return wrapResult(await this.client.viewer);
+    const viewer = await this.client.viewer;
+    return wrapResult(serializeLinearEntity(viewer));
   }
 
-  // ── Cycles ────────────────────────────────────────────────────────────────
-
   async listCycles({ teamId }: ListCyclesInput = {}) {
-    const filter = teamId ? buildIdFilter({ team: teamId }) : {};
-    return wrapResult(await this.client.cycles({ filter }));
+    const filter = teamId ? buildIdFilter({ team: teamId }) : undefined;
+    const connection = await this.client.cycles({
+      ...(filter ? { filter } : {}),
+      first: LINEAR_DEFAULTS.PAGE_SIZE,
+    });
+    return wrapResult(serializeLinearConnection(connection));
   }
 
   async getCycle({ cycleId }: GetCycleInput) {
-    return wrapResult(await this.client.cycle(cycleId));
+    const cycle = await this.client.cycle(cycleId);
+    return wrapResult(serializeLinearEntity(cycle));
   }
 
-  // ── Labels ────────────────────────────────────────────────────────────────
-
-  async listLabels({ teamId }: ListLabelsInput = {}) {
-    const filter = teamId ? buildIdFilter({ team: teamId }) : {};
-    return wrapResult(await this.client.issueLabels({ filter }));
+  async listLabels({ teamId, name }: ListLabelsInput = {}) {
+    const filter = buildIssueLabelFilter({ teamId, name });
+    const connection = await this.client.issueLabels({
+      ...(Object.keys(filter).length ? { filter } : {}),
+      first: LINEAR_DEFAULTS.PAGE_SIZE,
+    });
+    return wrapResult(serializeLinearConnection(connection));
   }
-
-  // ── Workflow States ───────────────────────────────────────────────────────
 
   async listStates({ teamId }: ListStatesInput = {}) {
-    const filter = teamId ? buildIdFilter({ team: teamId }) : {};
-    return wrapResult(await this.client.workflowStates({ filter }));
+    const filter = teamId ? buildIdFilter({ team: teamId }) : undefined;
+    const connection = await this.client.workflowStates({
+      ...(filter ? { filter } : {}),
+      first: LINEAR_DEFAULTS.PAGE_SIZE,
+    });
+    return wrapResult(serializeLinearConnection(connection));
   }
 
-  // ── Roadmaps ──────────────────────────────────────────────────────────────
-
   async listRoadmaps() {
-    return wrapResult(await this.client.roadmaps());
+    const connection = await this.client.roadmaps({ first: LINEAR_DEFAULTS.PAGE_SIZE });
+    return wrapResult(serializeLinearConnection(connection));
+  }
+
+  private async prepareIssueFields(rawInput: Partial<CreateIssueInput>) {
+    const input = compactOptionalFields({
+      ...rawInput,
+      dueDate: normalizeDueDate(rawInput.dueDate),
+    }) as Partial<CreateIssueInput>;
+
+    if (input.assigneeId && !isLinearUuid(input.assigneeId)) {
+      if (ASSIGNEE_ALIASES.has(input.assigneeId.toLowerCase())) {
+        const viewer = await this.client.viewer;
+        input.assigneeId = viewer.id;
+      } else {
+        input.assigneeId = await this.resolveUserId(input.assigneeId);
+      }
+    }
+
+    if (input.projectId && !isLinearUuid(input.projectId)) {
+      input.projectId = await this.resolveProjectId(input.projectId);
+    }
+
+    if (input.teamId && !isLinearUuid(input.teamId)) {
+      input.teamId = await this.resolveTeamId(input.teamId);
+    }
+
+    if (!input.teamId && input.projectId) {
+      input.teamId = await this.resolveTeamIdFromProject(input.projectId);
+    }
+
+    if (input.labelIds?.length) {
+      input.labelIds = await this.resolveLabelIds(input.labelIds, input.teamId);
+    }
+
+    return input;
+  }
+
+  private async resolveProjectId(nameOrId: string): Promise<string> {
+    if (isLinearUuid(nameOrId)) {
+      return nameOrId;
+    }
+
+    const connection = await this.client.projects({ first: LINEAR_DEFAULTS.PAGE_SIZE });
+    const match = connection.nodes?.find(
+      (project: any) => project.name.toLowerCase() === nameOrId.toLowerCase(),
+    );
+
+    if (!match) {
+      throw new Error(`Project "${nameOrId}" not found`);
+    }
+
+    return match.id;
+  }
+
+  private async resolveTeamId(nameOrId: string): Promise<string> {
+    if (isLinearUuid(nameOrId)) {
+      return nameOrId;
+    }
+
+    const connection = await this.client.teams({ first: LINEAR_DEFAULTS.PAGE_SIZE });
+    const match = connection.nodes?.find(
+      (team: any) => team.name.toLowerCase() === nameOrId.toLowerCase(),
+    );
+
+    if (!match) {
+      throw new Error(`Team "${nameOrId}" not found`);
+    }
+
+    return match.id;
+  }
+
+  private async resolveTeamIdFromProject(projectId: string): Promise<string> {
+    const project = await this.client.project(projectId);
+    const teams = await project.teams();
+    const firstTeam = teams.nodes?.[0];
+
+    if (!firstTeam?.id) {
+      throw new Error(`No team found for project ${projectId}`);
+    }
+
+    return firstTeam.id;
+  }
+
+  private async resolveUserId(nameOrId: string): Promise<string> {
+    if (isLinearUuid(nameOrId)) {
+      return nameOrId;
+    }
+
+    const connection = await this.client.users({ first: LINEAR_DEFAULTS.PAGE_SIZE });
+    const normalized = nameOrId.toLowerCase();
+    const match = connection.nodes?.find((user: any) => {
+      const displayName = user.displayName?.toLowerCase();
+      const email = user.email?.toLowerCase();
+      const name = user.name?.toLowerCase();
+      return displayName === normalized || email === normalized || name === normalized;
+    });
+
+    if (!match) {
+      throw new Error(`User "${nameOrId}" not found`);
+    }
+
+    return match.id;
+  }
+
+  private async resolveLabelIds(labelIdsOrNames: string[], teamId?: string): Promise<string[]> {
+    const resolved: string[] = [];
+    const pendingNames: string[] = [];
+
+    for (const value of labelIdsOrNames) {
+      if (isLinearUuid(value)) {
+        resolved.push(value);
+      } else {
+        pendingNames.push(value);
+      }
+    }
+
+    if (!pendingNames.length) {
+      return resolved;
+    }
+
+    const filter = teamId ? buildIdFilter({ team: teamId }) : {};
+    const connection = await this.client.issueLabels({
+      ...(Object.keys(filter).length ? { filter } : {}),
+      first: 250,
+    });
+
+    const labels = connection.nodes ?? [];
+    const labelsByName = new Map<string, string>();
+
+    for (const label of labels) {
+      labelsByName.set(label.name.toLowerCase(), label.id);
+    }
+
+    for (const name of pendingNames) {
+      const labelId = labelsByName.get(name.toLowerCase());
+      if (!labelId) {
+        throw new Error(`Label "${name}" not found`);
+      }
+      resolved.push(labelId);
+    }
+
+    return resolved;
   }
 }

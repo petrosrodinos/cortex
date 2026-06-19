@@ -14,7 +14,7 @@ export interface GetIssueInput {
 }
 
 export interface CreateIssueInput {
-  teamId: string;
+  teamId?: string;
   title: string;
   description?: string;
   assigneeId?: string;
@@ -36,6 +36,9 @@ export interface UpdateIssueInput {
   priority?: number;
   estimate?: number;
   dueDate?: string;
+  labelIds?: string[];
+  cycleId?: string;
+  projectId?: string;
 }
 
 export interface DeleteIssueInput {
@@ -93,6 +96,7 @@ export interface GetCycleInput {
 
 export interface ListLabelsInput {
   teamId?: string;
+  name?: string;
 }
 
 // ── Workflow States ───────────────────────────────────────────────────────────
