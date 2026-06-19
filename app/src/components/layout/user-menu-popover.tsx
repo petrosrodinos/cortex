@@ -2,15 +2,7 @@ import { Popover } from '@heroui/react';
 import { User, CreditCard, LogOut, ChevronsUpDown } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth';
 import { cn } from '@/lib/utils';
-
-function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((p) => p[0].toUpperCase())
-    .join('');
-}
+import { getInitials } from './utils/user-menu-popover.utils';
 
 interface UserMenuPopoverProps {
   collapsed?: boolean;

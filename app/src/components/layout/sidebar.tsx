@@ -7,8 +7,7 @@ import Logo from '@/components/brand/logo';
 import SidebarContent from '@/components/layout/sidebar-content';
 import UserMenuPopover from '@/components/layout/user-menu-popover';
 import OrganizationSwitcher from '@/components/layout/organization-switcher';
-
-const STORAGE_KEY = 'sidebar_collapsed';
+import { STORAGE_KEY } from './utils/sidebar.utils';
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState<boolean>(() => {

@@ -1,10 +1,6 @@
 import { createContext, useContext } from "react";
-import { type Theme, useTheme } from "@/hooks/use-theme";
-
-interface ThemeContextValue {
-  theme: Theme;
-  toggleTheme: () => void;
-}
+import { useTheme } from "@/hooks/use-theme";
+import type { ThemeContextValue } from "./interfaces/theme-provider.interfaces";
 
 const ThemeContext = createContext<ThemeContextValue>({
   theme: "dark",

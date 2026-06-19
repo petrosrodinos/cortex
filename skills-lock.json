@@ -33,6 +33,12 @@
       "skillPath": "skills/.curated/openai-docs/SKILL.md",
       "computedHash": "58e60b939137ed8986d20d66a77eb537baf19b633f0fef43900e05a22a5e5598"
     },
+    "ponytail": {
+      "source": "dietrichgebert/ponytail",
+      "sourceType": "github",
+      "skillPath": "skills/ponytail/SKILL.md",
+      "computedHash": "e51ac73040c3ccb635cbd4728f4e3497a1b732362b812a92badf758ea9e0696f"
+    },
     "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",

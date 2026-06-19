@@ -410,7 +410,7 @@ export class AgentRunnerService {
 
     const guidance: string[] = [];
 
-    if (this.shouldApplyExportFollowUpGuidance(userMessage, messagesForAgent)) {
+    if (isExportFollowUpRequest(userMessage) && messagesForAgent.some((m) => m.role === 'assistant')) {
       guidance.push(
         'The latest user message is a follow-up export request.',
         'Use the data already present in this conversation to build the requested file now.',
@@ -418,7 +418,7 @@ export class AgentRunnerService {
       );
     }
 
-    if (this.shouldApplyEmailSendGuidance(userMessage, messagesForAgent)) {
+    if (isEmailSendRequest(userMessage) && messagesForAgent.some((m) => m.role === 'assistant')) {
       guidance.push(
         'The latest user message asks to send content by email.',
         'First gather the needed organization or output data with the appropriate tools, then send email with a connected email integration tool such as smtp__send_email, sendgrid__send_email, resend__send_email, or gmail__send_message.',
@@ -427,7 +427,7 @@ export class AgentRunnerService {
       );
     }
 
-    if (this.shouldApplyWidgetGuidance(userMessage)) {
+    if (isWidgetRequest(userMessage)) {
       guidance.push(...WIDGET_AGENT_GUIDANCE);
 
       if (isWidgetFollowUpRequest(userMessage) && messagesForAgent.some((message) => message.role === 'assistant')) {
@@ -440,26 +440,6 @@ export class AgentRunnerService {
     }
 
     return [instructions, ...guidance].join('\n');
-  }
-
-  private shouldApplyEmailSendGuidance(userMessage: string, messagesForAgent: ModelMessage[]) {
-    if (!isEmailSendRequest(userMessage)) {
-      return false;
-    }
-
-    return messagesForAgent.some((message) => message.role === 'assistant');
-  }
-
-  private shouldApplyExportFollowUpGuidance(userMessage: string, messagesForAgent: ModelMessage[]) {
-    if (!isExportFollowUpRequest(userMessage)) {
-      return false;
-    }
-
-    return messagesForAgent.some((message) => message.role === 'assistant');
-  }
-
-  private shouldApplyWidgetGuidance(userMessage: string) {
-    return isWidgetRequest(userMessage);
   }
 
   private buildAgentMessages(

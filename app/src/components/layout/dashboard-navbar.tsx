@@ -1,17 +1,13 @@
 import { useLocation } from 'react-router-dom';
 import { Menu, Sun, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Routes } from '@/routes/routes';
 import UserMenuPopover from '@/components/layout/user-menu-popover';
 import { useThemeContext } from '@/components/providers/theme-provider';
+import { pageTitles } from './utils/dashboard-navbar.utils';
 
 interface DashboardNavbarProps {
   onMenuClick: () => void;
 }
-
-const pageTitles: Record<string, string> = {
-  [Routes.dashboard.root]: 'Dashboard',
-};
 
 export default function DashboardNavbar({ onMenuClick }: DashboardNavbarProps) {
   const location = useLocation();

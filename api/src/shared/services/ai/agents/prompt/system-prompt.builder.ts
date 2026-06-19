@@ -34,15 +34,6 @@ export class SystemPromptBuilder {
     attachedDocuments: AttachedDocumentMeta[] = [],
     integrationUuids?: string[],
   ): Promise<string> {
-    const noAiConnectorMessage = await this.getNoAiConnectorMessage(organizationUuid);
-    if (noAiConnectorMessage) {
-      return [
-        'You are Cortex, an AI business operations copilot.',
-        'This organization has no AI provider configured.',
-        `Respond with exactly this message and nothing else:\n"${noAiConnectorMessage}"`,
-      ].join('\n');
-    }
-
     const [organization, actor, integrations] = await Promise.all([
       this.prisma.organization.findUnique({
         where: { uuid: organizationUuid },

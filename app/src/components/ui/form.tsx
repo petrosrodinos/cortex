@@ -2,13 +2,9 @@ import * as React from 'react';
 import { Controller, FormProvider, useFormContext } from 'react-hook-form';
 import type { ControllerProps, FieldPath, FieldValues } from 'react-hook-form';
 import { cn } from '@/lib/utils';
+import type { FormFieldContextValue, FormItemContextValue } from './interfaces/form.interfaces';
 
 const Form = FormProvider;
-
-type FormFieldContextValue<
-  TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
-> = { name: TName };
 
 const FormFieldContext = React.createContext<FormFieldContextValue>({} as FormFieldContextValue);
 
@@ -23,7 +19,6 @@ function FormField<
   );
 }
 
-type FormItemContextValue = { id: string };
 const FormItemContext = React.createContext<FormItemContextValue>({} as FormItemContextValue);
 
 function useFormField() {
