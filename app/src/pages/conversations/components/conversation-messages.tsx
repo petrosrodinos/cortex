@@ -1,6 +1,10 @@
 import { useEffect, useRef, type FC } from 'react';
 import { Card } from '@/components/ui/card';
-import type { Message, MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
+import type {
+  ExecutionApprovalRequest,
+  Message,
+  MessageAttachment,
+} from '@/features/conversations/interfaces/conversation.interfaces';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
 import { cn } from '@/lib/utils';
 import { AiTypingIndicator } from './ai-typing-indicator';
@@ -22,7 +26,7 @@ interface ConversationMessagesProps {
   pendingAssistantContent: string | null;
   showTypingIndicator: boolean;
   toolCalls: Array<{ toolName: string; status: string }>;
-  approvalRequest: { toolName?: string; input?: unknown } | null;
+  approvalRequest: ExecutionApprovalRequest | null;
   executionError: string | null;
   isApproving: boolean;
   isRejecting: boolean;

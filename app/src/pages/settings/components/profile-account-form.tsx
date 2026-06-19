@@ -69,7 +69,7 @@ export function ProfileAccountForm() {
 
         <div className="flex flex-col gap-1">
           <Label htmlFor="profile-email">Email</Label>
-          <Input id="profile-email" type="email" fullWidth isDisabled value={user?.email ?? ''} />
+          <Input id="profile-email" type="email" fullWidth disabled value={user?.email ?? ''} />
         </div>
 
         <div className="flex flex-col gap-1">

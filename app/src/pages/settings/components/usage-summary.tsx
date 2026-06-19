@@ -107,7 +107,7 @@ export function UsageSummarySection({ usage, isLoading }: UsageSummaryProps) {
                   />
                   <Tooltip
                     contentStyle={tooltipStyle}
-                    formatter={(chartValue: number) => [formatUsdCompact(chartValue), 'Cost']}
+                    formatter={(chartValue) => [formatUsdCompact(Number(chartValue ?? 0)), 'Cost']}
                   />
                   <Bar dataKey="cost_usd" name="Cost (USD)" fill="#22c55e" radius={[4, 4, 0, 0]} />
                 </BarChart>
@@ -131,7 +131,7 @@ export function UsageSummarySection({ usage, isLoading }: UsageSummaryProps) {
                   />
                   <Tooltip
                     contentStyle={tooltipStyle}
-                    formatter={(chartValue: number) => [chartValue.toLocaleString(), 'Tokens']}
+                    formatter={(chartValue) => [Number(chartValue ?? 0).toLocaleString(), 'Tokens']}
                   />
                   <Bar dataKey="tokens" name="Tokens" fill="var(--accent)" radius={[4, 4, 0, 0]} />
                 </BarChart>

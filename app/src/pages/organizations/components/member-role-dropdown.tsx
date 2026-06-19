@@ -29,10 +29,11 @@ export function MemberRoleDropdown({
 
   return (
     <div className={cn('min-w-[8rem]', className)}>
-      <Dropdown isDisabled={disabled}>
+      <Dropdown>
         <Button
           aria-label={ariaLabel}
           variant="secondary"
+          isDisabled={disabled}
           className={cn(
             'h-9 w-full justify-between rounded-field border border-border bg-surface px-3 text-sm font-normal text-foreground shadow-none',
             triggerClassName,
