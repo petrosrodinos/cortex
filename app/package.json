@@ -28,6 +28,7 @@
     "recharts": "^3.8.1",
     "rehype-highlight": "^7.0.2",
     "rehype-sanitize": "^6.0.0",
+    "remark-gfm": "^4.0.1",
     "socket.io-client": "^4.8.3",
     "tailwindcss": "^4.2.4",
     "zod": "^4.4.2",

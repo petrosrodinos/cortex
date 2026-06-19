@@ -1,6 +1,4 @@
 import { useEffect, useRef, type FC } from 'react';
-import ReactMarkdown from 'react-markdown';
-import rehypeSanitize from 'rehype-sanitize';
 import { Card } from '@/components/ui/card';
 import type { Message, MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
@@ -10,9 +8,8 @@ import { ConversationMessagesSkeleton } from './conversation-messages-skeleton';
 import { ConversationNoMessagesState } from './conversation-no-messages-state';
 import { getMessageAttachments, MessageAttachments } from './message-attachments';
 import { ExecutionApprovalCard } from './execution-approval-card';
-
-const markdownClassName =
-  'prose prose-sm prose-invert max-w-none min-w-0 break-words [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&_code]:break-words';
+import { MessageMarkdown } from './message-markdown';
+import { getFilePreviewUrl, prepareAssistantMarkdown } from './message-markdown.utils';
 
 const messageBubbleClassName = 'min-w-0 max-w-[min(92%,100%)] break-words overflow-hidden rounded-2xl px-3 py-2.5 text-sm sm:max-w-[85%] sm:px-4 sm:py-3';
 
@@ -99,9 +96,12 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
           )}
         >
           {message.role === MessageRoles.ASSISTANT ? (
-            <div className={markdownClassName}>
-              <ReactMarkdown rehypePlugins={[rehypeSanitize]}>{message.content}</ReactMarkdown>
-            </div>
+            <MessageMarkdown
+              content={prepareAssistantMarkdown(
+                message.content,
+                (message.metadata as { files?: string[] } | null | undefined)?.files ?? [],
+              )}
+            />
           ) : (
             <>
               {message.content}
@@ -127,7 +127,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
                     return (
                       <a
                         key={fileUrl}
-                        href={fileUrl}
+                        href={getFilePreviewUrl(fileUrl)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs text-accent hover:underline"
@@ -180,9 +180,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
 
       {pendingAssistantContent != null && (
         <div className={cn(messageBubbleClassName, 'mr-auto w-full bg-surface-secondary text-foreground')}>
-          <div className={markdownClassName}>
-            <ReactMarkdown rehypePlugins={[rehypeSanitize]}>{pendingAssistantContent}</ReactMarkdown>
-          </div>
+          <MessageMarkdown content={prepareAssistantMarkdown(pendingAssistantContent)} />
         </div>
       )}
 
