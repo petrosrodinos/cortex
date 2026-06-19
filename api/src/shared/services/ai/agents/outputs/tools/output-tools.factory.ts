@@ -17,6 +17,7 @@ export interface OutputToolsContext {
   organizationUuid: string;
   userUuid: string;
   executionUuid: string;
+  userMessage?: string;
   onToolEvent?: (event: 'start' | 'complete', payload: Record<string, unknown>) => void;
 }
 
@@ -93,6 +94,49 @@ const EXCEL_TOOL_SCHEMA = jsonSchema({
   required: ['sheets'],
 });
 
+const OUTPUT_FORMAT_PATTERNS: Array<{ toolName: string; patterns: RegExp[] }> = [
+  {
+    toolName: 'output__create_excel',
+    patterns: [/\bexcel\b/i, /\bxlsx\b/i, /\bspreadsheet\b/i, /\bworkbook\b/i],
+  },
+  {
+    toolName: 'output__create_pdf',
+    patterns: [/\bpdf\b/i],
+  },
+  {
+    toolName: 'output__create_word',
+    patterns: [/\bword\b/i, /\bdocx\b/i],
+  },
+  {
+    toolName: 'output__create_image',
+    patterns: [/\bimage\b/i, /\bpicture\b/i, /\bphoto\b/i, /\billustration\b/i, /\bgraphic\b/i, /\bportrait\b/i],
+  },
+];
+
+export function getRequestedOutputToolNames(userMessage?: string): Set<string> | null {
+  if (!userMessage?.trim()) {
+    return null;
+  }
+
+  const requested = OUTPUT_FORMAT_PATTERNS.flatMap(({ toolName, patterns }) =>
+    patterns.some((pattern) => pattern.test(userMessage)) ? [toolName] : [],
+  );
+
+  return requested.length > 0 ? new Set(requested) : null;
+}
+
+export function isExportFollowUpRequest(userMessage?: string): boolean {
+  if (!getRequestedOutputToolNames(userMessage)) {
+    return false;
+  }
+
+  const normalized = userMessage?.trim() ?? '';
+  return /\b(it|that|this|above|previous|same|the list|the table|the data|the members?|the report)\b/i.test(normalized);
+}
+
+const EXPORT_FROM_CONVERSATION_GUIDANCE =
+  'When the user asks to export or convert content already shown in this conversation, extract the relevant rows or sections from the most recent assistant reply or tool results and call this tool immediately. Re-run the same lookup tools if needed. Never ask the user to re-enter data that is already visible in the chat history.';
+
 @Injectable()
 export class OutputToolsFactory {
   constructor(
@@ -106,8 +150,9 @@ export class OutputToolsFactory {
 
   buildTools(context: OutputToolsContext): ToolSet {
     const { organizationUuid, userUuid, executionUuid, onToolEvent } = context;
+    const requestedOutputTools = getRequestedOutputToolNames(context.userMessage);
 
-    return {
+    const tools: ToolSet = {
       output__create_image: tool({
         description:
           'Generate an AI image from a text prompt using OpenAI image models. Use when the user asks to create, draw, generate, or design an image, illustration, photo, portrait, or graphic. Call this tool at most once per user request.',
@@ -154,7 +199,7 @@ export class OutputToolsFactory {
 
       output__create_word: tool({
         description:
-          'Create a Word (.docx) document from structured content. Use when the user asks to create, export, or generate a Word document or .docx file.',
+          `Create a Word (.docx) document from structured content. Use when the user asks to create, export, or generate a Word document or .docx file. ${EXPORT_FROM_CONVERSATION_GUIDANCE}`,
         inputSchema: DOCUMENT_TOOL_SCHEMA,
         execute: async (input: DocxGenerateParams) => {
           return this.executeSideEffectTool({
@@ -169,7 +214,7 @@ export class OutputToolsFactory {
 
       output__create_pdf: tool({
         description:
-          'Create a PDF document from structured content. Use when the user asks to create, export, or generate a PDF file or report.',
+          `Create a PDF document from structured content. Use when the user asks to create, export, or generate a PDF file or report. ${EXPORT_FROM_CONVERSATION_GUIDANCE}`,
         inputSchema: DOCUMENT_TOOL_SCHEMA,
         execute: async (input: DocxGenerateParams) => {
           return this.executeSideEffectTool({
@@ -184,7 +229,7 @@ export class OutputToolsFactory {
 
       output__create_excel: tool({
         description:
-          'Create an Excel (.xlsx) spreadsheet from structured data. Use when the user asks to create, export, or generate a spreadsheet, Excel file, or .xlsx workbook.',
+          `Create an Excel (.xlsx) spreadsheet from structured data. Use when the user asks to create, export, or generate a spreadsheet, Excel file, or .xlsx workbook. ${EXPORT_FROM_CONVERSATION_GUIDANCE}`,
         inputSchema: EXCEL_TOOL_SCHEMA,
         execute: async (input: ExcelGenerateParams) => {
           return this.executeSideEffectTool({
@@ -197,6 +242,14 @@ export class OutputToolsFactory {
         },
       }),
     };
+
+    if (!requestedOutputTools) {
+      return tools;
+    }
+
+    return Object.fromEntries(
+      Object.entries(tools).filter(([toolName]) => requestedOutputTools.has(toolName)),
+    ) as ToolSet;
   }
 
   private async executeSideEffectTool<T extends object>(options: {

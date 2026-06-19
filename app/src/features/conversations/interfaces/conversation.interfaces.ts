@@ -52,6 +52,14 @@ export interface AgentExecution {
   uuid: string;
   status: AgentExecutionStatus;
   error?: string | null;
+  input?: {
+    content?: string;
+    approvalRequests?: Array<{
+      approvalId?: string;
+      toolName?: string;
+      input?: unknown;
+    }>;
+  } | null;
   output?: {
     content?: string;
     files?: string[];

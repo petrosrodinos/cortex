@@ -64,7 +64,7 @@ export class OrganizationToolsFactory {
       }),
       organization__get_member: tool({
         description:
-          'Get one organization team member by member_uuid or email. Use before sending email to another member when you need to confirm the recipient.',
+          'Get one organization team member by member_uuid or email. Use when you need to confirm a team member recipient email address.',
         inputSchema: jsonSchema({
           type: 'object',
           properties: {
@@ -82,65 +82,6 @@ export class OrganizationToolsFactory {
         execute: async (input: { member_uuid?: string; email?: string }) =>
           this.runTool(context, 'organization__get_member', input, async () =>
             this.organizationTools.getMember(toolContext, input),
-          ),
-      }),
-      organization__send_email: tool({
-        description:
-          'Send an email through the organization email integration. Use recipient_type=self to email the authenticated user. Use recipient_type=member with member_uuid to email another active team member. Optionally attach generated documents by document_uuid.',
-        inputSchema: jsonSchema({
-          type: 'object',
-          properties: {
-            recipient_type: {
-              type: 'string',
-              enum: ['self', 'member'],
-              description: 'Use self for the authenticated user. Use member for another organization member.',
-            },
-            member_uuid: {
-              type: 'string',
-              description: 'Required when recipient_type is member',
-            },
-            subject: {
-              type: 'string',
-              description: 'Email subject line',
-            },
-            body: {
-              type: 'string',
-              description: 'Email body (plain text or HTML)',
-            },
-            cc: {
-              type: 'string',
-              description: 'Optional comma-separated CC recipients',
-            },
-            bcc: {
-              type: 'string',
-              description: 'Optional comma-separated BCC recipients',
-            },
-            reply_to: {
-              type: 'string',
-              description: 'Optional reply-to email address',
-            },
-            attachment_document_uuids: {
-              type: 'array',
-              items: { type: 'string' },
-              description: 'Optional document UUIDs from generated output tools to attach to the email',
-            },
-          },
-          required: ['recipient_type', 'subject', 'body'],
-          additionalProperties: false,
-        }),
-        needsApproval: true,
-        execute: async (input: {
-          recipient_type: 'self' | 'member';
-          member_uuid?: string;
-          subject: string;
-          body: string;
-          cc?: string;
-          bcc?: string;
-          reply_to?: string;
-          attachment_document_uuids?: string[];
-        }) =>
-          this.runTool(context, 'organization__send_email', input, async () =>
-            this.organizationTools.sendEmail(toolContext, input),
           ),
       }),
     };
@@ -206,7 +147,7 @@ export class OrganizationToolsFactory {
         durationMs: Date.now() - started,
         success: false,
       });
-      return failure;
+      throw error instanceof Error ? error : new Error(message);
     }
   }
 }

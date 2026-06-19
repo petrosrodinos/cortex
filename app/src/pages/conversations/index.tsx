@@ -131,7 +131,7 @@ const ConversationsPage: FC = () => {
   }, [organizationUuid, conversationsLoading, conversationUuid, sortedConversations, createConversation, navigate]);
 
   useEffect(() => {
-    if (!isComplete || !conversationUuid || !organizationUuid) {
+    if (!isComplete || !conversationUuid || !organizationUuid || approvalRequest) {
       return;
     }
 
@@ -139,7 +139,7 @@ const ConversationsPage: FC = () => {
     void queryClient.invalidateQueries({ queryKey: conversationsQueryKey });
     resetExecution();
     setActiveExecutionId(null);
-  }, [isComplete, conversationUuid, organizationUuid, queryClient, resetExecution]);
+  }, [isComplete, approvalRequest, conversationUuid, organizationUuid, queryClient, resetExecution]);
 
   const pendingAssistantContent = useMemo(() => {
     if (isComplete || assistantContent == null) {
@@ -262,8 +262,10 @@ const ConversationsPage: FC = () => {
       return;
     }
 
-    await approveExecution.mutateAsync(activeExecutionId);
-    setActiveExecutionId(activeExecutionId);
+    const executionId = activeExecutionId;
+    setActiveExecutionId(null);
+    await approveExecution.mutateAsync(executionId);
+    setActiveExecutionId(executionId);
   };
 
   const handleReject = async () => {

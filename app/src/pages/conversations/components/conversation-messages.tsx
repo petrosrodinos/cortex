@@ -2,7 +2,6 @@ import { useEffect, useRef, type FC } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeSanitize from 'rehype-sanitize';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import type { Message, MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
 import { cn } from '@/lib/utils';
@@ -10,6 +9,7 @@ import { AiTypingIndicator } from './ai-typing-indicator';
 import { ConversationMessagesSkeleton } from './conversation-messages-skeleton';
 import { ConversationNoMessagesState } from './conversation-no-messages-state';
 import { getMessageAttachments, MessageAttachments } from './message-attachments';
+import { ExecutionApprovalCard } from './execution-approval-card';
 
 const markdownClassName =
   'prose prose-sm prose-invert max-w-none min-w-0 break-words [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&_code]:break-words';
@@ -205,23 +205,13 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
       )}
 
       {approvalRequest && (
-        <Card className={cn(messageBubbleClassName, 'mr-auto w-full border-amber-500/30 bg-amber-500/5 sm:p-4')}>
-          <p className="font-medium">Approval required</p>
-          <p className="mt-1 break-words text-sm text-muted">
-            Tool <span className="font-mono">{approvalRequest.toolName}</span> wants to run with sensitive input.
-          </p>
-          <pre className="mt-3 max-w-full overflow-x-auto rounded-lg bg-surface-secondary p-3 text-xs whitespace-pre-wrap break-words">
-            {JSON.stringify(approvalRequest.input, null, 2)}
-          </pre>
-          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-            <Button onClick={onApprove} disabled={isApproving} className="w-full sm:w-auto">
-              Approve
-            </Button>
-            <Button variant="outline" onClick={onReject} disabled={isRejecting} className="w-full sm:w-auto">
-              Reject
-            </Button>
-          </div>
-        </Card>
+        <ExecutionApprovalCard
+          approvalRequest={approvalRequest}
+          isApproving={isApproving}
+          isRejecting={isRejecting}
+          onApprove={onApprove}
+          onReject={onReject}
+        />
       )}
 
       {executionError && (

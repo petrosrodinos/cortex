@@ -10,6 +10,7 @@ export interface SendEmailInput {
   replyTo?: string;
   subject: string;
   body: string;
+  html?: string;
 }
 
 export interface SendHtmlEmailInput {
@@ -26,6 +27,7 @@ export interface Attachment {
   filename: string;
   content: string;
   encoding?: string;
+  contentType?: string;
 }
 
 export interface SendEmailWithAttachmentsInput {
@@ -34,6 +36,7 @@ export interface SendEmailWithAttachmentsInput {
   bcc?: string;
   subject: string;
   body: string;
+  html?: string;
   attachments: Attachment[];
 }
 

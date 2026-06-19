@@ -12,17 +12,43 @@ export class SmtpService {
     private readonly from: string,
   ) {}
 
-  async sendEmail({ to, cc, bcc, replyTo, subject, body }: SendEmailInput) {
-    return wrapResult(await this.transport.sendMail({ from: this.from, to, cc, bcc, replyTo, subject, text: body, html: body }));
+  async sendEmail({ to, cc, bcc, replyTo, subject, body, html }: SendEmailInput) {
+    return wrapResult(
+      await this.transport.sendMail({
+        from: this.from,
+        to,
+        cc,
+        bcc,
+        replyTo,
+        subject,
+        text: body,
+        html: html ?? body,
+      }),
+    );
   }
 
   async sendHtmlEmail({ to, cc, bcc, replyTo, subject, text, html }: SendHtmlEmailInput) {
     return wrapResult(await this.transport.sendMail({ from: this.from, to, cc, bcc, replyTo, subject, text, html }));
   }
 
-  async sendEmailWithAttachments({ to, cc, bcc, subject, body, attachments }: SendEmailWithAttachmentsInput) {
-    const mapped = attachments.map(a => ({ filename: a.filename, content: a.content, encoding: a.encoding ?? 'base64' }));
-    return wrapResult(await this.transport.sendMail({ from: this.from, to, cc, bcc, subject, text: body, html: body, attachments: mapped }));
+  async sendEmailWithAttachments({ to, cc, bcc, subject, body, html, attachments }: SendEmailWithAttachmentsInput) {
+    const mapped = attachments.map(a => ({
+      filename: a.filename,
+      content: Buffer.from(a.content, 'base64'),
+      contentType: a.contentType,
+    }));
+    return wrapResult(
+      await this.transport.sendMail({
+        from: this.from,
+        to,
+        cc,
+        bcc,
+        subject,
+        text: body,
+        html: html ?? body,
+        attachments: mapped,
+      }),
+    );
   }
 
   async sendBulkEmail({ recipients, subject, body }: SendBulkEmailInput) {

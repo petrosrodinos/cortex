@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { CacheService } from '@/shared/services/cache/cache.service';
 import { MessageRole } from 'generated/prisma';
@@ -10,6 +10,8 @@ const MESSAGE_LIMIT = 100;
 
 @Injectable()
 export class ConversationMemoryService implements ConversationMemory {
+  private readonly logger = new Logger(ConversationMemoryService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly cache: CacheService,
@@ -28,22 +30,21 @@ export class ConversationMemoryService implements ConversationMemory {
       return cached;
     }
 
-    const rows = await this.prisma.message.findMany({
-      where: { conversation_uuid: conversationId },
-      orderBy: { created_at: 'asc' },
-      take: MESSAGE_LIMIT,
-    });
+    return this.hydrateCacheFromDb(organizationUuid, conversationId);
+  }
 
-    const messages = rows.map((row) => this.toModelMessage(row.role, row.content, row.metadata));
+  async hydrateCacheFromDb(organizationUuid: string, conversationId: string): Promise<ModelMessage[]> {
+    const key = this.cacheKey(organizationUuid, conversationId);
+    const messages = await this.loadMessagesFromDb(conversationId);
     await this.cache.set(key, messages, CACHE_TTL_MS);
     return messages;
   }
 
-  async appendMessages(organizationUuid: string, conversationId: string, messages: ModelMessage[]): Promise<void> {
-    const key = this.cacheKey(organizationUuid, conversationId);
-    const existing = (await this.cache.get<ModelMessage[]>(key)) ?? [];
-    const merged = [...existing, ...messages];
-    await this.cache.set(key, merged, CACHE_TTL_MS);
+  scheduleHydrateCacheFromDb(organizationUuid: string, conversationId: string): void {
+    void this.hydrateCacheFromDb(organizationUuid, conversationId).catch((error) => {
+      const message = error instanceof Error ? error.message : 'Failed to hydrate conversation cache';
+      this.logger.warn(`Conversation cache hydrate failed for ${conversationId}: ${message}`);
+    });
   }
 
   async replaceMessages(organizationUuid: string, conversationId: string, messages: ModelMessage[]): Promise<void> {
@@ -90,7 +91,17 @@ export class ConversationMemoryService implements ConversationMemory {
     await this.cache.delete(this.cacheKey(organizationUuid, conversationId));
   }
 
-  private toModelMessage(role: MessageRole, content: string, metadata: unknown): ModelMessage {
+  private async loadMessagesFromDb(conversationId: string): Promise<ModelMessage[]> {
+    const rows = await this.prisma.message.findMany({
+      where: { conversation_uuid: conversationId },
+      orderBy: { created_at: 'asc' },
+      take: MESSAGE_LIMIT,
+    });
+
+    return Promise.all(rows.map((row) => this.toModelMessage(row.role, row.content, row.metadata)));
+  }
+
+  private async toModelMessage(role: MessageRole, content: string, metadata: unknown): Promise<ModelMessage> {
     if (metadata && typeof metadata === 'object' && 'role' in (metadata as object)) {
       return metadata as ModelMessage;
     }
@@ -99,12 +110,47 @@ export class ConversationMemoryService implements ConversationMemory {
       case MessageRole.SYSTEM:
         return { role: 'system', content };
       case MessageRole.ASSISTANT:
-        return { role: 'assistant', content };
+        return { role: 'assistant', content: await this.enrichAssistantContent(content, metadata) };
       case MessageRole.TOOL:
         return { role: 'user', content: `[tool] ${content}` };
       default:
         return { role: 'user', content };
     }
+  }
+
+  private async enrichAssistantContent(content: string, metadata: unknown): Promise<string> {
+    const meta = metadata as {
+      generatedDocuments?: Array<{ document_uuid: string; filename?: string }>;
+      files?: string[];
+    } | null;
+
+    const lines: string[] = [];
+
+    if (meta?.generatedDocuments?.length) {
+      for (const document of meta.generatedDocuments) {
+        lines.push(
+          `- ${document.filename ?? 'Generated file'} (document_uuid: ${document.document_uuid})`,
+        );
+      }
+    } else if (meta?.files?.length) {
+      const documents = await this.prisma.document.findMany({
+        where: { url: { in: meta.files } },
+        select: { uuid: true, filename: true, url: true },
+      });
+
+      for (const fileUrl of meta.files) {
+        const document = documents.find((entry) => entry.url === fileUrl);
+        if (document) {
+          lines.push(`- ${document.filename} (document_uuid: ${document.uuid})`);
+        }
+      }
+    }
+
+    if (lines.length === 0) {
+      return content;
+    }
+
+    return `${content}\n\nGenerated files:\n${lines.join('\n')}`;
   }
 
   private fromModelRole(role: ModelMessage['role']): MessageRole {

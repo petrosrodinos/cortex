@@ -6,6 +6,7 @@ import { calculateAiCost } from '@/integrations/ai/utils/ai-cost';
 import { AiProviders } from '@/integrations/ai/interfaces/ai.interface';
 import { DATABASE_PROVIDERS } from '@/modules/integrations/databases/database-integration.types';
 import { ExecutionToolIdempotencyService } from './execution-tool-idempotency.service';
+import { EmailToolPreprocessorService } from './email-tool-preprocessor.service';
 
 export interface ToolDispatchResult {
   success: boolean;
@@ -24,6 +25,7 @@ export class ToolDispatcherService {
     private readonly prisma: PrismaService,
     private readonly registry: IntegrationRegistry,
     private readonly idempotency: ExecutionToolIdempotencyService,
+    private readonly emailToolPreprocessor: EmailToolPreprocessorService,
   ) {}
 
   async dispatch(
@@ -37,7 +39,8 @@ export class ToolDispatcherService {
     const started = Date.now();
 
     try {
-      await this.assertToolAllowed(organizationUuid, toolName, userPermissions);
+      const prepared = await this.emailToolPreprocessor.prepare(userUuid, toolName, input);
+      await this.assertToolAllowed(organizationUuid, prepared.toolName, userPermissions);
 
       const cached = await this.idempotency.getCachedResult(executionUuid, toolName, input);
       if (cached) {
@@ -45,8 +48,8 @@ export class ToolDispatcherService {
         return { success: true, result: cached, durationMs, tokensUsed: 0, costUsd: 0 };
       }
 
-      const integrationUuid = await this.resolveIntegrationUuid(organizationUuid, toolName);
-      const result = await this.registry.executeTool(organizationUuid, toolName, input);
+      const integrationUuid = await this.resolveIntegrationUuid(organizationUuid, prepared.toolName);
+      const result = await this.registry.executeTool(organizationUuid, prepared.toolName, prepared.input);
       const durationMs = Date.now() - started;
       const tokensUsed = 0;
       const costUsd = 0;
@@ -55,8 +58,8 @@ export class ToolDispatcherService {
         data: {
           execution_uuid: executionUuid,
           integration_uuid: integrationUuid,
-          tool_name: toolName,
-          input: input as object,
+          tool_name: prepared.toolName,
+          input: prepared.input as object,
           output: result as object,
           status: ToolCallStatus.SUCCESS,
           tokens_used: tokensUsed,

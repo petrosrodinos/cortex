@@ -28,7 +28,7 @@ export class SendGridService {
     configureSendGrid(this.apiKey);
   }
 
-  async sendEmail({ to, cc, bcc, replyTo, subject, body }: SendEmailInput) {
+  async sendEmail({ to, cc, bcc, replyTo, subject, body, html }: SendEmailInput) {
     this.configure();
     const [result] = await sgMail.send({
       to,
@@ -38,7 +38,7 @@ export class SendGridService {
       replyTo,
       subject,
       text: body,
-      html: body,
+      html: html ?? body,
     });
 
     return wrapResult(result);
@@ -60,7 +60,7 @@ export class SendGridService {
     return wrapResult(result);
   }
 
-  async sendEmailWithAttachments({ to, cc, bcc, subject, body, attachments }: SendEmailWithAttachmentsInput) {
+  async sendEmailWithAttachments({ to, cc, bcc, subject, body, html, attachments }: SendEmailWithAttachmentsInput) {
     this.configure();
     const [result] = await sgMail.send({
       to,
@@ -69,11 +69,11 @@ export class SendGridService {
       bcc: splitRecipients(bcc),
       subject,
       text: body,
-      html: body,
+      html: html ?? body,
       attachments: attachments.map((attachment) => ({
         filename: attachment.filename,
         content: attachment.content,
-        type: 'application/octet-stream',
+        type: attachment.contentType ?? 'application/octet-stream',
         disposition: 'attachment',
       })),
     });

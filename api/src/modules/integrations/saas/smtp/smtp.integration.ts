@@ -4,11 +4,10 @@ import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
 import { IntegrationProvider } from 'generated/prisma';
 import { SaasActionDefinition, SaasIntegration, emptySchema, loadRuntimePackage, optionalString } from '../saas-integration.base';
+import { emailAttachmentSchema } from '../email-attachment.schema';
 import { SMTP_REQUIRED_CONFIG_KEYS } from './config/smtp.config';
 import { SmtpService } from './services/smtp.service';
 import { buildTransport } from './utils/smtp.utils';
-
-const attachmentSchema = z.object({ filename: z.string(), content: z.string(), encoding: optionalString });
 
 @Injectable()
 export class SmtpIntegration extends SaasIntegration {
@@ -33,8 +32,8 @@ export class SmtpIntegration extends SaasIntegration {
       key: 'send_email_with_attachments',
       label: 'Send email with attachments',
       description: 'Send an email with one or more base64-encoded file attachments.',
-      schema: z.object({ to: z.string(), subject: z.string(), body: z.string(), attachments: z.array(attachmentSchema), cc: optionalString, bcc: optionalString }),
-      parameters: this.jsonSchema({ to: { type: 'string' }, subject: { type: 'string' }, body: { type: 'string' }, attachments: { type: 'array', items: { type: 'object', properties: { filename: { type: 'string' }, content: { type: 'string' }, encoding: { type: 'string' } }, required: ['filename', 'content'] } }, cc: { type: 'string' }, bcc: { type: 'string' } }, ['to', 'subject', 'body', 'attachments']),
+      schema: z.object({ to: z.string(), subject: z.string(), body: z.string(), attachments: z.array(emailAttachmentSchema), cc: optionalString, bcc: optionalString }),
+      parameters: this.jsonSchema({ to: { type: 'string' }, subject: { type: 'string' }, body: { type: 'string' }, attachments: { type: 'array', items: { type: 'object', properties: { filename: { type: 'string' }, content: { type: 'string' }, encoding: { type: 'string', enum: ['base64'] }, contentType: { type: 'string' } }, required: ['filename', 'content'] } }, cc: { type: 'string' }, bcc: { type: 'string' } }, ['to', 'subject', 'body', 'attachments']),
     },
     {
       key: 'send_bulk_email',

@@ -152,8 +152,12 @@ export default function OrganizationSwitcher({ collapsed = false }: Organization
                   onClick={() => switchOrganization(organization.uuid)}
                   className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm text-foreground hover:bg-surface-secondary disabled:opacity-60"
                 >
-                  <span className="grid h-7 w-7 place-items-center rounded-md bg-surface-tertiary text-[10px] font-semibold">
-                    {organization.name.slice(0, 2).toUpperCase()}
+                  <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-md bg-surface-tertiary text-[10px] font-semibold">
+                    {organization.logo_url ? (
+                      <img src={organization.logo_url} alt="" className="h-full w-full object-cover" />
+                    ) : (
+                      organization.name.slice(0, 2).toUpperCase()
+                    )}
                   </span>
                   <span className="min-w-0 flex-1 truncate">{organization.name}</span>
                   {organization.uuid === currentOrganization?.uuid && <Check className="h-4 w-4 text-accent" />}

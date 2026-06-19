@@ -106,7 +106,8 @@ export class MessagesService {
       },
     });
 
-    await this.memory.appendMessages(organizationUuid, conversation.uuid, [{ role: 'user', content: dto.content }]);
+    await this.memory.invalidate(organizationUuid, conversation.uuid);
+    this.memory.scheduleHydrateCacheFromDb(organizationUuid, conversation.uuid);
 
     const execution = await this.prisma.agentExecution.create({
       data: {

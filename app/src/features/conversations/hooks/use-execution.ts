@@ -8,6 +8,7 @@ import { getExecution } from '../services/conversations.service';
 import { AgentExecutionStatuses } from '../interfaces/conversation.interfaces';
 import type {
   AgentCompleteEvent,
+  AgentExecution,
   ExecutionApprovalRequest,
   ToolCallProgress,
 } from '../interfaces/conversation.interfaces';
@@ -21,6 +22,22 @@ const AGENT_EVENTS = {
 } as const;
 
 const EXECUTION_POLL_INTERVAL_MS = 2000;
+
+function parseApprovalRequest(execution: AgentExecution): ExecutionApprovalRequest | null {
+  if (execution.status !== AgentExecutionStatuses.AWAITING_APPROVAL) {
+    return null;
+  }
+
+  const approvalRequests = execution.input?.approvalRequests ?? [];
+  const first = approvalRequests[0];
+
+  return {
+    executionId: execution.uuid,
+    approvalRequests,
+    toolName: first?.toolName,
+    input: first?.input,
+  };
+}
 
 export function useExecution(organizationUuid?: string, executionId?: string | null) {
   const [toolCalls, setToolCalls] = useState<ToolCallProgress[]>([]);
@@ -51,6 +68,7 @@ export function useExecution(organizationUuid?: string, executionId?: string | n
     completedRef.current = true;
     setError(message);
     setIsRunning(false);
+    setApprovalRequest(null);
   }, []);
 
   const reset = useCallback(() => {
@@ -77,7 +95,6 @@ export function useExecution(organizationUuid?: string, executionId?: string | n
 
     const subscriptions = [
       websocketSubscribe<{ toolName: string; input?: unknown }>(AGENT_EVENTS.TOOL_START, (payload) => {
-        setApprovalRequest(null);
         setIsRunning(true);
         setToolCalls((current) => [
           ...current,
@@ -109,12 +126,15 @@ export function useExecution(organizationUuid?: string, executionId?: string | n
         markError(payload.error);
       }),
       websocketSubscribe<ExecutionApprovalRequest>(AGENT_EVENTS.APPROVAL_REQUIRED, (payload) => {
-        setApprovalRequest(payload);
+        setApprovalRequest({
+          ...payload,
+          executionId: payload.executionId ?? executionId,
+        });
         setIsRunning(false);
       }),
     ];
 
-    const pollInterval = window.setInterval(() => {
+    const pollExecution = () => {
       if (completedRef.current) {
         return;
       }
@@ -137,11 +157,26 @@ export function useExecution(organizationUuid?: string, executionId?: string | n
           }
 
           if (execution.status === AgentExecutionStatuses.AWAITING_APPROVAL) {
+            const request = parseApprovalRequest(execution);
+            if (request) {
+              setApprovalRequest(request);
+            }
             setIsRunning(false);
+            return;
+          }
+
+          if (
+            execution.status === AgentExecutionStatuses.RUNNING ||
+            execution.status === AgentExecutionStatuses.PENDING
+          ) {
+            setIsRunning(true);
           }
         })
         .catch(() => {});
-    }, EXECUTION_POLL_INTERVAL_MS);
+    };
+
+    pollExecution();
+    const pollInterval = window.setInterval(pollExecution, EXECUTION_POLL_INTERVAL_MS);
 
     return () => {
       window.clearInterval(pollInterval);

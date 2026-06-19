@@ -91,6 +91,7 @@ export function detectOutputType(userMessage: string, assistantContent: string, 
   }
 
   const uniqueFiles = imageFileUrl ? [imageFileUrl] : [...new Set(files)];
+  const hasFiles = uniqueFiles.length > 0;
 
   if (imageFileUrl) {
     return { outputType: OutputType.CHART, files: uniqueFiles };
@@ -108,21 +109,21 @@ export function detectOutputType(userMessage: string, assistantContent: string, 
     if (isDocumentAnalysisRequest(userMessage)) {
       return { outputType: OutputType.TEXT, files: uniqueFiles };
     }
-    return { outputType: OutputType.FILE_EXCEL, files: uniqueFiles };
+    return { outputType: hasFiles ? OutputType.FILE_EXCEL : OutputType.TEXT, files: uniqueFiles };
   }
 
   if (combined.includes('pdf') || combined.includes('.pdf')) {
     if (isDocumentAnalysisRequest(userMessage)) {
       return { outputType: OutputType.TEXT, files: uniqueFiles };
     }
-    return { outputType: OutputType.FILE_PDF, files: uniqueFiles };
+    return { outputType: hasFiles ? OutputType.FILE_PDF : OutputType.TEXT, files: uniqueFiles };
   }
 
   if (combined.includes('word') || combined.includes('.docx')) {
     if (isDocumentAnalysisRequest(userMessage)) {
       return { outputType: OutputType.TEXT, files: uniqueFiles };
     }
-    return { outputType: OutputType.FILE_WORD, files: uniqueFiles };
+    return { outputType: hasFiles ? OutputType.FILE_WORD : OutputType.TEXT, files: uniqueFiles };
   }
 
   if (combined.includes('chart') || combined.includes('graph') || combined.includes('plot')) {

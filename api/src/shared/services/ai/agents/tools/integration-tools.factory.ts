@@ -12,6 +12,14 @@ import { OutputToolsFactory } from '../outputs/tools/output-tools.factory';
 import { OrganizationToolsFactory } from '../organization/organization-tools.factory';
 import { ToolDispatcherService } from './tool-dispatcher.service';
 
+const AGENT_HIDDEN_INTEGRATION_TOOL_KEYS = new Set([
+  'send_html_email',
+  'send_bulk_email',
+  'send_email_with_attachments',
+]);
+
+const EMAIL_SEND_ACTION_KEYS = new Set(['send_email', 'send_message']);
+
 @Injectable()
 export class IntegrationToolsFactory {
   constructor(
@@ -32,6 +40,7 @@ export class IntegrationToolsFactory {
     options?: {
       documentUuids?: string[];
       integrationUuids?: string[];
+      userMessage?: string;
       onToolEvent?: (event: 'start' | 'complete', payload: Record<string, unknown>) => void;
     },
   ): Promise<ToolSet> {
@@ -42,9 +51,23 @@ export class IntegrationToolsFactory {
 
     for (const aiTool of aiTools) {
       const name = aiTool.function.name;
+      if (this.isHiddenFromAgent(name)) {
+        continue;
+      }
+
+      const actionKey = this.extractActionKey(name);
+      const parameters =
+        actionKey && EMAIL_SEND_ACTION_KEYS.has(actionKey)
+          ? this.enhanceEmailToolParameters(aiTool.function.parameters, actionKey)
+          : (aiTool.function.parameters ?? { type: 'object', properties: {} });
+      const description =
+        actionKey && EMAIL_SEND_ACTION_KEYS.has(actionKey)
+          ? `${aiTool.function.description} Use the to field for any recipient email address. Optional attachment_document_uuids accepts document UUIDs from output__create_* tools; attachments are added automatically at send time.`
+          : aiTool.function.description;
+
       tools[name] = tool({
-        description: aiTool.function.description,
-        inputSchema: jsonSchema(aiTool.function.parameters ?? { type: 'object', properties: {} }),
+        description,
+        inputSchema: jsonSchema(parameters),
         needsApproval: approvalMap.get(name) ?? false,
         execute: async (input) => {
           onToolEvent?.('start', { toolName: name, input });
@@ -65,7 +88,7 @@ export class IntegrationToolsFactory {
           });
 
           if (!result.success) {
-            return { error: result.error };
+            throw new Error(result.error ?? 'Tool execution failed');
           }
 
           return result.result;
@@ -105,6 +128,7 @@ export class IntegrationToolsFactory {
       organizationUuid,
       userUuid,
       executionUuid,
+      userMessage: options?.userMessage,
       onToolEvent,
     });
 
@@ -117,6 +141,52 @@ export class IntegrationToolsFactory {
     });
 
     return { ...tools, ...documentTools, ...outputTools, ...organizationTools };
+  }
+
+  private isHiddenFromAgent(toolName: string) {
+    return AGENT_HIDDEN_INTEGRATION_TOOL_KEYS.has(this.extractActionKey(toolName));
+  }
+
+  private enhanceEmailToolParameters(
+    parameters: Record<string, unknown> | undefined,
+    actionKey: string,
+  ) {
+    const base =
+      parameters && typeof parameters === 'object'
+        ? parameters
+        : { type: 'object', properties: {} };
+    const properties =
+      base.properties && typeof base.properties === 'object'
+        ? { ...(base.properties as Record<string, unknown>) }
+        : {};
+
+    if (actionKey === 'send_email') {
+      properties.attachment_document_uuids = {
+        type: 'array',
+        items: { type: 'string' },
+        description:
+          'Optional document UUIDs from output__create_* tools to attach to the email',
+      };
+    }
+
+    return {
+      ...base,
+      properties,
+    };
+  }
+
+  private extractActionKey(toolName: string) {
+    if (toolName.startsWith('db__')) {
+      return toolName.replace('db__', '');
+    }
+
+    const namespacedMatch = toolName.match(/^[^_]+_[^_]+__(.+)$/);
+    if (namespacedMatch) {
+      return namespacedMatch[1];
+    }
+
+    const parts = toolName.split('__');
+    return parts.length > 1 ? parts.slice(1).join('__') : toolName;
   }
 
   private async loadApprovalMap(organizationUuid: string) {

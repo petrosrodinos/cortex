@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DocumentType } from 'generated/prisma';
-import ExcelJS from 'exceljs';
+import ExcelJS = require('exceljs');
 import { DocumentOutputService } from '../shared/document-output.service';
 import type { GeneratedFileResult } from '../shared/generated-file.types';
 import type { ExcelGenerateParams } from './excel.types';

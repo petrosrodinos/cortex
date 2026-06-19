@@ -42,22 +42,21 @@ export default function Sidebar() {
         `,
       }}
     >
-      {/* Header */}
-      <div className="h-[54px] flex items-center shrink-0 px-3 border-b border-border">
+      <div className={cn('flex items-center shrink-0 px-3 border-b border-border', collapsed ? 'h-[78px]' : 'h-[54px]')}>
         {collapsed ? (
-          <div className="flex flex-col items-center justify-center w-full gap-1.5 py-0.5">
+          <div className="flex h-full w-full flex-col items-center justify-center gap-1.5">
             <NavLink
               to="/"
               aria-label={environments.APP_NAME}
               title={environments.APP_NAME}
-              className="rounded-xl p-1 transition-colors duration-200 hover:bg-surface-secondary"
+              className="grid h-8 w-8 place-items-center rounded-xl transition-colors duration-200 hover:bg-surface-secondary"
             >
               <Logo size={28} />
             </NavLink>
             <button
               onClick={() => setCollapsed(false)}
               title="Expand sidebar"
-              className="p-1 rounded-lg text-muted hover:text-foreground hover:bg-surface-secondary transition-all duration-200"
+              className="grid h-8 w-8 place-items-center rounded-lg text-muted transition-all duration-200 hover:bg-surface-secondary hover:text-foreground"
             >
               <PanelLeftOpen className="h-3.5 w-3.5" />
             </button>
@@ -85,7 +84,6 @@ export default function Sidebar() {
         <OrganizationSwitcher collapsed={collapsed} />
       </div>
 
-      {/* Nav items */}
       <nav className="flex-1 py-2.5 px-2 overflow-y-auto">
         <SidebarContent collapsed={collapsed} />
       </nav>

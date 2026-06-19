@@ -23,7 +23,7 @@ export class ResendService {
     private readonly from: string,
   ) {}
 
-  async sendEmail({ to, cc, bcc, replyTo, subject, body }: SendEmailInput) {
+  async sendEmail({ to, cc, bcc, replyTo, subject, body, html }: SendEmailInput) {
     const client = createResendClient(this.apiKey);
     const result = await client.emails.send({
       from: this.from,
@@ -33,7 +33,7 @@ export class ResendService {
       replyTo,
       subject,
       text: body,
-      html: body,
+      html: html ?? body,
     });
 
     if (result.error) {
@@ -63,7 +63,7 @@ export class ResendService {
     return wrapResult(result.data);
   }
 
-  async sendEmailWithAttachments({ to, cc, bcc, subject, body, attachments }: SendEmailWithAttachmentsInput) {
+  async sendEmailWithAttachments({ to, cc, bcc, subject, body, html, attachments }: SendEmailWithAttachmentsInput) {
     const client = createResendClient(this.apiKey);
     const result = await client.emails.send({
       from: this.from,
@@ -72,7 +72,7 @@ export class ResendService {
       bcc: splitRecipients(bcc),
       subject,
       text: body,
-      html: body,
+      html: html ?? body,
       attachments: attachments.map((attachment) => ({
         filename: attachment.filename,
         content: Buffer.from(attachment.content, (attachment.encoding ?? 'base64') as BufferEncoding),

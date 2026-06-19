@@ -7,6 +7,8 @@ import { ConversationMemoryService } from '../../memory/conversation-memory.serv
 import { IntegrationToolsFactory } from '../tools/integration-tools.factory';
 import { SystemPromptBuilder } from '../prompt/system-prompt.builder';
 import { detectOutputType } from '../prompt/output-detector';
+import { isExportFollowUpRequest } from '../outputs/tools/output-tools.factory';
+import { extractGeneratedDocuments, isEmailSendRequest } from '../prompt/email-send.utils';
 import { WsEventsService } from '@/core/websockets/ws-events.service';
 import { ToolDispatcherService } from '../tools/tool-dispatcher.service';
 import { SandboxCodeService } from '../sandbox/sandbox-code.service';
@@ -130,6 +132,7 @@ export class AgentRunnerService {
         {
           documentUuids,
           integrationUuids,
+          userMessage,
           onToolEvent: (event, payload) => {
             const room = this.wsEvents.executionRoom(organizationUuid, executionUuid);
             if (event === 'start') {
@@ -141,11 +144,13 @@ export class AgentRunnerService {
         },
       );
 
-      const instructions = await this.systemPromptBuilder.build(
+      const instructions = await this.buildInstructions(
         organizationUuid,
         userUuid,
         attachedDocuments,
         integrationUuids,
+        userMessage,
+        messagesForAgent,
       );
       const agent = this.providerFactory.createAgent(resolved, tools, instructions);
 
@@ -197,6 +202,7 @@ export class AgentRunnerService {
       }
 
       const toolResults = (result.steps ?? []).flatMap((step: any) => step.toolResults ?? []);
+      const generatedDocuments = extractGeneratedDocuments(toolResults);
       const content = this.sanitizeAssistantContent(result.text ?? '', toolResults);
       const detection = detectOutputType(userMessage, content, toolResults);
       const usage = await this.toolDispatcher.syncExecutionUsageTotals(executionUuid);
@@ -236,7 +242,6 @@ export class AgentRunnerService {
         };
       }
 
-      await this.memory.appendMessages(organizationUuid, conversationId, [{ role: 'assistant', content }]);
       await this.memory.persistNewMessages(conversationId, [
         {
           role: MessageRole.ASSISTANT,
@@ -244,9 +249,11 @@ export class AgentRunnerService {
           metadata: {
             outputType: detection.outputType,
             ...(detection.files.length > 0 ? { files: detection.files } : {}),
+            ...(generatedDocuments.length > 0 ? { generatedDocuments } : {}),
           },
         },
       ]);
+      this.memory.scheduleHydrateCacheFromDb(organizationUuid, conversationId);
 
       this.wsEvents.emitToRoom(this.wsEvents.executionRoom(organizationUuid, executionUuid), 'agent:complete', {
         content,
@@ -327,7 +334,6 @@ export class AgentRunnerService {
       },
     });
 
-    await this.memory.appendMessages(organizationUuid, conversationId, [{ role: 'assistant', content }]);
     await this.memory.persistNewMessages(conversationId, [
       {
         role: MessageRole.ASSISTANT,
@@ -335,6 +341,7 @@ export class AgentRunnerService {
         metadata: { outputType: 'TEXT' },
       },
     ]);
+    this.memory.scheduleHydrateCacheFromDb(organizationUuid, conversationId);
 
     this.wsEvents.emitToRoom(this.wsEvents.executionRoom(organizationUuid, executionUuid), 'agent:complete', {
       content,
@@ -380,6 +387,63 @@ export class AgentRunnerService {
     ];
   }
 
+  private async buildInstructions(
+    organizationUuid: string,
+    userUuid: string,
+    attachedDocuments: Awaited<ReturnType<DocumentReaderService['getAttachedMetadata']>>,
+    integrationUuids: string[] | undefined,
+    userMessage: string,
+    messagesForAgent: ModelMessage[],
+  ) {
+    const instructions = await this.systemPromptBuilder.build(
+      organizationUuid,
+      userUuid,
+      attachedDocuments,
+      integrationUuids,
+    );
+
+    const guidance: string[] = [];
+
+    if (this.shouldApplyExportFollowUpGuidance(userMessage, messagesForAgent)) {
+      guidance.push(
+        'The latest user message is a follow-up export request.',
+        'Use the data already present in this conversation to build the requested file now.',
+        'If the prior assistant reply only summarized results, re-run the same organization or database tools instead of asking the user to provide the data again.',
+      );
+    }
+
+    if (this.shouldApplyEmailSendGuidance(userMessage, messagesForAgent)) {
+      guidance.push(
+        'The latest user message asks to send content by email.',
+        'First gather the needed organization or output data with the appropriate tools, then send email with a connected email integration tool such as smtp__send_email, sendgrid__send_email, resend__send_email, or gmail__send_message.',
+        'Use the to field for the recipient email address. Attach generated files with attachment_document_uuids from earlier output tool results or generatedDocuments metadata in the conversation.',
+        'Do not claim an email was sent until an email integration send tool completes successfully.',
+      );
+    }
+
+    if (guidance.length === 0) {
+      return instructions;
+    }
+
+    return [instructions, ...guidance].join('\n');
+  }
+
+  private shouldApplyEmailSendGuidance(userMessage: string, messagesForAgent: ModelMessage[]) {
+    if (!isEmailSendRequest(userMessage)) {
+      return false;
+    }
+
+    return messagesForAgent.some((message) => message.role === 'assistant');
+  }
+
+  private shouldApplyExportFollowUpGuidance(userMessage: string, messagesForAgent: ModelMessage[]) {
+    if (!isExportFollowUpRequest(userMessage)) {
+      return false;
+    }
+
+    return messagesForAgent.some((message) => message.role === 'assistant');
+  }
+
   private buildAgentMessages(
     messages: ModelMessage[],
     attachedDocuments: Awaited<ReturnType<DocumentReaderService['getAttachedMetadata']>>,
@@ -420,16 +484,46 @@ export class AgentRunnerService {
 
   private extractApprovalRequests(result: any) {
     const requests: Array<{ toolName?: string; input?: unknown; approvalId?: string }> = [];
+    const seenApprovalIds = new Set<string>();
+
+    const collect = (parts: unknown[]) => {
+      for (const part of parts) {
+        if (!part || typeof part !== 'object') {
+          continue;
+        }
+
+        const record = part as Record<string, unknown>;
+        if (record.type !== 'tool-approval-request' || typeof record.approvalId !== 'string') {
+          continue;
+        }
+
+        if (seenApprovalIds.has(record.approvalId)) {
+          continue;
+        }
+
+        seenApprovalIds.add(record.approvalId);
+        const toolCall =
+          record.toolCall && typeof record.toolCall === 'object'
+            ? (record.toolCall as Record<string, unknown>)
+            : null;
+
+        requests.push({
+          approvalId: record.approvalId,
+          toolName: typeof toolCall?.toolName === 'string' ? toolCall.toolName : undefined,
+          input: toolCall?.input,
+        });
+      }
+    };
 
     for (const step of result?.steps ?? []) {
-      for (const part of step?.content ?? []) {
-        if (part?.type === 'tool-approval-request') {
-          requests.push({
-            approvalId: part.approvalId,
-            toolName: part.toolCall?.toolName,
-            input: part.toolCall?.input,
-          });
-        }
+      if (Array.isArray(step?.content)) {
+        collect(step.content);
+      }
+    }
+
+    for (const message of result?.response?.messages ?? []) {
+      if (message?.role === 'assistant' && Array.isArray(message.content)) {
+        collect(message.content);
       }
     }
 
