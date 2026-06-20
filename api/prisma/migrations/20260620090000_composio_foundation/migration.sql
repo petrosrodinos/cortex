@@ -29,7 +29,7 @@ CREATE TABLE "composio_toolkits" (
     "categories" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "tool_count" INTEGER NOT NULL DEFAULT 0,
     "auth_schemes" JSONB NOT NULL DEFAULT '[]',
-    "connection_tier" "ComposioConnectionTier" NOT NULL,
+    "connection_tiers" "ComposioConnectionTier"[] NOT NULL,
     "is_enabled" BOOLEAN NOT NULL DEFAULT false,
     "composio_metadata" JSONB,
     "last_synced_at" TIMESTAMP(3),
@@ -152,7 +152,7 @@ CREATE UNIQUE INDEX "composio_toolkits_slug_key" ON "composio_toolkits"("slug");
 CREATE INDEX "composio_toolkits_is_enabled_idx" ON "composio_toolkits"("is_enabled");
 
 -- CreateIndex
-CREATE INDEX "composio_toolkits_connection_tier_idx" ON "composio_toolkits"("connection_tier");
+CREATE INDEX "composio_toolkits_connection_tiers_idx" ON "composio_toolkits" USING GIN ("connection_tiers");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "composio_toolkit_tools_uuid_key" ON "composio_toolkit_tools"("uuid");

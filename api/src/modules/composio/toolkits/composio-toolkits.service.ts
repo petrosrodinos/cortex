@@ -20,7 +20,10 @@ export class ComposioToolkitsService {
 
   async findAll(query: ListComposioToolkitsDto) {
     const page = this.toPositiveInt(query.page, 1);
-    const limit = Math.min(this.toPositiveInt(query.limit, 25), 100);
+    const hasLimit = query.limit !== undefined && query.limit !== '';
+    const limit = hasLimit
+      ? Math.min(this.toPositiveInt(query.limit, 25), 100)
+      : undefined;
     const where: Prisma.ComposioToolkitWhereInput = {};
 
     if (query.search) {
@@ -45,8 +48,9 @@ export class ComposioToolkitsService {
       this.prisma.composioToolkit.findMany({
         where,
         orderBy: [{ is_enabled: 'desc' }, { name: 'asc' }],
-        skip: (page - 1) * limit,
-        take: limit,
+        ...(limit !== undefined
+          ? { skip: (page - 1) * limit, take: limit }
+          : {}),
         include: { _count: { select: { tools: true, enabled_orgs: true } } },
       }),
     ]);
@@ -55,9 +59,9 @@ export class ComposioToolkitsService {
       data,
       pagination: {
         total,
-        page,
-        limit,
-        total_pages: Math.ceil(total / limit),
+        page: limit !== undefined ? page : 1,
+        limit: limit ?? total,
+        total_pages: limit !== undefined ? Math.ceil(total / limit) : 1,
       },
     };
   }
@@ -77,7 +81,17 @@ export class ComposioToolkitsService {
   }
 
   async update(slug: string, dto: UpdateComposioToolkitDto) {
-    return this.prisma.composioToolkit.update({
+    const wasEnabled =
+      dto.is_enabled === true
+        ? (
+            await this.prisma.composioToolkit.findUniqueOrThrow({
+              where: { slug },
+              select: { is_enabled: true },
+            })
+          ).is_enabled
+        : undefined;
+
+    const toolkit = await this.prisma.composioToolkit.update({
       where: { slug },
       data: {
         ...(dto.is_enabled !== undefined ? { is_enabled: dto.is_enabled } : {}),
@@ -86,6 +100,12 @@ export class ComposioToolkitsService {
           : {}),
       },
     });
+
+    if (dto.is_enabled === true && !wasEnabled) {
+      await this.syncService.syncToolsRun(slug);
+    }
+
+    return toolkit;
   }
 
   async create(dto: CreateComposioToolkitDto) {

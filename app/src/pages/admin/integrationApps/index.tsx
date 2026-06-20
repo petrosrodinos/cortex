@@ -9,7 +9,7 @@ import {
 import { Routes } from '@/routes/routes';
 
 export default function AdminIntegrationAppsDashboardPage() {
-  const toolkitsQuery = useAdminIntegrationAppsToolkits({ limit: 100 });
+  const toolkitsQuery = useAdminIntegrationAppsToolkits();
   const syncRunsQuery = useAdminIntegrationAppsSyncRuns();
   const startSync = useStartAdminIntegrationAppsSync();
   const toolkits = toolkitsQuery.data?.data ?? [];

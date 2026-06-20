@@ -418,7 +418,7 @@ model ComposioToolkit {
   categories        String[]                 @default([])
   tool_count        Int                      @default(0)
   auth_schemes      Json                     @default("[]")
-  connection_tiers  ComposioConnectionTier[] @default([])
+  connection_tiers  ComposioConnectionTier[]
   is_enabled        Boolean                  @default(false)
   composio_metadata Json?
   last_synced_at    DateTime?

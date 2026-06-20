@@ -15,7 +15,7 @@ import { ToggleSwitch } from './components/toggle-switch';
 export default function AdminIntegrationAppsToolkitsPage() {
   const [search, setSearch] = useState('');
   const [newSlug, setNewSlug] = useState('');
-  const toolkitsQuery = useAdminIntegrationAppsToolkits({ search, limit: 100 });
+  const toolkitsQuery = useAdminIntegrationAppsToolkits({ search: search || undefined });
   const createToolkit = useCreateAdminIntegrationAppsToolkit();
   const toolkits = toolkitsQuery.data?.data ?? [];
 

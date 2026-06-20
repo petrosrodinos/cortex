@@ -10,16 +10,6 @@ import {
 
 type UnknownRecord = Record<string, any>;
 
-const ORG_SHARED_TOOLKITS = new Set([
-  'slack',
-  'stripe',
-  'hubspot',
-  'linear',
-  'notion',
-  'posthog',
-  'intercom',
-]);
-
 @Injectable()
 export class ComposioSyncService implements OnApplicationBootstrap {
   private readonly logger = new Logger(ComposioSyncService.name);
@@ -236,7 +226,7 @@ export class ComposioSyncService implements OnApplicationBootstrap {
 
     const existing = await this.prisma.composioToolkit.findUnique({
       where: { slug },
-      select: { connection_tiers: true, is_enabled: true },
+      select: { is_enabled: true },
     });
 
     await this.prisma.composioToolkit.upsert({
@@ -267,7 +257,7 @@ export class ComposioSyncService implements OnApplicationBootstrap {
         auth_schemes: this.toJson(
           toolkit.authSchemes ?? toolkit.auth_schemes ?? [],
         ),
-        connection_tiers: this.defaultConnectionTiers(slug),
+        connection_tiers: this.defaultConnectionTiers(),
         composio_metadata: this.toJson(toolkit),
         last_synced_at: new Date(),
       },
@@ -296,10 +286,6 @@ export class ComposioSyncService implements OnApplicationBootstrap {
         auth_schemes: this.toJson(
           toolkit.authSchemes ?? toolkit.auth_schemes ?? [],
         ),
-        connection_tiers:
-          existing?.connection_tiers.length
-            ? existing.connection_tiers
-            : this.defaultConnectionTiers(slug),
         composio_metadata: this.toJson(toolkit),
         last_synced_at: new Date(),
       },
@@ -331,10 +317,8 @@ export class ComposioSyncService implements OnApplicationBootstrap {
     return existing?.is_enabled ?? true;
   }
 
-  private defaultConnectionTiers(slug: string): ComposioConnectionTier[] {
-    return ORG_SHARED_TOOLKITS.has(slug)
-      ? [ComposioConnectionTier.ORG_SHARED]
-      : [ComposioConnectionTier.USER_PERSONAL];
+  private defaultConnectionTiers(): ComposioConnectionTier[] {
+    return [ComposioConnectionTier.ORG_SHARED];
   }
 
   private getItems(page: any): UnknownRecord[] {
