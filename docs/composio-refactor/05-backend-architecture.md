@@ -5,8 +5,6 @@
 ```
 api/src/modules/composio/
 ├── composio.module.ts
-├── composio.config.ts                    # COMPOSIO_API_KEY validation
-├── composio-client.service.ts            # Singleton Composio SDK wrapper
 ├── sync/
 │   ├── composio-sync.service.ts          # Startup + manual sync
 │   └── composio-sync.runner.ts           # OnModuleInit hook
@@ -25,6 +23,10 @@ api/src/modules/composio/
 └── org/
     ├── org-toolkits.service.ts           # Org enablement
     └── org-toolkits.controller.ts
+
+api/src/integrations/composio/
+├── composio-integration.module.ts
+└── composio-client.service.ts            # Singleton Composio SDK wrapper
 
 api/src/modules/tools/
 ├── tools.module.ts
@@ -63,7 +65,8 @@ api/src/modules/tools/
 
 ```
 AppModule
-  ├── ComposioModule (global client)
+  ├── ComposioModule (API endpoints + orchestration)
+  ├── ComposioIntegrationModule (global SDK client)
   ├── ToolsModule (exports UnifiedToolRegistry)
   ├── IntegrationsModule (DB/OpenAPI/MCP only)
   ├── AiModule (agent runner)

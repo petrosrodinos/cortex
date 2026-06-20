@@ -74,6 +74,41 @@ export type McpIntegration = $Result.DefaultSelection<Prisma.$McpIntegrationPayl
  */
 export type IntegrationAction = $Result.DefaultSelection<Prisma.$IntegrationActionPayload>
 /**
+ * Model ComposioToolkit
+ * 
+ */
+export type ComposioToolkit = $Result.DefaultSelection<Prisma.$ComposioToolkitPayload>
+/**
+ * Model ComposioToolkitTool
+ * 
+ */
+export type ComposioToolkitTool = $Result.DefaultSelection<Prisma.$ComposioToolkitToolPayload>
+/**
+ * Model ComposioSyncRun
+ * 
+ */
+export type ComposioSyncRun = $Result.DefaultSelection<Prisma.$ComposioSyncRunPayload>
+/**
+ * Model OrganisationEnabledToolkit
+ * 
+ */
+export type OrganisationEnabledToolkit = $Result.DefaultSelection<Prisma.$OrganisationEnabledToolkitPayload>
+/**
+ * Model OrganisationToolPermission
+ * 
+ */
+export type OrganisationToolPermission = $Result.DefaultSelection<Prisma.$OrganisationToolPermissionPayload>
+/**
+ * Model ComposioConnectedAccount
+ * 
+ */
+export type ComposioConnectedAccount = $Result.DefaultSelection<Prisma.$ComposioConnectedAccountPayload>
+/**
+ * Model ComposioTrigger
+ * 
+ */
+export type ComposioTrigger = $Result.DefaultSelection<Prisma.$ComposioTriggerPayload>
+/**
  * Model Document
  * 
  */
@@ -169,6 +204,42 @@ export const IntegrationProvider: {
 };
 
 export type IntegrationProvider = (typeof IntegrationProvider)[keyof typeof IntegrationProvider]
+
+
+export const ComposioConnectionTier: {
+  ORG_SHARED: 'ORG_SHARED',
+  USER_PERSONAL: 'USER_PERSONAL'
+};
+
+export type ComposioConnectionTier = (typeof ComposioConnectionTier)[keyof typeof ComposioConnectionTier]
+
+
+export const ComposioSyncType: {
+  FULL: 'FULL',
+  TOOLKIT: 'TOOLKIT',
+  TOOLS: 'TOOLS'
+};
+
+export type ComposioSyncType = (typeof ComposioSyncType)[keyof typeof ComposioSyncType]
+
+
+export const ComposioSyncStatus: {
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+export type ComposioSyncStatus = (typeof ComposioSyncStatus)[keyof typeof ComposioSyncStatus]
+
+
+export const ComposioAccountStatus: {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  EXPIRED: 'EXPIRED',
+  PENDING: 'PENDING'
+};
+
+export type ComposioAccountStatus = (typeof ComposioAccountStatus)[keyof typeof ComposioAccountStatus]
 
 
 export const IntegrationStatus: {
@@ -317,6 +388,22 @@ export const OrganizationMemberStatus: typeof $Enums.OrganizationMemberStatus
 export type IntegrationProvider = $Enums.IntegrationProvider
 
 export const IntegrationProvider: typeof $Enums.IntegrationProvider
+
+export type ComposioConnectionTier = $Enums.ComposioConnectionTier
+
+export const ComposioConnectionTier: typeof $Enums.ComposioConnectionTier
+
+export type ComposioSyncType = $Enums.ComposioSyncType
+
+export const ComposioSyncType: typeof $Enums.ComposioSyncType
+
+export type ComposioSyncStatus = $Enums.ComposioSyncStatus
+
+export const ComposioSyncStatus: typeof $Enums.ComposioSyncStatus
+
+export type ComposioAccountStatus = $Enums.ComposioAccountStatus
+
+export const ComposioAccountStatus: typeof $Enums.ComposioAccountStatus
 
 export type IntegrationStatus = $Enums.IntegrationStatus
 
@@ -606,6 +693,76 @@ export class PrismaClient<
     * ```
     */
   get integrationAction(): Prisma.IntegrationActionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.composioToolkit`: Exposes CRUD operations for the **ComposioToolkit** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ComposioToolkits
+    * const composioToolkits = await prisma.composioToolkit.findMany()
+    * ```
+    */
+  get composioToolkit(): Prisma.ComposioToolkitDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.composioToolkitTool`: Exposes CRUD operations for the **ComposioToolkitTool** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ComposioToolkitTools
+    * const composioToolkitTools = await prisma.composioToolkitTool.findMany()
+    * ```
+    */
+  get composioToolkitTool(): Prisma.ComposioToolkitToolDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.composioSyncRun`: Exposes CRUD operations for the **ComposioSyncRun** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ComposioSyncRuns
+    * const composioSyncRuns = await prisma.composioSyncRun.findMany()
+    * ```
+    */
+  get composioSyncRun(): Prisma.ComposioSyncRunDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.organisationEnabledToolkit`: Exposes CRUD operations for the **OrganisationEnabledToolkit** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OrganisationEnabledToolkits
+    * const organisationEnabledToolkits = await prisma.organisationEnabledToolkit.findMany()
+    * ```
+    */
+  get organisationEnabledToolkit(): Prisma.OrganisationEnabledToolkitDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.organisationToolPermission`: Exposes CRUD operations for the **OrganisationToolPermission** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OrganisationToolPermissions
+    * const organisationToolPermissions = await prisma.organisationToolPermission.findMany()
+    * ```
+    */
+  get organisationToolPermission(): Prisma.OrganisationToolPermissionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.composioConnectedAccount`: Exposes CRUD operations for the **ComposioConnectedAccount** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ComposioConnectedAccounts
+    * const composioConnectedAccounts = await prisma.composioConnectedAccount.findMany()
+    * ```
+    */
+  get composioConnectedAccount(): Prisma.ComposioConnectedAccountDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.composioTrigger`: Exposes CRUD operations for the **ComposioTrigger** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ComposioTriggers
+    * const composioTriggers = await prisma.composioTrigger.findMany()
+    * ```
+    */
+  get composioTrigger(): Prisma.ComposioTriggerDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.document`: Exposes CRUD operations for the **Document** model.
@@ -1122,6 +1279,13 @@ export namespace Prisma {
     OpenApiIntegration: 'OpenApiIntegration',
     McpIntegration: 'McpIntegration',
     IntegrationAction: 'IntegrationAction',
+    ComposioToolkit: 'ComposioToolkit',
+    ComposioToolkitTool: 'ComposioToolkitTool',
+    ComposioSyncRun: 'ComposioSyncRun',
+    OrganisationEnabledToolkit: 'OrganisationEnabledToolkit',
+    OrganisationToolPermission: 'OrganisationToolPermission',
+    ComposioConnectedAccount: 'ComposioConnectedAccount',
+    ComposioTrigger: 'ComposioTrigger',
     Document: 'Document',
     AiProvider: 'AiProvider',
     Conversation: 'Conversation',
@@ -1144,7 +1308,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "databaseIntegration" | "openApiIntegration" | "mcpIntegration" | "integrationAction" | "document" | "aiProvider" | "conversation" | "message" | "agentExecution" | "toolCall" | "conversationPersonalization"
+      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "databaseIntegration" | "openApiIntegration" | "mcpIntegration" | "integrationAction" | "composioToolkit" | "composioToolkitTool" | "composioSyncRun" | "organisationEnabledToolkit" | "organisationToolPermission" | "composioConnectedAccount" | "composioTrigger" | "document" | "aiProvider" | "conversation" | "message" | "agentExecution" | "toolCall" | "conversationPersonalization"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2036,6 +2200,524 @@ export namespace Prisma {
           }
         }
       }
+      ComposioToolkit: {
+        payload: Prisma.$ComposioToolkitPayload<ExtArgs>
+        fields: Prisma.ComposioToolkitFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ComposioToolkitFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ComposioToolkitFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitPayload>
+          }
+          findFirst: {
+            args: Prisma.ComposioToolkitFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ComposioToolkitFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitPayload>
+          }
+          findMany: {
+            args: Prisma.ComposioToolkitFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitPayload>[]
+          }
+          create: {
+            args: Prisma.ComposioToolkitCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitPayload>
+          }
+          createMany: {
+            args: Prisma.ComposioToolkitCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ComposioToolkitCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitPayload>[]
+          }
+          delete: {
+            args: Prisma.ComposioToolkitDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitPayload>
+          }
+          update: {
+            args: Prisma.ComposioToolkitUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitPayload>
+          }
+          deleteMany: {
+            args: Prisma.ComposioToolkitDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ComposioToolkitUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ComposioToolkitUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitPayload>[]
+          }
+          upsert: {
+            args: Prisma.ComposioToolkitUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitPayload>
+          }
+          aggregate: {
+            args: Prisma.ComposioToolkitAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateComposioToolkit>
+          }
+          groupBy: {
+            args: Prisma.ComposioToolkitGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ComposioToolkitGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ComposioToolkitCountArgs<ExtArgs>
+            result: $Utils.Optional<ComposioToolkitCountAggregateOutputType> | number
+          }
+        }
+      }
+      ComposioToolkitTool: {
+        payload: Prisma.$ComposioToolkitToolPayload<ExtArgs>
+        fields: Prisma.ComposioToolkitToolFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ComposioToolkitToolFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitToolPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ComposioToolkitToolFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitToolPayload>
+          }
+          findFirst: {
+            args: Prisma.ComposioToolkitToolFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitToolPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ComposioToolkitToolFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitToolPayload>
+          }
+          findMany: {
+            args: Prisma.ComposioToolkitToolFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitToolPayload>[]
+          }
+          create: {
+            args: Prisma.ComposioToolkitToolCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitToolPayload>
+          }
+          createMany: {
+            args: Prisma.ComposioToolkitToolCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ComposioToolkitToolCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitToolPayload>[]
+          }
+          delete: {
+            args: Prisma.ComposioToolkitToolDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitToolPayload>
+          }
+          update: {
+            args: Prisma.ComposioToolkitToolUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitToolPayload>
+          }
+          deleteMany: {
+            args: Prisma.ComposioToolkitToolDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ComposioToolkitToolUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ComposioToolkitToolUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitToolPayload>[]
+          }
+          upsert: {
+            args: Prisma.ComposioToolkitToolUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioToolkitToolPayload>
+          }
+          aggregate: {
+            args: Prisma.ComposioToolkitToolAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateComposioToolkitTool>
+          }
+          groupBy: {
+            args: Prisma.ComposioToolkitToolGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ComposioToolkitToolGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ComposioToolkitToolCountArgs<ExtArgs>
+            result: $Utils.Optional<ComposioToolkitToolCountAggregateOutputType> | number
+          }
+        }
+      }
+      ComposioSyncRun: {
+        payload: Prisma.$ComposioSyncRunPayload<ExtArgs>
+        fields: Prisma.ComposioSyncRunFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ComposioSyncRunFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioSyncRunPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ComposioSyncRunFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioSyncRunPayload>
+          }
+          findFirst: {
+            args: Prisma.ComposioSyncRunFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioSyncRunPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ComposioSyncRunFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioSyncRunPayload>
+          }
+          findMany: {
+            args: Prisma.ComposioSyncRunFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioSyncRunPayload>[]
+          }
+          create: {
+            args: Prisma.ComposioSyncRunCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioSyncRunPayload>
+          }
+          createMany: {
+            args: Prisma.ComposioSyncRunCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ComposioSyncRunCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioSyncRunPayload>[]
+          }
+          delete: {
+            args: Prisma.ComposioSyncRunDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioSyncRunPayload>
+          }
+          update: {
+            args: Prisma.ComposioSyncRunUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioSyncRunPayload>
+          }
+          deleteMany: {
+            args: Prisma.ComposioSyncRunDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ComposioSyncRunUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ComposioSyncRunUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioSyncRunPayload>[]
+          }
+          upsert: {
+            args: Prisma.ComposioSyncRunUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioSyncRunPayload>
+          }
+          aggregate: {
+            args: Prisma.ComposioSyncRunAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateComposioSyncRun>
+          }
+          groupBy: {
+            args: Prisma.ComposioSyncRunGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ComposioSyncRunGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ComposioSyncRunCountArgs<ExtArgs>
+            result: $Utils.Optional<ComposioSyncRunCountAggregateOutputType> | number
+          }
+        }
+      }
+      OrganisationEnabledToolkit: {
+        payload: Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>
+        fields: Prisma.OrganisationEnabledToolkitFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OrganisationEnabledToolkitFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationEnabledToolkitPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OrganisationEnabledToolkitFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationEnabledToolkitPayload>
+          }
+          findFirst: {
+            args: Prisma.OrganisationEnabledToolkitFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationEnabledToolkitPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OrganisationEnabledToolkitFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationEnabledToolkitPayload>
+          }
+          findMany: {
+            args: Prisma.OrganisationEnabledToolkitFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationEnabledToolkitPayload>[]
+          }
+          create: {
+            args: Prisma.OrganisationEnabledToolkitCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationEnabledToolkitPayload>
+          }
+          createMany: {
+            args: Prisma.OrganisationEnabledToolkitCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OrganisationEnabledToolkitCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationEnabledToolkitPayload>[]
+          }
+          delete: {
+            args: Prisma.OrganisationEnabledToolkitDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationEnabledToolkitPayload>
+          }
+          update: {
+            args: Prisma.OrganisationEnabledToolkitUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationEnabledToolkitPayload>
+          }
+          deleteMany: {
+            args: Prisma.OrganisationEnabledToolkitDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OrganisationEnabledToolkitUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.OrganisationEnabledToolkitUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationEnabledToolkitPayload>[]
+          }
+          upsert: {
+            args: Prisma.OrganisationEnabledToolkitUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationEnabledToolkitPayload>
+          }
+          aggregate: {
+            args: Prisma.OrganisationEnabledToolkitAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOrganisationEnabledToolkit>
+          }
+          groupBy: {
+            args: Prisma.OrganisationEnabledToolkitGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OrganisationEnabledToolkitGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OrganisationEnabledToolkitCountArgs<ExtArgs>
+            result: $Utils.Optional<OrganisationEnabledToolkitCountAggregateOutputType> | number
+          }
+        }
+      }
+      OrganisationToolPermission: {
+        payload: Prisma.$OrganisationToolPermissionPayload<ExtArgs>
+        fields: Prisma.OrganisationToolPermissionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OrganisationToolPermissionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationToolPermissionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OrganisationToolPermissionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationToolPermissionPayload>
+          }
+          findFirst: {
+            args: Prisma.OrganisationToolPermissionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationToolPermissionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OrganisationToolPermissionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationToolPermissionPayload>
+          }
+          findMany: {
+            args: Prisma.OrganisationToolPermissionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationToolPermissionPayload>[]
+          }
+          create: {
+            args: Prisma.OrganisationToolPermissionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationToolPermissionPayload>
+          }
+          createMany: {
+            args: Prisma.OrganisationToolPermissionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OrganisationToolPermissionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationToolPermissionPayload>[]
+          }
+          delete: {
+            args: Prisma.OrganisationToolPermissionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationToolPermissionPayload>
+          }
+          update: {
+            args: Prisma.OrganisationToolPermissionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationToolPermissionPayload>
+          }
+          deleteMany: {
+            args: Prisma.OrganisationToolPermissionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OrganisationToolPermissionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.OrganisationToolPermissionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationToolPermissionPayload>[]
+          }
+          upsert: {
+            args: Prisma.OrganisationToolPermissionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OrganisationToolPermissionPayload>
+          }
+          aggregate: {
+            args: Prisma.OrganisationToolPermissionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOrganisationToolPermission>
+          }
+          groupBy: {
+            args: Prisma.OrganisationToolPermissionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OrganisationToolPermissionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OrganisationToolPermissionCountArgs<ExtArgs>
+            result: $Utils.Optional<OrganisationToolPermissionCountAggregateOutputType> | number
+          }
+        }
+      }
+      ComposioConnectedAccount: {
+        payload: Prisma.$ComposioConnectedAccountPayload<ExtArgs>
+        fields: Prisma.ComposioConnectedAccountFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ComposioConnectedAccountFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioConnectedAccountPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ComposioConnectedAccountFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioConnectedAccountPayload>
+          }
+          findFirst: {
+            args: Prisma.ComposioConnectedAccountFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioConnectedAccountPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ComposioConnectedAccountFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioConnectedAccountPayload>
+          }
+          findMany: {
+            args: Prisma.ComposioConnectedAccountFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioConnectedAccountPayload>[]
+          }
+          create: {
+            args: Prisma.ComposioConnectedAccountCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioConnectedAccountPayload>
+          }
+          createMany: {
+            args: Prisma.ComposioConnectedAccountCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ComposioConnectedAccountCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioConnectedAccountPayload>[]
+          }
+          delete: {
+            args: Prisma.ComposioConnectedAccountDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioConnectedAccountPayload>
+          }
+          update: {
+            args: Prisma.ComposioConnectedAccountUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioConnectedAccountPayload>
+          }
+          deleteMany: {
+            args: Prisma.ComposioConnectedAccountDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ComposioConnectedAccountUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ComposioConnectedAccountUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioConnectedAccountPayload>[]
+          }
+          upsert: {
+            args: Prisma.ComposioConnectedAccountUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioConnectedAccountPayload>
+          }
+          aggregate: {
+            args: Prisma.ComposioConnectedAccountAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateComposioConnectedAccount>
+          }
+          groupBy: {
+            args: Prisma.ComposioConnectedAccountGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ComposioConnectedAccountGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ComposioConnectedAccountCountArgs<ExtArgs>
+            result: $Utils.Optional<ComposioConnectedAccountCountAggregateOutputType> | number
+          }
+        }
+      }
+      ComposioTrigger: {
+        payload: Prisma.$ComposioTriggerPayload<ExtArgs>
+        fields: Prisma.ComposioTriggerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ComposioTriggerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioTriggerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ComposioTriggerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioTriggerPayload>
+          }
+          findFirst: {
+            args: Prisma.ComposioTriggerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioTriggerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ComposioTriggerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioTriggerPayload>
+          }
+          findMany: {
+            args: Prisma.ComposioTriggerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioTriggerPayload>[]
+          }
+          create: {
+            args: Prisma.ComposioTriggerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioTriggerPayload>
+          }
+          createMany: {
+            args: Prisma.ComposioTriggerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ComposioTriggerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioTriggerPayload>[]
+          }
+          delete: {
+            args: Prisma.ComposioTriggerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioTriggerPayload>
+          }
+          update: {
+            args: Prisma.ComposioTriggerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioTriggerPayload>
+          }
+          deleteMany: {
+            args: Prisma.ComposioTriggerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ComposioTriggerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ComposioTriggerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioTriggerPayload>[]
+          }
+          upsert: {
+            args: Prisma.ComposioTriggerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ComposioTriggerPayload>
+          }
+          aggregate: {
+            args: Prisma.ComposioTriggerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateComposioTrigger>
+          }
+          groupBy: {
+            args: Prisma.ComposioTriggerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ComposioTriggerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ComposioTriggerCountArgs<ExtArgs>
+            result: $Utils.Optional<ComposioTriggerCountAggregateOutputType> | number
+          }
+        }
+      }
       Document: {
         payload: Prisma.$DocumentPayload<ExtArgs>
         fields: Prisma.DocumentFieldRefs
@@ -2674,6 +3356,13 @@ export namespace Prisma {
     openApiIntegration?: OpenApiIntegrationOmit
     mcpIntegration?: McpIntegrationOmit
     integrationAction?: IntegrationActionOmit
+    composioToolkit?: ComposioToolkitOmit
+    composioToolkitTool?: ComposioToolkitToolOmit
+    composioSyncRun?: ComposioSyncRunOmit
+    organisationEnabledToolkit?: OrganisationEnabledToolkitOmit
+    organisationToolPermission?: OrganisationToolPermissionOmit
+    composioConnectedAccount?: ComposioConnectedAccountOmit
+    composioTrigger?: ComposioTriggerOmit
     document?: DocumentOmit
     aiProvider?: AiProviderOmit
     conversation?: ConversationOmit
@@ -2832,6 +3521,10 @@ export namespace Prisma {
     roles: number
     audit_logs: number
     integrations: number
+    enabled_toolkits: number
+    tool_permissions: number
+    composio_accounts: number
+    composio_triggers: number
     ai_providers: number
     conversations: number
     agent_executions: number
@@ -2843,6 +3536,10 @@ export namespace Prisma {
     roles?: boolean | OrganizationCountOutputTypeCountRolesArgs
     audit_logs?: boolean | OrganizationCountOutputTypeCountAudit_logsArgs
     integrations?: boolean | OrganizationCountOutputTypeCountIntegrationsArgs
+    enabled_toolkits?: boolean | OrganizationCountOutputTypeCountEnabled_toolkitsArgs
+    tool_permissions?: boolean | OrganizationCountOutputTypeCountTool_permissionsArgs
+    composio_accounts?: boolean | OrganizationCountOutputTypeCountComposio_accountsArgs
+    composio_triggers?: boolean | OrganizationCountOutputTypeCountComposio_triggersArgs
     ai_providers?: boolean | OrganizationCountOutputTypeCountAi_providersArgs
     conversations?: boolean | OrganizationCountOutputTypeCountConversationsArgs
     agent_executions?: boolean | OrganizationCountOutputTypeCountAgent_executionsArgs
@@ -2886,6 +3583,34 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountIntegrationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: IntegrationWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountEnabled_toolkitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrganisationEnabledToolkitWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountTool_permissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrganisationToolPermissionWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountComposio_accountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ComposioConnectedAccountWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountComposio_triggersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ComposioTriggerWhereInput
   }
 
   /**
@@ -3025,6 +3750,95 @@ export namespace Prisma {
    */
   export type IntegrationCountOutputTypeCountTool_callsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ToolCallWhereInput
+  }
+
+
+  /**
+   * Count Type ComposioToolkitCountOutputType
+   */
+
+  export type ComposioToolkitCountOutputType = {
+    tools: number
+    enabled_orgs: number
+    connected_accounts: number
+    triggers: number
+  }
+
+  export type ComposioToolkitCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tools?: boolean | ComposioToolkitCountOutputTypeCountToolsArgs
+    enabled_orgs?: boolean | ComposioToolkitCountOutputTypeCountEnabled_orgsArgs
+    connected_accounts?: boolean | ComposioToolkitCountOutputTypeCountConnected_accountsArgs
+    triggers?: boolean | ComposioToolkitCountOutputTypeCountTriggersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ComposioToolkitCountOutputType without action
+   */
+  export type ComposioToolkitCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitCountOutputType
+     */
+    select?: ComposioToolkitCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ComposioToolkitCountOutputType without action
+   */
+  export type ComposioToolkitCountOutputTypeCountToolsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ComposioToolkitToolWhereInput
+  }
+
+  /**
+   * ComposioToolkitCountOutputType without action
+   */
+  export type ComposioToolkitCountOutputTypeCountEnabled_orgsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrganisationEnabledToolkitWhereInput
+  }
+
+  /**
+   * ComposioToolkitCountOutputType without action
+   */
+  export type ComposioToolkitCountOutputTypeCountConnected_accountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ComposioConnectedAccountWhereInput
+  }
+
+  /**
+   * ComposioToolkitCountOutputType without action
+   */
+  export type ComposioToolkitCountOutputTypeCountTriggersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ComposioTriggerWhereInput
+  }
+
+
+  /**
+   * Count Type ComposioToolkitToolCountOutputType
+   */
+
+  export type ComposioToolkitToolCountOutputType = {
+    permissions: number
+  }
+
+  export type ComposioToolkitToolCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    permissions?: boolean | ComposioToolkitToolCountOutputTypeCountPermissionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ComposioToolkitToolCountOutputType without action
+   */
+  export type ComposioToolkitToolCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitToolCountOutputType
+     */
+    select?: ComposioToolkitToolCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ComposioToolkitToolCountOutputType without action
+   */
+  export type ComposioToolkitToolCountOutputTypeCountPermissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrganisationToolPermissionWhereInput
   }
 
 
@@ -4633,6 +5447,10 @@ export namespace Prisma {
     roles?: boolean | Organization$rolesArgs<ExtArgs>
     audit_logs?: boolean | Organization$audit_logsArgs<ExtArgs>
     integrations?: boolean | Organization$integrationsArgs<ExtArgs>
+    enabled_toolkits?: boolean | Organization$enabled_toolkitsArgs<ExtArgs>
+    tool_permissions?: boolean | Organization$tool_permissionsArgs<ExtArgs>
+    composio_accounts?: boolean | Organization$composio_accountsArgs<ExtArgs>
+    composio_triggers?: boolean | Organization$composio_triggersArgs<ExtArgs>
     ai_providers?: boolean | Organization$ai_providersArgs<ExtArgs>
     conversations?: boolean | Organization$conversationsArgs<ExtArgs>
     agent_executions?: boolean | Organization$agent_executionsArgs<ExtArgs>
@@ -4676,6 +5494,10 @@ export namespace Prisma {
     roles?: boolean | Organization$rolesArgs<ExtArgs>
     audit_logs?: boolean | Organization$audit_logsArgs<ExtArgs>
     integrations?: boolean | Organization$integrationsArgs<ExtArgs>
+    enabled_toolkits?: boolean | Organization$enabled_toolkitsArgs<ExtArgs>
+    tool_permissions?: boolean | Organization$tool_permissionsArgs<ExtArgs>
+    composio_accounts?: boolean | Organization$composio_accountsArgs<ExtArgs>
+    composio_triggers?: boolean | Organization$composio_triggersArgs<ExtArgs>
     ai_providers?: boolean | Organization$ai_providersArgs<ExtArgs>
     conversations?: boolean | Organization$conversationsArgs<ExtArgs>
     agent_executions?: boolean | Organization$agent_executionsArgs<ExtArgs>
@@ -4692,6 +5514,10 @@ export namespace Prisma {
       roles: Prisma.$OrganizationRolePayload<ExtArgs>[]
       audit_logs: Prisma.$AuditLogPayload<ExtArgs>[]
       integrations: Prisma.$IntegrationPayload<ExtArgs>[]
+      enabled_toolkits: Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>[]
+      tool_permissions: Prisma.$OrganisationToolPermissionPayload<ExtArgs>[]
+      composio_accounts: Prisma.$ComposioConnectedAccountPayload<ExtArgs>[]
+      composio_triggers: Prisma.$ComposioTriggerPayload<ExtArgs>[]
       ai_providers: Prisma.$AiProviderPayload<ExtArgs>[]
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
       agent_executions: Prisma.$AgentExecutionPayload<ExtArgs>[]
@@ -5103,6 +5929,10 @@ export namespace Prisma {
     roles<T extends Organization$rolesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganizationRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     audit_logs<T extends Organization$audit_logsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$audit_logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     integrations<T extends Organization$integrationsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$integrationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IntegrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    enabled_toolkits<T extends Organization$enabled_toolkitsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$enabled_toolkitsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    tool_permissions<T extends Organization$tool_permissionsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$tool_permissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganisationToolPermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    composio_accounts<T extends Organization$composio_accountsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$composio_accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioConnectedAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    composio_triggers<T extends Organization$composio_triggersArgs<ExtArgs> = {}>(args?: Subset<T, Organization$composio_triggersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioTriggerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     ai_providers<T extends Organization$ai_providersArgs<ExtArgs> = {}>(args?: Subset<T, Organization$ai_providersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiProviderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     conversations<T extends Organization$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     agent_executions<T extends Organization$agent_executionsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$agent_executionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5624,6 +6454,102 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: IntegrationScalarFieldEnum | IntegrationScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.enabled_toolkits
+   */
+  export type Organization$enabled_toolkitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitInclude<ExtArgs> | null
+    where?: OrganisationEnabledToolkitWhereInput
+    orderBy?: OrganisationEnabledToolkitOrderByWithRelationInput | OrganisationEnabledToolkitOrderByWithRelationInput[]
+    cursor?: OrganisationEnabledToolkitWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrganisationEnabledToolkitScalarFieldEnum | OrganisationEnabledToolkitScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.tool_permissions
+   */
+  export type Organization$tool_permissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionInclude<ExtArgs> | null
+    where?: OrganisationToolPermissionWhereInput
+    orderBy?: OrganisationToolPermissionOrderByWithRelationInput | OrganisationToolPermissionOrderByWithRelationInput[]
+    cursor?: OrganisationToolPermissionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrganisationToolPermissionScalarFieldEnum | OrganisationToolPermissionScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.composio_accounts
+   */
+  export type Organization$composio_accountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountInclude<ExtArgs> | null
+    where?: ComposioConnectedAccountWhereInput
+    orderBy?: ComposioConnectedAccountOrderByWithRelationInput | ComposioConnectedAccountOrderByWithRelationInput[]
+    cursor?: ComposioConnectedAccountWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ComposioConnectedAccountScalarFieldEnum | ComposioConnectedAccountScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.composio_triggers
+   */
+  export type Organization$composio_triggersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerInclude<ExtArgs> | null
+    where?: ComposioTriggerWhereInput
+    orderBy?: ComposioTriggerOrderByWithRelationInput | ComposioTriggerOrderByWithRelationInput[]
+    cursor?: ComposioTriggerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ComposioTriggerScalarFieldEnum | ComposioTriggerScalarFieldEnum[]
   }
 
   /**
@@ -17305,6 +18231,8301 @@ export namespace Prisma {
 
 
   /**
+   * Model ComposioToolkit
+   */
+
+  export type AggregateComposioToolkit = {
+    _count: ComposioToolkitCountAggregateOutputType | null
+    _avg: ComposioToolkitAvgAggregateOutputType | null
+    _sum: ComposioToolkitSumAggregateOutputType | null
+    _min: ComposioToolkitMinAggregateOutputType | null
+    _max: ComposioToolkitMaxAggregateOutputType | null
+  }
+
+  export type ComposioToolkitAvgAggregateOutputType = {
+    id: number | null
+    tool_count: number | null
+  }
+
+  export type ComposioToolkitSumAggregateOutputType = {
+    id: number | null
+    tool_count: number | null
+  }
+
+  export type ComposioToolkitMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    slug: string | null
+    name: string | null
+    description: string | null
+    logo_url: string | null
+    tool_count: number | null
+    connection_tier: $Enums.ComposioConnectionTier | null
+    is_enabled: boolean | null
+    last_synced_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ComposioToolkitMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    slug: string | null
+    name: string | null
+    description: string | null
+    logo_url: string | null
+    tool_count: number | null
+    connection_tier: $Enums.ComposioConnectionTier | null
+    is_enabled: boolean | null
+    last_synced_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ComposioToolkitCountAggregateOutputType = {
+    id: number
+    uuid: number
+    slug: number
+    name: number
+    description: number
+    logo_url: number
+    categories: number
+    tool_count: number
+    auth_schemes: number
+    connection_tier: number
+    is_enabled: number
+    composio_metadata: number
+    last_synced_at: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type ComposioToolkitAvgAggregateInputType = {
+    id?: true
+    tool_count?: true
+  }
+
+  export type ComposioToolkitSumAggregateInputType = {
+    id?: true
+    tool_count?: true
+  }
+
+  export type ComposioToolkitMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    slug?: true
+    name?: true
+    description?: true
+    logo_url?: true
+    tool_count?: true
+    connection_tier?: true
+    is_enabled?: true
+    last_synced_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ComposioToolkitMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    slug?: true
+    name?: true
+    description?: true
+    logo_url?: true
+    tool_count?: true
+    connection_tier?: true
+    is_enabled?: true
+    last_synced_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ComposioToolkitCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    slug?: true
+    name?: true
+    description?: true
+    logo_url?: true
+    categories?: true
+    tool_count?: true
+    auth_schemes?: true
+    connection_tier?: true
+    is_enabled?: true
+    composio_metadata?: true
+    last_synced_at?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type ComposioToolkitAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ComposioToolkit to aggregate.
+     */
+    where?: ComposioToolkitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioToolkits to fetch.
+     */
+    orderBy?: ComposioToolkitOrderByWithRelationInput | ComposioToolkitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ComposioToolkitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioToolkits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioToolkits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ComposioToolkits
+    **/
+    _count?: true | ComposioToolkitCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ComposioToolkitAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ComposioToolkitSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ComposioToolkitMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ComposioToolkitMaxAggregateInputType
+  }
+
+  export type GetComposioToolkitAggregateType<T extends ComposioToolkitAggregateArgs> = {
+        [P in keyof T & keyof AggregateComposioToolkit]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateComposioToolkit[P]>
+      : GetScalarType<T[P], AggregateComposioToolkit[P]>
+  }
+
+
+
+
+  export type ComposioToolkitGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ComposioToolkitWhereInput
+    orderBy?: ComposioToolkitOrderByWithAggregationInput | ComposioToolkitOrderByWithAggregationInput[]
+    by: ComposioToolkitScalarFieldEnum[] | ComposioToolkitScalarFieldEnum
+    having?: ComposioToolkitScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ComposioToolkitCountAggregateInputType | true
+    _avg?: ComposioToolkitAvgAggregateInputType
+    _sum?: ComposioToolkitSumAggregateInputType
+    _min?: ComposioToolkitMinAggregateInputType
+    _max?: ComposioToolkitMaxAggregateInputType
+  }
+
+  export type ComposioToolkitGroupByOutputType = {
+    id: number
+    uuid: string
+    slug: string
+    name: string
+    description: string | null
+    logo_url: string | null
+    categories: string[]
+    tool_count: number
+    auth_schemes: JsonValue
+    connection_tier: $Enums.ComposioConnectionTier
+    is_enabled: boolean
+    composio_metadata: JsonValue | null
+    last_synced_at: Date | null
+    created_at: Date
+    updated_at: Date
+    _count: ComposioToolkitCountAggregateOutputType | null
+    _avg: ComposioToolkitAvgAggregateOutputType | null
+    _sum: ComposioToolkitSumAggregateOutputType | null
+    _min: ComposioToolkitMinAggregateOutputType | null
+    _max: ComposioToolkitMaxAggregateOutputType | null
+  }
+
+  type GetComposioToolkitGroupByPayload<T extends ComposioToolkitGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ComposioToolkitGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ComposioToolkitGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ComposioToolkitGroupByOutputType[P]>
+            : GetScalarType<T[P], ComposioToolkitGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ComposioToolkitSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    slug?: boolean
+    name?: boolean
+    description?: boolean
+    logo_url?: boolean
+    categories?: boolean
+    tool_count?: boolean
+    auth_schemes?: boolean
+    connection_tier?: boolean
+    is_enabled?: boolean
+    composio_metadata?: boolean
+    last_synced_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    tools?: boolean | ComposioToolkit$toolsArgs<ExtArgs>
+    enabled_orgs?: boolean | ComposioToolkit$enabled_orgsArgs<ExtArgs>
+    connected_accounts?: boolean | ComposioToolkit$connected_accountsArgs<ExtArgs>
+    triggers?: boolean | ComposioToolkit$triggersArgs<ExtArgs>
+    _count?: boolean | ComposioToolkitCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["composioToolkit"]>
+
+  export type ComposioToolkitSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    slug?: boolean
+    name?: boolean
+    description?: boolean
+    logo_url?: boolean
+    categories?: boolean
+    tool_count?: boolean
+    auth_schemes?: boolean
+    connection_tier?: boolean
+    is_enabled?: boolean
+    composio_metadata?: boolean
+    last_synced_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }, ExtArgs["result"]["composioToolkit"]>
+
+  export type ComposioToolkitSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    slug?: boolean
+    name?: boolean
+    description?: boolean
+    logo_url?: boolean
+    categories?: boolean
+    tool_count?: boolean
+    auth_schemes?: boolean
+    connection_tier?: boolean
+    is_enabled?: boolean
+    composio_metadata?: boolean
+    last_synced_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }, ExtArgs["result"]["composioToolkit"]>
+
+  export type ComposioToolkitSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    slug?: boolean
+    name?: boolean
+    description?: boolean
+    logo_url?: boolean
+    categories?: boolean
+    tool_count?: boolean
+    auth_schemes?: boolean
+    connection_tier?: boolean
+    is_enabled?: boolean
+    composio_metadata?: boolean
+    last_synced_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type ComposioToolkitOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "slug" | "name" | "description" | "logo_url" | "categories" | "tool_count" | "auth_schemes" | "connection_tier" | "is_enabled" | "composio_metadata" | "last_synced_at" | "created_at" | "updated_at", ExtArgs["result"]["composioToolkit"]>
+  export type ComposioToolkitInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tools?: boolean | ComposioToolkit$toolsArgs<ExtArgs>
+    enabled_orgs?: boolean | ComposioToolkit$enabled_orgsArgs<ExtArgs>
+    connected_accounts?: boolean | ComposioToolkit$connected_accountsArgs<ExtArgs>
+    triggers?: boolean | ComposioToolkit$triggersArgs<ExtArgs>
+    _count?: boolean | ComposioToolkitCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ComposioToolkitIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ComposioToolkitIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $ComposioToolkitPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ComposioToolkit"
+    objects: {
+      tools: Prisma.$ComposioToolkitToolPayload<ExtArgs>[]
+      enabled_orgs: Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>[]
+      connected_accounts: Prisma.$ComposioConnectedAccountPayload<ExtArgs>[]
+      triggers: Prisma.$ComposioTriggerPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      slug: string
+      name: string
+      description: string | null
+      logo_url: string | null
+      categories: string[]
+      tool_count: number
+      auth_schemes: Prisma.JsonValue
+      connection_tier: $Enums.ComposioConnectionTier
+      is_enabled: boolean
+      composio_metadata: Prisma.JsonValue | null
+      last_synced_at: Date | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["composioToolkit"]>
+    composites: {}
+  }
+
+  type ComposioToolkitGetPayload<S extends boolean | null | undefined | ComposioToolkitDefaultArgs> = $Result.GetResult<Prisma.$ComposioToolkitPayload, S>
+
+  type ComposioToolkitCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ComposioToolkitFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ComposioToolkitCountAggregateInputType | true
+    }
+
+  export interface ComposioToolkitDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ComposioToolkit'], meta: { name: 'ComposioToolkit' } }
+    /**
+     * Find zero or one ComposioToolkit that matches the filter.
+     * @param {ComposioToolkitFindUniqueArgs} args - Arguments to find a ComposioToolkit
+     * @example
+     * // Get one ComposioToolkit
+     * const composioToolkit = await prisma.composioToolkit.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ComposioToolkitFindUniqueArgs>(args: SelectSubset<T, ComposioToolkitFindUniqueArgs<ExtArgs>>): Prisma__ComposioToolkitClient<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ComposioToolkit that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ComposioToolkitFindUniqueOrThrowArgs} args - Arguments to find a ComposioToolkit
+     * @example
+     * // Get one ComposioToolkit
+     * const composioToolkit = await prisma.composioToolkit.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ComposioToolkitFindUniqueOrThrowArgs>(args: SelectSubset<T, ComposioToolkitFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ComposioToolkitClient<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ComposioToolkit that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitFindFirstArgs} args - Arguments to find a ComposioToolkit
+     * @example
+     * // Get one ComposioToolkit
+     * const composioToolkit = await prisma.composioToolkit.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ComposioToolkitFindFirstArgs>(args?: SelectSubset<T, ComposioToolkitFindFirstArgs<ExtArgs>>): Prisma__ComposioToolkitClient<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ComposioToolkit that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitFindFirstOrThrowArgs} args - Arguments to find a ComposioToolkit
+     * @example
+     * // Get one ComposioToolkit
+     * const composioToolkit = await prisma.composioToolkit.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ComposioToolkitFindFirstOrThrowArgs>(args?: SelectSubset<T, ComposioToolkitFindFirstOrThrowArgs<ExtArgs>>): Prisma__ComposioToolkitClient<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ComposioToolkits that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ComposioToolkits
+     * const composioToolkits = await prisma.composioToolkit.findMany()
+     * 
+     * // Get first 10 ComposioToolkits
+     * const composioToolkits = await prisma.composioToolkit.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const composioToolkitWithIdOnly = await prisma.composioToolkit.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ComposioToolkitFindManyArgs>(args?: SelectSubset<T, ComposioToolkitFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ComposioToolkit.
+     * @param {ComposioToolkitCreateArgs} args - Arguments to create a ComposioToolkit.
+     * @example
+     * // Create one ComposioToolkit
+     * const ComposioToolkit = await prisma.composioToolkit.create({
+     *   data: {
+     *     // ... data to create a ComposioToolkit
+     *   }
+     * })
+     * 
+     */
+    create<T extends ComposioToolkitCreateArgs>(args: SelectSubset<T, ComposioToolkitCreateArgs<ExtArgs>>): Prisma__ComposioToolkitClient<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ComposioToolkits.
+     * @param {ComposioToolkitCreateManyArgs} args - Arguments to create many ComposioToolkits.
+     * @example
+     * // Create many ComposioToolkits
+     * const composioToolkit = await prisma.composioToolkit.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ComposioToolkitCreateManyArgs>(args?: SelectSubset<T, ComposioToolkitCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ComposioToolkits and returns the data saved in the database.
+     * @param {ComposioToolkitCreateManyAndReturnArgs} args - Arguments to create many ComposioToolkits.
+     * @example
+     * // Create many ComposioToolkits
+     * const composioToolkit = await prisma.composioToolkit.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ComposioToolkits and only return the `id`
+     * const composioToolkitWithIdOnly = await prisma.composioToolkit.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ComposioToolkitCreateManyAndReturnArgs>(args?: SelectSubset<T, ComposioToolkitCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ComposioToolkit.
+     * @param {ComposioToolkitDeleteArgs} args - Arguments to delete one ComposioToolkit.
+     * @example
+     * // Delete one ComposioToolkit
+     * const ComposioToolkit = await prisma.composioToolkit.delete({
+     *   where: {
+     *     // ... filter to delete one ComposioToolkit
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ComposioToolkitDeleteArgs>(args: SelectSubset<T, ComposioToolkitDeleteArgs<ExtArgs>>): Prisma__ComposioToolkitClient<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ComposioToolkit.
+     * @param {ComposioToolkitUpdateArgs} args - Arguments to update one ComposioToolkit.
+     * @example
+     * // Update one ComposioToolkit
+     * const composioToolkit = await prisma.composioToolkit.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ComposioToolkitUpdateArgs>(args: SelectSubset<T, ComposioToolkitUpdateArgs<ExtArgs>>): Prisma__ComposioToolkitClient<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ComposioToolkits.
+     * @param {ComposioToolkitDeleteManyArgs} args - Arguments to filter ComposioToolkits to delete.
+     * @example
+     * // Delete a few ComposioToolkits
+     * const { count } = await prisma.composioToolkit.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ComposioToolkitDeleteManyArgs>(args?: SelectSubset<T, ComposioToolkitDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ComposioToolkits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ComposioToolkits
+     * const composioToolkit = await prisma.composioToolkit.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ComposioToolkitUpdateManyArgs>(args: SelectSubset<T, ComposioToolkitUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ComposioToolkits and returns the data updated in the database.
+     * @param {ComposioToolkitUpdateManyAndReturnArgs} args - Arguments to update many ComposioToolkits.
+     * @example
+     * // Update many ComposioToolkits
+     * const composioToolkit = await prisma.composioToolkit.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ComposioToolkits and only return the `id`
+     * const composioToolkitWithIdOnly = await prisma.composioToolkit.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ComposioToolkitUpdateManyAndReturnArgs>(args: SelectSubset<T, ComposioToolkitUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ComposioToolkit.
+     * @param {ComposioToolkitUpsertArgs} args - Arguments to update or create a ComposioToolkit.
+     * @example
+     * // Update or create a ComposioToolkit
+     * const composioToolkit = await prisma.composioToolkit.upsert({
+     *   create: {
+     *     // ... data to create a ComposioToolkit
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ComposioToolkit we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ComposioToolkitUpsertArgs>(args: SelectSubset<T, ComposioToolkitUpsertArgs<ExtArgs>>): Prisma__ComposioToolkitClient<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ComposioToolkits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitCountArgs} args - Arguments to filter ComposioToolkits to count.
+     * @example
+     * // Count the number of ComposioToolkits
+     * const count = await prisma.composioToolkit.count({
+     *   where: {
+     *     // ... the filter for the ComposioToolkits we want to count
+     *   }
+     * })
+    **/
+    count<T extends ComposioToolkitCountArgs>(
+      args?: Subset<T, ComposioToolkitCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ComposioToolkitCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ComposioToolkit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ComposioToolkitAggregateArgs>(args: Subset<T, ComposioToolkitAggregateArgs>): Prisma.PrismaPromise<GetComposioToolkitAggregateType<T>>
+
+    /**
+     * Group by ComposioToolkit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ComposioToolkitGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ComposioToolkitGroupByArgs['orderBy'] }
+        : { orderBy?: ComposioToolkitGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ComposioToolkitGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetComposioToolkitGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ComposioToolkit model
+   */
+  readonly fields: ComposioToolkitFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ComposioToolkit.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ComposioToolkitClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tools<T extends ComposioToolkit$toolsArgs<ExtArgs> = {}>(args?: Subset<T, ComposioToolkit$toolsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioToolkitToolPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    enabled_orgs<T extends ComposioToolkit$enabled_orgsArgs<ExtArgs> = {}>(args?: Subset<T, ComposioToolkit$enabled_orgsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    connected_accounts<T extends ComposioToolkit$connected_accountsArgs<ExtArgs> = {}>(args?: Subset<T, ComposioToolkit$connected_accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioConnectedAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    triggers<T extends ComposioToolkit$triggersArgs<ExtArgs> = {}>(args?: Subset<T, ComposioToolkit$triggersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioTriggerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ComposioToolkit model
+   */
+  interface ComposioToolkitFieldRefs {
+    readonly id: FieldRef<"ComposioToolkit", 'Int'>
+    readonly uuid: FieldRef<"ComposioToolkit", 'String'>
+    readonly slug: FieldRef<"ComposioToolkit", 'String'>
+    readonly name: FieldRef<"ComposioToolkit", 'String'>
+    readonly description: FieldRef<"ComposioToolkit", 'String'>
+    readonly logo_url: FieldRef<"ComposioToolkit", 'String'>
+    readonly categories: FieldRef<"ComposioToolkit", 'String[]'>
+    readonly tool_count: FieldRef<"ComposioToolkit", 'Int'>
+    readonly auth_schemes: FieldRef<"ComposioToolkit", 'Json'>
+    readonly connection_tier: FieldRef<"ComposioToolkit", 'ComposioConnectionTier'>
+    readonly is_enabled: FieldRef<"ComposioToolkit", 'Boolean'>
+    readonly composio_metadata: FieldRef<"ComposioToolkit", 'Json'>
+    readonly last_synced_at: FieldRef<"ComposioToolkit", 'DateTime'>
+    readonly created_at: FieldRef<"ComposioToolkit", 'DateTime'>
+    readonly updated_at: FieldRef<"ComposioToolkit", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ComposioToolkit findUnique
+   */
+  export type ComposioToolkitFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkit
+     */
+    select?: ComposioToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkit
+     */
+    omit?: ComposioToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioToolkit to fetch.
+     */
+    where: ComposioToolkitWhereUniqueInput
+  }
+
+  /**
+   * ComposioToolkit findUniqueOrThrow
+   */
+  export type ComposioToolkitFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkit
+     */
+    select?: ComposioToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkit
+     */
+    omit?: ComposioToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioToolkit to fetch.
+     */
+    where: ComposioToolkitWhereUniqueInput
+  }
+
+  /**
+   * ComposioToolkit findFirst
+   */
+  export type ComposioToolkitFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkit
+     */
+    select?: ComposioToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkit
+     */
+    omit?: ComposioToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioToolkit to fetch.
+     */
+    where?: ComposioToolkitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioToolkits to fetch.
+     */
+    orderBy?: ComposioToolkitOrderByWithRelationInput | ComposioToolkitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ComposioToolkits.
+     */
+    cursor?: ComposioToolkitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioToolkits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioToolkits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ComposioToolkits.
+     */
+    distinct?: ComposioToolkitScalarFieldEnum | ComposioToolkitScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioToolkit findFirstOrThrow
+   */
+  export type ComposioToolkitFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkit
+     */
+    select?: ComposioToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkit
+     */
+    omit?: ComposioToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioToolkit to fetch.
+     */
+    where?: ComposioToolkitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioToolkits to fetch.
+     */
+    orderBy?: ComposioToolkitOrderByWithRelationInput | ComposioToolkitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ComposioToolkits.
+     */
+    cursor?: ComposioToolkitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioToolkits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioToolkits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ComposioToolkits.
+     */
+    distinct?: ComposioToolkitScalarFieldEnum | ComposioToolkitScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioToolkit findMany
+   */
+  export type ComposioToolkitFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkit
+     */
+    select?: ComposioToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkit
+     */
+    omit?: ComposioToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioToolkits to fetch.
+     */
+    where?: ComposioToolkitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioToolkits to fetch.
+     */
+    orderBy?: ComposioToolkitOrderByWithRelationInput | ComposioToolkitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ComposioToolkits.
+     */
+    cursor?: ComposioToolkitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioToolkits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioToolkits.
+     */
+    skip?: number
+    distinct?: ComposioToolkitScalarFieldEnum | ComposioToolkitScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioToolkit create
+   */
+  export type ComposioToolkitCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkit
+     */
+    select?: ComposioToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkit
+     */
+    omit?: ComposioToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ComposioToolkit.
+     */
+    data: XOR<ComposioToolkitCreateInput, ComposioToolkitUncheckedCreateInput>
+  }
+
+  /**
+   * ComposioToolkit createMany
+   */
+  export type ComposioToolkitCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ComposioToolkits.
+     */
+    data: ComposioToolkitCreateManyInput | ComposioToolkitCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ComposioToolkit createManyAndReturn
+   */
+  export type ComposioToolkitCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkit
+     */
+    select?: ComposioToolkitSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkit
+     */
+    omit?: ComposioToolkitOmit<ExtArgs> | null
+    /**
+     * The data used to create many ComposioToolkits.
+     */
+    data: ComposioToolkitCreateManyInput | ComposioToolkitCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ComposioToolkit update
+   */
+  export type ComposioToolkitUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkit
+     */
+    select?: ComposioToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkit
+     */
+    omit?: ComposioToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ComposioToolkit.
+     */
+    data: XOR<ComposioToolkitUpdateInput, ComposioToolkitUncheckedUpdateInput>
+    /**
+     * Choose, which ComposioToolkit to update.
+     */
+    where: ComposioToolkitWhereUniqueInput
+  }
+
+  /**
+   * ComposioToolkit updateMany
+   */
+  export type ComposioToolkitUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ComposioToolkits.
+     */
+    data: XOR<ComposioToolkitUpdateManyMutationInput, ComposioToolkitUncheckedUpdateManyInput>
+    /**
+     * Filter which ComposioToolkits to update
+     */
+    where?: ComposioToolkitWhereInput
+    /**
+     * Limit how many ComposioToolkits to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ComposioToolkit updateManyAndReturn
+   */
+  export type ComposioToolkitUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkit
+     */
+    select?: ComposioToolkitSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkit
+     */
+    omit?: ComposioToolkitOmit<ExtArgs> | null
+    /**
+     * The data used to update ComposioToolkits.
+     */
+    data: XOR<ComposioToolkitUpdateManyMutationInput, ComposioToolkitUncheckedUpdateManyInput>
+    /**
+     * Filter which ComposioToolkits to update
+     */
+    where?: ComposioToolkitWhereInput
+    /**
+     * Limit how many ComposioToolkits to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ComposioToolkit upsert
+   */
+  export type ComposioToolkitUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkit
+     */
+    select?: ComposioToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkit
+     */
+    omit?: ComposioToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ComposioToolkit to update in case it exists.
+     */
+    where: ComposioToolkitWhereUniqueInput
+    /**
+     * In case the ComposioToolkit found by the `where` argument doesn't exist, create a new ComposioToolkit with this data.
+     */
+    create: XOR<ComposioToolkitCreateInput, ComposioToolkitUncheckedCreateInput>
+    /**
+     * In case the ComposioToolkit was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ComposioToolkitUpdateInput, ComposioToolkitUncheckedUpdateInput>
+  }
+
+  /**
+   * ComposioToolkit delete
+   */
+  export type ComposioToolkitDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkit
+     */
+    select?: ComposioToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkit
+     */
+    omit?: ComposioToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitInclude<ExtArgs> | null
+    /**
+     * Filter which ComposioToolkit to delete.
+     */
+    where: ComposioToolkitWhereUniqueInput
+  }
+
+  /**
+   * ComposioToolkit deleteMany
+   */
+  export type ComposioToolkitDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ComposioToolkits to delete
+     */
+    where?: ComposioToolkitWhereInput
+    /**
+     * Limit how many ComposioToolkits to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ComposioToolkit.tools
+   */
+  export type ComposioToolkit$toolsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitTool
+     */
+    select?: ComposioToolkitToolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkitTool
+     */
+    omit?: ComposioToolkitToolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitToolInclude<ExtArgs> | null
+    where?: ComposioToolkitToolWhereInput
+    orderBy?: ComposioToolkitToolOrderByWithRelationInput | ComposioToolkitToolOrderByWithRelationInput[]
+    cursor?: ComposioToolkitToolWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ComposioToolkitToolScalarFieldEnum | ComposioToolkitToolScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioToolkit.enabled_orgs
+   */
+  export type ComposioToolkit$enabled_orgsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitInclude<ExtArgs> | null
+    where?: OrganisationEnabledToolkitWhereInput
+    orderBy?: OrganisationEnabledToolkitOrderByWithRelationInput | OrganisationEnabledToolkitOrderByWithRelationInput[]
+    cursor?: OrganisationEnabledToolkitWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrganisationEnabledToolkitScalarFieldEnum | OrganisationEnabledToolkitScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioToolkit.connected_accounts
+   */
+  export type ComposioToolkit$connected_accountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountInclude<ExtArgs> | null
+    where?: ComposioConnectedAccountWhereInput
+    orderBy?: ComposioConnectedAccountOrderByWithRelationInput | ComposioConnectedAccountOrderByWithRelationInput[]
+    cursor?: ComposioConnectedAccountWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ComposioConnectedAccountScalarFieldEnum | ComposioConnectedAccountScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioToolkit.triggers
+   */
+  export type ComposioToolkit$triggersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerInclude<ExtArgs> | null
+    where?: ComposioTriggerWhereInput
+    orderBy?: ComposioTriggerOrderByWithRelationInput | ComposioTriggerOrderByWithRelationInput[]
+    cursor?: ComposioTriggerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ComposioTriggerScalarFieldEnum | ComposioTriggerScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioToolkit without action
+   */
+  export type ComposioToolkitDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkit
+     */
+    select?: ComposioToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkit
+     */
+    omit?: ComposioToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ComposioToolkitTool
+   */
+
+  export type AggregateComposioToolkitTool = {
+    _count: ComposioToolkitToolCountAggregateOutputType | null
+    _avg: ComposioToolkitToolAvgAggregateOutputType | null
+    _sum: ComposioToolkitToolSumAggregateOutputType | null
+    _min: ComposioToolkitToolMinAggregateOutputType | null
+    _max: ComposioToolkitToolMaxAggregateOutputType | null
+  }
+
+  export type ComposioToolkitToolAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ComposioToolkitToolSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ComposioToolkitToolMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    toolkit_uuid: string | null
+    slug: string | null
+    name: string | null
+    description: string | null
+    is_enabled: boolean | null
+    composio_version: string | null
+    last_synced_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ComposioToolkitToolMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    toolkit_uuid: string | null
+    slug: string | null
+    name: string | null
+    description: string | null
+    is_enabled: boolean | null
+    composio_version: string | null
+    last_synced_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ComposioToolkitToolCountAggregateOutputType = {
+    id: number
+    uuid: number
+    toolkit_uuid: number
+    slug: number
+    name: number
+    description: number
+    input_schema: number
+    output_schema: number
+    tags: number
+    is_enabled: number
+    composio_version: number
+    last_synced_at: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type ComposioToolkitToolAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type ComposioToolkitToolSumAggregateInputType = {
+    id?: true
+  }
+
+  export type ComposioToolkitToolMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    toolkit_uuid?: true
+    slug?: true
+    name?: true
+    description?: true
+    is_enabled?: true
+    composio_version?: true
+    last_synced_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ComposioToolkitToolMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    toolkit_uuid?: true
+    slug?: true
+    name?: true
+    description?: true
+    is_enabled?: true
+    composio_version?: true
+    last_synced_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ComposioToolkitToolCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    toolkit_uuid?: true
+    slug?: true
+    name?: true
+    description?: true
+    input_schema?: true
+    output_schema?: true
+    tags?: true
+    is_enabled?: true
+    composio_version?: true
+    last_synced_at?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type ComposioToolkitToolAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ComposioToolkitTool to aggregate.
+     */
+    where?: ComposioToolkitToolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioToolkitTools to fetch.
+     */
+    orderBy?: ComposioToolkitToolOrderByWithRelationInput | ComposioToolkitToolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ComposioToolkitToolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioToolkitTools from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioToolkitTools.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ComposioToolkitTools
+    **/
+    _count?: true | ComposioToolkitToolCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ComposioToolkitToolAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ComposioToolkitToolSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ComposioToolkitToolMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ComposioToolkitToolMaxAggregateInputType
+  }
+
+  export type GetComposioToolkitToolAggregateType<T extends ComposioToolkitToolAggregateArgs> = {
+        [P in keyof T & keyof AggregateComposioToolkitTool]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateComposioToolkitTool[P]>
+      : GetScalarType<T[P], AggregateComposioToolkitTool[P]>
+  }
+
+
+
+
+  export type ComposioToolkitToolGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ComposioToolkitToolWhereInput
+    orderBy?: ComposioToolkitToolOrderByWithAggregationInput | ComposioToolkitToolOrderByWithAggregationInput[]
+    by: ComposioToolkitToolScalarFieldEnum[] | ComposioToolkitToolScalarFieldEnum
+    having?: ComposioToolkitToolScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ComposioToolkitToolCountAggregateInputType | true
+    _avg?: ComposioToolkitToolAvgAggregateInputType
+    _sum?: ComposioToolkitToolSumAggregateInputType
+    _min?: ComposioToolkitToolMinAggregateInputType
+    _max?: ComposioToolkitToolMaxAggregateInputType
+  }
+
+  export type ComposioToolkitToolGroupByOutputType = {
+    id: number
+    uuid: string
+    toolkit_uuid: string
+    slug: string
+    name: string
+    description: string
+    input_schema: JsonValue
+    output_schema: JsonValue | null
+    tags: string[]
+    is_enabled: boolean
+    composio_version: string | null
+    last_synced_at: Date | null
+    created_at: Date
+    updated_at: Date
+    _count: ComposioToolkitToolCountAggregateOutputType | null
+    _avg: ComposioToolkitToolAvgAggregateOutputType | null
+    _sum: ComposioToolkitToolSumAggregateOutputType | null
+    _min: ComposioToolkitToolMinAggregateOutputType | null
+    _max: ComposioToolkitToolMaxAggregateOutputType | null
+  }
+
+  type GetComposioToolkitToolGroupByPayload<T extends ComposioToolkitToolGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ComposioToolkitToolGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ComposioToolkitToolGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ComposioToolkitToolGroupByOutputType[P]>
+            : GetScalarType<T[P], ComposioToolkitToolGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ComposioToolkitToolSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    toolkit_uuid?: boolean
+    slug?: boolean
+    name?: boolean
+    description?: boolean
+    input_schema?: boolean
+    output_schema?: boolean
+    tags?: boolean
+    is_enabled?: boolean
+    composio_version?: boolean
+    last_synced_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+    permissions?: boolean | ComposioToolkitTool$permissionsArgs<ExtArgs>
+    _count?: boolean | ComposioToolkitToolCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["composioToolkitTool"]>
+
+  export type ComposioToolkitToolSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    toolkit_uuid?: boolean
+    slug?: boolean
+    name?: boolean
+    description?: boolean
+    input_schema?: boolean
+    output_schema?: boolean
+    tags?: boolean
+    is_enabled?: boolean
+    composio_version?: boolean
+    last_synced_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["composioToolkitTool"]>
+
+  export type ComposioToolkitToolSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    toolkit_uuid?: boolean
+    slug?: boolean
+    name?: boolean
+    description?: boolean
+    input_schema?: boolean
+    output_schema?: boolean
+    tags?: boolean
+    is_enabled?: boolean
+    composio_version?: boolean
+    last_synced_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["composioToolkitTool"]>
+
+  export type ComposioToolkitToolSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    toolkit_uuid?: boolean
+    slug?: boolean
+    name?: boolean
+    description?: boolean
+    input_schema?: boolean
+    output_schema?: boolean
+    tags?: boolean
+    is_enabled?: boolean
+    composio_version?: boolean
+    last_synced_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type ComposioToolkitToolOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "toolkit_uuid" | "slug" | "name" | "description" | "input_schema" | "output_schema" | "tags" | "is_enabled" | "composio_version" | "last_synced_at" | "created_at" | "updated_at", ExtArgs["result"]["composioToolkitTool"]>
+  export type ComposioToolkitToolInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+    permissions?: boolean | ComposioToolkitTool$permissionsArgs<ExtArgs>
+    _count?: boolean | ComposioToolkitToolCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ComposioToolkitToolIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }
+  export type ComposioToolkitToolIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }
+
+  export type $ComposioToolkitToolPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ComposioToolkitTool"
+    objects: {
+      toolkit: Prisma.$ComposioToolkitPayload<ExtArgs>
+      permissions: Prisma.$OrganisationToolPermissionPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      toolkit_uuid: string
+      slug: string
+      name: string
+      description: string
+      input_schema: Prisma.JsonValue
+      output_schema: Prisma.JsonValue | null
+      tags: string[]
+      is_enabled: boolean
+      composio_version: string | null
+      last_synced_at: Date | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["composioToolkitTool"]>
+    composites: {}
+  }
+
+  type ComposioToolkitToolGetPayload<S extends boolean | null | undefined | ComposioToolkitToolDefaultArgs> = $Result.GetResult<Prisma.$ComposioToolkitToolPayload, S>
+
+  type ComposioToolkitToolCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ComposioToolkitToolFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ComposioToolkitToolCountAggregateInputType | true
+    }
+
+  export interface ComposioToolkitToolDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ComposioToolkitTool'], meta: { name: 'ComposioToolkitTool' } }
+    /**
+     * Find zero or one ComposioToolkitTool that matches the filter.
+     * @param {ComposioToolkitToolFindUniqueArgs} args - Arguments to find a ComposioToolkitTool
+     * @example
+     * // Get one ComposioToolkitTool
+     * const composioToolkitTool = await prisma.composioToolkitTool.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ComposioToolkitToolFindUniqueArgs>(args: SelectSubset<T, ComposioToolkitToolFindUniqueArgs<ExtArgs>>): Prisma__ComposioToolkitToolClient<$Result.GetResult<Prisma.$ComposioToolkitToolPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ComposioToolkitTool that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ComposioToolkitToolFindUniqueOrThrowArgs} args - Arguments to find a ComposioToolkitTool
+     * @example
+     * // Get one ComposioToolkitTool
+     * const composioToolkitTool = await prisma.composioToolkitTool.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ComposioToolkitToolFindUniqueOrThrowArgs>(args: SelectSubset<T, ComposioToolkitToolFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ComposioToolkitToolClient<$Result.GetResult<Prisma.$ComposioToolkitToolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ComposioToolkitTool that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitToolFindFirstArgs} args - Arguments to find a ComposioToolkitTool
+     * @example
+     * // Get one ComposioToolkitTool
+     * const composioToolkitTool = await prisma.composioToolkitTool.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ComposioToolkitToolFindFirstArgs>(args?: SelectSubset<T, ComposioToolkitToolFindFirstArgs<ExtArgs>>): Prisma__ComposioToolkitToolClient<$Result.GetResult<Prisma.$ComposioToolkitToolPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ComposioToolkitTool that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitToolFindFirstOrThrowArgs} args - Arguments to find a ComposioToolkitTool
+     * @example
+     * // Get one ComposioToolkitTool
+     * const composioToolkitTool = await prisma.composioToolkitTool.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ComposioToolkitToolFindFirstOrThrowArgs>(args?: SelectSubset<T, ComposioToolkitToolFindFirstOrThrowArgs<ExtArgs>>): Prisma__ComposioToolkitToolClient<$Result.GetResult<Prisma.$ComposioToolkitToolPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ComposioToolkitTools that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitToolFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ComposioToolkitTools
+     * const composioToolkitTools = await prisma.composioToolkitTool.findMany()
+     * 
+     * // Get first 10 ComposioToolkitTools
+     * const composioToolkitTools = await prisma.composioToolkitTool.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const composioToolkitToolWithIdOnly = await prisma.composioToolkitTool.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ComposioToolkitToolFindManyArgs>(args?: SelectSubset<T, ComposioToolkitToolFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioToolkitToolPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ComposioToolkitTool.
+     * @param {ComposioToolkitToolCreateArgs} args - Arguments to create a ComposioToolkitTool.
+     * @example
+     * // Create one ComposioToolkitTool
+     * const ComposioToolkitTool = await prisma.composioToolkitTool.create({
+     *   data: {
+     *     // ... data to create a ComposioToolkitTool
+     *   }
+     * })
+     * 
+     */
+    create<T extends ComposioToolkitToolCreateArgs>(args: SelectSubset<T, ComposioToolkitToolCreateArgs<ExtArgs>>): Prisma__ComposioToolkitToolClient<$Result.GetResult<Prisma.$ComposioToolkitToolPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ComposioToolkitTools.
+     * @param {ComposioToolkitToolCreateManyArgs} args - Arguments to create many ComposioToolkitTools.
+     * @example
+     * // Create many ComposioToolkitTools
+     * const composioToolkitTool = await prisma.composioToolkitTool.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ComposioToolkitToolCreateManyArgs>(args?: SelectSubset<T, ComposioToolkitToolCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ComposioToolkitTools and returns the data saved in the database.
+     * @param {ComposioToolkitToolCreateManyAndReturnArgs} args - Arguments to create many ComposioToolkitTools.
+     * @example
+     * // Create many ComposioToolkitTools
+     * const composioToolkitTool = await prisma.composioToolkitTool.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ComposioToolkitTools and only return the `id`
+     * const composioToolkitToolWithIdOnly = await prisma.composioToolkitTool.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ComposioToolkitToolCreateManyAndReturnArgs>(args?: SelectSubset<T, ComposioToolkitToolCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioToolkitToolPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ComposioToolkitTool.
+     * @param {ComposioToolkitToolDeleteArgs} args - Arguments to delete one ComposioToolkitTool.
+     * @example
+     * // Delete one ComposioToolkitTool
+     * const ComposioToolkitTool = await prisma.composioToolkitTool.delete({
+     *   where: {
+     *     // ... filter to delete one ComposioToolkitTool
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ComposioToolkitToolDeleteArgs>(args: SelectSubset<T, ComposioToolkitToolDeleteArgs<ExtArgs>>): Prisma__ComposioToolkitToolClient<$Result.GetResult<Prisma.$ComposioToolkitToolPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ComposioToolkitTool.
+     * @param {ComposioToolkitToolUpdateArgs} args - Arguments to update one ComposioToolkitTool.
+     * @example
+     * // Update one ComposioToolkitTool
+     * const composioToolkitTool = await prisma.composioToolkitTool.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ComposioToolkitToolUpdateArgs>(args: SelectSubset<T, ComposioToolkitToolUpdateArgs<ExtArgs>>): Prisma__ComposioToolkitToolClient<$Result.GetResult<Prisma.$ComposioToolkitToolPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ComposioToolkitTools.
+     * @param {ComposioToolkitToolDeleteManyArgs} args - Arguments to filter ComposioToolkitTools to delete.
+     * @example
+     * // Delete a few ComposioToolkitTools
+     * const { count } = await prisma.composioToolkitTool.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ComposioToolkitToolDeleteManyArgs>(args?: SelectSubset<T, ComposioToolkitToolDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ComposioToolkitTools.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitToolUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ComposioToolkitTools
+     * const composioToolkitTool = await prisma.composioToolkitTool.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ComposioToolkitToolUpdateManyArgs>(args: SelectSubset<T, ComposioToolkitToolUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ComposioToolkitTools and returns the data updated in the database.
+     * @param {ComposioToolkitToolUpdateManyAndReturnArgs} args - Arguments to update many ComposioToolkitTools.
+     * @example
+     * // Update many ComposioToolkitTools
+     * const composioToolkitTool = await prisma.composioToolkitTool.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ComposioToolkitTools and only return the `id`
+     * const composioToolkitToolWithIdOnly = await prisma.composioToolkitTool.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ComposioToolkitToolUpdateManyAndReturnArgs>(args: SelectSubset<T, ComposioToolkitToolUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioToolkitToolPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ComposioToolkitTool.
+     * @param {ComposioToolkitToolUpsertArgs} args - Arguments to update or create a ComposioToolkitTool.
+     * @example
+     * // Update or create a ComposioToolkitTool
+     * const composioToolkitTool = await prisma.composioToolkitTool.upsert({
+     *   create: {
+     *     // ... data to create a ComposioToolkitTool
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ComposioToolkitTool we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ComposioToolkitToolUpsertArgs>(args: SelectSubset<T, ComposioToolkitToolUpsertArgs<ExtArgs>>): Prisma__ComposioToolkitToolClient<$Result.GetResult<Prisma.$ComposioToolkitToolPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ComposioToolkitTools.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitToolCountArgs} args - Arguments to filter ComposioToolkitTools to count.
+     * @example
+     * // Count the number of ComposioToolkitTools
+     * const count = await prisma.composioToolkitTool.count({
+     *   where: {
+     *     // ... the filter for the ComposioToolkitTools we want to count
+     *   }
+     * })
+    **/
+    count<T extends ComposioToolkitToolCountArgs>(
+      args?: Subset<T, ComposioToolkitToolCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ComposioToolkitToolCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ComposioToolkitTool.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitToolAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ComposioToolkitToolAggregateArgs>(args: Subset<T, ComposioToolkitToolAggregateArgs>): Prisma.PrismaPromise<GetComposioToolkitToolAggregateType<T>>
+
+    /**
+     * Group by ComposioToolkitTool.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioToolkitToolGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ComposioToolkitToolGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ComposioToolkitToolGroupByArgs['orderBy'] }
+        : { orderBy?: ComposioToolkitToolGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ComposioToolkitToolGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetComposioToolkitToolGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ComposioToolkitTool model
+   */
+  readonly fields: ComposioToolkitToolFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ComposioToolkitTool.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ComposioToolkitToolClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    toolkit<T extends ComposioToolkitDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ComposioToolkitDefaultArgs<ExtArgs>>): Prisma__ComposioToolkitClient<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    permissions<T extends ComposioToolkitTool$permissionsArgs<ExtArgs> = {}>(args?: Subset<T, ComposioToolkitTool$permissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganisationToolPermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ComposioToolkitTool model
+   */
+  interface ComposioToolkitToolFieldRefs {
+    readonly id: FieldRef<"ComposioToolkitTool", 'Int'>
+    readonly uuid: FieldRef<"ComposioToolkitTool", 'String'>
+    readonly toolkit_uuid: FieldRef<"ComposioToolkitTool", 'String'>
+    readonly slug: FieldRef<"ComposioToolkitTool", 'String'>
+    readonly name: FieldRef<"ComposioToolkitTool", 'String'>
+    readonly description: FieldRef<"ComposioToolkitTool", 'String'>
+    readonly input_schema: FieldRef<"ComposioToolkitTool", 'Json'>
+    readonly output_schema: FieldRef<"ComposioToolkitTool", 'Json'>
+    readonly tags: FieldRef<"ComposioToolkitTool", 'String[]'>
+    readonly is_enabled: FieldRef<"ComposioToolkitTool", 'Boolean'>
+    readonly composio_version: FieldRef<"ComposioToolkitTool", 'String'>
+    readonly last_synced_at: FieldRef<"ComposioToolkitTool", 'DateTime'>
+    readonly created_at: FieldRef<"ComposioToolkitTool", 'DateTime'>
+    readonly updated_at: FieldRef<"ComposioToolkitTool", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ComposioToolkitTool findUnique
+   */
+  export type ComposioToolkitToolFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitTool
+     */
+    select?: ComposioToolkitToolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkitTool
+     */
+    omit?: ComposioToolkitToolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitToolInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioToolkitTool to fetch.
+     */
+    where: ComposioToolkitToolWhereUniqueInput
+  }
+
+  /**
+   * ComposioToolkitTool findUniqueOrThrow
+   */
+  export type ComposioToolkitToolFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitTool
+     */
+    select?: ComposioToolkitToolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkitTool
+     */
+    omit?: ComposioToolkitToolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitToolInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioToolkitTool to fetch.
+     */
+    where: ComposioToolkitToolWhereUniqueInput
+  }
+
+  /**
+   * ComposioToolkitTool findFirst
+   */
+  export type ComposioToolkitToolFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitTool
+     */
+    select?: ComposioToolkitToolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkitTool
+     */
+    omit?: ComposioToolkitToolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitToolInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioToolkitTool to fetch.
+     */
+    where?: ComposioToolkitToolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioToolkitTools to fetch.
+     */
+    orderBy?: ComposioToolkitToolOrderByWithRelationInput | ComposioToolkitToolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ComposioToolkitTools.
+     */
+    cursor?: ComposioToolkitToolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioToolkitTools from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioToolkitTools.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ComposioToolkitTools.
+     */
+    distinct?: ComposioToolkitToolScalarFieldEnum | ComposioToolkitToolScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioToolkitTool findFirstOrThrow
+   */
+  export type ComposioToolkitToolFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitTool
+     */
+    select?: ComposioToolkitToolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkitTool
+     */
+    omit?: ComposioToolkitToolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitToolInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioToolkitTool to fetch.
+     */
+    where?: ComposioToolkitToolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioToolkitTools to fetch.
+     */
+    orderBy?: ComposioToolkitToolOrderByWithRelationInput | ComposioToolkitToolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ComposioToolkitTools.
+     */
+    cursor?: ComposioToolkitToolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioToolkitTools from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioToolkitTools.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ComposioToolkitTools.
+     */
+    distinct?: ComposioToolkitToolScalarFieldEnum | ComposioToolkitToolScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioToolkitTool findMany
+   */
+  export type ComposioToolkitToolFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitTool
+     */
+    select?: ComposioToolkitToolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkitTool
+     */
+    omit?: ComposioToolkitToolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitToolInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioToolkitTools to fetch.
+     */
+    where?: ComposioToolkitToolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioToolkitTools to fetch.
+     */
+    orderBy?: ComposioToolkitToolOrderByWithRelationInput | ComposioToolkitToolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ComposioToolkitTools.
+     */
+    cursor?: ComposioToolkitToolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioToolkitTools from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioToolkitTools.
+     */
+    skip?: number
+    distinct?: ComposioToolkitToolScalarFieldEnum | ComposioToolkitToolScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioToolkitTool create
+   */
+  export type ComposioToolkitToolCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitTool
+     */
+    select?: ComposioToolkitToolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkitTool
+     */
+    omit?: ComposioToolkitToolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitToolInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ComposioToolkitTool.
+     */
+    data: XOR<ComposioToolkitToolCreateInput, ComposioToolkitToolUncheckedCreateInput>
+  }
+
+  /**
+   * ComposioToolkitTool createMany
+   */
+  export type ComposioToolkitToolCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ComposioToolkitTools.
+     */
+    data: ComposioToolkitToolCreateManyInput | ComposioToolkitToolCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ComposioToolkitTool createManyAndReturn
+   */
+  export type ComposioToolkitToolCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitTool
+     */
+    select?: ComposioToolkitToolSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkitTool
+     */
+    omit?: ComposioToolkitToolOmit<ExtArgs> | null
+    /**
+     * The data used to create many ComposioToolkitTools.
+     */
+    data: ComposioToolkitToolCreateManyInput | ComposioToolkitToolCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitToolIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ComposioToolkitTool update
+   */
+  export type ComposioToolkitToolUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitTool
+     */
+    select?: ComposioToolkitToolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkitTool
+     */
+    omit?: ComposioToolkitToolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitToolInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ComposioToolkitTool.
+     */
+    data: XOR<ComposioToolkitToolUpdateInput, ComposioToolkitToolUncheckedUpdateInput>
+    /**
+     * Choose, which ComposioToolkitTool to update.
+     */
+    where: ComposioToolkitToolWhereUniqueInput
+  }
+
+  /**
+   * ComposioToolkitTool updateMany
+   */
+  export type ComposioToolkitToolUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ComposioToolkitTools.
+     */
+    data: XOR<ComposioToolkitToolUpdateManyMutationInput, ComposioToolkitToolUncheckedUpdateManyInput>
+    /**
+     * Filter which ComposioToolkitTools to update
+     */
+    where?: ComposioToolkitToolWhereInput
+    /**
+     * Limit how many ComposioToolkitTools to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ComposioToolkitTool updateManyAndReturn
+   */
+  export type ComposioToolkitToolUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitTool
+     */
+    select?: ComposioToolkitToolSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkitTool
+     */
+    omit?: ComposioToolkitToolOmit<ExtArgs> | null
+    /**
+     * The data used to update ComposioToolkitTools.
+     */
+    data: XOR<ComposioToolkitToolUpdateManyMutationInput, ComposioToolkitToolUncheckedUpdateManyInput>
+    /**
+     * Filter which ComposioToolkitTools to update
+     */
+    where?: ComposioToolkitToolWhereInput
+    /**
+     * Limit how many ComposioToolkitTools to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitToolIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ComposioToolkitTool upsert
+   */
+  export type ComposioToolkitToolUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitTool
+     */
+    select?: ComposioToolkitToolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkitTool
+     */
+    omit?: ComposioToolkitToolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitToolInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ComposioToolkitTool to update in case it exists.
+     */
+    where: ComposioToolkitToolWhereUniqueInput
+    /**
+     * In case the ComposioToolkitTool found by the `where` argument doesn't exist, create a new ComposioToolkitTool with this data.
+     */
+    create: XOR<ComposioToolkitToolCreateInput, ComposioToolkitToolUncheckedCreateInput>
+    /**
+     * In case the ComposioToolkitTool was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ComposioToolkitToolUpdateInput, ComposioToolkitToolUncheckedUpdateInput>
+  }
+
+  /**
+   * ComposioToolkitTool delete
+   */
+  export type ComposioToolkitToolDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitTool
+     */
+    select?: ComposioToolkitToolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkitTool
+     */
+    omit?: ComposioToolkitToolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitToolInclude<ExtArgs> | null
+    /**
+     * Filter which ComposioToolkitTool to delete.
+     */
+    where: ComposioToolkitToolWhereUniqueInput
+  }
+
+  /**
+   * ComposioToolkitTool deleteMany
+   */
+  export type ComposioToolkitToolDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ComposioToolkitTools to delete
+     */
+    where?: ComposioToolkitToolWhereInput
+    /**
+     * Limit how many ComposioToolkitTools to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ComposioToolkitTool.permissions
+   */
+  export type ComposioToolkitTool$permissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionInclude<ExtArgs> | null
+    where?: OrganisationToolPermissionWhereInput
+    orderBy?: OrganisationToolPermissionOrderByWithRelationInput | OrganisationToolPermissionOrderByWithRelationInput[]
+    cursor?: OrganisationToolPermissionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrganisationToolPermissionScalarFieldEnum | OrganisationToolPermissionScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioToolkitTool without action
+   */
+  export type ComposioToolkitToolDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioToolkitTool
+     */
+    select?: ComposioToolkitToolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioToolkitTool
+     */
+    omit?: ComposioToolkitToolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioToolkitToolInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ComposioSyncRun
+   */
+
+  export type AggregateComposioSyncRun = {
+    _count: ComposioSyncRunCountAggregateOutputType | null
+    _avg: ComposioSyncRunAvgAggregateOutputType | null
+    _sum: ComposioSyncRunSumAggregateOutputType | null
+    _min: ComposioSyncRunMinAggregateOutputType | null
+    _max: ComposioSyncRunMaxAggregateOutputType | null
+  }
+
+  export type ComposioSyncRunAvgAggregateOutputType = {
+    id: number | null
+    toolkits_upserted: number | null
+    tools_upserted: number | null
+  }
+
+  export type ComposioSyncRunSumAggregateOutputType = {
+    id: number | null
+    toolkits_upserted: number | null
+    tools_upserted: number | null
+  }
+
+  export type ComposioSyncRunMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    sync_type: $Enums.ComposioSyncType | null
+    status: $Enums.ComposioSyncStatus | null
+    toolkits_upserted: number | null
+    tools_upserted: number | null
+    error: string | null
+    started_at: Date | null
+    completed_at: Date | null
+  }
+
+  export type ComposioSyncRunMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    sync_type: $Enums.ComposioSyncType | null
+    status: $Enums.ComposioSyncStatus | null
+    toolkits_upserted: number | null
+    tools_upserted: number | null
+    error: string | null
+    started_at: Date | null
+    completed_at: Date | null
+  }
+
+  export type ComposioSyncRunCountAggregateOutputType = {
+    id: number
+    uuid: number
+    sync_type: number
+    status: number
+    toolkits_upserted: number
+    tools_upserted: number
+    error: number
+    started_at: number
+    completed_at: number
+    _all: number
+  }
+
+
+  export type ComposioSyncRunAvgAggregateInputType = {
+    id?: true
+    toolkits_upserted?: true
+    tools_upserted?: true
+  }
+
+  export type ComposioSyncRunSumAggregateInputType = {
+    id?: true
+    toolkits_upserted?: true
+    tools_upserted?: true
+  }
+
+  export type ComposioSyncRunMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    sync_type?: true
+    status?: true
+    toolkits_upserted?: true
+    tools_upserted?: true
+    error?: true
+    started_at?: true
+    completed_at?: true
+  }
+
+  export type ComposioSyncRunMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    sync_type?: true
+    status?: true
+    toolkits_upserted?: true
+    tools_upserted?: true
+    error?: true
+    started_at?: true
+    completed_at?: true
+  }
+
+  export type ComposioSyncRunCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    sync_type?: true
+    status?: true
+    toolkits_upserted?: true
+    tools_upserted?: true
+    error?: true
+    started_at?: true
+    completed_at?: true
+    _all?: true
+  }
+
+  export type ComposioSyncRunAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ComposioSyncRun to aggregate.
+     */
+    where?: ComposioSyncRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioSyncRuns to fetch.
+     */
+    orderBy?: ComposioSyncRunOrderByWithRelationInput | ComposioSyncRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ComposioSyncRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioSyncRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioSyncRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ComposioSyncRuns
+    **/
+    _count?: true | ComposioSyncRunCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ComposioSyncRunAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ComposioSyncRunSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ComposioSyncRunMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ComposioSyncRunMaxAggregateInputType
+  }
+
+  export type GetComposioSyncRunAggregateType<T extends ComposioSyncRunAggregateArgs> = {
+        [P in keyof T & keyof AggregateComposioSyncRun]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateComposioSyncRun[P]>
+      : GetScalarType<T[P], AggregateComposioSyncRun[P]>
+  }
+
+
+
+
+  export type ComposioSyncRunGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ComposioSyncRunWhereInput
+    orderBy?: ComposioSyncRunOrderByWithAggregationInput | ComposioSyncRunOrderByWithAggregationInput[]
+    by: ComposioSyncRunScalarFieldEnum[] | ComposioSyncRunScalarFieldEnum
+    having?: ComposioSyncRunScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ComposioSyncRunCountAggregateInputType | true
+    _avg?: ComposioSyncRunAvgAggregateInputType
+    _sum?: ComposioSyncRunSumAggregateInputType
+    _min?: ComposioSyncRunMinAggregateInputType
+    _max?: ComposioSyncRunMaxAggregateInputType
+  }
+
+  export type ComposioSyncRunGroupByOutputType = {
+    id: number
+    uuid: string
+    sync_type: $Enums.ComposioSyncType
+    status: $Enums.ComposioSyncStatus
+    toolkits_upserted: number
+    tools_upserted: number
+    error: string | null
+    started_at: Date
+    completed_at: Date | null
+    _count: ComposioSyncRunCountAggregateOutputType | null
+    _avg: ComposioSyncRunAvgAggregateOutputType | null
+    _sum: ComposioSyncRunSumAggregateOutputType | null
+    _min: ComposioSyncRunMinAggregateOutputType | null
+    _max: ComposioSyncRunMaxAggregateOutputType | null
+  }
+
+  type GetComposioSyncRunGroupByPayload<T extends ComposioSyncRunGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ComposioSyncRunGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ComposioSyncRunGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ComposioSyncRunGroupByOutputType[P]>
+            : GetScalarType<T[P], ComposioSyncRunGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ComposioSyncRunSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    sync_type?: boolean
+    status?: boolean
+    toolkits_upserted?: boolean
+    tools_upserted?: boolean
+    error?: boolean
+    started_at?: boolean
+    completed_at?: boolean
+  }, ExtArgs["result"]["composioSyncRun"]>
+
+  export type ComposioSyncRunSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    sync_type?: boolean
+    status?: boolean
+    toolkits_upserted?: boolean
+    tools_upserted?: boolean
+    error?: boolean
+    started_at?: boolean
+    completed_at?: boolean
+  }, ExtArgs["result"]["composioSyncRun"]>
+
+  export type ComposioSyncRunSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    sync_type?: boolean
+    status?: boolean
+    toolkits_upserted?: boolean
+    tools_upserted?: boolean
+    error?: boolean
+    started_at?: boolean
+    completed_at?: boolean
+  }, ExtArgs["result"]["composioSyncRun"]>
+
+  export type ComposioSyncRunSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    sync_type?: boolean
+    status?: boolean
+    toolkits_upserted?: boolean
+    tools_upserted?: boolean
+    error?: boolean
+    started_at?: boolean
+    completed_at?: boolean
+  }
+
+  export type ComposioSyncRunOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "sync_type" | "status" | "toolkits_upserted" | "tools_upserted" | "error" | "started_at" | "completed_at", ExtArgs["result"]["composioSyncRun"]>
+
+  export type $ComposioSyncRunPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ComposioSyncRun"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      sync_type: $Enums.ComposioSyncType
+      status: $Enums.ComposioSyncStatus
+      toolkits_upserted: number
+      tools_upserted: number
+      error: string | null
+      started_at: Date
+      completed_at: Date | null
+    }, ExtArgs["result"]["composioSyncRun"]>
+    composites: {}
+  }
+
+  type ComposioSyncRunGetPayload<S extends boolean | null | undefined | ComposioSyncRunDefaultArgs> = $Result.GetResult<Prisma.$ComposioSyncRunPayload, S>
+
+  type ComposioSyncRunCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ComposioSyncRunFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ComposioSyncRunCountAggregateInputType | true
+    }
+
+  export interface ComposioSyncRunDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ComposioSyncRun'], meta: { name: 'ComposioSyncRun' } }
+    /**
+     * Find zero or one ComposioSyncRun that matches the filter.
+     * @param {ComposioSyncRunFindUniqueArgs} args - Arguments to find a ComposioSyncRun
+     * @example
+     * // Get one ComposioSyncRun
+     * const composioSyncRun = await prisma.composioSyncRun.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ComposioSyncRunFindUniqueArgs>(args: SelectSubset<T, ComposioSyncRunFindUniqueArgs<ExtArgs>>): Prisma__ComposioSyncRunClient<$Result.GetResult<Prisma.$ComposioSyncRunPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ComposioSyncRun that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ComposioSyncRunFindUniqueOrThrowArgs} args - Arguments to find a ComposioSyncRun
+     * @example
+     * // Get one ComposioSyncRun
+     * const composioSyncRun = await prisma.composioSyncRun.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ComposioSyncRunFindUniqueOrThrowArgs>(args: SelectSubset<T, ComposioSyncRunFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ComposioSyncRunClient<$Result.GetResult<Prisma.$ComposioSyncRunPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ComposioSyncRun that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioSyncRunFindFirstArgs} args - Arguments to find a ComposioSyncRun
+     * @example
+     * // Get one ComposioSyncRun
+     * const composioSyncRun = await prisma.composioSyncRun.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ComposioSyncRunFindFirstArgs>(args?: SelectSubset<T, ComposioSyncRunFindFirstArgs<ExtArgs>>): Prisma__ComposioSyncRunClient<$Result.GetResult<Prisma.$ComposioSyncRunPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ComposioSyncRun that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioSyncRunFindFirstOrThrowArgs} args - Arguments to find a ComposioSyncRun
+     * @example
+     * // Get one ComposioSyncRun
+     * const composioSyncRun = await prisma.composioSyncRun.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ComposioSyncRunFindFirstOrThrowArgs>(args?: SelectSubset<T, ComposioSyncRunFindFirstOrThrowArgs<ExtArgs>>): Prisma__ComposioSyncRunClient<$Result.GetResult<Prisma.$ComposioSyncRunPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ComposioSyncRuns that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioSyncRunFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ComposioSyncRuns
+     * const composioSyncRuns = await prisma.composioSyncRun.findMany()
+     * 
+     * // Get first 10 ComposioSyncRuns
+     * const composioSyncRuns = await prisma.composioSyncRun.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const composioSyncRunWithIdOnly = await prisma.composioSyncRun.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ComposioSyncRunFindManyArgs>(args?: SelectSubset<T, ComposioSyncRunFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioSyncRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ComposioSyncRun.
+     * @param {ComposioSyncRunCreateArgs} args - Arguments to create a ComposioSyncRun.
+     * @example
+     * // Create one ComposioSyncRun
+     * const ComposioSyncRun = await prisma.composioSyncRun.create({
+     *   data: {
+     *     // ... data to create a ComposioSyncRun
+     *   }
+     * })
+     * 
+     */
+    create<T extends ComposioSyncRunCreateArgs>(args: SelectSubset<T, ComposioSyncRunCreateArgs<ExtArgs>>): Prisma__ComposioSyncRunClient<$Result.GetResult<Prisma.$ComposioSyncRunPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ComposioSyncRuns.
+     * @param {ComposioSyncRunCreateManyArgs} args - Arguments to create many ComposioSyncRuns.
+     * @example
+     * // Create many ComposioSyncRuns
+     * const composioSyncRun = await prisma.composioSyncRun.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ComposioSyncRunCreateManyArgs>(args?: SelectSubset<T, ComposioSyncRunCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ComposioSyncRuns and returns the data saved in the database.
+     * @param {ComposioSyncRunCreateManyAndReturnArgs} args - Arguments to create many ComposioSyncRuns.
+     * @example
+     * // Create many ComposioSyncRuns
+     * const composioSyncRun = await prisma.composioSyncRun.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ComposioSyncRuns and only return the `id`
+     * const composioSyncRunWithIdOnly = await prisma.composioSyncRun.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ComposioSyncRunCreateManyAndReturnArgs>(args?: SelectSubset<T, ComposioSyncRunCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioSyncRunPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ComposioSyncRun.
+     * @param {ComposioSyncRunDeleteArgs} args - Arguments to delete one ComposioSyncRun.
+     * @example
+     * // Delete one ComposioSyncRun
+     * const ComposioSyncRun = await prisma.composioSyncRun.delete({
+     *   where: {
+     *     // ... filter to delete one ComposioSyncRun
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ComposioSyncRunDeleteArgs>(args: SelectSubset<T, ComposioSyncRunDeleteArgs<ExtArgs>>): Prisma__ComposioSyncRunClient<$Result.GetResult<Prisma.$ComposioSyncRunPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ComposioSyncRun.
+     * @param {ComposioSyncRunUpdateArgs} args - Arguments to update one ComposioSyncRun.
+     * @example
+     * // Update one ComposioSyncRun
+     * const composioSyncRun = await prisma.composioSyncRun.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ComposioSyncRunUpdateArgs>(args: SelectSubset<T, ComposioSyncRunUpdateArgs<ExtArgs>>): Prisma__ComposioSyncRunClient<$Result.GetResult<Prisma.$ComposioSyncRunPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ComposioSyncRuns.
+     * @param {ComposioSyncRunDeleteManyArgs} args - Arguments to filter ComposioSyncRuns to delete.
+     * @example
+     * // Delete a few ComposioSyncRuns
+     * const { count } = await prisma.composioSyncRun.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ComposioSyncRunDeleteManyArgs>(args?: SelectSubset<T, ComposioSyncRunDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ComposioSyncRuns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioSyncRunUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ComposioSyncRuns
+     * const composioSyncRun = await prisma.composioSyncRun.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ComposioSyncRunUpdateManyArgs>(args: SelectSubset<T, ComposioSyncRunUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ComposioSyncRuns and returns the data updated in the database.
+     * @param {ComposioSyncRunUpdateManyAndReturnArgs} args - Arguments to update many ComposioSyncRuns.
+     * @example
+     * // Update many ComposioSyncRuns
+     * const composioSyncRun = await prisma.composioSyncRun.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ComposioSyncRuns and only return the `id`
+     * const composioSyncRunWithIdOnly = await prisma.composioSyncRun.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ComposioSyncRunUpdateManyAndReturnArgs>(args: SelectSubset<T, ComposioSyncRunUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioSyncRunPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ComposioSyncRun.
+     * @param {ComposioSyncRunUpsertArgs} args - Arguments to update or create a ComposioSyncRun.
+     * @example
+     * // Update or create a ComposioSyncRun
+     * const composioSyncRun = await prisma.composioSyncRun.upsert({
+     *   create: {
+     *     // ... data to create a ComposioSyncRun
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ComposioSyncRun we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ComposioSyncRunUpsertArgs>(args: SelectSubset<T, ComposioSyncRunUpsertArgs<ExtArgs>>): Prisma__ComposioSyncRunClient<$Result.GetResult<Prisma.$ComposioSyncRunPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ComposioSyncRuns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioSyncRunCountArgs} args - Arguments to filter ComposioSyncRuns to count.
+     * @example
+     * // Count the number of ComposioSyncRuns
+     * const count = await prisma.composioSyncRun.count({
+     *   where: {
+     *     // ... the filter for the ComposioSyncRuns we want to count
+     *   }
+     * })
+    **/
+    count<T extends ComposioSyncRunCountArgs>(
+      args?: Subset<T, ComposioSyncRunCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ComposioSyncRunCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ComposioSyncRun.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioSyncRunAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ComposioSyncRunAggregateArgs>(args: Subset<T, ComposioSyncRunAggregateArgs>): Prisma.PrismaPromise<GetComposioSyncRunAggregateType<T>>
+
+    /**
+     * Group by ComposioSyncRun.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioSyncRunGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ComposioSyncRunGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ComposioSyncRunGroupByArgs['orderBy'] }
+        : { orderBy?: ComposioSyncRunGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ComposioSyncRunGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetComposioSyncRunGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ComposioSyncRun model
+   */
+  readonly fields: ComposioSyncRunFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ComposioSyncRun.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ComposioSyncRunClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ComposioSyncRun model
+   */
+  interface ComposioSyncRunFieldRefs {
+    readonly id: FieldRef<"ComposioSyncRun", 'Int'>
+    readonly uuid: FieldRef<"ComposioSyncRun", 'String'>
+    readonly sync_type: FieldRef<"ComposioSyncRun", 'ComposioSyncType'>
+    readonly status: FieldRef<"ComposioSyncRun", 'ComposioSyncStatus'>
+    readonly toolkits_upserted: FieldRef<"ComposioSyncRun", 'Int'>
+    readonly tools_upserted: FieldRef<"ComposioSyncRun", 'Int'>
+    readonly error: FieldRef<"ComposioSyncRun", 'String'>
+    readonly started_at: FieldRef<"ComposioSyncRun", 'DateTime'>
+    readonly completed_at: FieldRef<"ComposioSyncRun", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ComposioSyncRun findUnique
+   */
+  export type ComposioSyncRunFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioSyncRun
+     */
+    select?: ComposioSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioSyncRun
+     */
+    omit?: ComposioSyncRunOmit<ExtArgs> | null
+    /**
+     * Filter, which ComposioSyncRun to fetch.
+     */
+    where: ComposioSyncRunWhereUniqueInput
+  }
+
+  /**
+   * ComposioSyncRun findUniqueOrThrow
+   */
+  export type ComposioSyncRunFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioSyncRun
+     */
+    select?: ComposioSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioSyncRun
+     */
+    omit?: ComposioSyncRunOmit<ExtArgs> | null
+    /**
+     * Filter, which ComposioSyncRun to fetch.
+     */
+    where: ComposioSyncRunWhereUniqueInput
+  }
+
+  /**
+   * ComposioSyncRun findFirst
+   */
+  export type ComposioSyncRunFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioSyncRun
+     */
+    select?: ComposioSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioSyncRun
+     */
+    omit?: ComposioSyncRunOmit<ExtArgs> | null
+    /**
+     * Filter, which ComposioSyncRun to fetch.
+     */
+    where?: ComposioSyncRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioSyncRuns to fetch.
+     */
+    orderBy?: ComposioSyncRunOrderByWithRelationInput | ComposioSyncRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ComposioSyncRuns.
+     */
+    cursor?: ComposioSyncRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioSyncRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioSyncRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ComposioSyncRuns.
+     */
+    distinct?: ComposioSyncRunScalarFieldEnum | ComposioSyncRunScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioSyncRun findFirstOrThrow
+   */
+  export type ComposioSyncRunFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioSyncRun
+     */
+    select?: ComposioSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioSyncRun
+     */
+    omit?: ComposioSyncRunOmit<ExtArgs> | null
+    /**
+     * Filter, which ComposioSyncRun to fetch.
+     */
+    where?: ComposioSyncRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioSyncRuns to fetch.
+     */
+    orderBy?: ComposioSyncRunOrderByWithRelationInput | ComposioSyncRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ComposioSyncRuns.
+     */
+    cursor?: ComposioSyncRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioSyncRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioSyncRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ComposioSyncRuns.
+     */
+    distinct?: ComposioSyncRunScalarFieldEnum | ComposioSyncRunScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioSyncRun findMany
+   */
+  export type ComposioSyncRunFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioSyncRun
+     */
+    select?: ComposioSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioSyncRun
+     */
+    omit?: ComposioSyncRunOmit<ExtArgs> | null
+    /**
+     * Filter, which ComposioSyncRuns to fetch.
+     */
+    where?: ComposioSyncRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioSyncRuns to fetch.
+     */
+    orderBy?: ComposioSyncRunOrderByWithRelationInput | ComposioSyncRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ComposioSyncRuns.
+     */
+    cursor?: ComposioSyncRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioSyncRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioSyncRuns.
+     */
+    skip?: number
+    distinct?: ComposioSyncRunScalarFieldEnum | ComposioSyncRunScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioSyncRun create
+   */
+  export type ComposioSyncRunCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioSyncRun
+     */
+    select?: ComposioSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioSyncRun
+     */
+    omit?: ComposioSyncRunOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ComposioSyncRun.
+     */
+    data: XOR<ComposioSyncRunCreateInput, ComposioSyncRunUncheckedCreateInput>
+  }
+
+  /**
+   * ComposioSyncRun createMany
+   */
+  export type ComposioSyncRunCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ComposioSyncRuns.
+     */
+    data: ComposioSyncRunCreateManyInput | ComposioSyncRunCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ComposioSyncRun createManyAndReturn
+   */
+  export type ComposioSyncRunCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioSyncRun
+     */
+    select?: ComposioSyncRunSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioSyncRun
+     */
+    omit?: ComposioSyncRunOmit<ExtArgs> | null
+    /**
+     * The data used to create many ComposioSyncRuns.
+     */
+    data: ComposioSyncRunCreateManyInput | ComposioSyncRunCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ComposioSyncRun update
+   */
+  export type ComposioSyncRunUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioSyncRun
+     */
+    select?: ComposioSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioSyncRun
+     */
+    omit?: ComposioSyncRunOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ComposioSyncRun.
+     */
+    data: XOR<ComposioSyncRunUpdateInput, ComposioSyncRunUncheckedUpdateInput>
+    /**
+     * Choose, which ComposioSyncRun to update.
+     */
+    where: ComposioSyncRunWhereUniqueInput
+  }
+
+  /**
+   * ComposioSyncRun updateMany
+   */
+  export type ComposioSyncRunUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ComposioSyncRuns.
+     */
+    data: XOR<ComposioSyncRunUpdateManyMutationInput, ComposioSyncRunUncheckedUpdateManyInput>
+    /**
+     * Filter which ComposioSyncRuns to update
+     */
+    where?: ComposioSyncRunWhereInput
+    /**
+     * Limit how many ComposioSyncRuns to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ComposioSyncRun updateManyAndReturn
+   */
+  export type ComposioSyncRunUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioSyncRun
+     */
+    select?: ComposioSyncRunSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioSyncRun
+     */
+    omit?: ComposioSyncRunOmit<ExtArgs> | null
+    /**
+     * The data used to update ComposioSyncRuns.
+     */
+    data: XOR<ComposioSyncRunUpdateManyMutationInput, ComposioSyncRunUncheckedUpdateManyInput>
+    /**
+     * Filter which ComposioSyncRuns to update
+     */
+    where?: ComposioSyncRunWhereInput
+    /**
+     * Limit how many ComposioSyncRuns to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ComposioSyncRun upsert
+   */
+  export type ComposioSyncRunUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioSyncRun
+     */
+    select?: ComposioSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioSyncRun
+     */
+    omit?: ComposioSyncRunOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ComposioSyncRun to update in case it exists.
+     */
+    where: ComposioSyncRunWhereUniqueInput
+    /**
+     * In case the ComposioSyncRun found by the `where` argument doesn't exist, create a new ComposioSyncRun with this data.
+     */
+    create: XOR<ComposioSyncRunCreateInput, ComposioSyncRunUncheckedCreateInput>
+    /**
+     * In case the ComposioSyncRun was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ComposioSyncRunUpdateInput, ComposioSyncRunUncheckedUpdateInput>
+  }
+
+  /**
+   * ComposioSyncRun delete
+   */
+  export type ComposioSyncRunDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioSyncRun
+     */
+    select?: ComposioSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioSyncRun
+     */
+    omit?: ComposioSyncRunOmit<ExtArgs> | null
+    /**
+     * Filter which ComposioSyncRun to delete.
+     */
+    where: ComposioSyncRunWhereUniqueInput
+  }
+
+  /**
+   * ComposioSyncRun deleteMany
+   */
+  export type ComposioSyncRunDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ComposioSyncRuns to delete
+     */
+    where?: ComposioSyncRunWhereInput
+    /**
+     * Limit how many ComposioSyncRuns to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ComposioSyncRun without action
+   */
+  export type ComposioSyncRunDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioSyncRun
+     */
+    select?: ComposioSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioSyncRun
+     */
+    omit?: ComposioSyncRunOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model OrganisationEnabledToolkit
+   */
+
+  export type AggregateOrganisationEnabledToolkit = {
+    _count: OrganisationEnabledToolkitCountAggregateOutputType | null
+    _avg: OrganisationEnabledToolkitAvgAggregateOutputType | null
+    _sum: OrganisationEnabledToolkitSumAggregateOutputType | null
+    _min: OrganisationEnabledToolkitMinAggregateOutputType | null
+    _max: OrganisationEnabledToolkitMaxAggregateOutputType | null
+  }
+
+  export type OrganisationEnabledToolkitAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type OrganisationEnabledToolkitSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type OrganisationEnabledToolkitMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    org_uuid: string | null
+    toolkit_uuid: string | null
+    is_enabled: boolean | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type OrganisationEnabledToolkitMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    org_uuid: string | null
+    toolkit_uuid: string | null
+    is_enabled: boolean | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type OrganisationEnabledToolkitCountAggregateOutputType = {
+    id: number
+    uuid: number
+    org_uuid: number
+    toolkit_uuid: number
+    is_enabled: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type OrganisationEnabledToolkitAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type OrganisationEnabledToolkitSumAggregateInputType = {
+    id?: true
+  }
+
+  export type OrganisationEnabledToolkitMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    toolkit_uuid?: true
+    is_enabled?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type OrganisationEnabledToolkitMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    toolkit_uuid?: true
+    is_enabled?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type OrganisationEnabledToolkitCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    toolkit_uuid?: true
+    is_enabled?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type OrganisationEnabledToolkitAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrganisationEnabledToolkit to aggregate.
+     */
+    where?: OrganisationEnabledToolkitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrganisationEnabledToolkits to fetch.
+     */
+    orderBy?: OrganisationEnabledToolkitOrderByWithRelationInput | OrganisationEnabledToolkitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OrganisationEnabledToolkitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrganisationEnabledToolkits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrganisationEnabledToolkits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OrganisationEnabledToolkits
+    **/
+    _count?: true | OrganisationEnabledToolkitCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: OrganisationEnabledToolkitAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OrganisationEnabledToolkitSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OrganisationEnabledToolkitMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OrganisationEnabledToolkitMaxAggregateInputType
+  }
+
+  export type GetOrganisationEnabledToolkitAggregateType<T extends OrganisationEnabledToolkitAggregateArgs> = {
+        [P in keyof T & keyof AggregateOrganisationEnabledToolkit]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOrganisationEnabledToolkit[P]>
+      : GetScalarType<T[P], AggregateOrganisationEnabledToolkit[P]>
+  }
+
+
+
+
+  export type OrganisationEnabledToolkitGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrganisationEnabledToolkitWhereInput
+    orderBy?: OrganisationEnabledToolkitOrderByWithAggregationInput | OrganisationEnabledToolkitOrderByWithAggregationInput[]
+    by: OrganisationEnabledToolkitScalarFieldEnum[] | OrganisationEnabledToolkitScalarFieldEnum
+    having?: OrganisationEnabledToolkitScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OrganisationEnabledToolkitCountAggregateInputType | true
+    _avg?: OrganisationEnabledToolkitAvgAggregateInputType
+    _sum?: OrganisationEnabledToolkitSumAggregateInputType
+    _min?: OrganisationEnabledToolkitMinAggregateInputType
+    _max?: OrganisationEnabledToolkitMaxAggregateInputType
+  }
+
+  export type OrganisationEnabledToolkitGroupByOutputType = {
+    id: number
+    uuid: string
+    org_uuid: string
+    toolkit_uuid: string
+    is_enabled: boolean
+    created_at: Date
+    updated_at: Date
+    _count: OrganisationEnabledToolkitCountAggregateOutputType | null
+    _avg: OrganisationEnabledToolkitAvgAggregateOutputType | null
+    _sum: OrganisationEnabledToolkitSumAggregateOutputType | null
+    _min: OrganisationEnabledToolkitMinAggregateOutputType | null
+    _max: OrganisationEnabledToolkitMaxAggregateOutputType | null
+  }
+
+  type GetOrganisationEnabledToolkitGroupByPayload<T extends OrganisationEnabledToolkitGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OrganisationEnabledToolkitGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OrganisationEnabledToolkitGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OrganisationEnabledToolkitGroupByOutputType[P]>
+            : GetScalarType<T[P], OrganisationEnabledToolkitGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OrganisationEnabledToolkitSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    toolkit_uuid?: boolean
+    is_enabled?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["organisationEnabledToolkit"]>
+
+  export type OrganisationEnabledToolkitSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    toolkit_uuid?: boolean
+    is_enabled?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["organisationEnabledToolkit"]>
+
+  export type OrganisationEnabledToolkitSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    toolkit_uuid?: boolean
+    is_enabled?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["organisationEnabledToolkit"]>
+
+  export type OrganisationEnabledToolkitSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    toolkit_uuid?: boolean
+    is_enabled?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type OrganisationEnabledToolkitOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "org_uuid" | "toolkit_uuid" | "is_enabled" | "created_at" | "updated_at", ExtArgs["result"]["organisationEnabledToolkit"]>
+  export type OrganisationEnabledToolkitInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }
+  export type OrganisationEnabledToolkitIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }
+  export type OrganisationEnabledToolkitIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }
+
+  export type $OrganisationEnabledToolkitPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OrganisationEnabledToolkit"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      toolkit: Prisma.$ComposioToolkitPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      org_uuid: string
+      toolkit_uuid: string
+      is_enabled: boolean
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["organisationEnabledToolkit"]>
+    composites: {}
+  }
+
+  type OrganisationEnabledToolkitGetPayload<S extends boolean | null | undefined | OrganisationEnabledToolkitDefaultArgs> = $Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload, S>
+
+  type OrganisationEnabledToolkitCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<OrganisationEnabledToolkitFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: OrganisationEnabledToolkitCountAggregateInputType | true
+    }
+
+  export interface OrganisationEnabledToolkitDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OrganisationEnabledToolkit'], meta: { name: 'OrganisationEnabledToolkit' } }
+    /**
+     * Find zero or one OrganisationEnabledToolkit that matches the filter.
+     * @param {OrganisationEnabledToolkitFindUniqueArgs} args - Arguments to find a OrganisationEnabledToolkit
+     * @example
+     * // Get one OrganisationEnabledToolkit
+     * const organisationEnabledToolkit = await prisma.organisationEnabledToolkit.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OrganisationEnabledToolkitFindUniqueArgs>(args: SelectSubset<T, OrganisationEnabledToolkitFindUniqueArgs<ExtArgs>>): Prisma__OrganisationEnabledToolkitClient<$Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one OrganisationEnabledToolkit that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OrganisationEnabledToolkitFindUniqueOrThrowArgs} args - Arguments to find a OrganisationEnabledToolkit
+     * @example
+     * // Get one OrganisationEnabledToolkit
+     * const organisationEnabledToolkit = await prisma.organisationEnabledToolkit.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OrganisationEnabledToolkitFindUniqueOrThrowArgs>(args: SelectSubset<T, OrganisationEnabledToolkitFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OrganisationEnabledToolkitClient<$Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OrganisationEnabledToolkit that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationEnabledToolkitFindFirstArgs} args - Arguments to find a OrganisationEnabledToolkit
+     * @example
+     * // Get one OrganisationEnabledToolkit
+     * const organisationEnabledToolkit = await prisma.organisationEnabledToolkit.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OrganisationEnabledToolkitFindFirstArgs>(args?: SelectSubset<T, OrganisationEnabledToolkitFindFirstArgs<ExtArgs>>): Prisma__OrganisationEnabledToolkitClient<$Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OrganisationEnabledToolkit that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationEnabledToolkitFindFirstOrThrowArgs} args - Arguments to find a OrganisationEnabledToolkit
+     * @example
+     * // Get one OrganisationEnabledToolkit
+     * const organisationEnabledToolkit = await prisma.organisationEnabledToolkit.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OrganisationEnabledToolkitFindFirstOrThrowArgs>(args?: SelectSubset<T, OrganisationEnabledToolkitFindFirstOrThrowArgs<ExtArgs>>): Prisma__OrganisationEnabledToolkitClient<$Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more OrganisationEnabledToolkits that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationEnabledToolkitFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OrganisationEnabledToolkits
+     * const organisationEnabledToolkits = await prisma.organisationEnabledToolkit.findMany()
+     * 
+     * // Get first 10 OrganisationEnabledToolkits
+     * const organisationEnabledToolkits = await prisma.organisationEnabledToolkit.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const organisationEnabledToolkitWithIdOnly = await prisma.organisationEnabledToolkit.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OrganisationEnabledToolkitFindManyArgs>(args?: SelectSubset<T, OrganisationEnabledToolkitFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a OrganisationEnabledToolkit.
+     * @param {OrganisationEnabledToolkitCreateArgs} args - Arguments to create a OrganisationEnabledToolkit.
+     * @example
+     * // Create one OrganisationEnabledToolkit
+     * const OrganisationEnabledToolkit = await prisma.organisationEnabledToolkit.create({
+     *   data: {
+     *     // ... data to create a OrganisationEnabledToolkit
+     *   }
+     * })
+     * 
+     */
+    create<T extends OrganisationEnabledToolkitCreateArgs>(args: SelectSubset<T, OrganisationEnabledToolkitCreateArgs<ExtArgs>>): Prisma__OrganisationEnabledToolkitClient<$Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many OrganisationEnabledToolkits.
+     * @param {OrganisationEnabledToolkitCreateManyArgs} args - Arguments to create many OrganisationEnabledToolkits.
+     * @example
+     * // Create many OrganisationEnabledToolkits
+     * const organisationEnabledToolkit = await prisma.organisationEnabledToolkit.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OrganisationEnabledToolkitCreateManyArgs>(args?: SelectSubset<T, OrganisationEnabledToolkitCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many OrganisationEnabledToolkits and returns the data saved in the database.
+     * @param {OrganisationEnabledToolkitCreateManyAndReturnArgs} args - Arguments to create many OrganisationEnabledToolkits.
+     * @example
+     * // Create many OrganisationEnabledToolkits
+     * const organisationEnabledToolkit = await prisma.organisationEnabledToolkit.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many OrganisationEnabledToolkits and only return the `id`
+     * const organisationEnabledToolkitWithIdOnly = await prisma.organisationEnabledToolkit.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OrganisationEnabledToolkitCreateManyAndReturnArgs>(args?: SelectSubset<T, OrganisationEnabledToolkitCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a OrganisationEnabledToolkit.
+     * @param {OrganisationEnabledToolkitDeleteArgs} args - Arguments to delete one OrganisationEnabledToolkit.
+     * @example
+     * // Delete one OrganisationEnabledToolkit
+     * const OrganisationEnabledToolkit = await prisma.organisationEnabledToolkit.delete({
+     *   where: {
+     *     // ... filter to delete one OrganisationEnabledToolkit
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OrganisationEnabledToolkitDeleteArgs>(args: SelectSubset<T, OrganisationEnabledToolkitDeleteArgs<ExtArgs>>): Prisma__OrganisationEnabledToolkitClient<$Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one OrganisationEnabledToolkit.
+     * @param {OrganisationEnabledToolkitUpdateArgs} args - Arguments to update one OrganisationEnabledToolkit.
+     * @example
+     * // Update one OrganisationEnabledToolkit
+     * const organisationEnabledToolkit = await prisma.organisationEnabledToolkit.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OrganisationEnabledToolkitUpdateArgs>(args: SelectSubset<T, OrganisationEnabledToolkitUpdateArgs<ExtArgs>>): Prisma__OrganisationEnabledToolkitClient<$Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more OrganisationEnabledToolkits.
+     * @param {OrganisationEnabledToolkitDeleteManyArgs} args - Arguments to filter OrganisationEnabledToolkits to delete.
+     * @example
+     * // Delete a few OrganisationEnabledToolkits
+     * const { count } = await prisma.organisationEnabledToolkit.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OrganisationEnabledToolkitDeleteManyArgs>(args?: SelectSubset<T, OrganisationEnabledToolkitDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OrganisationEnabledToolkits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationEnabledToolkitUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OrganisationEnabledToolkits
+     * const organisationEnabledToolkit = await prisma.organisationEnabledToolkit.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OrganisationEnabledToolkitUpdateManyArgs>(args: SelectSubset<T, OrganisationEnabledToolkitUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OrganisationEnabledToolkits and returns the data updated in the database.
+     * @param {OrganisationEnabledToolkitUpdateManyAndReturnArgs} args - Arguments to update many OrganisationEnabledToolkits.
+     * @example
+     * // Update many OrganisationEnabledToolkits
+     * const organisationEnabledToolkit = await prisma.organisationEnabledToolkit.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more OrganisationEnabledToolkits and only return the `id`
+     * const organisationEnabledToolkitWithIdOnly = await prisma.organisationEnabledToolkit.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends OrganisationEnabledToolkitUpdateManyAndReturnArgs>(args: SelectSubset<T, OrganisationEnabledToolkitUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one OrganisationEnabledToolkit.
+     * @param {OrganisationEnabledToolkitUpsertArgs} args - Arguments to update or create a OrganisationEnabledToolkit.
+     * @example
+     * // Update or create a OrganisationEnabledToolkit
+     * const organisationEnabledToolkit = await prisma.organisationEnabledToolkit.upsert({
+     *   create: {
+     *     // ... data to create a OrganisationEnabledToolkit
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OrganisationEnabledToolkit we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OrganisationEnabledToolkitUpsertArgs>(args: SelectSubset<T, OrganisationEnabledToolkitUpsertArgs<ExtArgs>>): Prisma__OrganisationEnabledToolkitClient<$Result.GetResult<Prisma.$OrganisationEnabledToolkitPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of OrganisationEnabledToolkits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationEnabledToolkitCountArgs} args - Arguments to filter OrganisationEnabledToolkits to count.
+     * @example
+     * // Count the number of OrganisationEnabledToolkits
+     * const count = await prisma.organisationEnabledToolkit.count({
+     *   where: {
+     *     // ... the filter for the OrganisationEnabledToolkits we want to count
+     *   }
+     * })
+    **/
+    count<T extends OrganisationEnabledToolkitCountArgs>(
+      args?: Subset<T, OrganisationEnabledToolkitCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OrganisationEnabledToolkitCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OrganisationEnabledToolkit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationEnabledToolkitAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OrganisationEnabledToolkitAggregateArgs>(args: Subset<T, OrganisationEnabledToolkitAggregateArgs>): Prisma.PrismaPromise<GetOrganisationEnabledToolkitAggregateType<T>>
+
+    /**
+     * Group by OrganisationEnabledToolkit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationEnabledToolkitGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OrganisationEnabledToolkitGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OrganisationEnabledToolkitGroupByArgs['orderBy'] }
+        : { orderBy?: OrganisationEnabledToolkitGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OrganisationEnabledToolkitGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOrganisationEnabledToolkitGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OrganisationEnabledToolkit model
+   */
+  readonly fields: OrganisationEnabledToolkitFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OrganisationEnabledToolkit.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OrganisationEnabledToolkitClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    toolkit<T extends ComposioToolkitDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ComposioToolkitDefaultArgs<ExtArgs>>): Prisma__ComposioToolkitClient<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the OrganisationEnabledToolkit model
+   */
+  interface OrganisationEnabledToolkitFieldRefs {
+    readonly id: FieldRef<"OrganisationEnabledToolkit", 'Int'>
+    readonly uuid: FieldRef<"OrganisationEnabledToolkit", 'String'>
+    readonly org_uuid: FieldRef<"OrganisationEnabledToolkit", 'String'>
+    readonly toolkit_uuid: FieldRef<"OrganisationEnabledToolkit", 'String'>
+    readonly is_enabled: FieldRef<"OrganisationEnabledToolkit", 'Boolean'>
+    readonly created_at: FieldRef<"OrganisationEnabledToolkit", 'DateTime'>
+    readonly updated_at: FieldRef<"OrganisationEnabledToolkit", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * OrganisationEnabledToolkit findUnique
+   */
+  export type OrganisationEnabledToolkitFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitInclude<ExtArgs> | null
+    /**
+     * Filter, which OrganisationEnabledToolkit to fetch.
+     */
+    where: OrganisationEnabledToolkitWhereUniqueInput
+  }
+
+  /**
+   * OrganisationEnabledToolkit findUniqueOrThrow
+   */
+  export type OrganisationEnabledToolkitFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitInclude<ExtArgs> | null
+    /**
+     * Filter, which OrganisationEnabledToolkit to fetch.
+     */
+    where: OrganisationEnabledToolkitWhereUniqueInput
+  }
+
+  /**
+   * OrganisationEnabledToolkit findFirst
+   */
+  export type OrganisationEnabledToolkitFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitInclude<ExtArgs> | null
+    /**
+     * Filter, which OrganisationEnabledToolkit to fetch.
+     */
+    where?: OrganisationEnabledToolkitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrganisationEnabledToolkits to fetch.
+     */
+    orderBy?: OrganisationEnabledToolkitOrderByWithRelationInput | OrganisationEnabledToolkitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrganisationEnabledToolkits.
+     */
+    cursor?: OrganisationEnabledToolkitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrganisationEnabledToolkits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrganisationEnabledToolkits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrganisationEnabledToolkits.
+     */
+    distinct?: OrganisationEnabledToolkitScalarFieldEnum | OrganisationEnabledToolkitScalarFieldEnum[]
+  }
+
+  /**
+   * OrganisationEnabledToolkit findFirstOrThrow
+   */
+  export type OrganisationEnabledToolkitFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitInclude<ExtArgs> | null
+    /**
+     * Filter, which OrganisationEnabledToolkit to fetch.
+     */
+    where?: OrganisationEnabledToolkitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrganisationEnabledToolkits to fetch.
+     */
+    orderBy?: OrganisationEnabledToolkitOrderByWithRelationInput | OrganisationEnabledToolkitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrganisationEnabledToolkits.
+     */
+    cursor?: OrganisationEnabledToolkitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrganisationEnabledToolkits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrganisationEnabledToolkits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrganisationEnabledToolkits.
+     */
+    distinct?: OrganisationEnabledToolkitScalarFieldEnum | OrganisationEnabledToolkitScalarFieldEnum[]
+  }
+
+  /**
+   * OrganisationEnabledToolkit findMany
+   */
+  export type OrganisationEnabledToolkitFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitInclude<ExtArgs> | null
+    /**
+     * Filter, which OrganisationEnabledToolkits to fetch.
+     */
+    where?: OrganisationEnabledToolkitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrganisationEnabledToolkits to fetch.
+     */
+    orderBy?: OrganisationEnabledToolkitOrderByWithRelationInput | OrganisationEnabledToolkitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OrganisationEnabledToolkits.
+     */
+    cursor?: OrganisationEnabledToolkitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrganisationEnabledToolkits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrganisationEnabledToolkits.
+     */
+    skip?: number
+    distinct?: OrganisationEnabledToolkitScalarFieldEnum | OrganisationEnabledToolkitScalarFieldEnum[]
+  }
+
+  /**
+   * OrganisationEnabledToolkit create
+   */
+  export type OrganisationEnabledToolkitCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OrganisationEnabledToolkit.
+     */
+    data: XOR<OrganisationEnabledToolkitCreateInput, OrganisationEnabledToolkitUncheckedCreateInput>
+  }
+
+  /**
+   * OrganisationEnabledToolkit createMany
+   */
+  export type OrganisationEnabledToolkitCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OrganisationEnabledToolkits.
+     */
+    data: OrganisationEnabledToolkitCreateManyInput | OrganisationEnabledToolkitCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * OrganisationEnabledToolkit createManyAndReturn
+   */
+  export type OrganisationEnabledToolkitCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * The data used to create many OrganisationEnabledToolkits.
+     */
+    data: OrganisationEnabledToolkitCreateManyInput | OrganisationEnabledToolkitCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OrganisationEnabledToolkit update
+   */
+  export type OrganisationEnabledToolkitUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OrganisationEnabledToolkit.
+     */
+    data: XOR<OrganisationEnabledToolkitUpdateInput, OrganisationEnabledToolkitUncheckedUpdateInput>
+    /**
+     * Choose, which OrganisationEnabledToolkit to update.
+     */
+    where: OrganisationEnabledToolkitWhereUniqueInput
+  }
+
+  /**
+   * OrganisationEnabledToolkit updateMany
+   */
+  export type OrganisationEnabledToolkitUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OrganisationEnabledToolkits.
+     */
+    data: XOR<OrganisationEnabledToolkitUpdateManyMutationInput, OrganisationEnabledToolkitUncheckedUpdateManyInput>
+    /**
+     * Filter which OrganisationEnabledToolkits to update
+     */
+    where?: OrganisationEnabledToolkitWhereInput
+    /**
+     * Limit how many OrganisationEnabledToolkits to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * OrganisationEnabledToolkit updateManyAndReturn
+   */
+  export type OrganisationEnabledToolkitUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * The data used to update OrganisationEnabledToolkits.
+     */
+    data: XOR<OrganisationEnabledToolkitUpdateManyMutationInput, OrganisationEnabledToolkitUncheckedUpdateManyInput>
+    /**
+     * Filter which OrganisationEnabledToolkits to update
+     */
+    where?: OrganisationEnabledToolkitWhereInput
+    /**
+     * Limit how many OrganisationEnabledToolkits to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OrganisationEnabledToolkit upsert
+   */
+  export type OrganisationEnabledToolkitUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OrganisationEnabledToolkit to update in case it exists.
+     */
+    where: OrganisationEnabledToolkitWhereUniqueInput
+    /**
+     * In case the OrganisationEnabledToolkit found by the `where` argument doesn't exist, create a new OrganisationEnabledToolkit with this data.
+     */
+    create: XOR<OrganisationEnabledToolkitCreateInput, OrganisationEnabledToolkitUncheckedCreateInput>
+    /**
+     * In case the OrganisationEnabledToolkit was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OrganisationEnabledToolkitUpdateInput, OrganisationEnabledToolkitUncheckedUpdateInput>
+  }
+
+  /**
+   * OrganisationEnabledToolkit delete
+   */
+  export type OrganisationEnabledToolkitDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitInclude<ExtArgs> | null
+    /**
+     * Filter which OrganisationEnabledToolkit to delete.
+     */
+    where: OrganisationEnabledToolkitWhereUniqueInput
+  }
+
+  /**
+   * OrganisationEnabledToolkit deleteMany
+   */
+  export type OrganisationEnabledToolkitDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrganisationEnabledToolkits to delete
+     */
+    where?: OrganisationEnabledToolkitWhereInput
+    /**
+     * Limit how many OrganisationEnabledToolkits to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * OrganisationEnabledToolkit without action
+   */
+  export type OrganisationEnabledToolkitDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationEnabledToolkit
+     */
+    select?: OrganisationEnabledToolkitSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationEnabledToolkit
+     */
+    omit?: OrganisationEnabledToolkitOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationEnabledToolkitInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model OrganisationToolPermission
+   */
+
+  export type AggregateOrganisationToolPermission = {
+    _count: OrganisationToolPermissionCountAggregateOutputType | null
+    _avg: OrganisationToolPermissionAvgAggregateOutputType | null
+    _sum: OrganisationToolPermissionSumAggregateOutputType | null
+    _min: OrganisationToolPermissionMinAggregateOutputType | null
+    _max: OrganisationToolPermissionMaxAggregateOutputType | null
+  }
+
+  export type OrganisationToolPermissionAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type OrganisationToolPermissionSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type OrganisationToolPermissionMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    org_uuid: string | null
+    tool_uuid: string | null
+    enabled: boolean | null
+    requires_approval: boolean | null
+    required_permission_key: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type OrganisationToolPermissionMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    org_uuid: string | null
+    tool_uuid: string | null
+    enabled: boolean | null
+    requires_approval: boolean | null
+    required_permission_key: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type OrganisationToolPermissionCountAggregateOutputType = {
+    id: number
+    uuid: number
+    org_uuid: number
+    tool_uuid: number
+    enabled: number
+    requires_approval: number
+    required_permission_key: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type OrganisationToolPermissionAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type OrganisationToolPermissionSumAggregateInputType = {
+    id?: true
+  }
+
+  export type OrganisationToolPermissionMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    tool_uuid?: true
+    enabled?: true
+    requires_approval?: true
+    required_permission_key?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type OrganisationToolPermissionMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    tool_uuid?: true
+    enabled?: true
+    requires_approval?: true
+    required_permission_key?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type OrganisationToolPermissionCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    tool_uuid?: true
+    enabled?: true
+    requires_approval?: true
+    required_permission_key?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type OrganisationToolPermissionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrganisationToolPermission to aggregate.
+     */
+    where?: OrganisationToolPermissionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrganisationToolPermissions to fetch.
+     */
+    orderBy?: OrganisationToolPermissionOrderByWithRelationInput | OrganisationToolPermissionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OrganisationToolPermissionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrganisationToolPermissions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrganisationToolPermissions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OrganisationToolPermissions
+    **/
+    _count?: true | OrganisationToolPermissionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: OrganisationToolPermissionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OrganisationToolPermissionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OrganisationToolPermissionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OrganisationToolPermissionMaxAggregateInputType
+  }
+
+  export type GetOrganisationToolPermissionAggregateType<T extends OrganisationToolPermissionAggregateArgs> = {
+        [P in keyof T & keyof AggregateOrganisationToolPermission]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOrganisationToolPermission[P]>
+      : GetScalarType<T[P], AggregateOrganisationToolPermission[P]>
+  }
+
+
+
+
+  export type OrganisationToolPermissionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrganisationToolPermissionWhereInput
+    orderBy?: OrganisationToolPermissionOrderByWithAggregationInput | OrganisationToolPermissionOrderByWithAggregationInput[]
+    by: OrganisationToolPermissionScalarFieldEnum[] | OrganisationToolPermissionScalarFieldEnum
+    having?: OrganisationToolPermissionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OrganisationToolPermissionCountAggregateInputType | true
+    _avg?: OrganisationToolPermissionAvgAggregateInputType
+    _sum?: OrganisationToolPermissionSumAggregateInputType
+    _min?: OrganisationToolPermissionMinAggregateInputType
+    _max?: OrganisationToolPermissionMaxAggregateInputType
+  }
+
+  export type OrganisationToolPermissionGroupByOutputType = {
+    id: number
+    uuid: string
+    org_uuid: string
+    tool_uuid: string
+    enabled: boolean
+    requires_approval: boolean
+    required_permission_key: string | null
+    created_at: Date
+    updated_at: Date
+    _count: OrganisationToolPermissionCountAggregateOutputType | null
+    _avg: OrganisationToolPermissionAvgAggregateOutputType | null
+    _sum: OrganisationToolPermissionSumAggregateOutputType | null
+    _min: OrganisationToolPermissionMinAggregateOutputType | null
+    _max: OrganisationToolPermissionMaxAggregateOutputType | null
+  }
+
+  type GetOrganisationToolPermissionGroupByPayload<T extends OrganisationToolPermissionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OrganisationToolPermissionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OrganisationToolPermissionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OrganisationToolPermissionGroupByOutputType[P]>
+            : GetScalarType<T[P], OrganisationToolPermissionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OrganisationToolPermissionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    tool_uuid?: boolean
+    enabled?: boolean
+    requires_approval?: boolean
+    required_permission_key?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    tool?: boolean | ComposioToolkitToolDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["organisationToolPermission"]>
+
+  export type OrganisationToolPermissionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    tool_uuid?: boolean
+    enabled?: boolean
+    requires_approval?: boolean
+    required_permission_key?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    tool?: boolean | ComposioToolkitToolDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["organisationToolPermission"]>
+
+  export type OrganisationToolPermissionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    tool_uuid?: boolean
+    enabled?: boolean
+    requires_approval?: boolean
+    required_permission_key?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    tool?: boolean | ComposioToolkitToolDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["organisationToolPermission"]>
+
+  export type OrganisationToolPermissionSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    tool_uuid?: boolean
+    enabled?: boolean
+    requires_approval?: boolean
+    required_permission_key?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type OrganisationToolPermissionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "org_uuid" | "tool_uuid" | "enabled" | "requires_approval" | "required_permission_key" | "created_at" | "updated_at", ExtArgs["result"]["organisationToolPermission"]>
+  export type OrganisationToolPermissionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    tool?: boolean | ComposioToolkitToolDefaultArgs<ExtArgs>
+  }
+  export type OrganisationToolPermissionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    tool?: boolean | ComposioToolkitToolDefaultArgs<ExtArgs>
+  }
+  export type OrganisationToolPermissionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    tool?: boolean | ComposioToolkitToolDefaultArgs<ExtArgs>
+  }
+
+  export type $OrganisationToolPermissionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OrganisationToolPermission"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      tool: Prisma.$ComposioToolkitToolPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      org_uuid: string
+      tool_uuid: string
+      enabled: boolean
+      requires_approval: boolean
+      required_permission_key: string | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["organisationToolPermission"]>
+    composites: {}
+  }
+
+  type OrganisationToolPermissionGetPayload<S extends boolean | null | undefined | OrganisationToolPermissionDefaultArgs> = $Result.GetResult<Prisma.$OrganisationToolPermissionPayload, S>
+
+  type OrganisationToolPermissionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<OrganisationToolPermissionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: OrganisationToolPermissionCountAggregateInputType | true
+    }
+
+  export interface OrganisationToolPermissionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OrganisationToolPermission'], meta: { name: 'OrganisationToolPermission' } }
+    /**
+     * Find zero or one OrganisationToolPermission that matches the filter.
+     * @param {OrganisationToolPermissionFindUniqueArgs} args - Arguments to find a OrganisationToolPermission
+     * @example
+     * // Get one OrganisationToolPermission
+     * const organisationToolPermission = await prisma.organisationToolPermission.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OrganisationToolPermissionFindUniqueArgs>(args: SelectSubset<T, OrganisationToolPermissionFindUniqueArgs<ExtArgs>>): Prisma__OrganisationToolPermissionClient<$Result.GetResult<Prisma.$OrganisationToolPermissionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one OrganisationToolPermission that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OrganisationToolPermissionFindUniqueOrThrowArgs} args - Arguments to find a OrganisationToolPermission
+     * @example
+     * // Get one OrganisationToolPermission
+     * const organisationToolPermission = await prisma.organisationToolPermission.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OrganisationToolPermissionFindUniqueOrThrowArgs>(args: SelectSubset<T, OrganisationToolPermissionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OrganisationToolPermissionClient<$Result.GetResult<Prisma.$OrganisationToolPermissionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OrganisationToolPermission that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationToolPermissionFindFirstArgs} args - Arguments to find a OrganisationToolPermission
+     * @example
+     * // Get one OrganisationToolPermission
+     * const organisationToolPermission = await prisma.organisationToolPermission.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OrganisationToolPermissionFindFirstArgs>(args?: SelectSubset<T, OrganisationToolPermissionFindFirstArgs<ExtArgs>>): Prisma__OrganisationToolPermissionClient<$Result.GetResult<Prisma.$OrganisationToolPermissionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OrganisationToolPermission that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationToolPermissionFindFirstOrThrowArgs} args - Arguments to find a OrganisationToolPermission
+     * @example
+     * // Get one OrganisationToolPermission
+     * const organisationToolPermission = await prisma.organisationToolPermission.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OrganisationToolPermissionFindFirstOrThrowArgs>(args?: SelectSubset<T, OrganisationToolPermissionFindFirstOrThrowArgs<ExtArgs>>): Prisma__OrganisationToolPermissionClient<$Result.GetResult<Prisma.$OrganisationToolPermissionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more OrganisationToolPermissions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationToolPermissionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OrganisationToolPermissions
+     * const organisationToolPermissions = await prisma.organisationToolPermission.findMany()
+     * 
+     * // Get first 10 OrganisationToolPermissions
+     * const organisationToolPermissions = await prisma.organisationToolPermission.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const organisationToolPermissionWithIdOnly = await prisma.organisationToolPermission.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OrganisationToolPermissionFindManyArgs>(args?: SelectSubset<T, OrganisationToolPermissionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganisationToolPermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a OrganisationToolPermission.
+     * @param {OrganisationToolPermissionCreateArgs} args - Arguments to create a OrganisationToolPermission.
+     * @example
+     * // Create one OrganisationToolPermission
+     * const OrganisationToolPermission = await prisma.organisationToolPermission.create({
+     *   data: {
+     *     // ... data to create a OrganisationToolPermission
+     *   }
+     * })
+     * 
+     */
+    create<T extends OrganisationToolPermissionCreateArgs>(args: SelectSubset<T, OrganisationToolPermissionCreateArgs<ExtArgs>>): Prisma__OrganisationToolPermissionClient<$Result.GetResult<Prisma.$OrganisationToolPermissionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many OrganisationToolPermissions.
+     * @param {OrganisationToolPermissionCreateManyArgs} args - Arguments to create many OrganisationToolPermissions.
+     * @example
+     * // Create many OrganisationToolPermissions
+     * const organisationToolPermission = await prisma.organisationToolPermission.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OrganisationToolPermissionCreateManyArgs>(args?: SelectSubset<T, OrganisationToolPermissionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many OrganisationToolPermissions and returns the data saved in the database.
+     * @param {OrganisationToolPermissionCreateManyAndReturnArgs} args - Arguments to create many OrganisationToolPermissions.
+     * @example
+     * // Create many OrganisationToolPermissions
+     * const organisationToolPermission = await prisma.organisationToolPermission.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many OrganisationToolPermissions and only return the `id`
+     * const organisationToolPermissionWithIdOnly = await prisma.organisationToolPermission.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OrganisationToolPermissionCreateManyAndReturnArgs>(args?: SelectSubset<T, OrganisationToolPermissionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganisationToolPermissionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a OrganisationToolPermission.
+     * @param {OrganisationToolPermissionDeleteArgs} args - Arguments to delete one OrganisationToolPermission.
+     * @example
+     * // Delete one OrganisationToolPermission
+     * const OrganisationToolPermission = await prisma.organisationToolPermission.delete({
+     *   where: {
+     *     // ... filter to delete one OrganisationToolPermission
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OrganisationToolPermissionDeleteArgs>(args: SelectSubset<T, OrganisationToolPermissionDeleteArgs<ExtArgs>>): Prisma__OrganisationToolPermissionClient<$Result.GetResult<Prisma.$OrganisationToolPermissionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one OrganisationToolPermission.
+     * @param {OrganisationToolPermissionUpdateArgs} args - Arguments to update one OrganisationToolPermission.
+     * @example
+     * // Update one OrganisationToolPermission
+     * const organisationToolPermission = await prisma.organisationToolPermission.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OrganisationToolPermissionUpdateArgs>(args: SelectSubset<T, OrganisationToolPermissionUpdateArgs<ExtArgs>>): Prisma__OrganisationToolPermissionClient<$Result.GetResult<Prisma.$OrganisationToolPermissionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more OrganisationToolPermissions.
+     * @param {OrganisationToolPermissionDeleteManyArgs} args - Arguments to filter OrganisationToolPermissions to delete.
+     * @example
+     * // Delete a few OrganisationToolPermissions
+     * const { count } = await prisma.organisationToolPermission.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OrganisationToolPermissionDeleteManyArgs>(args?: SelectSubset<T, OrganisationToolPermissionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OrganisationToolPermissions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationToolPermissionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OrganisationToolPermissions
+     * const organisationToolPermission = await prisma.organisationToolPermission.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OrganisationToolPermissionUpdateManyArgs>(args: SelectSubset<T, OrganisationToolPermissionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OrganisationToolPermissions and returns the data updated in the database.
+     * @param {OrganisationToolPermissionUpdateManyAndReturnArgs} args - Arguments to update many OrganisationToolPermissions.
+     * @example
+     * // Update many OrganisationToolPermissions
+     * const organisationToolPermission = await prisma.organisationToolPermission.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more OrganisationToolPermissions and only return the `id`
+     * const organisationToolPermissionWithIdOnly = await prisma.organisationToolPermission.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends OrganisationToolPermissionUpdateManyAndReturnArgs>(args: SelectSubset<T, OrganisationToolPermissionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganisationToolPermissionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one OrganisationToolPermission.
+     * @param {OrganisationToolPermissionUpsertArgs} args - Arguments to update or create a OrganisationToolPermission.
+     * @example
+     * // Update or create a OrganisationToolPermission
+     * const organisationToolPermission = await prisma.organisationToolPermission.upsert({
+     *   create: {
+     *     // ... data to create a OrganisationToolPermission
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OrganisationToolPermission we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OrganisationToolPermissionUpsertArgs>(args: SelectSubset<T, OrganisationToolPermissionUpsertArgs<ExtArgs>>): Prisma__OrganisationToolPermissionClient<$Result.GetResult<Prisma.$OrganisationToolPermissionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of OrganisationToolPermissions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationToolPermissionCountArgs} args - Arguments to filter OrganisationToolPermissions to count.
+     * @example
+     * // Count the number of OrganisationToolPermissions
+     * const count = await prisma.organisationToolPermission.count({
+     *   where: {
+     *     // ... the filter for the OrganisationToolPermissions we want to count
+     *   }
+     * })
+    **/
+    count<T extends OrganisationToolPermissionCountArgs>(
+      args?: Subset<T, OrganisationToolPermissionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OrganisationToolPermissionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OrganisationToolPermission.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationToolPermissionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OrganisationToolPermissionAggregateArgs>(args: Subset<T, OrganisationToolPermissionAggregateArgs>): Prisma.PrismaPromise<GetOrganisationToolPermissionAggregateType<T>>
+
+    /**
+     * Group by OrganisationToolPermission.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrganisationToolPermissionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OrganisationToolPermissionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OrganisationToolPermissionGroupByArgs['orderBy'] }
+        : { orderBy?: OrganisationToolPermissionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OrganisationToolPermissionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOrganisationToolPermissionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OrganisationToolPermission model
+   */
+  readonly fields: OrganisationToolPermissionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OrganisationToolPermission.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OrganisationToolPermissionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    tool<T extends ComposioToolkitToolDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ComposioToolkitToolDefaultArgs<ExtArgs>>): Prisma__ComposioToolkitToolClient<$Result.GetResult<Prisma.$ComposioToolkitToolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the OrganisationToolPermission model
+   */
+  interface OrganisationToolPermissionFieldRefs {
+    readonly id: FieldRef<"OrganisationToolPermission", 'Int'>
+    readonly uuid: FieldRef<"OrganisationToolPermission", 'String'>
+    readonly org_uuid: FieldRef<"OrganisationToolPermission", 'String'>
+    readonly tool_uuid: FieldRef<"OrganisationToolPermission", 'String'>
+    readonly enabled: FieldRef<"OrganisationToolPermission", 'Boolean'>
+    readonly requires_approval: FieldRef<"OrganisationToolPermission", 'Boolean'>
+    readonly required_permission_key: FieldRef<"OrganisationToolPermission", 'String'>
+    readonly created_at: FieldRef<"OrganisationToolPermission", 'DateTime'>
+    readonly updated_at: FieldRef<"OrganisationToolPermission", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * OrganisationToolPermission findUnique
+   */
+  export type OrganisationToolPermissionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionInclude<ExtArgs> | null
+    /**
+     * Filter, which OrganisationToolPermission to fetch.
+     */
+    where: OrganisationToolPermissionWhereUniqueInput
+  }
+
+  /**
+   * OrganisationToolPermission findUniqueOrThrow
+   */
+  export type OrganisationToolPermissionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionInclude<ExtArgs> | null
+    /**
+     * Filter, which OrganisationToolPermission to fetch.
+     */
+    where: OrganisationToolPermissionWhereUniqueInput
+  }
+
+  /**
+   * OrganisationToolPermission findFirst
+   */
+  export type OrganisationToolPermissionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionInclude<ExtArgs> | null
+    /**
+     * Filter, which OrganisationToolPermission to fetch.
+     */
+    where?: OrganisationToolPermissionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrganisationToolPermissions to fetch.
+     */
+    orderBy?: OrganisationToolPermissionOrderByWithRelationInput | OrganisationToolPermissionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrganisationToolPermissions.
+     */
+    cursor?: OrganisationToolPermissionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrganisationToolPermissions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrganisationToolPermissions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrganisationToolPermissions.
+     */
+    distinct?: OrganisationToolPermissionScalarFieldEnum | OrganisationToolPermissionScalarFieldEnum[]
+  }
+
+  /**
+   * OrganisationToolPermission findFirstOrThrow
+   */
+  export type OrganisationToolPermissionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionInclude<ExtArgs> | null
+    /**
+     * Filter, which OrganisationToolPermission to fetch.
+     */
+    where?: OrganisationToolPermissionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrganisationToolPermissions to fetch.
+     */
+    orderBy?: OrganisationToolPermissionOrderByWithRelationInput | OrganisationToolPermissionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrganisationToolPermissions.
+     */
+    cursor?: OrganisationToolPermissionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrganisationToolPermissions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrganisationToolPermissions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrganisationToolPermissions.
+     */
+    distinct?: OrganisationToolPermissionScalarFieldEnum | OrganisationToolPermissionScalarFieldEnum[]
+  }
+
+  /**
+   * OrganisationToolPermission findMany
+   */
+  export type OrganisationToolPermissionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionInclude<ExtArgs> | null
+    /**
+     * Filter, which OrganisationToolPermissions to fetch.
+     */
+    where?: OrganisationToolPermissionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrganisationToolPermissions to fetch.
+     */
+    orderBy?: OrganisationToolPermissionOrderByWithRelationInput | OrganisationToolPermissionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OrganisationToolPermissions.
+     */
+    cursor?: OrganisationToolPermissionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrganisationToolPermissions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrganisationToolPermissions.
+     */
+    skip?: number
+    distinct?: OrganisationToolPermissionScalarFieldEnum | OrganisationToolPermissionScalarFieldEnum[]
+  }
+
+  /**
+   * OrganisationToolPermission create
+   */
+  export type OrganisationToolPermissionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OrganisationToolPermission.
+     */
+    data: XOR<OrganisationToolPermissionCreateInput, OrganisationToolPermissionUncheckedCreateInput>
+  }
+
+  /**
+   * OrganisationToolPermission createMany
+   */
+  export type OrganisationToolPermissionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OrganisationToolPermissions.
+     */
+    data: OrganisationToolPermissionCreateManyInput | OrganisationToolPermissionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * OrganisationToolPermission createManyAndReturn
+   */
+  export type OrganisationToolPermissionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * The data used to create many OrganisationToolPermissions.
+     */
+    data: OrganisationToolPermissionCreateManyInput | OrganisationToolPermissionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OrganisationToolPermission update
+   */
+  export type OrganisationToolPermissionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OrganisationToolPermission.
+     */
+    data: XOR<OrganisationToolPermissionUpdateInput, OrganisationToolPermissionUncheckedUpdateInput>
+    /**
+     * Choose, which OrganisationToolPermission to update.
+     */
+    where: OrganisationToolPermissionWhereUniqueInput
+  }
+
+  /**
+   * OrganisationToolPermission updateMany
+   */
+  export type OrganisationToolPermissionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OrganisationToolPermissions.
+     */
+    data: XOR<OrganisationToolPermissionUpdateManyMutationInput, OrganisationToolPermissionUncheckedUpdateManyInput>
+    /**
+     * Filter which OrganisationToolPermissions to update
+     */
+    where?: OrganisationToolPermissionWhereInput
+    /**
+     * Limit how many OrganisationToolPermissions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * OrganisationToolPermission updateManyAndReturn
+   */
+  export type OrganisationToolPermissionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * The data used to update OrganisationToolPermissions.
+     */
+    data: XOR<OrganisationToolPermissionUpdateManyMutationInput, OrganisationToolPermissionUncheckedUpdateManyInput>
+    /**
+     * Filter which OrganisationToolPermissions to update
+     */
+    where?: OrganisationToolPermissionWhereInput
+    /**
+     * Limit how many OrganisationToolPermissions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OrganisationToolPermission upsert
+   */
+  export type OrganisationToolPermissionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OrganisationToolPermission to update in case it exists.
+     */
+    where: OrganisationToolPermissionWhereUniqueInput
+    /**
+     * In case the OrganisationToolPermission found by the `where` argument doesn't exist, create a new OrganisationToolPermission with this data.
+     */
+    create: XOR<OrganisationToolPermissionCreateInput, OrganisationToolPermissionUncheckedCreateInput>
+    /**
+     * In case the OrganisationToolPermission was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OrganisationToolPermissionUpdateInput, OrganisationToolPermissionUncheckedUpdateInput>
+  }
+
+  /**
+   * OrganisationToolPermission delete
+   */
+  export type OrganisationToolPermissionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionInclude<ExtArgs> | null
+    /**
+     * Filter which OrganisationToolPermission to delete.
+     */
+    where: OrganisationToolPermissionWhereUniqueInput
+  }
+
+  /**
+   * OrganisationToolPermission deleteMany
+   */
+  export type OrganisationToolPermissionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrganisationToolPermissions to delete
+     */
+    where?: OrganisationToolPermissionWhereInput
+    /**
+     * Limit how many OrganisationToolPermissions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * OrganisationToolPermission without action
+   */
+  export type OrganisationToolPermissionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrganisationToolPermission
+     */
+    select?: OrganisationToolPermissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OrganisationToolPermission
+     */
+    omit?: OrganisationToolPermissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationToolPermissionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ComposioConnectedAccount
+   */
+
+  export type AggregateComposioConnectedAccount = {
+    _count: ComposioConnectedAccountCountAggregateOutputType | null
+    _avg: ComposioConnectedAccountAvgAggregateOutputType | null
+    _sum: ComposioConnectedAccountSumAggregateOutputType | null
+    _min: ComposioConnectedAccountMinAggregateOutputType | null
+    _max: ComposioConnectedAccountMaxAggregateOutputType | null
+  }
+
+  export type ComposioConnectedAccountAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ComposioConnectedAccountSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ComposioConnectedAccountMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    composio_account_id: string | null
+    composio_user_id: string | null
+    org_uuid: string | null
+    user_uuid: string | null
+    toolkit_uuid: string | null
+    status: $Enums.ComposioAccountStatus | null
+    account_label: string | null
+    last_synced_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ComposioConnectedAccountMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    composio_account_id: string | null
+    composio_user_id: string | null
+    org_uuid: string | null
+    user_uuid: string | null
+    toolkit_uuid: string | null
+    status: $Enums.ComposioAccountStatus | null
+    account_label: string | null
+    last_synced_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ComposioConnectedAccountCountAggregateOutputType = {
+    id: number
+    uuid: number
+    composio_account_id: number
+    composio_user_id: number
+    org_uuid: number
+    user_uuid: number
+    toolkit_uuid: number
+    status: number
+    account_label: number
+    last_synced_at: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type ComposioConnectedAccountAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type ComposioConnectedAccountSumAggregateInputType = {
+    id?: true
+  }
+
+  export type ComposioConnectedAccountMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    composio_account_id?: true
+    composio_user_id?: true
+    org_uuid?: true
+    user_uuid?: true
+    toolkit_uuid?: true
+    status?: true
+    account_label?: true
+    last_synced_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ComposioConnectedAccountMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    composio_account_id?: true
+    composio_user_id?: true
+    org_uuid?: true
+    user_uuid?: true
+    toolkit_uuid?: true
+    status?: true
+    account_label?: true
+    last_synced_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ComposioConnectedAccountCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    composio_account_id?: true
+    composio_user_id?: true
+    org_uuid?: true
+    user_uuid?: true
+    toolkit_uuid?: true
+    status?: true
+    account_label?: true
+    last_synced_at?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type ComposioConnectedAccountAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ComposioConnectedAccount to aggregate.
+     */
+    where?: ComposioConnectedAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioConnectedAccounts to fetch.
+     */
+    orderBy?: ComposioConnectedAccountOrderByWithRelationInput | ComposioConnectedAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ComposioConnectedAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioConnectedAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioConnectedAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ComposioConnectedAccounts
+    **/
+    _count?: true | ComposioConnectedAccountCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ComposioConnectedAccountAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ComposioConnectedAccountSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ComposioConnectedAccountMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ComposioConnectedAccountMaxAggregateInputType
+  }
+
+  export type GetComposioConnectedAccountAggregateType<T extends ComposioConnectedAccountAggregateArgs> = {
+        [P in keyof T & keyof AggregateComposioConnectedAccount]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateComposioConnectedAccount[P]>
+      : GetScalarType<T[P], AggregateComposioConnectedAccount[P]>
+  }
+
+
+
+
+  export type ComposioConnectedAccountGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ComposioConnectedAccountWhereInput
+    orderBy?: ComposioConnectedAccountOrderByWithAggregationInput | ComposioConnectedAccountOrderByWithAggregationInput[]
+    by: ComposioConnectedAccountScalarFieldEnum[] | ComposioConnectedAccountScalarFieldEnum
+    having?: ComposioConnectedAccountScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ComposioConnectedAccountCountAggregateInputType | true
+    _avg?: ComposioConnectedAccountAvgAggregateInputType
+    _sum?: ComposioConnectedAccountSumAggregateInputType
+    _min?: ComposioConnectedAccountMinAggregateInputType
+    _max?: ComposioConnectedAccountMaxAggregateInputType
+  }
+
+  export type ComposioConnectedAccountGroupByOutputType = {
+    id: number
+    uuid: string
+    composio_account_id: string
+    composio_user_id: string
+    org_uuid: string
+    user_uuid: string | null
+    toolkit_uuid: string
+    status: $Enums.ComposioAccountStatus
+    account_label: string | null
+    last_synced_at: Date | null
+    created_at: Date
+    updated_at: Date
+    _count: ComposioConnectedAccountCountAggregateOutputType | null
+    _avg: ComposioConnectedAccountAvgAggregateOutputType | null
+    _sum: ComposioConnectedAccountSumAggregateOutputType | null
+    _min: ComposioConnectedAccountMinAggregateOutputType | null
+    _max: ComposioConnectedAccountMaxAggregateOutputType | null
+  }
+
+  type GetComposioConnectedAccountGroupByPayload<T extends ComposioConnectedAccountGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ComposioConnectedAccountGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ComposioConnectedAccountGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ComposioConnectedAccountGroupByOutputType[P]>
+            : GetScalarType<T[P], ComposioConnectedAccountGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ComposioConnectedAccountSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    composio_account_id?: boolean
+    composio_user_id?: boolean
+    org_uuid?: boolean
+    user_uuid?: boolean
+    toolkit_uuid?: boolean
+    status?: boolean
+    account_label?: boolean
+    last_synced_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["composioConnectedAccount"]>
+
+  export type ComposioConnectedAccountSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    composio_account_id?: boolean
+    composio_user_id?: boolean
+    org_uuid?: boolean
+    user_uuid?: boolean
+    toolkit_uuid?: boolean
+    status?: boolean
+    account_label?: boolean
+    last_synced_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["composioConnectedAccount"]>
+
+  export type ComposioConnectedAccountSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    composio_account_id?: boolean
+    composio_user_id?: boolean
+    org_uuid?: boolean
+    user_uuid?: boolean
+    toolkit_uuid?: boolean
+    status?: boolean
+    account_label?: boolean
+    last_synced_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["composioConnectedAccount"]>
+
+  export type ComposioConnectedAccountSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    composio_account_id?: boolean
+    composio_user_id?: boolean
+    org_uuid?: boolean
+    user_uuid?: boolean
+    toolkit_uuid?: boolean
+    status?: boolean
+    account_label?: boolean
+    last_synced_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type ComposioConnectedAccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "composio_account_id" | "composio_user_id" | "org_uuid" | "user_uuid" | "toolkit_uuid" | "status" | "account_label" | "last_synced_at" | "created_at" | "updated_at", ExtArgs["result"]["composioConnectedAccount"]>
+  export type ComposioConnectedAccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }
+  export type ComposioConnectedAccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }
+  export type ComposioConnectedAccountIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }
+
+  export type $ComposioConnectedAccountPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ComposioConnectedAccount"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      toolkit: Prisma.$ComposioToolkitPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      composio_account_id: string
+      composio_user_id: string
+      org_uuid: string
+      user_uuid: string | null
+      toolkit_uuid: string
+      status: $Enums.ComposioAccountStatus
+      account_label: string | null
+      last_synced_at: Date | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["composioConnectedAccount"]>
+    composites: {}
+  }
+
+  type ComposioConnectedAccountGetPayload<S extends boolean | null | undefined | ComposioConnectedAccountDefaultArgs> = $Result.GetResult<Prisma.$ComposioConnectedAccountPayload, S>
+
+  type ComposioConnectedAccountCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ComposioConnectedAccountFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ComposioConnectedAccountCountAggregateInputType | true
+    }
+
+  export interface ComposioConnectedAccountDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ComposioConnectedAccount'], meta: { name: 'ComposioConnectedAccount' } }
+    /**
+     * Find zero or one ComposioConnectedAccount that matches the filter.
+     * @param {ComposioConnectedAccountFindUniqueArgs} args - Arguments to find a ComposioConnectedAccount
+     * @example
+     * // Get one ComposioConnectedAccount
+     * const composioConnectedAccount = await prisma.composioConnectedAccount.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ComposioConnectedAccountFindUniqueArgs>(args: SelectSubset<T, ComposioConnectedAccountFindUniqueArgs<ExtArgs>>): Prisma__ComposioConnectedAccountClient<$Result.GetResult<Prisma.$ComposioConnectedAccountPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ComposioConnectedAccount that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ComposioConnectedAccountFindUniqueOrThrowArgs} args - Arguments to find a ComposioConnectedAccount
+     * @example
+     * // Get one ComposioConnectedAccount
+     * const composioConnectedAccount = await prisma.composioConnectedAccount.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ComposioConnectedAccountFindUniqueOrThrowArgs>(args: SelectSubset<T, ComposioConnectedAccountFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ComposioConnectedAccountClient<$Result.GetResult<Prisma.$ComposioConnectedAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ComposioConnectedAccount that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioConnectedAccountFindFirstArgs} args - Arguments to find a ComposioConnectedAccount
+     * @example
+     * // Get one ComposioConnectedAccount
+     * const composioConnectedAccount = await prisma.composioConnectedAccount.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ComposioConnectedAccountFindFirstArgs>(args?: SelectSubset<T, ComposioConnectedAccountFindFirstArgs<ExtArgs>>): Prisma__ComposioConnectedAccountClient<$Result.GetResult<Prisma.$ComposioConnectedAccountPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ComposioConnectedAccount that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioConnectedAccountFindFirstOrThrowArgs} args - Arguments to find a ComposioConnectedAccount
+     * @example
+     * // Get one ComposioConnectedAccount
+     * const composioConnectedAccount = await prisma.composioConnectedAccount.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ComposioConnectedAccountFindFirstOrThrowArgs>(args?: SelectSubset<T, ComposioConnectedAccountFindFirstOrThrowArgs<ExtArgs>>): Prisma__ComposioConnectedAccountClient<$Result.GetResult<Prisma.$ComposioConnectedAccountPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ComposioConnectedAccounts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioConnectedAccountFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ComposioConnectedAccounts
+     * const composioConnectedAccounts = await prisma.composioConnectedAccount.findMany()
+     * 
+     * // Get first 10 ComposioConnectedAccounts
+     * const composioConnectedAccounts = await prisma.composioConnectedAccount.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const composioConnectedAccountWithIdOnly = await prisma.composioConnectedAccount.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ComposioConnectedAccountFindManyArgs>(args?: SelectSubset<T, ComposioConnectedAccountFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioConnectedAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ComposioConnectedAccount.
+     * @param {ComposioConnectedAccountCreateArgs} args - Arguments to create a ComposioConnectedAccount.
+     * @example
+     * // Create one ComposioConnectedAccount
+     * const ComposioConnectedAccount = await prisma.composioConnectedAccount.create({
+     *   data: {
+     *     // ... data to create a ComposioConnectedAccount
+     *   }
+     * })
+     * 
+     */
+    create<T extends ComposioConnectedAccountCreateArgs>(args: SelectSubset<T, ComposioConnectedAccountCreateArgs<ExtArgs>>): Prisma__ComposioConnectedAccountClient<$Result.GetResult<Prisma.$ComposioConnectedAccountPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ComposioConnectedAccounts.
+     * @param {ComposioConnectedAccountCreateManyArgs} args - Arguments to create many ComposioConnectedAccounts.
+     * @example
+     * // Create many ComposioConnectedAccounts
+     * const composioConnectedAccount = await prisma.composioConnectedAccount.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ComposioConnectedAccountCreateManyArgs>(args?: SelectSubset<T, ComposioConnectedAccountCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ComposioConnectedAccounts and returns the data saved in the database.
+     * @param {ComposioConnectedAccountCreateManyAndReturnArgs} args - Arguments to create many ComposioConnectedAccounts.
+     * @example
+     * // Create many ComposioConnectedAccounts
+     * const composioConnectedAccount = await prisma.composioConnectedAccount.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ComposioConnectedAccounts and only return the `id`
+     * const composioConnectedAccountWithIdOnly = await prisma.composioConnectedAccount.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ComposioConnectedAccountCreateManyAndReturnArgs>(args?: SelectSubset<T, ComposioConnectedAccountCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioConnectedAccountPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ComposioConnectedAccount.
+     * @param {ComposioConnectedAccountDeleteArgs} args - Arguments to delete one ComposioConnectedAccount.
+     * @example
+     * // Delete one ComposioConnectedAccount
+     * const ComposioConnectedAccount = await prisma.composioConnectedAccount.delete({
+     *   where: {
+     *     // ... filter to delete one ComposioConnectedAccount
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ComposioConnectedAccountDeleteArgs>(args: SelectSubset<T, ComposioConnectedAccountDeleteArgs<ExtArgs>>): Prisma__ComposioConnectedAccountClient<$Result.GetResult<Prisma.$ComposioConnectedAccountPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ComposioConnectedAccount.
+     * @param {ComposioConnectedAccountUpdateArgs} args - Arguments to update one ComposioConnectedAccount.
+     * @example
+     * // Update one ComposioConnectedAccount
+     * const composioConnectedAccount = await prisma.composioConnectedAccount.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ComposioConnectedAccountUpdateArgs>(args: SelectSubset<T, ComposioConnectedAccountUpdateArgs<ExtArgs>>): Prisma__ComposioConnectedAccountClient<$Result.GetResult<Prisma.$ComposioConnectedAccountPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ComposioConnectedAccounts.
+     * @param {ComposioConnectedAccountDeleteManyArgs} args - Arguments to filter ComposioConnectedAccounts to delete.
+     * @example
+     * // Delete a few ComposioConnectedAccounts
+     * const { count } = await prisma.composioConnectedAccount.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ComposioConnectedAccountDeleteManyArgs>(args?: SelectSubset<T, ComposioConnectedAccountDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ComposioConnectedAccounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioConnectedAccountUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ComposioConnectedAccounts
+     * const composioConnectedAccount = await prisma.composioConnectedAccount.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ComposioConnectedAccountUpdateManyArgs>(args: SelectSubset<T, ComposioConnectedAccountUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ComposioConnectedAccounts and returns the data updated in the database.
+     * @param {ComposioConnectedAccountUpdateManyAndReturnArgs} args - Arguments to update many ComposioConnectedAccounts.
+     * @example
+     * // Update many ComposioConnectedAccounts
+     * const composioConnectedAccount = await prisma.composioConnectedAccount.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ComposioConnectedAccounts and only return the `id`
+     * const composioConnectedAccountWithIdOnly = await prisma.composioConnectedAccount.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ComposioConnectedAccountUpdateManyAndReturnArgs>(args: SelectSubset<T, ComposioConnectedAccountUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioConnectedAccountPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ComposioConnectedAccount.
+     * @param {ComposioConnectedAccountUpsertArgs} args - Arguments to update or create a ComposioConnectedAccount.
+     * @example
+     * // Update or create a ComposioConnectedAccount
+     * const composioConnectedAccount = await prisma.composioConnectedAccount.upsert({
+     *   create: {
+     *     // ... data to create a ComposioConnectedAccount
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ComposioConnectedAccount we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ComposioConnectedAccountUpsertArgs>(args: SelectSubset<T, ComposioConnectedAccountUpsertArgs<ExtArgs>>): Prisma__ComposioConnectedAccountClient<$Result.GetResult<Prisma.$ComposioConnectedAccountPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ComposioConnectedAccounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioConnectedAccountCountArgs} args - Arguments to filter ComposioConnectedAccounts to count.
+     * @example
+     * // Count the number of ComposioConnectedAccounts
+     * const count = await prisma.composioConnectedAccount.count({
+     *   where: {
+     *     // ... the filter for the ComposioConnectedAccounts we want to count
+     *   }
+     * })
+    **/
+    count<T extends ComposioConnectedAccountCountArgs>(
+      args?: Subset<T, ComposioConnectedAccountCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ComposioConnectedAccountCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ComposioConnectedAccount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioConnectedAccountAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ComposioConnectedAccountAggregateArgs>(args: Subset<T, ComposioConnectedAccountAggregateArgs>): Prisma.PrismaPromise<GetComposioConnectedAccountAggregateType<T>>
+
+    /**
+     * Group by ComposioConnectedAccount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioConnectedAccountGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ComposioConnectedAccountGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ComposioConnectedAccountGroupByArgs['orderBy'] }
+        : { orderBy?: ComposioConnectedAccountGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ComposioConnectedAccountGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetComposioConnectedAccountGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ComposioConnectedAccount model
+   */
+  readonly fields: ComposioConnectedAccountFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ComposioConnectedAccount.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ComposioConnectedAccountClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    toolkit<T extends ComposioToolkitDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ComposioToolkitDefaultArgs<ExtArgs>>): Prisma__ComposioToolkitClient<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ComposioConnectedAccount model
+   */
+  interface ComposioConnectedAccountFieldRefs {
+    readonly id: FieldRef<"ComposioConnectedAccount", 'Int'>
+    readonly uuid: FieldRef<"ComposioConnectedAccount", 'String'>
+    readonly composio_account_id: FieldRef<"ComposioConnectedAccount", 'String'>
+    readonly composio_user_id: FieldRef<"ComposioConnectedAccount", 'String'>
+    readonly org_uuid: FieldRef<"ComposioConnectedAccount", 'String'>
+    readonly user_uuid: FieldRef<"ComposioConnectedAccount", 'String'>
+    readonly toolkit_uuid: FieldRef<"ComposioConnectedAccount", 'String'>
+    readonly status: FieldRef<"ComposioConnectedAccount", 'ComposioAccountStatus'>
+    readonly account_label: FieldRef<"ComposioConnectedAccount", 'String'>
+    readonly last_synced_at: FieldRef<"ComposioConnectedAccount", 'DateTime'>
+    readonly created_at: FieldRef<"ComposioConnectedAccount", 'DateTime'>
+    readonly updated_at: FieldRef<"ComposioConnectedAccount", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ComposioConnectedAccount findUnique
+   */
+  export type ComposioConnectedAccountFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioConnectedAccount to fetch.
+     */
+    where: ComposioConnectedAccountWhereUniqueInput
+  }
+
+  /**
+   * ComposioConnectedAccount findUniqueOrThrow
+   */
+  export type ComposioConnectedAccountFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioConnectedAccount to fetch.
+     */
+    where: ComposioConnectedAccountWhereUniqueInput
+  }
+
+  /**
+   * ComposioConnectedAccount findFirst
+   */
+  export type ComposioConnectedAccountFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioConnectedAccount to fetch.
+     */
+    where?: ComposioConnectedAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioConnectedAccounts to fetch.
+     */
+    orderBy?: ComposioConnectedAccountOrderByWithRelationInput | ComposioConnectedAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ComposioConnectedAccounts.
+     */
+    cursor?: ComposioConnectedAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioConnectedAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioConnectedAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ComposioConnectedAccounts.
+     */
+    distinct?: ComposioConnectedAccountScalarFieldEnum | ComposioConnectedAccountScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioConnectedAccount findFirstOrThrow
+   */
+  export type ComposioConnectedAccountFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioConnectedAccount to fetch.
+     */
+    where?: ComposioConnectedAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioConnectedAccounts to fetch.
+     */
+    orderBy?: ComposioConnectedAccountOrderByWithRelationInput | ComposioConnectedAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ComposioConnectedAccounts.
+     */
+    cursor?: ComposioConnectedAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioConnectedAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioConnectedAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ComposioConnectedAccounts.
+     */
+    distinct?: ComposioConnectedAccountScalarFieldEnum | ComposioConnectedAccountScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioConnectedAccount findMany
+   */
+  export type ComposioConnectedAccountFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioConnectedAccounts to fetch.
+     */
+    where?: ComposioConnectedAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioConnectedAccounts to fetch.
+     */
+    orderBy?: ComposioConnectedAccountOrderByWithRelationInput | ComposioConnectedAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ComposioConnectedAccounts.
+     */
+    cursor?: ComposioConnectedAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioConnectedAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioConnectedAccounts.
+     */
+    skip?: number
+    distinct?: ComposioConnectedAccountScalarFieldEnum | ComposioConnectedAccountScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioConnectedAccount create
+   */
+  export type ComposioConnectedAccountCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ComposioConnectedAccount.
+     */
+    data: XOR<ComposioConnectedAccountCreateInput, ComposioConnectedAccountUncheckedCreateInput>
+  }
+
+  /**
+   * ComposioConnectedAccount createMany
+   */
+  export type ComposioConnectedAccountCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ComposioConnectedAccounts.
+     */
+    data: ComposioConnectedAccountCreateManyInput | ComposioConnectedAccountCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ComposioConnectedAccount createManyAndReturn
+   */
+  export type ComposioConnectedAccountCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * The data used to create many ComposioConnectedAccounts.
+     */
+    data: ComposioConnectedAccountCreateManyInput | ComposioConnectedAccountCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ComposioConnectedAccount update
+   */
+  export type ComposioConnectedAccountUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ComposioConnectedAccount.
+     */
+    data: XOR<ComposioConnectedAccountUpdateInput, ComposioConnectedAccountUncheckedUpdateInput>
+    /**
+     * Choose, which ComposioConnectedAccount to update.
+     */
+    where: ComposioConnectedAccountWhereUniqueInput
+  }
+
+  /**
+   * ComposioConnectedAccount updateMany
+   */
+  export type ComposioConnectedAccountUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ComposioConnectedAccounts.
+     */
+    data: XOR<ComposioConnectedAccountUpdateManyMutationInput, ComposioConnectedAccountUncheckedUpdateManyInput>
+    /**
+     * Filter which ComposioConnectedAccounts to update
+     */
+    where?: ComposioConnectedAccountWhereInput
+    /**
+     * Limit how many ComposioConnectedAccounts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ComposioConnectedAccount updateManyAndReturn
+   */
+  export type ComposioConnectedAccountUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * The data used to update ComposioConnectedAccounts.
+     */
+    data: XOR<ComposioConnectedAccountUpdateManyMutationInput, ComposioConnectedAccountUncheckedUpdateManyInput>
+    /**
+     * Filter which ComposioConnectedAccounts to update
+     */
+    where?: ComposioConnectedAccountWhereInput
+    /**
+     * Limit how many ComposioConnectedAccounts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ComposioConnectedAccount upsert
+   */
+  export type ComposioConnectedAccountUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ComposioConnectedAccount to update in case it exists.
+     */
+    where: ComposioConnectedAccountWhereUniqueInput
+    /**
+     * In case the ComposioConnectedAccount found by the `where` argument doesn't exist, create a new ComposioConnectedAccount with this data.
+     */
+    create: XOR<ComposioConnectedAccountCreateInput, ComposioConnectedAccountUncheckedCreateInput>
+    /**
+     * In case the ComposioConnectedAccount was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ComposioConnectedAccountUpdateInput, ComposioConnectedAccountUncheckedUpdateInput>
+  }
+
+  /**
+   * ComposioConnectedAccount delete
+   */
+  export type ComposioConnectedAccountDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountInclude<ExtArgs> | null
+    /**
+     * Filter which ComposioConnectedAccount to delete.
+     */
+    where: ComposioConnectedAccountWhereUniqueInput
+  }
+
+  /**
+   * ComposioConnectedAccount deleteMany
+   */
+  export type ComposioConnectedAccountDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ComposioConnectedAccounts to delete
+     */
+    where?: ComposioConnectedAccountWhereInput
+    /**
+     * Limit how many ComposioConnectedAccounts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ComposioConnectedAccount without action
+   */
+  export type ComposioConnectedAccountDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioConnectedAccount
+     */
+    select?: ComposioConnectedAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioConnectedAccount
+     */
+    omit?: ComposioConnectedAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioConnectedAccountInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ComposioTrigger
+   */
+
+  export type AggregateComposioTrigger = {
+    _count: ComposioTriggerCountAggregateOutputType | null
+    _avg: ComposioTriggerAvgAggregateOutputType | null
+    _sum: ComposioTriggerSumAggregateOutputType | null
+    _min: ComposioTriggerMinAggregateOutputType | null
+    _max: ComposioTriggerMaxAggregateOutputType | null
+  }
+
+  export type ComposioTriggerAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ComposioTriggerSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ComposioTriggerMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    composio_trigger_id: string | null
+    org_uuid: string | null
+    composio_user_id: string | null
+    toolkit_uuid: string | null
+    trigger_slug: string | null
+    connected_account_id: string | null
+    is_enabled: boolean | null
+    webhook_subscription_id: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ComposioTriggerMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    composio_trigger_id: string | null
+    org_uuid: string | null
+    composio_user_id: string | null
+    toolkit_uuid: string | null
+    trigger_slug: string | null
+    connected_account_id: string | null
+    is_enabled: boolean | null
+    webhook_subscription_id: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ComposioTriggerCountAggregateOutputType = {
+    id: number
+    uuid: number
+    composio_trigger_id: number
+    org_uuid: number
+    composio_user_id: number
+    toolkit_uuid: number
+    trigger_slug: number
+    connected_account_id: number
+    is_enabled: number
+    config: number
+    webhook_subscription_id: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type ComposioTriggerAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type ComposioTriggerSumAggregateInputType = {
+    id?: true
+  }
+
+  export type ComposioTriggerMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    composio_trigger_id?: true
+    org_uuid?: true
+    composio_user_id?: true
+    toolkit_uuid?: true
+    trigger_slug?: true
+    connected_account_id?: true
+    is_enabled?: true
+    webhook_subscription_id?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ComposioTriggerMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    composio_trigger_id?: true
+    org_uuid?: true
+    composio_user_id?: true
+    toolkit_uuid?: true
+    trigger_slug?: true
+    connected_account_id?: true
+    is_enabled?: true
+    webhook_subscription_id?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ComposioTriggerCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    composio_trigger_id?: true
+    org_uuid?: true
+    composio_user_id?: true
+    toolkit_uuid?: true
+    trigger_slug?: true
+    connected_account_id?: true
+    is_enabled?: true
+    config?: true
+    webhook_subscription_id?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type ComposioTriggerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ComposioTrigger to aggregate.
+     */
+    where?: ComposioTriggerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioTriggers to fetch.
+     */
+    orderBy?: ComposioTriggerOrderByWithRelationInput | ComposioTriggerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ComposioTriggerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioTriggers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioTriggers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ComposioTriggers
+    **/
+    _count?: true | ComposioTriggerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ComposioTriggerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ComposioTriggerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ComposioTriggerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ComposioTriggerMaxAggregateInputType
+  }
+
+  export type GetComposioTriggerAggregateType<T extends ComposioTriggerAggregateArgs> = {
+        [P in keyof T & keyof AggregateComposioTrigger]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateComposioTrigger[P]>
+      : GetScalarType<T[P], AggregateComposioTrigger[P]>
+  }
+
+
+
+
+  export type ComposioTriggerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ComposioTriggerWhereInput
+    orderBy?: ComposioTriggerOrderByWithAggregationInput | ComposioTriggerOrderByWithAggregationInput[]
+    by: ComposioTriggerScalarFieldEnum[] | ComposioTriggerScalarFieldEnum
+    having?: ComposioTriggerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ComposioTriggerCountAggregateInputType | true
+    _avg?: ComposioTriggerAvgAggregateInputType
+    _sum?: ComposioTriggerSumAggregateInputType
+    _min?: ComposioTriggerMinAggregateInputType
+    _max?: ComposioTriggerMaxAggregateInputType
+  }
+
+  export type ComposioTriggerGroupByOutputType = {
+    id: number
+    uuid: string
+    composio_trigger_id: string
+    org_uuid: string
+    composio_user_id: string
+    toolkit_uuid: string
+    trigger_slug: string
+    connected_account_id: string
+    is_enabled: boolean
+    config: JsonValue
+    webhook_subscription_id: string | null
+    created_at: Date
+    updated_at: Date
+    _count: ComposioTriggerCountAggregateOutputType | null
+    _avg: ComposioTriggerAvgAggregateOutputType | null
+    _sum: ComposioTriggerSumAggregateOutputType | null
+    _min: ComposioTriggerMinAggregateOutputType | null
+    _max: ComposioTriggerMaxAggregateOutputType | null
+  }
+
+  type GetComposioTriggerGroupByPayload<T extends ComposioTriggerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ComposioTriggerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ComposioTriggerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ComposioTriggerGroupByOutputType[P]>
+            : GetScalarType<T[P], ComposioTriggerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ComposioTriggerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    composio_trigger_id?: boolean
+    org_uuid?: boolean
+    composio_user_id?: boolean
+    toolkit_uuid?: boolean
+    trigger_slug?: boolean
+    connected_account_id?: boolean
+    is_enabled?: boolean
+    config?: boolean
+    webhook_subscription_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["composioTrigger"]>
+
+  export type ComposioTriggerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    composio_trigger_id?: boolean
+    org_uuid?: boolean
+    composio_user_id?: boolean
+    toolkit_uuid?: boolean
+    trigger_slug?: boolean
+    connected_account_id?: boolean
+    is_enabled?: boolean
+    config?: boolean
+    webhook_subscription_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["composioTrigger"]>
+
+  export type ComposioTriggerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    composio_trigger_id?: boolean
+    org_uuid?: boolean
+    composio_user_id?: boolean
+    toolkit_uuid?: boolean
+    trigger_slug?: boolean
+    connected_account_id?: boolean
+    is_enabled?: boolean
+    config?: boolean
+    webhook_subscription_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["composioTrigger"]>
+
+  export type ComposioTriggerSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    composio_trigger_id?: boolean
+    org_uuid?: boolean
+    composio_user_id?: boolean
+    toolkit_uuid?: boolean
+    trigger_slug?: boolean
+    connected_account_id?: boolean
+    is_enabled?: boolean
+    config?: boolean
+    webhook_subscription_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type ComposioTriggerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "composio_trigger_id" | "org_uuid" | "composio_user_id" | "toolkit_uuid" | "trigger_slug" | "connected_account_id" | "is_enabled" | "config" | "webhook_subscription_id" | "created_at" | "updated_at", ExtArgs["result"]["composioTrigger"]>
+  export type ComposioTriggerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }
+  export type ComposioTriggerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }
+  export type ComposioTriggerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    toolkit?: boolean | ComposioToolkitDefaultArgs<ExtArgs>
+  }
+
+  export type $ComposioTriggerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ComposioTrigger"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      toolkit: Prisma.$ComposioToolkitPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      composio_trigger_id: string
+      org_uuid: string
+      composio_user_id: string
+      toolkit_uuid: string
+      trigger_slug: string
+      connected_account_id: string
+      is_enabled: boolean
+      config: Prisma.JsonValue
+      webhook_subscription_id: string | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["composioTrigger"]>
+    composites: {}
+  }
+
+  type ComposioTriggerGetPayload<S extends boolean | null | undefined | ComposioTriggerDefaultArgs> = $Result.GetResult<Prisma.$ComposioTriggerPayload, S>
+
+  type ComposioTriggerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ComposioTriggerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ComposioTriggerCountAggregateInputType | true
+    }
+
+  export interface ComposioTriggerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ComposioTrigger'], meta: { name: 'ComposioTrigger' } }
+    /**
+     * Find zero or one ComposioTrigger that matches the filter.
+     * @param {ComposioTriggerFindUniqueArgs} args - Arguments to find a ComposioTrigger
+     * @example
+     * // Get one ComposioTrigger
+     * const composioTrigger = await prisma.composioTrigger.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ComposioTriggerFindUniqueArgs>(args: SelectSubset<T, ComposioTriggerFindUniqueArgs<ExtArgs>>): Prisma__ComposioTriggerClient<$Result.GetResult<Prisma.$ComposioTriggerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ComposioTrigger that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ComposioTriggerFindUniqueOrThrowArgs} args - Arguments to find a ComposioTrigger
+     * @example
+     * // Get one ComposioTrigger
+     * const composioTrigger = await prisma.composioTrigger.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ComposioTriggerFindUniqueOrThrowArgs>(args: SelectSubset<T, ComposioTriggerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ComposioTriggerClient<$Result.GetResult<Prisma.$ComposioTriggerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ComposioTrigger that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioTriggerFindFirstArgs} args - Arguments to find a ComposioTrigger
+     * @example
+     * // Get one ComposioTrigger
+     * const composioTrigger = await prisma.composioTrigger.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ComposioTriggerFindFirstArgs>(args?: SelectSubset<T, ComposioTriggerFindFirstArgs<ExtArgs>>): Prisma__ComposioTriggerClient<$Result.GetResult<Prisma.$ComposioTriggerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ComposioTrigger that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioTriggerFindFirstOrThrowArgs} args - Arguments to find a ComposioTrigger
+     * @example
+     * // Get one ComposioTrigger
+     * const composioTrigger = await prisma.composioTrigger.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ComposioTriggerFindFirstOrThrowArgs>(args?: SelectSubset<T, ComposioTriggerFindFirstOrThrowArgs<ExtArgs>>): Prisma__ComposioTriggerClient<$Result.GetResult<Prisma.$ComposioTriggerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ComposioTriggers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioTriggerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ComposioTriggers
+     * const composioTriggers = await prisma.composioTrigger.findMany()
+     * 
+     * // Get first 10 ComposioTriggers
+     * const composioTriggers = await prisma.composioTrigger.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const composioTriggerWithIdOnly = await prisma.composioTrigger.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ComposioTriggerFindManyArgs>(args?: SelectSubset<T, ComposioTriggerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioTriggerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ComposioTrigger.
+     * @param {ComposioTriggerCreateArgs} args - Arguments to create a ComposioTrigger.
+     * @example
+     * // Create one ComposioTrigger
+     * const ComposioTrigger = await prisma.composioTrigger.create({
+     *   data: {
+     *     // ... data to create a ComposioTrigger
+     *   }
+     * })
+     * 
+     */
+    create<T extends ComposioTriggerCreateArgs>(args: SelectSubset<T, ComposioTriggerCreateArgs<ExtArgs>>): Prisma__ComposioTriggerClient<$Result.GetResult<Prisma.$ComposioTriggerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ComposioTriggers.
+     * @param {ComposioTriggerCreateManyArgs} args - Arguments to create many ComposioTriggers.
+     * @example
+     * // Create many ComposioTriggers
+     * const composioTrigger = await prisma.composioTrigger.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ComposioTriggerCreateManyArgs>(args?: SelectSubset<T, ComposioTriggerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ComposioTriggers and returns the data saved in the database.
+     * @param {ComposioTriggerCreateManyAndReturnArgs} args - Arguments to create many ComposioTriggers.
+     * @example
+     * // Create many ComposioTriggers
+     * const composioTrigger = await prisma.composioTrigger.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ComposioTriggers and only return the `id`
+     * const composioTriggerWithIdOnly = await prisma.composioTrigger.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ComposioTriggerCreateManyAndReturnArgs>(args?: SelectSubset<T, ComposioTriggerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioTriggerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ComposioTrigger.
+     * @param {ComposioTriggerDeleteArgs} args - Arguments to delete one ComposioTrigger.
+     * @example
+     * // Delete one ComposioTrigger
+     * const ComposioTrigger = await prisma.composioTrigger.delete({
+     *   where: {
+     *     // ... filter to delete one ComposioTrigger
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ComposioTriggerDeleteArgs>(args: SelectSubset<T, ComposioTriggerDeleteArgs<ExtArgs>>): Prisma__ComposioTriggerClient<$Result.GetResult<Prisma.$ComposioTriggerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ComposioTrigger.
+     * @param {ComposioTriggerUpdateArgs} args - Arguments to update one ComposioTrigger.
+     * @example
+     * // Update one ComposioTrigger
+     * const composioTrigger = await prisma.composioTrigger.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ComposioTriggerUpdateArgs>(args: SelectSubset<T, ComposioTriggerUpdateArgs<ExtArgs>>): Prisma__ComposioTriggerClient<$Result.GetResult<Prisma.$ComposioTriggerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ComposioTriggers.
+     * @param {ComposioTriggerDeleteManyArgs} args - Arguments to filter ComposioTriggers to delete.
+     * @example
+     * // Delete a few ComposioTriggers
+     * const { count } = await prisma.composioTrigger.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ComposioTriggerDeleteManyArgs>(args?: SelectSubset<T, ComposioTriggerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ComposioTriggers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioTriggerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ComposioTriggers
+     * const composioTrigger = await prisma.composioTrigger.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ComposioTriggerUpdateManyArgs>(args: SelectSubset<T, ComposioTriggerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ComposioTriggers and returns the data updated in the database.
+     * @param {ComposioTriggerUpdateManyAndReturnArgs} args - Arguments to update many ComposioTriggers.
+     * @example
+     * // Update many ComposioTriggers
+     * const composioTrigger = await prisma.composioTrigger.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ComposioTriggers and only return the `id`
+     * const composioTriggerWithIdOnly = await prisma.composioTrigger.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ComposioTriggerUpdateManyAndReturnArgs>(args: SelectSubset<T, ComposioTriggerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComposioTriggerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ComposioTrigger.
+     * @param {ComposioTriggerUpsertArgs} args - Arguments to update or create a ComposioTrigger.
+     * @example
+     * // Update or create a ComposioTrigger
+     * const composioTrigger = await prisma.composioTrigger.upsert({
+     *   create: {
+     *     // ... data to create a ComposioTrigger
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ComposioTrigger we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ComposioTriggerUpsertArgs>(args: SelectSubset<T, ComposioTriggerUpsertArgs<ExtArgs>>): Prisma__ComposioTriggerClient<$Result.GetResult<Prisma.$ComposioTriggerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ComposioTriggers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioTriggerCountArgs} args - Arguments to filter ComposioTriggers to count.
+     * @example
+     * // Count the number of ComposioTriggers
+     * const count = await prisma.composioTrigger.count({
+     *   where: {
+     *     // ... the filter for the ComposioTriggers we want to count
+     *   }
+     * })
+    **/
+    count<T extends ComposioTriggerCountArgs>(
+      args?: Subset<T, ComposioTriggerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ComposioTriggerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ComposioTrigger.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioTriggerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ComposioTriggerAggregateArgs>(args: Subset<T, ComposioTriggerAggregateArgs>): Prisma.PrismaPromise<GetComposioTriggerAggregateType<T>>
+
+    /**
+     * Group by ComposioTrigger.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ComposioTriggerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ComposioTriggerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ComposioTriggerGroupByArgs['orderBy'] }
+        : { orderBy?: ComposioTriggerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ComposioTriggerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetComposioTriggerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ComposioTrigger model
+   */
+  readonly fields: ComposioTriggerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ComposioTrigger.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ComposioTriggerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    toolkit<T extends ComposioToolkitDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ComposioToolkitDefaultArgs<ExtArgs>>): Prisma__ComposioToolkitClient<$Result.GetResult<Prisma.$ComposioToolkitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ComposioTrigger model
+   */
+  interface ComposioTriggerFieldRefs {
+    readonly id: FieldRef<"ComposioTrigger", 'Int'>
+    readonly uuid: FieldRef<"ComposioTrigger", 'String'>
+    readonly composio_trigger_id: FieldRef<"ComposioTrigger", 'String'>
+    readonly org_uuid: FieldRef<"ComposioTrigger", 'String'>
+    readonly composio_user_id: FieldRef<"ComposioTrigger", 'String'>
+    readonly toolkit_uuid: FieldRef<"ComposioTrigger", 'String'>
+    readonly trigger_slug: FieldRef<"ComposioTrigger", 'String'>
+    readonly connected_account_id: FieldRef<"ComposioTrigger", 'String'>
+    readonly is_enabled: FieldRef<"ComposioTrigger", 'Boolean'>
+    readonly config: FieldRef<"ComposioTrigger", 'Json'>
+    readonly webhook_subscription_id: FieldRef<"ComposioTrigger", 'String'>
+    readonly created_at: FieldRef<"ComposioTrigger", 'DateTime'>
+    readonly updated_at: FieldRef<"ComposioTrigger", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ComposioTrigger findUnique
+   */
+  export type ComposioTriggerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioTrigger to fetch.
+     */
+    where: ComposioTriggerWhereUniqueInput
+  }
+
+  /**
+   * ComposioTrigger findUniqueOrThrow
+   */
+  export type ComposioTriggerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioTrigger to fetch.
+     */
+    where: ComposioTriggerWhereUniqueInput
+  }
+
+  /**
+   * ComposioTrigger findFirst
+   */
+  export type ComposioTriggerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioTrigger to fetch.
+     */
+    where?: ComposioTriggerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioTriggers to fetch.
+     */
+    orderBy?: ComposioTriggerOrderByWithRelationInput | ComposioTriggerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ComposioTriggers.
+     */
+    cursor?: ComposioTriggerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioTriggers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioTriggers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ComposioTriggers.
+     */
+    distinct?: ComposioTriggerScalarFieldEnum | ComposioTriggerScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioTrigger findFirstOrThrow
+   */
+  export type ComposioTriggerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioTrigger to fetch.
+     */
+    where?: ComposioTriggerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioTriggers to fetch.
+     */
+    orderBy?: ComposioTriggerOrderByWithRelationInput | ComposioTriggerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ComposioTriggers.
+     */
+    cursor?: ComposioTriggerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioTriggers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioTriggers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ComposioTriggers.
+     */
+    distinct?: ComposioTriggerScalarFieldEnum | ComposioTriggerScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioTrigger findMany
+   */
+  export type ComposioTriggerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerInclude<ExtArgs> | null
+    /**
+     * Filter, which ComposioTriggers to fetch.
+     */
+    where?: ComposioTriggerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ComposioTriggers to fetch.
+     */
+    orderBy?: ComposioTriggerOrderByWithRelationInput | ComposioTriggerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ComposioTriggers.
+     */
+    cursor?: ComposioTriggerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ComposioTriggers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ComposioTriggers.
+     */
+    skip?: number
+    distinct?: ComposioTriggerScalarFieldEnum | ComposioTriggerScalarFieldEnum[]
+  }
+
+  /**
+   * ComposioTrigger create
+   */
+  export type ComposioTriggerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ComposioTrigger.
+     */
+    data: XOR<ComposioTriggerCreateInput, ComposioTriggerUncheckedCreateInput>
+  }
+
+  /**
+   * ComposioTrigger createMany
+   */
+  export type ComposioTriggerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ComposioTriggers.
+     */
+    data: ComposioTriggerCreateManyInput | ComposioTriggerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ComposioTrigger createManyAndReturn
+   */
+  export type ComposioTriggerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * The data used to create many ComposioTriggers.
+     */
+    data: ComposioTriggerCreateManyInput | ComposioTriggerCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ComposioTrigger update
+   */
+  export type ComposioTriggerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ComposioTrigger.
+     */
+    data: XOR<ComposioTriggerUpdateInput, ComposioTriggerUncheckedUpdateInput>
+    /**
+     * Choose, which ComposioTrigger to update.
+     */
+    where: ComposioTriggerWhereUniqueInput
+  }
+
+  /**
+   * ComposioTrigger updateMany
+   */
+  export type ComposioTriggerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ComposioTriggers.
+     */
+    data: XOR<ComposioTriggerUpdateManyMutationInput, ComposioTriggerUncheckedUpdateManyInput>
+    /**
+     * Filter which ComposioTriggers to update
+     */
+    where?: ComposioTriggerWhereInput
+    /**
+     * Limit how many ComposioTriggers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ComposioTrigger updateManyAndReturn
+   */
+  export type ComposioTriggerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * The data used to update ComposioTriggers.
+     */
+    data: XOR<ComposioTriggerUpdateManyMutationInput, ComposioTriggerUncheckedUpdateManyInput>
+    /**
+     * Filter which ComposioTriggers to update
+     */
+    where?: ComposioTriggerWhereInput
+    /**
+     * Limit how many ComposioTriggers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ComposioTrigger upsert
+   */
+  export type ComposioTriggerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ComposioTrigger to update in case it exists.
+     */
+    where: ComposioTriggerWhereUniqueInput
+    /**
+     * In case the ComposioTrigger found by the `where` argument doesn't exist, create a new ComposioTrigger with this data.
+     */
+    create: XOR<ComposioTriggerCreateInput, ComposioTriggerUncheckedCreateInput>
+    /**
+     * In case the ComposioTrigger was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ComposioTriggerUpdateInput, ComposioTriggerUncheckedUpdateInput>
+  }
+
+  /**
+   * ComposioTrigger delete
+   */
+  export type ComposioTriggerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerInclude<ExtArgs> | null
+    /**
+     * Filter which ComposioTrigger to delete.
+     */
+    where: ComposioTriggerWhereUniqueInput
+  }
+
+  /**
+   * ComposioTrigger deleteMany
+   */
+  export type ComposioTriggerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ComposioTriggers to delete
+     */
+    where?: ComposioTriggerWhereInput
+    /**
+     * Limit how many ComposioTriggers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ComposioTrigger without action
+   */
+  export type ComposioTriggerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComposioTrigger
+     */
+    select?: ComposioTriggerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComposioTrigger
+     */
+    omit?: ComposioTriggerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComposioTriggerInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Document
    */
 
@@ -19615,6 +28836,7 @@ export namespace Prisma {
     org_uuid: string | null
     user_uuid: string | null
     title: string | null
+    composio_session_id: string | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -19625,6 +28847,7 @@ export namespace Prisma {
     org_uuid: string | null
     user_uuid: string | null
     title: string | null
+    composio_session_id: string | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -19635,6 +28858,7 @@ export namespace Prisma {
     org_uuid: number
     user_uuid: number
     title: number
+    composio_session_id: number
     created_at: number
     updated_at: number
     _all: number
@@ -19655,6 +28879,7 @@ export namespace Prisma {
     org_uuid?: true
     user_uuid?: true
     title?: true
+    composio_session_id?: true
     created_at?: true
     updated_at?: true
   }
@@ -19665,6 +28890,7 @@ export namespace Prisma {
     org_uuid?: true
     user_uuid?: true
     title?: true
+    composio_session_id?: true
     created_at?: true
     updated_at?: true
   }
@@ -19675,6 +28901,7 @@ export namespace Prisma {
     org_uuid?: true
     user_uuid?: true
     title?: true
+    composio_session_id?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -19772,6 +28999,7 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title: string | null
+    composio_session_id: string | null
     created_at: Date
     updated_at: Date
     _count: ConversationCountAggregateOutputType | null
@@ -19801,6 +29029,7 @@ export namespace Prisma {
     org_uuid?: boolean
     user_uuid?: boolean
     title?: boolean
+    composio_session_id?: boolean
     created_at?: boolean
     updated_at?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -19816,6 +29045,7 @@ export namespace Prisma {
     org_uuid?: boolean
     user_uuid?: boolean
     title?: boolean
+    composio_session_id?: boolean
     created_at?: boolean
     updated_at?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -19828,6 +29058,7 @@ export namespace Prisma {
     org_uuid?: boolean
     user_uuid?: boolean
     title?: boolean
+    composio_session_id?: boolean
     created_at?: boolean
     updated_at?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -19840,11 +29071,12 @@ export namespace Prisma {
     org_uuid?: boolean
     user_uuid?: boolean
     title?: boolean
+    composio_session_id?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type ConversationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "org_uuid" | "user_uuid" | "title" | "created_at" | "updated_at", ExtArgs["result"]["conversation"]>
+  export type ConversationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "org_uuid" | "user_uuid" | "title" | "composio_session_id" | "created_at" | "updated_at", ExtArgs["result"]["conversation"]>
   export type ConversationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -19875,6 +29107,7 @@ export namespace Prisma {
       org_uuid: string
       user_uuid: string
       title: string | null
+      composio_session_id: string | null
       created_at: Date
       updated_at: Date
     }, ExtArgs["result"]["conversation"]>
@@ -20309,6 +29542,7 @@ export namespace Prisma {
     readonly org_uuid: FieldRef<"Conversation", 'String'>
     readonly user_uuid: FieldRef<"Conversation", 'String'>
     readonly title: FieldRef<"Conversation", 'String'>
+    readonly composio_session_id: FieldRef<"Conversation", 'String'>
     readonly created_at: FieldRef<"Conversation", 'DateTime'>
     readonly updated_at: FieldRef<"Conversation", 'DateTime'>
   }
@@ -23224,6 +32458,9 @@ export namespace Prisma {
     uuid: string | null
     execution_uuid: string | null
     integration_uuid: string | null
+    provider_type: string | null
+    composio_tool_slug: string | null
+    composio_session_id: string | null
     tool_name: string | null
     status: $Enums.ToolCallStatus | null
     error: string | null
@@ -23238,6 +32475,9 @@ export namespace Prisma {
     uuid: string | null
     execution_uuid: string | null
     integration_uuid: string | null
+    provider_type: string | null
+    composio_tool_slug: string | null
+    composio_session_id: string | null
     tool_name: string | null
     status: $Enums.ToolCallStatus | null
     error: string | null
@@ -23252,6 +32492,9 @@ export namespace Prisma {
     uuid: number
     execution_uuid: number
     integration_uuid: number
+    provider_type: number
+    composio_tool_slug: number
+    composio_session_id: number
     tool_name: number
     input: number
     output: number
@@ -23284,6 +32527,9 @@ export namespace Prisma {
     uuid?: true
     execution_uuid?: true
     integration_uuid?: true
+    provider_type?: true
+    composio_tool_slug?: true
+    composio_session_id?: true
     tool_name?: true
     status?: true
     error?: true
@@ -23298,6 +32544,9 @@ export namespace Prisma {
     uuid?: true
     execution_uuid?: true
     integration_uuid?: true
+    provider_type?: true
+    composio_tool_slug?: true
+    composio_session_id?: true
     tool_name?: true
     status?: true
     error?: true
@@ -23312,6 +32561,9 @@ export namespace Prisma {
     uuid?: true
     execution_uuid?: true
     integration_uuid?: true
+    provider_type?: true
+    composio_tool_slug?: true
+    composio_session_id?: true
     tool_name?: true
     input?: true
     output?: true
@@ -23415,6 +32667,9 @@ export namespace Prisma {
     uuid: string
     execution_uuid: string
     integration_uuid: string | null
+    provider_type: string | null
+    composio_tool_slug: string | null
+    composio_session_id: string | null
     tool_name: string
     input: JsonValue | null
     output: JsonValue | null
@@ -23450,6 +32705,9 @@ export namespace Prisma {
     uuid?: boolean
     execution_uuid?: boolean
     integration_uuid?: boolean
+    provider_type?: boolean
+    composio_tool_slug?: boolean
+    composio_session_id?: boolean
     tool_name?: boolean
     input?: boolean
     output?: boolean
@@ -23468,6 +32726,9 @@ export namespace Prisma {
     uuid?: boolean
     execution_uuid?: boolean
     integration_uuid?: boolean
+    provider_type?: boolean
+    composio_tool_slug?: boolean
+    composio_session_id?: boolean
     tool_name?: boolean
     input?: boolean
     output?: boolean
@@ -23486,6 +32747,9 @@ export namespace Prisma {
     uuid?: boolean
     execution_uuid?: boolean
     integration_uuid?: boolean
+    provider_type?: boolean
+    composio_tool_slug?: boolean
+    composio_session_id?: boolean
     tool_name?: boolean
     input?: boolean
     output?: boolean
@@ -23504,6 +32768,9 @@ export namespace Prisma {
     uuid?: boolean
     execution_uuid?: boolean
     integration_uuid?: boolean
+    provider_type?: boolean
+    composio_tool_slug?: boolean
+    composio_session_id?: boolean
     tool_name?: boolean
     input?: boolean
     output?: boolean
@@ -23515,7 +32782,7 @@ export namespace Prisma {
     created_at?: boolean
   }
 
-  export type ToolCallOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "execution_uuid" | "integration_uuid" | "tool_name" | "input" | "output" | "status" | "error" | "tokens_used" | "cost_usd" | "duration_ms" | "created_at", ExtArgs["result"]["toolCall"]>
+  export type ToolCallOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "execution_uuid" | "integration_uuid" | "provider_type" | "composio_tool_slug" | "composio_session_id" | "tool_name" | "input" | "output" | "status" | "error" | "tokens_used" | "cost_usd" | "duration_ms" | "created_at", ExtArgs["result"]["toolCall"]>
   export type ToolCallInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     execution?: boolean | AgentExecutionDefaultArgs<ExtArgs>
     integration?: boolean | ToolCall$integrationArgs<ExtArgs>
@@ -23540,6 +32807,9 @@ export namespace Prisma {
       uuid: string
       execution_uuid: string
       integration_uuid: string | null
+      provider_type: string | null
+      composio_tool_slug: string | null
+      composio_session_id: string | null
       tool_name: string
       input: Prisma.JsonValue | null
       output: Prisma.JsonValue | null
@@ -23978,6 +33248,9 @@ export namespace Prisma {
     readonly uuid: FieldRef<"ToolCall", 'String'>
     readonly execution_uuid: FieldRef<"ToolCall", 'String'>
     readonly integration_uuid: FieldRef<"ToolCall", 'String'>
+    readonly provider_type: FieldRef<"ToolCall", 'String'>
+    readonly composio_tool_slug: FieldRef<"ToolCall", 'String'>
+    readonly composio_session_id: FieldRef<"ToolCall", 'String'>
     readonly tool_name: FieldRef<"ToolCall", 'String'>
     readonly input: FieldRef<"ToolCall", 'Json'>
     readonly output: FieldRef<"ToolCall", 'Json'>
@@ -25798,6 +35071,127 @@ export namespace Prisma {
   export type IntegrationActionScalarFieldEnum = (typeof IntegrationActionScalarFieldEnum)[keyof typeof IntegrationActionScalarFieldEnum]
 
 
+  export const ComposioToolkitScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    slug: 'slug',
+    name: 'name',
+    description: 'description',
+    logo_url: 'logo_url',
+    categories: 'categories',
+    tool_count: 'tool_count',
+    auth_schemes: 'auth_schemes',
+    connection_tier: 'connection_tier',
+    is_enabled: 'is_enabled',
+    composio_metadata: 'composio_metadata',
+    last_synced_at: 'last_synced_at',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type ComposioToolkitScalarFieldEnum = (typeof ComposioToolkitScalarFieldEnum)[keyof typeof ComposioToolkitScalarFieldEnum]
+
+
+  export const ComposioToolkitToolScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    toolkit_uuid: 'toolkit_uuid',
+    slug: 'slug',
+    name: 'name',
+    description: 'description',
+    input_schema: 'input_schema',
+    output_schema: 'output_schema',
+    tags: 'tags',
+    is_enabled: 'is_enabled',
+    composio_version: 'composio_version',
+    last_synced_at: 'last_synced_at',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type ComposioToolkitToolScalarFieldEnum = (typeof ComposioToolkitToolScalarFieldEnum)[keyof typeof ComposioToolkitToolScalarFieldEnum]
+
+
+  export const ComposioSyncRunScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    sync_type: 'sync_type',
+    status: 'status',
+    toolkits_upserted: 'toolkits_upserted',
+    tools_upserted: 'tools_upserted',
+    error: 'error',
+    started_at: 'started_at',
+    completed_at: 'completed_at'
+  };
+
+  export type ComposioSyncRunScalarFieldEnum = (typeof ComposioSyncRunScalarFieldEnum)[keyof typeof ComposioSyncRunScalarFieldEnum]
+
+
+  export const OrganisationEnabledToolkitScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    org_uuid: 'org_uuid',
+    toolkit_uuid: 'toolkit_uuid',
+    is_enabled: 'is_enabled',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type OrganisationEnabledToolkitScalarFieldEnum = (typeof OrganisationEnabledToolkitScalarFieldEnum)[keyof typeof OrganisationEnabledToolkitScalarFieldEnum]
+
+
+  export const OrganisationToolPermissionScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    org_uuid: 'org_uuid',
+    tool_uuid: 'tool_uuid',
+    enabled: 'enabled',
+    requires_approval: 'requires_approval',
+    required_permission_key: 'required_permission_key',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type OrganisationToolPermissionScalarFieldEnum = (typeof OrganisationToolPermissionScalarFieldEnum)[keyof typeof OrganisationToolPermissionScalarFieldEnum]
+
+
+  export const ComposioConnectedAccountScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    composio_account_id: 'composio_account_id',
+    composio_user_id: 'composio_user_id',
+    org_uuid: 'org_uuid',
+    user_uuid: 'user_uuid',
+    toolkit_uuid: 'toolkit_uuid',
+    status: 'status',
+    account_label: 'account_label',
+    last_synced_at: 'last_synced_at',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type ComposioConnectedAccountScalarFieldEnum = (typeof ComposioConnectedAccountScalarFieldEnum)[keyof typeof ComposioConnectedAccountScalarFieldEnum]
+
+
+  export const ComposioTriggerScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    composio_trigger_id: 'composio_trigger_id',
+    org_uuid: 'org_uuid',
+    composio_user_id: 'composio_user_id',
+    toolkit_uuid: 'toolkit_uuid',
+    trigger_slug: 'trigger_slug',
+    connected_account_id: 'connected_account_id',
+    is_enabled: 'is_enabled',
+    config: 'config',
+    webhook_subscription_id: 'webhook_subscription_id',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type ComposioTriggerScalarFieldEnum = (typeof ComposioTriggerScalarFieldEnum)[keyof typeof ComposioTriggerScalarFieldEnum]
+
+
   export const DocumentScalarFieldEnum: {
     id: 'id',
     uuid: 'uuid',
@@ -25838,6 +35232,7 @@ export namespace Prisma {
     org_uuid: 'org_uuid',
     user_uuid: 'user_uuid',
     title: 'title',
+    composio_session_id: 'composio_session_id',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -25884,6 +35279,9 @@ export namespace Prisma {
     uuid: 'uuid',
     execution_uuid: 'execution_uuid',
     integration_uuid: 'integration_uuid',
+    provider_type: 'provider_type',
+    composio_tool_slug: 'composio_tool_slug',
+    composio_session_id: 'composio_session_id',
     tool_name: 'tool_name',
     input: 'input',
     output: 'output',
@@ -26159,6 +35557,62 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ComposioConnectionTier'
+   */
+  export type EnumComposioConnectionTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComposioConnectionTier'>
+    
+
+
+  /**
+   * Reference to a field of type 'ComposioConnectionTier[]'
+   */
+  export type ListEnumComposioConnectionTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComposioConnectionTier[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ComposioSyncType'
+   */
+  export type EnumComposioSyncTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComposioSyncType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ComposioSyncType[]'
+   */
+  export type ListEnumComposioSyncTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComposioSyncType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ComposioSyncStatus'
+   */
+  export type EnumComposioSyncStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComposioSyncStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ComposioSyncStatus[]'
+   */
+  export type ListEnumComposioSyncStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComposioSyncStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ComposioAccountStatus'
+   */
+  export type EnumComposioAccountStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComposioAccountStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ComposioAccountStatus[]'
+   */
+  export type ListEnumComposioAccountStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComposioAccountStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'DocumentType'
    */
   export type EnumDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentType'>
@@ -26396,6 +35850,10 @@ export namespace Prisma {
     roles?: OrganizationRoleListRelationFilter
     audit_logs?: AuditLogListRelationFilter
     integrations?: IntegrationListRelationFilter
+    enabled_toolkits?: OrganisationEnabledToolkitListRelationFilter
+    tool_permissions?: OrganisationToolPermissionListRelationFilter
+    composio_accounts?: ComposioConnectedAccountListRelationFilter
+    composio_triggers?: ComposioTriggerListRelationFilter
     ai_providers?: AiProviderListRelationFilter
     conversations?: ConversationListRelationFilter
     agent_executions?: AgentExecutionListRelationFilter
@@ -26414,6 +35872,10 @@ export namespace Prisma {
     roles?: OrganizationRoleOrderByRelationAggregateInput
     audit_logs?: AuditLogOrderByRelationAggregateInput
     integrations?: IntegrationOrderByRelationAggregateInput
+    enabled_toolkits?: OrganisationEnabledToolkitOrderByRelationAggregateInput
+    tool_permissions?: OrganisationToolPermissionOrderByRelationAggregateInput
+    composio_accounts?: ComposioConnectedAccountOrderByRelationAggregateInput
+    composio_triggers?: ComposioTriggerOrderByRelationAggregateInput
     ai_providers?: AiProviderOrderByRelationAggregateInput
     conversations?: ConversationOrderByRelationAggregateInput
     agent_executions?: AgentExecutionOrderByRelationAggregateInput
@@ -26435,6 +35897,10 @@ export namespace Prisma {
     roles?: OrganizationRoleListRelationFilter
     audit_logs?: AuditLogListRelationFilter
     integrations?: IntegrationListRelationFilter
+    enabled_toolkits?: OrganisationEnabledToolkitListRelationFilter
+    tool_permissions?: OrganisationToolPermissionListRelationFilter
+    composio_accounts?: ComposioConnectedAccountListRelationFilter
+    composio_triggers?: ComposioTriggerListRelationFilter
     ai_providers?: AiProviderListRelationFilter
     conversations?: ConversationListRelationFilter
     agent_executions?: AgentExecutionListRelationFilter
@@ -27247,6 +36713,649 @@ export namespace Prisma {
     required_permission_key?: StringNullableWithAggregatesFilter<"IntegrationAction"> | string | null
   }
 
+  export type ComposioToolkitWhereInput = {
+    AND?: ComposioToolkitWhereInput | ComposioToolkitWhereInput[]
+    OR?: ComposioToolkitWhereInput[]
+    NOT?: ComposioToolkitWhereInput | ComposioToolkitWhereInput[]
+    id?: IntFilter<"ComposioToolkit"> | number
+    uuid?: StringFilter<"ComposioToolkit"> | string
+    slug?: StringFilter<"ComposioToolkit"> | string
+    name?: StringFilter<"ComposioToolkit"> | string
+    description?: StringNullableFilter<"ComposioToolkit"> | string | null
+    logo_url?: StringNullableFilter<"ComposioToolkit"> | string | null
+    categories?: StringNullableListFilter<"ComposioToolkit">
+    tool_count?: IntFilter<"ComposioToolkit"> | number
+    auth_schemes?: JsonFilter<"ComposioToolkit">
+    connection_tier?: EnumComposioConnectionTierFilter<"ComposioToolkit"> | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFilter<"ComposioToolkit"> | boolean
+    composio_metadata?: JsonNullableFilter<"ComposioToolkit">
+    last_synced_at?: DateTimeNullableFilter<"ComposioToolkit"> | Date | string | null
+    created_at?: DateTimeFilter<"ComposioToolkit"> | Date | string
+    updated_at?: DateTimeFilter<"ComposioToolkit"> | Date | string
+    tools?: ComposioToolkitToolListRelationFilter
+    enabled_orgs?: OrganisationEnabledToolkitListRelationFilter
+    connected_accounts?: ComposioConnectedAccountListRelationFilter
+    triggers?: ComposioTriggerListRelationFilter
+  }
+
+  export type ComposioToolkitOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    logo_url?: SortOrderInput | SortOrder
+    categories?: SortOrder
+    tool_count?: SortOrder
+    auth_schemes?: SortOrder
+    connection_tier?: SortOrder
+    is_enabled?: SortOrder
+    composio_metadata?: SortOrderInput | SortOrder
+    last_synced_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    tools?: ComposioToolkitToolOrderByRelationAggregateInput
+    enabled_orgs?: OrganisationEnabledToolkitOrderByRelationAggregateInput
+    connected_accounts?: ComposioConnectedAccountOrderByRelationAggregateInput
+    triggers?: ComposioTriggerOrderByRelationAggregateInput
+  }
+
+  export type ComposioToolkitWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    slug?: string
+    AND?: ComposioToolkitWhereInput | ComposioToolkitWhereInput[]
+    OR?: ComposioToolkitWhereInput[]
+    NOT?: ComposioToolkitWhereInput | ComposioToolkitWhereInput[]
+    name?: StringFilter<"ComposioToolkit"> | string
+    description?: StringNullableFilter<"ComposioToolkit"> | string | null
+    logo_url?: StringNullableFilter<"ComposioToolkit"> | string | null
+    categories?: StringNullableListFilter<"ComposioToolkit">
+    tool_count?: IntFilter<"ComposioToolkit"> | number
+    auth_schemes?: JsonFilter<"ComposioToolkit">
+    connection_tier?: EnumComposioConnectionTierFilter<"ComposioToolkit"> | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFilter<"ComposioToolkit"> | boolean
+    composio_metadata?: JsonNullableFilter<"ComposioToolkit">
+    last_synced_at?: DateTimeNullableFilter<"ComposioToolkit"> | Date | string | null
+    created_at?: DateTimeFilter<"ComposioToolkit"> | Date | string
+    updated_at?: DateTimeFilter<"ComposioToolkit"> | Date | string
+    tools?: ComposioToolkitToolListRelationFilter
+    enabled_orgs?: OrganisationEnabledToolkitListRelationFilter
+    connected_accounts?: ComposioConnectedAccountListRelationFilter
+    triggers?: ComposioTriggerListRelationFilter
+  }, "id" | "uuid" | "slug">
+
+  export type ComposioToolkitOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    logo_url?: SortOrderInput | SortOrder
+    categories?: SortOrder
+    tool_count?: SortOrder
+    auth_schemes?: SortOrder
+    connection_tier?: SortOrder
+    is_enabled?: SortOrder
+    composio_metadata?: SortOrderInput | SortOrder
+    last_synced_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: ComposioToolkitCountOrderByAggregateInput
+    _avg?: ComposioToolkitAvgOrderByAggregateInput
+    _max?: ComposioToolkitMaxOrderByAggregateInput
+    _min?: ComposioToolkitMinOrderByAggregateInput
+    _sum?: ComposioToolkitSumOrderByAggregateInput
+  }
+
+  export type ComposioToolkitScalarWhereWithAggregatesInput = {
+    AND?: ComposioToolkitScalarWhereWithAggregatesInput | ComposioToolkitScalarWhereWithAggregatesInput[]
+    OR?: ComposioToolkitScalarWhereWithAggregatesInput[]
+    NOT?: ComposioToolkitScalarWhereWithAggregatesInput | ComposioToolkitScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ComposioToolkit"> | number
+    uuid?: StringWithAggregatesFilter<"ComposioToolkit"> | string
+    slug?: StringWithAggregatesFilter<"ComposioToolkit"> | string
+    name?: StringWithAggregatesFilter<"ComposioToolkit"> | string
+    description?: StringNullableWithAggregatesFilter<"ComposioToolkit"> | string | null
+    logo_url?: StringNullableWithAggregatesFilter<"ComposioToolkit"> | string | null
+    categories?: StringNullableListFilter<"ComposioToolkit">
+    tool_count?: IntWithAggregatesFilter<"ComposioToolkit"> | number
+    auth_schemes?: JsonWithAggregatesFilter<"ComposioToolkit">
+    connection_tier?: EnumComposioConnectionTierWithAggregatesFilter<"ComposioToolkit"> | $Enums.ComposioConnectionTier
+    is_enabled?: BoolWithAggregatesFilter<"ComposioToolkit"> | boolean
+    composio_metadata?: JsonNullableWithAggregatesFilter<"ComposioToolkit">
+    last_synced_at?: DateTimeNullableWithAggregatesFilter<"ComposioToolkit"> | Date | string | null
+    created_at?: DateTimeWithAggregatesFilter<"ComposioToolkit"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"ComposioToolkit"> | Date | string
+  }
+
+  export type ComposioToolkitToolWhereInput = {
+    AND?: ComposioToolkitToolWhereInput | ComposioToolkitToolWhereInput[]
+    OR?: ComposioToolkitToolWhereInput[]
+    NOT?: ComposioToolkitToolWhereInput | ComposioToolkitToolWhereInput[]
+    id?: IntFilter<"ComposioToolkitTool"> | number
+    uuid?: StringFilter<"ComposioToolkitTool"> | string
+    toolkit_uuid?: StringFilter<"ComposioToolkitTool"> | string
+    slug?: StringFilter<"ComposioToolkitTool"> | string
+    name?: StringFilter<"ComposioToolkitTool"> | string
+    description?: StringFilter<"ComposioToolkitTool"> | string
+    input_schema?: JsonFilter<"ComposioToolkitTool">
+    output_schema?: JsonNullableFilter<"ComposioToolkitTool">
+    tags?: StringNullableListFilter<"ComposioToolkitTool">
+    is_enabled?: BoolFilter<"ComposioToolkitTool"> | boolean
+    composio_version?: StringNullableFilter<"ComposioToolkitTool"> | string | null
+    last_synced_at?: DateTimeNullableFilter<"ComposioToolkitTool"> | Date | string | null
+    created_at?: DateTimeFilter<"ComposioToolkitTool"> | Date | string
+    updated_at?: DateTimeFilter<"ComposioToolkitTool"> | Date | string
+    toolkit?: XOR<ComposioToolkitScalarRelationFilter, ComposioToolkitWhereInput>
+    permissions?: OrganisationToolPermissionListRelationFilter
+  }
+
+  export type ComposioToolkitToolOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    toolkit_uuid?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    input_schema?: SortOrder
+    output_schema?: SortOrderInput | SortOrder
+    tags?: SortOrder
+    is_enabled?: SortOrder
+    composio_version?: SortOrderInput | SortOrder
+    last_synced_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    toolkit?: ComposioToolkitOrderByWithRelationInput
+    permissions?: OrganisationToolPermissionOrderByRelationAggregateInput
+  }
+
+  export type ComposioToolkitToolWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    toolkit_uuid_slug?: ComposioToolkitToolToolkit_uuidSlugCompoundUniqueInput
+    AND?: ComposioToolkitToolWhereInput | ComposioToolkitToolWhereInput[]
+    OR?: ComposioToolkitToolWhereInput[]
+    NOT?: ComposioToolkitToolWhereInput | ComposioToolkitToolWhereInput[]
+    toolkit_uuid?: StringFilter<"ComposioToolkitTool"> | string
+    slug?: StringFilter<"ComposioToolkitTool"> | string
+    name?: StringFilter<"ComposioToolkitTool"> | string
+    description?: StringFilter<"ComposioToolkitTool"> | string
+    input_schema?: JsonFilter<"ComposioToolkitTool">
+    output_schema?: JsonNullableFilter<"ComposioToolkitTool">
+    tags?: StringNullableListFilter<"ComposioToolkitTool">
+    is_enabled?: BoolFilter<"ComposioToolkitTool"> | boolean
+    composio_version?: StringNullableFilter<"ComposioToolkitTool"> | string | null
+    last_synced_at?: DateTimeNullableFilter<"ComposioToolkitTool"> | Date | string | null
+    created_at?: DateTimeFilter<"ComposioToolkitTool"> | Date | string
+    updated_at?: DateTimeFilter<"ComposioToolkitTool"> | Date | string
+    toolkit?: XOR<ComposioToolkitScalarRelationFilter, ComposioToolkitWhereInput>
+    permissions?: OrganisationToolPermissionListRelationFilter
+  }, "id" | "uuid" | "toolkit_uuid_slug">
+
+  export type ComposioToolkitToolOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    toolkit_uuid?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    input_schema?: SortOrder
+    output_schema?: SortOrderInput | SortOrder
+    tags?: SortOrder
+    is_enabled?: SortOrder
+    composio_version?: SortOrderInput | SortOrder
+    last_synced_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: ComposioToolkitToolCountOrderByAggregateInput
+    _avg?: ComposioToolkitToolAvgOrderByAggregateInput
+    _max?: ComposioToolkitToolMaxOrderByAggregateInput
+    _min?: ComposioToolkitToolMinOrderByAggregateInput
+    _sum?: ComposioToolkitToolSumOrderByAggregateInput
+  }
+
+  export type ComposioToolkitToolScalarWhereWithAggregatesInput = {
+    AND?: ComposioToolkitToolScalarWhereWithAggregatesInput | ComposioToolkitToolScalarWhereWithAggregatesInput[]
+    OR?: ComposioToolkitToolScalarWhereWithAggregatesInput[]
+    NOT?: ComposioToolkitToolScalarWhereWithAggregatesInput | ComposioToolkitToolScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ComposioToolkitTool"> | number
+    uuid?: StringWithAggregatesFilter<"ComposioToolkitTool"> | string
+    toolkit_uuid?: StringWithAggregatesFilter<"ComposioToolkitTool"> | string
+    slug?: StringWithAggregatesFilter<"ComposioToolkitTool"> | string
+    name?: StringWithAggregatesFilter<"ComposioToolkitTool"> | string
+    description?: StringWithAggregatesFilter<"ComposioToolkitTool"> | string
+    input_schema?: JsonWithAggregatesFilter<"ComposioToolkitTool">
+    output_schema?: JsonNullableWithAggregatesFilter<"ComposioToolkitTool">
+    tags?: StringNullableListFilter<"ComposioToolkitTool">
+    is_enabled?: BoolWithAggregatesFilter<"ComposioToolkitTool"> | boolean
+    composio_version?: StringNullableWithAggregatesFilter<"ComposioToolkitTool"> | string | null
+    last_synced_at?: DateTimeNullableWithAggregatesFilter<"ComposioToolkitTool"> | Date | string | null
+    created_at?: DateTimeWithAggregatesFilter<"ComposioToolkitTool"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"ComposioToolkitTool"> | Date | string
+  }
+
+  export type ComposioSyncRunWhereInput = {
+    AND?: ComposioSyncRunWhereInput | ComposioSyncRunWhereInput[]
+    OR?: ComposioSyncRunWhereInput[]
+    NOT?: ComposioSyncRunWhereInput | ComposioSyncRunWhereInput[]
+    id?: IntFilter<"ComposioSyncRun"> | number
+    uuid?: StringFilter<"ComposioSyncRun"> | string
+    sync_type?: EnumComposioSyncTypeFilter<"ComposioSyncRun"> | $Enums.ComposioSyncType
+    status?: EnumComposioSyncStatusFilter<"ComposioSyncRun"> | $Enums.ComposioSyncStatus
+    toolkits_upserted?: IntFilter<"ComposioSyncRun"> | number
+    tools_upserted?: IntFilter<"ComposioSyncRun"> | number
+    error?: StringNullableFilter<"ComposioSyncRun"> | string | null
+    started_at?: DateTimeFilter<"ComposioSyncRun"> | Date | string
+    completed_at?: DateTimeNullableFilter<"ComposioSyncRun"> | Date | string | null
+  }
+
+  export type ComposioSyncRunOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    sync_type?: SortOrder
+    status?: SortOrder
+    toolkits_upserted?: SortOrder
+    tools_upserted?: SortOrder
+    error?: SortOrderInput | SortOrder
+    started_at?: SortOrder
+    completed_at?: SortOrderInput | SortOrder
+  }
+
+  export type ComposioSyncRunWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    AND?: ComposioSyncRunWhereInput | ComposioSyncRunWhereInput[]
+    OR?: ComposioSyncRunWhereInput[]
+    NOT?: ComposioSyncRunWhereInput | ComposioSyncRunWhereInput[]
+    sync_type?: EnumComposioSyncTypeFilter<"ComposioSyncRun"> | $Enums.ComposioSyncType
+    status?: EnumComposioSyncStatusFilter<"ComposioSyncRun"> | $Enums.ComposioSyncStatus
+    toolkits_upserted?: IntFilter<"ComposioSyncRun"> | number
+    tools_upserted?: IntFilter<"ComposioSyncRun"> | number
+    error?: StringNullableFilter<"ComposioSyncRun"> | string | null
+    started_at?: DateTimeFilter<"ComposioSyncRun"> | Date | string
+    completed_at?: DateTimeNullableFilter<"ComposioSyncRun"> | Date | string | null
+  }, "id" | "uuid">
+
+  export type ComposioSyncRunOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    sync_type?: SortOrder
+    status?: SortOrder
+    toolkits_upserted?: SortOrder
+    tools_upserted?: SortOrder
+    error?: SortOrderInput | SortOrder
+    started_at?: SortOrder
+    completed_at?: SortOrderInput | SortOrder
+    _count?: ComposioSyncRunCountOrderByAggregateInput
+    _avg?: ComposioSyncRunAvgOrderByAggregateInput
+    _max?: ComposioSyncRunMaxOrderByAggregateInput
+    _min?: ComposioSyncRunMinOrderByAggregateInput
+    _sum?: ComposioSyncRunSumOrderByAggregateInput
+  }
+
+  export type ComposioSyncRunScalarWhereWithAggregatesInput = {
+    AND?: ComposioSyncRunScalarWhereWithAggregatesInput | ComposioSyncRunScalarWhereWithAggregatesInput[]
+    OR?: ComposioSyncRunScalarWhereWithAggregatesInput[]
+    NOT?: ComposioSyncRunScalarWhereWithAggregatesInput | ComposioSyncRunScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ComposioSyncRun"> | number
+    uuid?: StringWithAggregatesFilter<"ComposioSyncRun"> | string
+    sync_type?: EnumComposioSyncTypeWithAggregatesFilter<"ComposioSyncRun"> | $Enums.ComposioSyncType
+    status?: EnumComposioSyncStatusWithAggregatesFilter<"ComposioSyncRun"> | $Enums.ComposioSyncStatus
+    toolkits_upserted?: IntWithAggregatesFilter<"ComposioSyncRun"> | number
+    tools_upserted?: IntWithAggregatesFilter<"ComposioSyncRun"> | number
+    error?: StringNullableWithAggregatesFilter<"ComposioSyncRun"> | string | null
+    started_at?: DateTimeWithAggregatesFilter<"ComposioSyncRun"> | Date | string
+    completed_at?: DateTimeNullableWithAggregatesFilter<"ComposioSyncRun"> | Date | string | null
+  }
+
+  export type OrganisationEnabledToolkitWhereInput = {
+    AND?: OrganisationEnabledToolkitWhereInput | OrganisationEnabledToolkitWhereInput[]
+    OR?: OrganisationEnabledToolkitWhereInput[]
+    NOT?: OrganisationEnabledToolkitWhereInput | OrganisationEnabledToolkitWhereInput[]
+    id?: IntFilter<"OrganisationEnabledToolkit"> | number
+    uuid?: StringFilter<"OrganisationEnabledToolkit"> | string
+    org_uuid?: StringFilter<"OrganisationEnabledToolkit"> | string
+    toolkit_uuid?: StringFilter<"OrganisationEnabledToolkit"> | string
+    is_enabled?: BoolFilter<"OrganisationEnabledToolkit"> | boolean
+    created_at?: DateTimeFilter<"OrganisationEnabledToolkit"> | Date | string
+    updated_at?: DateTimeFilter<"OrganisationEnabledToolkit"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    toolkit?: XOR<ComposioToolkitScalarRelationFilter, ComposioToolkitWhereInput>
+  }
+
+  export type OrganisationEnabledToolkitOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    toolkit_uuid?: SortOrder
+    is_enabled?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    toolkit?: ComposioToolkitOrderByWithRelationInput
+  }
+
+  export type OrganisationEnabledToolkitWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    org_uuid_toolkit_uuid?: OrganisationEnabledToolkitOrg_uuidToolkit_uuidCompoundUniqueInput
+    AND?: OrganisationEnabledToolkitWhereInput | OrganisationEnabledToolkitWhereInput[]
+    OR?: OrganisationEnabledToolkitWhereInput[]
+    NOT?: OrganisationEnabledToolkitWhereInput | OrganisationEnabledToolkitWhereInput[]
+    org_uuid?: StringFilter<"OrganisationEnabledToolkit"> | string
+    toolkit_uuid?: StringFilter<"OrganisationEnabledToolkit"> | string
+    is_enabled?: BoolFilter<"OrganisationEnabledToolkit"> | boolean
+    created_at?: DateTimeFilter<"OrganisationEnabledToolkit"> | Date | string
+    updated_at?: DateTimeFilter<"OrganisationEnabledToolkit"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    toolkit?: XOR<ComposioToolkitScalarRelationFilter, ComposioToolkitWhereInput>
+  }, "id" | "uuid" | "org_uuid_toolkit_uuid">
+
+  export type OrganisationEnabledToolkitOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    toolkit_uuid?: SortOrder
+    is_enabled?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: OrganisationEnabledToolkitCountOrderByAggregateInput
+    _avg?: OrganisationEnabledToolkitAvgOrderByAggregateInput
+    _max?: OrganisationEnabledToolkitMaxOrderByAggregateInput
+    _min?: OrganisationEnabledToolkitMinOrderByAggregateInput
+    _sum?: OrganisationEnabledToolkitSumOrderByAggregateInput
+  }
+
+  export type OrganisationEnabledToolkitScalarWhereWithAggregatesInput = {
+    AND?: OrganisationEnabledToolkitScalarWhereWithAggregatesInput | OrganisationEnabledToolkitScalarWhereWithAggregatesInput[]
+    OR?: OrganisationEnabledToolkitScalarWhereWithAggregatesInput[]
+    NOT?: OrganisationEnabledToolkitScalarWhereWithAggregatesInput | OrganisationEnabledToolkitScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"OrganisationEnabledToolkit"> | number
+    uuid?: StringWithAggregatesFilter<"OrganisationEnabledToolkit"> | string
+    org_uuid?: StringWithAggregatesFilter<"OrganisationEnabledToolkit"> | string
+    toolkit_uuid?: StringWithAggregatesFilter<"OrganisationEnabledToolkit"> | string
+    is_enabled?: BoolWithAggregatesFilter<"OrganisationEnabledToolkit"> | boolean
+    created_at?: DateTimeWithAggregatesFilter<"OrganisationEnabledToolkit"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"OrganisationEnabledToolkit"> | Date | string
+  }
+
+  export type OrganisationToolPermissionWhereInput = {
+    AND?: OrganisationToolPermissionWhereInput | OrganisationToolPermissionWhereInput[]
+    OR?: OrganisationToolPermissionWhereInput[]
+    NOT?: OrganisationToolPermissionWhereInput | OrganisationToolPermissionWhereInput[]
+    id?: IntFilter<"OrganisationToolPermission"> | number
+    uuid?: StringFilter<"OrganisationToolPermission"> | string
+    org_uuid?: StringFilter<"OrganisationToolPermission"> | string
+    tool_uuid?: StringFilter<"OrganisationToolPermission"> | string
+    enabled?: BoolFilter<"OrganisationToolPermission"> | boolean
+    requires_approval?: BoolFilter<"OrganisationToolPermission"> | boolean
+    required_permission_key?: StringNullableFilter<"OrganisationToolPermission"> | string | null
+    created_at?: DateTimeFilter<"OrganisationToolPermission"> | Date | string
+    updated_at?: DateTimeFilter<"OrganisationToolPermission"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    tool?: XOR<ComposioToolkitToolScalarRelationFilter, ComposioToolkitToolWhereInput>
+  }
+
+  export type OrganisationToolPermissionOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    tool_uuid?: SortOrder
+    enabled?: SortOrder
+    requires_approval?: SortOrder
+    required_permission_key?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    tool?: ComposioToolkitToolOrderByWithRelationInput
+  }
+
+  export type OrganisationToolPermissionWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    org_uuid_tool_uuid?: OrganisationToolPermissionOrg_uuidTool_uuidCompoundUniqueInput
+    AND?: OrganisationToolPermissionWhereInput | OrganisationToolPermissionWhereInput[]
+    OR?: OrganisationToolPermissionWhereInput[]
+    NOT?: OrganisationToolPermissionWhereInput | OrganisationToolPermissionWhereInput[]
+    org_uuid?: StringFilter<"OrganisationToolPermission"> | string
+    tool_uuid?: StringFilter<"OrganisationToolPermission"> | string
+    enabled?: BoolFilter<"OrganisationToolPermission"> | boolean
+    requires_approval?: BoolFilter<"OrganisationToolPermission"> | boolean
+    required_permission_key?: StringNullableFilter<"OrganisationToolPermission"> | string | null
+    created_at?: DateTimeFilter<"OrganisationToolPermission"> | Date | string
+    updated_at?: DateTimeFilter<"OrganisationToolPermission"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    tool?: XOR<ComposioToolkitToolScalarRelationFilter, ComposioToolkitToolWhereInput>
+  }, "id" | "uuid" | "org_uuid_tool_uuid">
+
+  export type OrganisationToolPermissionOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    tool_uuid?: SortOrder
+    enabled?: SortOrder
+    requires_approval?: SortOrder
+    required_permission_key?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: OrganisationToolPermissionCountOrderByAggregateInput
+    _avg?: OrganisationToolPermissionAvgOrderByAggregateInput
+    _max?: OrganisationToolPermissionMaxOrderByAggregateInput
+    _min?: OrganisationToolPermissionMinOrderByAggregateInput
+    _sum?: OrganisationToolPermissionSumOrderByAggregateInput
+  }
+
+  export type OrganisationToolPermissionScalarWhereWithAggregatesInput = {
+    AND?: OrganisationToolPermissionScalarWhereWithAggregatesInput | OrganisationToolPermissionScalarWhereWithAggregatesInput[]
+    OR?: OrganisationToolPermissionScalarWhereWithAggregatesInput[]
+    NOT?: OrganisationToolPermissionScalarWhereWithAggregatesInput | OrganisationToolPermissionScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"OrganisationToolPermission"> | number
+    uuid?: StringWithAggregatesFilter<"OrganisationToolPermission"> | string
+    org_uuid?: StringWithAggregatesFilter<"OrganisationToolPermission"> | string
+    tool_uuid?: StringWithAggregatesFilter<"OrganisationToolPermission"> | string
+    enabled?: BoolWithAggregatesFilter<"OrganisationToolPermission"> | boolean
+    requires_approval?: BoolWithAggregatesFilter<"OrganisationToolPermission"> | boolean
+    required_permission_key?: StringNullableWithAggregatesFilter<"OrganisationToolPermission"> | string | null
+    created_at?: DateTimeWithAggregatesFilter<"OrganisationToolPermission"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"OrganisationToolPermission"> | Date | string
+  }
+
+  export type ComposioConnectedAccountWhereInput = {
+    AND?: ComposioConnectedAccountWhereInput | ComposioConnectedAccountWhereInput[]
+    OR?: ComposioConnectedAccountWhereInput[]
+    NOT?: ComposioConnectedAccountWhereInput | ComposioConnectedAccountWhereInput[]
+    id?: IntFilter<"ComposioConnectedAccount"> | number
+    uuid?: StringFilter<"ComposioConnectedAccount"> | string
+    composio_account_id?: StringFilter<"ComposioConnectedAccount"> | string
+    composio_user_id?: StringFilter<"ComposioConnectedAccount"> | string
+    org_uuid?: StringFilter<"ComposioConnectedAccount"> | string
+    user_uuid?: StringNullableFilter<"ComposioConnectedAccount"> | string | null
+    toolkit_uuid?: StringFilter<"ComposioConnectedAccount"> | string
+    status?: EnumComposioAccountStatusFilter<"ComposioConnectedAccount"> | $Enums.ComposioAccountStatus
+    account_label?: StringNullableFilter<"ComposioConnectedAccount"> | string | null
+    last_synced_at?: DateTimeNullableFilter<"ComposioConnectedAccount"> | Date | string | null
+    created_at?: DateTimeFilter<"ComposioConnectedAccount"> | Date | string
+    updated_at?: DateTimeFilter<"ComposioConnectedAccount"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    toolkit?: XOR<ComposioToolkitScalarRelationFilter, ComposioToolkitWhereInput>
+  }
+
+  export type ComposioConnectedAccountOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    composio_account_id?: SortOrder
+    composio_user_id?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrderInput | SortOrder
+    toolkit_uuid?: SortOrder
+    status?: SortOrder
+    account_label?: SortOrderInput | SortOrder
+    last_synced_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    toolkit?: ComposioToolkitOrderByWithRelationInput
+  }
+
+  export type ComposioConnectedAccountWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    composio_account_id?: string
+    AND?: ComposioConnectedAccountWhereInput | ComposioConnectedAccountWhereInput[]
+    OR?: ComposioConnectedAccountWhereInput[]
+    NOT?: ComposioConnectedAccountWhereInput | ComposioConnectedAccountWhereInput[]
+    composio_user_id?: StringFilter<"ComposioConnectedAccount"> | string
+    org_uuid?: StringFilter<"ComposioConnectedAccount"> | string
+    user_uuid?: StringNullableFilter<"ComposioConnectedAccount"> | string | null
+    toolkit_uuid?: StringFilter<"ComposioConnectedAccount"> | string
+    status?: EnumComposioAccountStatusFilter<"ComposioConnectedAccount"> | $Enums.ComposioAccountStatus
+    account_label?: StringNullableFilter<"ComposioConnectedAccount"> | string | null
+    last_synced_at?: DateTimeNullableFilter<"ComposioConnectedAccount"> | Date | string | null
+    created_at?: DateTimeFilter<"ComposioConnectedAccount"> | Date | string
+    updated_at?: DateTimeFilter<"ComposioConnectedAccount"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    toolkit?: XOR<ComposioToolkitScalarRelationFilter, ComposioToolkitWhereInput>
+  }, "id" | "uuid" | "composio_account_id">
+
+  export type ComposioConnectedAccountOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    composio_account_id?: SortOrder
+    composio_user_id?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrderInput | SortOrder
+    toolkit_uuid?: SortOrder
+    status?: SortOrder
+    account_label?: SortOrderInput | SortOrder
+    last_synced_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: ComposioConnectedAccountCountOrderByAggregateInput
+    _avg?: ComposioConnectedAccountAvgOrderByAggregateInput
+    _max?: ComposioConnectedAccountMaxOrderByAggregateInput
+    _min?: ComposioConnectedAccountMinOrderByAggregateInput
+    _sum?: ComposioConnectedAccountSumOrderByAggregateInput
+  }
+
+  export type ComposioConnectedAccountScalarWhereWithAggregatesInput = {
+    AND?: ComposioConnectedAccountScalarWhereWithAggregatesInput | ComposioConnectedAccountScalarWhereWithAggregatesInput[]
+    OR?: ComposioConnectedAccountScalarWhereWithAggregatesInput[]
+    NOT?: ComposioConnectedAccountScalarWhereWithAggregatesInput | ComposioConnectedAccountScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ComposioConnectedAccount"> | number
+    uuid?: StringWithAggregatesFilter<"ComposioConnectedAccount"> | string
+    composio_account_id?: StringWithAggregatesFilter<"ComposioConnectedAccount"> | string
+    composio_user_id?: StringWithAggregatesFilter<"ComposioConnectedAccount"> | string
+    org_uuid?: StringWithAggregatesFilter<"ComposioConnectedAccount"> | string
+    user_uuid?: StringNullableWithAggregatesFilter<"ComposioConnectedAccount"> | string | null
+    toolkit_uuid?: StringWithAggregatesFilter<"ComposioConnectedAccount"> | string
+    status?: EnumComposioAccountStatusWithAggregatesFilter<"ComposioConnectedAccount"> | $Enums.ComposioAccountStatus
+    account_label?: StringNullableWithAggregatesFilter<"ComposioConnectedAccount"> | string | null
+    last_synced_at?: DateTimeNullableWithAggregatesFilter<"ComposioConnectedAccount"> | Date | string | null
+    created_at?: DateTimeWithAggregatesFilter<"ComposioConnectedAccount"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"ComposioConnectedAccount"> | Date | string
+  }
+
+  export type ComposioTriggerWhereInput = {
+    AND?: ComposioTriggerWhereInput | ComposioTriggerWhereInput[]
+    OR?: ComposioTriggerWhereInput[]
+    NOT?: ComposioTriggerWhereInput | ComposioTriggerWhereInput[]
+    id?: IntFilter<"ComposioTrigger"> | number
+    uuid?: StringFilter<"ComposioTrigger"> | string
+    composio_trigger_id?: StringFilter<"ComposioTrigger"> | string
+    org_uuid?: StringFilter<"ComposioTrigger"> | string
+    composio_user_id?: StringFilter<"ComposioTrigger"> | string
+    toolkit_uuid?: StringFilter<"ComposioTrigger"> | string
+    trigger_slug?: StringFilter<"ComposioTrigger"> | string
+    connected_account_id?: StringFilter<"ComposioTrigger"> | string
+    is_enabled?: BoolFilter<"ComposioTrigger"> | boolean
+    config?: JsonFilter<"ComposioTrigger">
+    webhook_subscription_id?: StringNullableFilter<"ComposioTrigger"> | string | null
+    created_at?: DateTimeFilter<"ComposioTrigger"> | Date | string
+    updated_at?: DateTimeFilter<"ComposioTrigger"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    toolkit?: XOR<ComposioToolkitScalarRelationFilter, ComposioToolkitWhereInput>
+  }
+
+  export type ComposioTriggerOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    composio_trigger_id?: SortOrder
+    org_uuid?: SortOrder
+    composio_user_id?: SortOrder
+    toolkit_uuid?: SortOrder
+    trigger_slug?: SortOrder
+    connected_account_id?: SortOrder
+    is_enabled?: SortOrder
+    config?: SortOrder
+    webhook_subscription_id?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    toolkit?: ComposioToolkitOrderByWithRelationInput
+  }
+
+  export type ComposioTriggerWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    composio_trigger_id?: string
+    AND?: ComposioTriggerWhereInput | ComposioTriggerWhereInput[]
+    OR?: ComposioTriggerWhereInput[]
+    NOT?: ComposioTriggerWhereInput | ComposioTriggerWhereInput[]
+    org_uuid?: StringFilter<"ComposioTrigger"> | string
+    composio_user_id?: StringFilter<"ComposioTrigger"> | string
+    toolkit_uuid?: StringFilter<"ComposioTrigger"> | string
+    trigger_slug?: StringFilter<"ComposioTrigger"> | string
+    connected_account_id?: StringFilter<"ComposioTrigger"> | string
+    is_enabled?: BoolFilter<"ComposioTrigger"> | boolean
+    config?: JsonFilter<"ComposioTrigger">
+    webhook_subscription_id?: StringNullableFilter<"ComposioTrigger"> | string | null
+    created_at?: DateTimeFilter<"ComposioTrigger"> | Date | string
+    updated_at?: DateTimeFilter<"ComposioTrigger"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    toolkit?: XOR<ComposioToolkitScalarRelationFilter, ComposioToolkitWhereInput>
+  }, "id" | "uuid" | "composio_trigger_id">
+
+  export type ComposioTriggerOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    composio_trigger_id?: SortOrder
+    org_uuid?: SortOrder
+    composio_user_id?: SortOrder
+    toolkit_uuid?: SortOrder
+    trigger_slug?: SortOrder
+    connected_account_id?: SortOrder
+    is_enabled?: SortOrder
+    config?: SortOrder
+    webhook_subscription_id?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: ComposioTriggerCountOrderByAggregateInput
+    _avg?: ComposioTriggerAvgOrderByAggregateInput
+    _max?: ComposioTriggerMaxOrderByAggregateInput
+    _min?: ComposioTriggerMinOrderByAggregateInput
+    _sum?: ComposioTriggerSumOrderByAggregateInput
+  }
+
+  export type ComposioTriggerScalarWhereWithAggregatesInput = {
+    AND?: ComposioTriggerScalarWhereWithAggregatesInput | ComposioTriggerScalarWhereWithAggregatesInput[]
+    OR?: ComposioTriggerScalarWhereWithAggregatesInput[]
+    NOT?: ComposioTriggerScalarWhereWithAggregatesInput | ComposioTriggerScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ComposioTrigger"> | number
+    uuid?: StringWithAggregatesFilter<"ComposioTrigger"> | string
+    composio_trigger_id?: StringWithAggregatesFilter<"ComposioTrigger"> | string
+    org_uuid?: StringWithAggregatesFilter<"ComposioTrigger"> | string
+    composio_user_id?: StringWithAggregatesFilter<"ComposioTrigger"> | string
+    toolkit_uuid?: StringWithAggregatesFilter<"ComposioTrigger"> | string
+    trigger_slug?: StringWithAggregatesFilter<"ComposioTrigger"> | string
+    connected_account_id?: StringWithAggregatesFilter<"ComposioTrigger"> | string
+    is_enabled?: BoolWithAggregatesFilter<"ComposioTrigger"> | boolean
+    config?: JsonWithAggregatesFilter<"ComposioTrigger">
+    webhook_subscription_id?: StringNullableWithAggregatesFilter<"ComposioTrigger"> | string | null
+    created_at?: DateTimeWithAggregatesFilter<"ComposioTrigger"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"ComposioTrigger"> | Date | string
+  }
+
   export type DocumentWhereInput = {
     AND?: DocumentWhereInput | DocumentWhereInput[]
     OR?: DocumentWhereInput[]
@@ -27427,6 +37536,7 @@ export namespace Prisma {
     org_uuid?: StringFilter<"Conversation"> | string
     user_uuid?: StringFilter<"Conversation"> | string
     title?: StringNullableFilter<"Conversation"> | string | null
+    composio_session_id?: StringNullableFilter<"Conversation"> | string | null
     created_at?: DateTimeFilter<"Conversation"> | Date | string
     updated_at?: DateTimeFilter<"Conversation"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
@@ -27441,6 +37551,7 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrderInput | SortOrder
+    composio_session_id?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     organization?: OrganizationOrderByWithRelationInput
@@ -27452,6 +37563,7 @@ export namespace Prisma {
   export type ConversationWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     uuid?: string
+    composio_session_id?: string
     AND?: ConversationWhereInput | ConversationWhereInput[]
     OR?: ConversationWhereInput[]
     NOT?: ConversationWhereInput | ConversationWhereInput[]
@@ -27464,7 +37576,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     messages?: MessageListRelationFilter
     executions?: AgentExecutionListRelationFilter
-  }, "id" | "uuid">
+  }, "id" | "uuid" | "composio_session_id">
 
   export type ConversationOrderByWithAggregationInput = {
     id?: SortOrder
@@ -27472,6 +37584,7 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrderInput | SortOrder
+    composio_session_id?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: ConversationCountOrderByAggregateInput
@@ -27490,6 +37603,7 @@ export namespace Prisma {
     org_uuid?: StringWithAggregatesFilter<"Conversation"> | string
     user_uuid?: StringWithAggregatesFilter<"Conversation"> | string
     title?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
+    composio_session_id?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"Conversation"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Conversation"> | Date | string
   }
@@ -27691,6 +37805,9 @@ export namespace Prisma {
     uuid?: StringFilter<"ToolCall"> | string
     execution_uuid?: StringFilter<"ToolCall"> | string
     integration_uuid?: StringNullableFilter<"ToolCall"> | string | null
+    provider_type?: StringNullableFilter<"ToolCall"> | string | null
+    composio_tool_slug?: StringNullableFilter<"ToolCall"> | string | null
+    composio_session_id?: StringNullableFilter<"ToolCall"> | string | null
     tool_name?: StringFilter<"ToolCall"> | string
     input?: JsonNullableFilter<"ToolCall">
     output?: JsonNullableFilter<"ToolCall">
@@ -27709,6 +37826,9 @@ export namespace Prisma {
     uuid?: SortOrder
     execution_uuid?: SortOrder
     integration_uuid?: SortOrderInput | SortOrder
+    provider_type?: SortOrderInput | SortOrder
+    composio_tool_slug?: SortOrderInput | SortOrder
+    composio_session_id?: SortOrderInput | SortOrder
     tool_name?: SortOrder
     input?: SortOrderInput | SortOrder
     output?: SortOrderInput | SortOrder
@@ -27730,6 +37850,9 @@ export namespace Prisma {
     NOT?: ToolCallWhereInput | ToolCallWhereInput[]
     execution_uuid?: StringFilter<"ToolCall"> | string
     integration_uuid?: StringNullableFilter<"ToolCall"> | string | null
+    provider_type?: StringNullableFilter<"ToolCall"> | string | null
+    composio_tool_slug?: StringNullableFilter<"ToolCall"> | string | null
+    composio_session_id?: StringNullableFilter<"ToolCall"> | string | null
     tool_name?: StringFilter<"ToolCall"> | string
     input?: JsonNullableFilter<"ToolCall">
     output?: JsonNullableFilter<"ToolCall">
@@ -27748,6 +37871,9 @@ export namespace Prisma {
     uuid?: SortOrder
     execution_uuid?: SortOrder
     integration_uuid?: SortOrderInput | SortOrder
+    provider_type?: SortOrderInput | SortOrder
+    composio_tool_slug?: SortOrderInput | SortOrder
+    composio_session_id?: SortOrderInput | SortOrder
     tool_name?: SortOrder
     input?: SortOrderInput | SortOrder
     output?: SortOrderInput | SortOrder
@@ -27772,6 +37898,9 @@ export namespace Prisma {
     uuid?: StringWithAggregatesFilter<"ToolCall"> | string
     execution_uuid?: StringWithAggregatesFilter<"ToolCall"> | string
     integration_uuid?: StringNullableWithAggregatesFilter<"ToolCall"> | string | null
+    provider_type?: StringNullableWithAggregatesFilter<"ToolCall"> | string | null
+    composio_tool_slug?: StringNullableWithAggregatesFilter<"ToolCall"> | string | null
+    composio_session_id?: StringNullableWithAggregatesFilter<"ToolCall"> | string | null
     tool_name?: StringWithAggregatesFilter<"ToolCall"> | string
     input?: JsonNullableWithAggregatesFilter<"ToolCall">
     output?: JsonNullableWithAggregatesFilter<"ToolCall">
@@ -27998,6 +38127,10 @@ export namespace Prisma {
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
@@ -28016,6 +38149,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -28033,6 +38170,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
@@ -28051,6 +38192,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -28873,6 +39018,696 @@ export namespace Prisma {
     required_permission_key?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type ComposioToolkitCreateInput = {
+    uuid?: string
+    slug: string
+    name: string
+    description?: string | null
+    logo_url?: string | null
+    categories?: ComposioToolkitCreatecategoriesInput | string[]
+    tool_count?: number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier: $Enums.ComposioConnectionTier
+    is_enabled?: boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    tools?: ComposioToolkitToolCreateNestedManyWithoutToolkitInput
+    enabled_orgs?: OrganisationEnabledToolkitCreateNestedManyWithoutToolkitInput
+    connected_accounts?: ComposioConnectedAccountCreateNestedManyWithoutToolkitInput
+    triggers?: ComposioTriggerCreateNestedManyWithoutToolkitInput
+  }
+
+  export type ComposioToolkitUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    slug: string
+    name: string
+    description?: string | null
+    logo_url?: string | null
+    categories?: ComposioToolkitCreatecategoriesInput | string[]
+    tool_count?: number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier: $Enums.ComposioConnectionTier
+    is_enabled?: boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    tools?: ComposioToolkitToolUncheckedCreateNestedManyWithoutToolkitInput
+    enabled_orgs?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutToolkitInput
+    connected_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutToolkitInput
+    triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutToolkitInput
+  }
+
+  export type ComposioToolkitUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: ComposioToolkitUpdatecategoriesInput | string[]
+    tool_count?: IntFieldUpdateOperationsInput | number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    tools?: ComposioToolkitToolUpdateManyWithoutToolkitNestedInput
+    enabled_orgs?: OrganisationEnabledToolkitUpdateManyWithoutToolkitNestedInput
+    connected_accounts?: ComposioConnectedAccountUpdateManyWithoutToolkitNestedInput
+    triggers?: ComposioTriggerUpdateManyWithoutToolkitNestedInput
+  }
+
+  export type ComposioToolkitUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: ComposioToolkitUpdatecategoriesInput | string[]
+    tool_count?: IntFieldUpdateOperationsInput | number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    tools?: ComposioToolkitToolUncheckedUpdateManyWithoutToolkitNestedInput
+    enabled_orgs?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutToolkitNestedInput
+    connected_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutToolkitNestedInput
+    triggers?: ComposioTriggerUncheckedUpdateManyWithoutToolkitNestedInput
+  }
+
+  export type ComposioToolkitCreateManyInput = {
+    id?: number
+    uuid?: string
+    slug: string
+    name: string
+    description?: string | null
+    logo_url?: string | null
+    categories?: ComposioToolkitCreatecategoriesInput | string[]
+    tool_count?: number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier: $Enums.ComposioConnectionTier
+    is_enabled?: boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioToolkitUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: ComposioToolkitUpdatecategoriesInput | string[]
+    tool_count?: IntFieldUpdateOperationsInput | number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioToolkitUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: ComposioToolkitUpdatecategoriesInput | string[]
+    tool_count?: IntFieldUpdateOperationsInput | number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioToolkitToolCreateInput = {
+    uuid?: string
+    slug: string
+    name: string
+    description?: string
+    input_schema: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolCreatetagsInput | string[]
+    is_enabled?: boolean
+    composio_version?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    toolkit: ComposioToolkitCreateNestedOneWithoutToolsInput
+    permissions?: OrganisationToolPermissionCreateNestedManyWithoutToolInput
+  }
+
+  export type ComposioToolkitToolUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    toolkit_uuid: string
+    slug: string
+    name: string
+    description?: string
+    input_schema: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolCreatetagsInput | string[]
+    is_enabled?: boolean
+    composio_version?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutToolInput
+  }
+
+  export type ComposioToolkitToolUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    input_schema?: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolUpdatetagsInput | string[]
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_version?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    toolkit?: ComposioToolkitUpdateOneRequiredWithoutToolsNestedInput
+    permissions?: OrganisationToolPermissionUpdateManyWithoutToolNestedInput
+  }
+
+  export type ComposioToolkitToolUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    input_schema?: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolUpdatetagsInput | string[]
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_version?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutToolNestedInput
+  }
+
+  export type ComposioToolkitToolCreateManyInput = {
+    id?: number
+    uuid?: string
+    toolkit_uuid: string
+    slug: string
+    name: string
+    description?: string
+    input_schema: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolCreatetagsInput | string[]
+    is_enabled?: boolean
+    composio_version?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioToolkitToolUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    input_schema?: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolUpdatetagsInput | string[]
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_version?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioToolkitToolUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    input_schema?: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolUpdatetagsInput | string[]
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_version?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioSyncRunCreateInput = {
+    uuid?: string
+    sync_type: $Enums.ComposioSyncType
+    status?: $Enums.ComposioSyncStatus
+    toolkits_upserted?: number
+    tools_upserted?: number
+    error?: string | null
+    started_at?: Date | string
+    completed_at?: Date | string | null
+  }
+
+  export type ComposioSyncRunUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    sync_type: $Enums.ComposioSyncType
+    status?: $Enums.ComposioSyncStatus
+    toolkits_upserted?: number
+    tools_upserted?: number
+    error?: string | null
+    started_at?: Date | string
+    completed_at?: Date | string | null
+  }
+
+  export type ComposioSyncRunUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    sync_type?: EnumComposioSyncTypeFieldUpdateOperationsInput | $Enums.ComposioSyncType
+    status?: EnumComposioSyncStatusFieldUpdateOperationsInput | $Enums.ComposioSyncStatus
+    toolkits_upserted?: IntFieldUpdateOperationsInput | number
+    tools_upserted?: IntFieldUpdateOperationsInput | number
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ComposioSyncRunUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    sync_type?: EnumComposioSyncTypeFieldUpdateOperationsInput | $Enums.ComposioSyncType
+    status?: EnumComposioSyncStatusFieldUpdateOperationsInput | $Enums.ComposioSyncStatus
+    toolkits_upserted?: IntFieldUpdateOperationsInput | number
+    tools_upserted?: IntFieldUpdateOperationsInput | number
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ComposioSyncRunCreateManyInput = {
+    id?: number
+    uuid?: string
+    sync_type: $Enums.ComposioSyncType
+    status?: $Enums.ComposioSyncStatus
+    toolkits_upserted?: number
+    tools_upserted?: number
+    error?: string | null
+    started_at?: Date | string
+    completed_at?: Date | string | null
+  }
+
+  export type ComposioSyncRunUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    sync_type?: EnumComposioSyncTypeFieldUpdateOperationsInput | $Enums.ComposioSyncType
+    status?: EnumComposioSyncStatusFieldUpdateOperationsInput | $Enums.ComposioSyncStatus
+    toolkits_upserted?: IntFieldUpdateOperationsInput | number
+    tools_upserted?: IntFieldUpdateOperationsInput | number
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ComposioSyncRunUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    sync_type?: EnumComposioSyncTypeFieldUpdateOperationsInput | $Enums.ComposioSyncType
+    status?: EnumComposioSyncStatusFieldUpdateOperationsInput | $Enums.ComposioSyncStatus
+    toolkits_upserted?: IntFieldUpdateOperationsInput | number
+    tools_upserted?: IntFieldUpdateOperationsInput | number
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type OrganisationEnabledToolkitCreateInput = {
+    uuid?: string
+    is_enabled?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutEnabled_toolkitsInput
+    toolkit: ComposioToolkitCreateNestedOneWithoutEnabled_orgsInput
+  }
+
+  export type OrganisationEnabledToolkitUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    toolkit_uuid: string
+    is_enabled?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OrganisationEnabledToolkitUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutEnabled_toolkitsNestedInput
+    toolkit?: ComposioToolkitUpdateOneRequiredWithoutEnabled_orgsNestedInput
+  }
+
+  export type OrganisationEnabledToolkitUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganisationEnabledToolkitCreateManyInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    toolkit_uuid: string
+    is_enabled?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OrganisationEnabledToolkitUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganisationEnabledToolkitUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganisationToolPermissionCreateInput = {
+    uuid?: string
+    enabled?: boolean
+    requires_approval?: boolean
+    required_permission_key?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTool_permissionsInput
+    tool: ComposioToolkitToolCreateNestedOneWithoutPermissionsInput
+  }
+
+  export type OrganisationToolPermissionUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    tool_uuid: string
+    enabled?: boolean
+    requires_approval?: boolean
+    required_permission_key?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OrganisationToolPermissionUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    requires_approval?: BoolFieldUpdateOperationsInput | boolean
+    required_permission_key?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTool_permissionsNestedInput
+    tool?: ComposioToolkitToolUpdateOneRequiredWithoutPermissionsNestedInput
+  }
+
+  export type OrganisationToolPermissionUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    tool_uuid?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    requires_approval?: BoolFieldUpdateOperationsInput | boolean
+    required_permission_key?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganisationToolPermissionCreateManyInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    tool_uuid: string
+    enabled?: boolean
+    requires_approval?: boolean
+    required_permission_key?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OrganisationToolPermissionUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    requires_approval?: BoolFieldUpdateOperationsInput | boolean
+    required_permission_key?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganisationToolPermissionUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    tool_uuid?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    requires_approval?: BoolFieldUpdateOperationsInput | boolean
+    required_permission_key?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioConnectedAccountCreateInput = {
+    uuid?: string
+    composio_account_id: string
+    composio_user_id: string
+    user_uuid?: string | null
+    status?: $Enums.ComposioAccountStatus
+    account_label?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutComposio_accountsInput
+    toolkit: ComposioToolkitCreateNestedOneWithoutConnected_accountsInput
+  }
+
+  export type ComposioConnectedAccountUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    composio_account_id: string
+    composio_user_id: string
+    org_uuid: string
+    user_uuid?: string | null
+    toolkit_uuid: string
+    status?: $Enums.ComposioAccountStatus
+    account_label?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioConnectedAccountUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_account_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    user_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumComposioAccountStatusFieldUpdateOperationsInput | $Enums.ComposioAccountStatus
+    account_label?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutComposio_accountsNestedInput
+    toolkit?: ComposioToolkitUpdateOneRequiredWithoutConnected_accountsNestedInput
+  }
+
+  export type ComposioConnectedAccountUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_account_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    status?: EnumComposioAccountStatusFieldUpdateOperationsInput | $Enums.ComposioAccountStatus
+    account_label?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioConnectedAccountCreateManyInput = {
+    id?: number
+    uuid?: string
+    composio_account_id: string
+    composio_user_id: string
+    org_uuid: string
+    user_uuid?: string | null
+    toolkit_uuid: string
+    status?: $Enums.ComposioAccountStatus
+    account_label?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioConnectedAccountUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_account_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    user_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumComposioAccountStatusFieldUpdateOperationsInput | $Enums.ComposioAccountStatus
+    account_label?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioConnectedAccountUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_account_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    status?: EnumComposioAccountStatusFieldUpdateOperationsInput | $Enums.ComposioAccountStatus
+    account_label?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioTriggerCreateInput = {
+    uuid?: string
+    composio_trigger_id: string
+    composio_user_id: string
+    trigger_slug: string
+    connected_account_id: string
+    is_enabled?: boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutComposio_triggersInput
+    toolkit: ComposioToolkitCreateNestedOneWithoutTriggersInput
+  }
+
+  export type ComposioTriggerUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    composio_trigger_id: string
+    org_uuid: string
+    composio_user_id: string
+    toolkit_uuid: string
+    trigger_slug: string
+    connected_account_id: string
+    is_enabled?: boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioTriggerUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_trigger_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    trigger_slug?: StringFieldUpdateOperationsInput | string
+    connected_account_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutComposio_triggersNestedInput
+    toolkit?: ComposioToolkitUpdateOneRequiredWithoutTriggersNestedInput
+  }
+
+  export type ComposioTriggerUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_trigger_id?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    trigger_slug?: StringFieldUpdateOperationsInput | string
+    connected_account_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioTriggerCreateManyInput = {
+    id?: number
+    uuid?: string
+    composio_trigger_id: string
+    org_uuid: string
+    composio_user_id: string
+    toolkit_uuid: string
+    trigger_slug: string
+    connected_account_id: string
+    is_enabled?: boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioTriggerUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_trigger_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    trigger_slug?: StringFieldUpdateOperationsInput | string
+    connected_account_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioTriggerUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_trigger_id?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    trigger_slug?: StringFieldUpdateOperationsInput | string
+    connected_account_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type DocumentCreateInput = {
     uuid?: string
     user_uuid: string
@@ -29065,6 +39900,7 @@ export namespace Prisma {
   export type ConversationCreateInput = {
     uuid?: string
     title?: string | null
+    composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     organization: OrganizationCreateNestedOneWithoutConversationsInput
@@ -29079,6 +39915,7 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title?: string | null
+    composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
@@ -29088,6 +39925,7 @@ export namespace Prisma {
   export type ConversationUpdateInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutConversationsNestedInput
@@ -29102,6 +39940,7 @@ export namespace Prisma {
     org_uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
@@ -29114,6 +39953,7 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title?: string | null
+    composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -29121,6 +39961,7 @@ export namespace Prisma {
   export type ConversationUpdateManyMutationInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29131,6 +39972,7 @@ export namespace Prisma {
     org_uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29330,6 +40172,9 @@ export namespace Prisma {
 
   export type ToolCallCreateInput = {
     uuid?: string
+    provider_type?: string | null
+    composio_tool_slug?: string | null
+    composio_session_id?: string | null
     tool_name: string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -29348,6 +40193,9 @@ export namespace Prisma {
     uuid?: string
     execution_uuid: string
     integration_uuid?: string | null
+    provider_type?: string | null
+    composio_tool_slug?: string | null
+    composio_session_id?: string | null
     tool_name: string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -29361,6 +40209,9 @@ export namespace Prisma {
 
   export type ToolCallUpdateInput = {
     uuid?: StringFieldUpdateOperationsInput | string
+    provider_type?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_tool_slug?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     tool_name?: StringFieldUpdateOperationsInput | string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -29379,6 +40230,9 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     execution_uuid?: StringFieldUpdateOperationsInput | string
     integration_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    provider_type?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_tool_slug?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     tool_name?: StringFieldUpdateOperationsInput | string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -29395,6 +40249,9 @@ export namespace Prisma {
     uuid?: string
     execution_uuid: string
     integration_uuid?: string | null
+    provider_type?: string | null
+    composio_tool_slug?: string | null
+    composio_session_id?: string | null
     tool_name: string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -29408,6 +40265,9 @@ export namespace Prisma {
 
   export type ToolCallUpdateManyMutationInput = {
     uuid?: StringFieldUpdateOperationsInput | string
+    provider_type?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_tool_slug?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     tool_name?: StringFieldUpdateOperationsInput | string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -29424,6 +40284,9 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     execution_uuid?: StringFieldUpdateOperationsInput | string
     integration_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    provider_type?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_tool_slug?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     tool_name?: StringFieldUpdateOperationsInput | string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -29784,6 +40647,30 @@ export namespace Prisma {
     none?: IntegrationWhereInput
   }
 
+  export type OrganisationEnabledToolkitListRelationFilter = {
+    every?: OrganisationEnabledToolkitWhereInput
+    some?: OrganisationEnabledToolkitWhereInput
+    none?: OrganisationEnabledToolkitWhereInput
+  }
+
+  export type OrganisationToolPermissionListRelationFilter = {
+    every?: OrganisationToolPermissionWhereInput
+    some?: OrganisationToolPermissionWhereInput
+    none?: OrganisationToolPermissionWhereInput
+  }
+
+  export type ComposioConnectedAccountListRelationFilter = {
+    every?: ComposioConnectedAccountWhereInput
+    some?: ComposioConnectedAccountWhereInput
+    none?: ComposioConnectedAccountWhereInput
+  }
+
+  export type ComposioTriggerListRelationFilter = {
+    every?: ComposioTriggerWhereInput
+    some?: ComposioTriggerWhereInput
+    none?: ComposioTriggerWhereInput
+  }
+
   export type AiProviderListRelationFilter = {
     every?: AiProviderWhereInput
     some?: AiProviderWhereInput
@@ -29795,6 +40682,22 @@ export namespace Prisma {
   }
 
   export type IntegrationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OrganisationEnabledToolkitOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OrganisationToolPermissionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ComposioConnectedAccountOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ComposioTriggerOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -30606,6 +41509,465 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type EnumComposioConnectionTierFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioConnectionTier | EnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioConnectionTierFilter<$PrismaModel> | $Enums.ComposioConnectionTier
+  }
+
+  export type ComposioToolkitToolListRelationFilter = {
+    every?: ComposioToolkitToolWhereInput
+    some?: ComposioToolkitToolWhereInput
+    none?: ComposioToolkitToolWhereInput
+  }
+
+  export type ComposioToolkitToolOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ComposioToolkitCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    logo_url?: SortOrder
+    categories?: SortOrder
+    tool_count?: SortOrder
+    auth_schemes?: SortOrder
+    connection_tier?: SortOrder
+    is_enabled?: SortOrder
+    composio_metadata?: SortOrder
+    last_synced_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ComposioToolkitAvgOrderByAggregateInput = {
+    id?: SortOrder
+    tool_count?: SortOrder
+  }
+
+  export type ComposioToolkitMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    logo_url?: SortOrder
+    tool_count?: SortOrder
+    connection_tier?: SortOrder
+    is_enabled?: SortOrder
+    last_synced_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ComposioToolkitMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    logo_url?: SortOrder
+    tool_count?: SortOrder
+    connection_tier?: SortOrder
+    is_enabled?: SortOrder
+    last_synced_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ComposioToolkitSumOrderByAggregateInput = {
+    id?: SortOrder
+    tool_count?: SortOrder
+  }
+
+  export type EnumComposioConnectionTierWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioConnectionTier | EnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioConnectionTierWithAggregatesFilter<$PrismaModel> | $Enums.ComposioConnectionTier
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumComposioConnectionTierFilter<$PrismaModel>
+    _max?: NestedEnumComposioConnectionTierFilter<$PrismaModel>
+  }
+
+  export type ComposioToolkitScalarRelationFilter = {
+    is?: ComposioToolkitWhereInput
+    isNot?: ComposioToolkitWhereInput
+  }
+
+  export type ComposioToolkitToolToolkit_uuidSlugCompoundUniqueInput = {
+    toolkit_uuid: string
+    slug: string
+  }
+
+  export type ComposioToolkitToolCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    toolkit_uuid?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    input_schema?: SortOrder
+    output_schema?: SortOrder
+    tags?: SortOrder
+    is_enabled?: SortOrder
+    composio_version?: SortOrder
+    last_synced_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ComposioToolkitToolAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ComposioToolkitToolMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    toolkit_uuid?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    is_enabled?: SortOrder
+    composio_version?: SortOrder
+    last_synced_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ComposioToolkitToolMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    toolkit_uuid?: SortOrder
+    slug?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    is_enabled?: SortOrder
+    composio_version?: SortOrder
+    last_synced_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ComposioToolkitToolSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type EnumComposioSyncTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioSyncType | EnumComposioSyncTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioSyncType[] | ListEnumComposioSyncTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioSyncType[] | ListEnumComposioSyncTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioSyncTypeFilter<$PrismaModel> | $Enums.ComposioSyncType
+  }
+
+  export type EnumComposioSyncStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioSyncStatus | EnumComposioSyncStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioSyncStatus[] | ListEnumComposioSyncStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioSyncStatus[] | ListEnumComposioSyncStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioSyncStatusFilter<$PrismaModel> | $Enums.ComposioSyncStatus
+  }
+
+  export type ComposioSyncRunCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    sync_type?: SortOrder
+    status?: SortOrder
+    toolkits_upserted?: SortOrder
+    tools_upserted?: SortOrder
+    error?: SortOrder
+    started_at?: SortOrder
+    completed_at?: SortOrder
+  }
+
+  export type ComposioSyncRunAvgOrderByAggregateInput = {
+    id?: SortOrder
+    toolkits_upserted?: SortOrder
+    tools_upserted?: SortOrder
+  }
+
+  export type ComposioSyncRunMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    sync_type?: SortOrder
+    status?: SortOrder
+    toolkits_upserted?: SortOrder
+    tools_upserted?: SortOrder
+    error?: SortOrder
+    started_at?: SortOrder
+    completed_at?: SortOrder
+  }
+
+  export type ComposioSyncRunMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    sync_type?: SortOrder
+    status?: SortOrder
+    toolkits_upserted?: SortOrder
+    tools_upserted?: SortOrder
+    error?: SortOrder
+    started_at?: SortOrder
+    completed_at?: SortOrder
+  }
+
+  export type ComposioSyncRunSumOrderByAggregateInput = {
+    id?: SortOrder
+    toolkits_upserted?: SortOrder
+    tools_upserted?: SortOrder
+  }
+
+  export type EnumComposioSyncTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioSyncType | EnumComposioSyncTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioSyncType[] | ListEnumComposioSyncTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioSyncType[] | ListEnumComposioSyncTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioSyncTypeWithAggregatesFilter<$PrismaModel> | $Enums.ComposioSyncType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumComposioSyncTypeFilter<$PrismaModel>
+    _max?: NestedEnumComposioSyncTypeFilter<$PrismaModel>
+  }
+
+  export type EnumComposioSyncStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioSyncStatus | EnumComposioSyncStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioSyncStatus[] | ListEnumComposioSyncStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioSyncStatus[] | ListEnumComposioSyncStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioSyncStatusWithAggregatesFilter<$PrismaModel> | $Enums.ComposioSyncStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumComposioSyncStatusFilter<$PrismaModel>
+    _max?: NestedEnumComposioSyncStatusFilter<$PrismaModel>
+  }
+
+  export type OrganisationEnabledToolkitOrg_uuidToolkit_uuidCompoundUniqueInput = {
+    org_uuid: string
+    toolkit_uuid: string
+  }
+
+  export type OrganisationEnabledToolkitCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    toolkit_uuid?: SortOrder
+    is_enabled?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type OrganisationEnabledToolkitAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type OrganisationEnabledToolkitMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    toolkit_uuid?: SortOrder
+    is_enabled?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type OrganisationEnabledToolkitMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    toolkit_uuid?: SortOrder
+    is_enabled?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type OrganisationEnabledToolkitSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ComposioToolkitToolScalarRelationFilter = {
+    is?: ComposioToolkitToolWhereInput
+    isNot?: ComposioToolkitToolWhereInput
+  }
+
+  export type OrganisationToolPermissionOrg_uuidTool_uuidCompoundUniqueInput = {
+    org_uuid: string
+    tool_uuid: string
+  }
+
+  export type OrganisationToolPermissionCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    tool_uuid?: SortOrder
+    enabled?: SortOrder
+    requires_approval?: SortOrder
+    required_permission_key?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type OrganisationToolPermissionAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type OrganisationToolPermissionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    tool_uuid?: SortOrder
+    enabled?: SortOrder
+    requires_approval?: SortOrder
+    required_permission_key?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type OrganisationToolPermissionMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    tool_uuid?: SortOrder
+    enabled?: SortOrder
+    requires_approval?: SortOrder
+    required_permission_key?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type OrganisationToolPermissionSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type EnumComposioAccountStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioAccountStatus | EnumComposioAccountStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioAccountStatus[] | ListEnumComposioAccountStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioAccountStatus[] | ListEnumComposioAccountStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioAccountStatusFilter<$PrismaModel> | $Enums.ComposioAccountStatus
+  }
+
+  export type ComposioConnectedAccountCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    composio_account_id?: SortOrder
+    composio_user_id?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrder
+    toolkit_uuid?: SortOrder
+    status?: SortOrder
+    account_label?: SortOrder
+    last_synced_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ComposioConnectedAccountAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ComposioConnectedAccountMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    composio_account_id?: SortOrder
+    composio_user_id?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrder
+    toolkit_uuid?: SortOrder
+    status?: SortOrder
+    account_label?: SortOrder
+    last_synced_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ComposioConnectedAccountMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    composio_account_id?: SortOrder
+    composio_user_id?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrder
+    toolkit_uuid?: SortOrder
+    status?: SortOrder
+    account_label?: SortOrder
+    last_synced_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ComposioConnectedAccountSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type EnumComposioAccountStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioAccountStatus | EnumComposioAccountStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioAccountStatus[] | ListEnumComposioAccountStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioAccountStatus[] | ListEnumComposioAccountStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioAccountStatusWithAggregatesFilter<$PrismaModel> | $Enums.ComposioAccountStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumComposioAccountStatusFilter<$PrismaModel>
+    _max?: NestedEnumComposioAccountStatusFilter<$PrismaModel>
+  }
+
+  export type ComposioTriggerCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    composio_trigger_id?: SortOrder
+    org_uuid?: SortOrder
+    composio_user_id?: SortOrder
+    toolkit_uuid?: SortOrder
+    trigger_slug?: SortOrder
+    connected_account_id?: SortOrder
+    is_enabled?: SortOrder
+    config?: SortOrder
+    webhook_subscription_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ComposioTriggerAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ComposioTriggerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    composio_trigger_id?: SortOrder
+    org_uuid?: SortOrder
+    composio_user_id?: SortOrder
+    toolkit_uuid?: SortOrder
+    trigger_slug?: SortOrder
+    connected_account_id?: SortOrder
+    is_enabled?: SortOrder
+    webhook_subscription_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ComposioTriggerMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    composio_trigger_id?: SortOrder
+    org_uuid?: SortOrder
+    composio_user_id?: SortOrder
+    toolkit_uuid?: SortOrder
+    trigger_slug?: SortOrder
+    connected_account_id?: SortOrder
+    is_enabled?: SortOrder
+    webhook_subscription_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ComposioTriggerSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
   export type EnumDocumentTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.DocumentType | EnumDocumentTypeFieldRefInput<$PrismaModel>
     in?: $Enums.DocumentType[] | ListEnumDocumentTypeFieldRefInput<$PrismaModel>
@@ -30814,6 +42176,7 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrder
+    composio_session_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -30828,6 +42191,7 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrder
+    composio_session_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -30838,6 +42202,7 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrder
+    composio_session_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -31037,6 +42402,9 @@ export namespace Prisma {
     uuid?: SortOrder
     execution_uuid?: SortOrder
     integration_uuid?: SortOrder
+    provider_type?: SortOrder
+    composio_tool_slug?: SortOrder
+    composio_session_id?: SortOrder
     tool_name?: SortOrder
     input?: SortOrder
     output?: SortOrder
@@ -31060,6 +42428,9 @@ export namespace Prisma {
     uuid?: SortOrder
     execution_uuid?: SortOrder
     integration_uuid?: SortOrder
+    provider_type?: SortOrder
+    composio_tool_slug?: SortOrder
+    composio_session_id?: SortOrder
     tool_name?: SortOrder
     status?: SortOrder
     error?: SortOrder
@@ -31074,6 +42445,9 @@ export namespace Prisma {
     uuid?: SortOrder
     execution_uuid?: SortOrder
     integration_uuid?: SortOrder
+    provider_type?: SortOrder
+    composio_tool_slug?: SortOrder
+    composio_session_id?: SortOrder
     tool_name?: SortOrder
     status?: SortOrder
     error?: SortOrder
@@ -31454,6 +42828,34 @@ export namespace Prisma {
     connect?: IntegrationWhereUniqueInput | IntegrationWhereUniqueInput[]
   }
 
+  export type OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<OrganisationEnabledToolkitCreateWithoutOrganizationInput, OrganisationEnabledToolkitUncheckedCreateWithoutOrganizationInput> | OrganisationEnabledToolkitCreateWithoutOrganizationInput[] | OrganisationEnabledToolkitUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: OrganisationEnabledToolkitCreateOrConnectWithoutOrganizationInput | OrganisationEnabledToolkitCreateOrConnectWithoutOrganizationInput[]
+    createMany?: OrganisationEnabledToolkitCreateManyOrganizationInputEnvelope
+    connect?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+  }
+
+  export type OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<OrganisationToolPermissionCreateWithoutOrganizationInput, OrganisationToolPermissionUncheckedCreateWithoutOrganizationInput> | OrganisationToolPermissionCreateWithoutOrganizationInput[] | OrganisationToolPermissionUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: OrganisationToolPermissionCreateOrConnectWithoutOrganizationInput | OrganisationToolPermissionCreateOrConnectWithoutOrganizationInput[]
+    createMany?: OrganisationToolPermissionCreateManyOrganizationInputEnvelope
+    connect?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+  }
+
+  export type ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ComposioConnectedAccountCreateWithoutOrganizationInput, ComposioConnectedAccountUncheckedCreateWithoutOrganizationInput> | ComposioConnectedAccountCreateWithoutOrganizationInput[] | ComposioConnectedAccountUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ComposioConnectedAccountCreateOrConnectWithoutOrganizationInput | ComposioConnectedAccountCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ComposioConnectedAccountCreateManyOrganizationInputEnvelope
+    connect?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+  }
+
+  export type ComposioTriggerCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ComposioTriggerCreateWithoutOrganizationInput, ComposioTriggerUncheckedCreateWithoutOrganizationInput> | ComposioTriggerCreateWithoutOrganizationInput[] | ComposioTriggerUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ComposioTriggerCreateOrConnectWithoutOrganizationInput | ComposioTriggerCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ComposioTriggerCreateManyOrganizationInputEnvelope
+    connect?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+  }
+
   export type AiProviderCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<AiProviderCreateWithoutOrganizationInput, AiProviderUncheckedCreateWithoutOrganizationInput> | AiProviderCreateWithoutOrganizationInput[] | AiProviderUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: AiProviderCreateOrConnectWithoutOrganizationInput | AiProviderCreateOrConnectWithoutOrganizationInput[]
@@ -31508,6 +42910,34 @@ export namespace Prisma {
     connectOrCreate?: IntegrationCreateOrConnectWithoutOrganizationInput | IntegrationCreateOrConnectWithoutOrganizationInput[]
     createMany?: IntegrationCreateManyOrganizationInputEnvelope
     connect?: IntegrationWhereUniqueInput | IntegrationWhereUniqueInput[]
+  }
+
+  export type OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<OrganisationEnabledToolkitCreateWithoutOrganizationInput, OrganisationEnabledToolkitUncheckedCreateWithoutOrganizationInput> | OrganisationEnabledToolkitCreateWithoutOrganizationInput[] | OrganisationEnabledToolkitUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: OrganisationEnabledToolkitCreateOrConnectWithoutOrganizationInput | OrganisationEnabledToolkitCreateOrConnectWithoutOrganizationInput[]
+    createMany?: OrganisationEnabledToolkitCreateManyOrganizationInputEnvelope
+    connect?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+  }
+
+  export type OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<OrganisationToolPermissionCreateWithoutOrganizationInput, OrganisationToolPermissionUncheckedCreateWithoutOrganizationInput> | OrganisationToolPermissionCreateWithoutOrganizationInput[] | OrganisationToolPermissionUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: OrganisationToolPermissionCreateOrConnectWithoutOrganizationInput | OrganisationToolPermissionCreateOrConnectWithoutOrganizationInput[]
+    createMany?: OrganisationToolPermissionCreateManyOrganizationInputEnvelope
+    connect?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+  }
+
+  export type ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ComposioConnectedAccountCreateWithoutOrganizationInput, ComposioConnectedAccountUncheckedCreateWithoutOrganizationInput> | ComposioConnectedAccountCreateWithoutOrganizationInput[] | ComposioConnectedAccountUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ComposioConnectedAccountCreateOrConnectWithoutOrganizationInput | ComposioConnectedAccountCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ComposioConnectedAccountCreateManyOrganizationInputEnvelope
+    connect?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+  }
+
+  export type ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ComposioTriggerCreateWithoutOrganizationInput, ComposioTriggerUncheckedCreateWithoutOrganizationInput> | ComposioTriggerCreateWithoutOrganizationInput[] | ComposioTriggerUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ComposioTriggerCreateOrConnectWithoutOrganizationInput | ComposioTriggerCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ComposioTriggerCreateManyOrganizationInputEnvelope
+    connect?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
   }
 
   export type AiProviderUncheckedCreateNestedManyWithoutOrganizationInput = {
@@ -31592,6 +43022,62 @@ export namespace Prisma {
     update?: IntegrationUpdateWithWhereUniqueWithoutOrganizationInput | IntegrationUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: IntegrationUpdateManyWithWhereWithoutOrganizationInput | IntegrationUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: IntegrationScalarWhereInput | IntegrationScalarWhereInput[]
+  }
+
+  export type OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<OrganisationEnabledToolkitCreateWithoutOrganizationInput, OrganisationEnabledToolkitUncheckedCreateWithoutOrganizationInput> | OrganisationEnabledToolkitCreateWithoutOrganizationInput[] | OrganisationEnabledToolkitUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: OrganisationEnabledToolkitCreateOrConnectWithoutOrganizationInput | OrganisationEnabledToolkitCreateOrConnectWithoutOrganizationInput[]
+    upsert?: OrganisationEnabledToolkitUpsertWithWhereUniqueWithoutOrganizationInput | OrganisationEnabledToolkitUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: OrganisationEnabledToolkitCreateManyOrganizationInputEnvelope
+    set?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    disconnect?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    delete?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    connect?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    update?: OrganisationEnabledToolkitUpdateWithWhereUniqueWithoutOrganizationInput | OrganisationEnabledToolkitUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: OrganisationEnabledToolkitUpdateManyWithWhereWithoutOrganizationInput | OrganisationEnabledToolkitUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: OrganisationEnabledToolkitScalarWhereInput | OrganisationEnabledToolkitScalarWhereInput[]
+  }
+
+  export type OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<OrganisationToolPermissionCreateWithoutOrganizationInput, OrganisationToolPermissionUncheckedCreateWithoutOrganizationInput> | OrganisationToolPermissionCreateWithoutOrganizationInput[] | OrganisationToolPermissionUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: OrganisationToolPermissionCreateOrConnectWithoutOrganizationInput | OrganisationToolPermissionCreateOrConnectWithoutOrganizationInput[]
+    upsert?: OrganisationToolPermissionUpsertWithWhereUniqueWithoutOrganizationInput | OrganisationToolPermissionUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: OrganisationToolPermissionCreateManyOrganizationInputEnvelope
+    set?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    disconnect?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    delete?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    connect?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    update?: OrganisationToolPermissionUpdateWithWhereUniqueWithoutOrganizationInput | OrganisationToolPermissionUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: OrganisationToolPermissionUpdateManyWithWhereWithoutOrganizationInput | OrganisationToolPermissionUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: OrganisationToolPermissionScalarWhereInput | OrganisationToolPermissionScalarWhereInput[]
+  }
+
+  export type ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ComposioConnectedAccountCreateWithoutOrganizationInput, ComposioConnectedAccountUncheckedCreateWithoutOrganizationInput> | ComposioConnectedAccountCreateWithoutOrganizationInput[] | ComposioConnectedAccountUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ComposioConnectedAccountCreateOrConnectWithoutOrganizationInput | ComposioConnectedAccountCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ComposioConnectedAccountUpsertWithWhereUniqueWithoutOrganizationInput | ComposioConnectedAccountUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ComposioConnectedAccountCreateManyOrganizationInputEnvelope
+    set?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    disconnect?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    delete?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    connect?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    update?: ComposioConnectedAccountUpdateWithWhereUniqueWithoutOrganizationInput | ComposioConnectedAccountUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ComposioConnectedAccountUpdateManyWithWhereWithoutOrganizationInput | ComposioConnectedAccountUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ComposioConnectedAccountScalarWhereInput | ComposioConnectedAccountScalarWhereInput[]
+  }
+
+  export type ComposioTriggerUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ComposioTriggerCreateWithoutOrganizationInput, ComposioTriggerUncheckedCreateWithoutOrganizationInput> | ComposioTriggerCreateWithoutOrganizationInput[] | ComposioTriggerUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ComposioTriggerCreateOrConnectWithoutOrganizationInput | ComposioTriggerCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ComposioTriggerUpsertWithWhereUniqueWithoutOrganizationInput | ComposioTriggerUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ComposioTriggerCreateManyOrganizationInputEnvelope
+    set?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    disconnect?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    delete?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    connect?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    update?: ComposioTriggerUpdateWithWhereUniqueWithoutOrganizationInput | ComposioTriggerUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ComposioTriggerUpdateManyWithWhereWithoutOrganizationInput | ComposioTriggerUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ComposioTriggerScalarWhereInput | ComposioTriggerScalarWhereInput[]
   }
 
   export type AiProviderUpdateManyWithoutOrganizationNestedInput = {
@@ -31704,6 +43190,62 @@ export namespace Prisma {
     update?: IntegrationUpdateWithWhereUniqueWithoutOrganizationInput | IntegrationUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: IntegrationUpdateManyWithWhereWithoutOrganizationInput | IntegrationUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: IntegrationScalarWhereInput | IntegrationScalarWhereInput[]
+  }
+
+  export type OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<OrganisationEnabledToolkitCreateWithoutOrganizationInput, OrganisationEnabledToolkitUncheckedCreateWithoutOrganizationInput> | OrganisationEnabledToolkitCreateWithoutOrganizationInput[] | OrganisationEnabledToolkitUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: OrganisationEnabledToolkitCreateOrConnectWithoutOrganizationInput | OrganisationEnabledToolkitCreateOrConnectWithoutOrganizationInput[]
+    upsert?: OrganisationEnabledToolkitUpsertWithWhereUniqueWithoutOrganizationInput | OrganisationEnabledToolkitUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: OrganisationEnabledToolkitCreateManyOrganizationInputEnvelope
+    set?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    disconnect?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    delete?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    connect?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    update?: OrganisationEnabledToolkitUpdateWithWhereUniqueWithoutOrganizationInput | OrganisationEnabledToolkitUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: OrganisationEnabledToolkitUpdateManyWithWhereWithoutOrganizationInput | OrganisationEnabledToolkitUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: OrganisationEnabledToolkitScalarWhereInput | OrganisationEnabledToolkitScalarWhereInput[]
+  }
+
+  export type OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<OrganisationToolPermissionCreateWithoutOrganizationInput, OrganisationToolPermissionUncheckedCreateWithoutOrganizationInput> | OrganisationToolPermissionCreateWithoutOrganizationInput[] | OrganisationToolPermissionUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: OrganisationToolPermissionCreateOrConnectWithoutOrganizationInput | OrganisationToolPermissionCreateOrConnectWithoutOrganizationInput[]
+    upsert?: OrganisationToolPermissionUpsertWithWhereUniqueWithoutOrganizationInput | OrganisationToolPermissionUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: OrganisationToolPermissionCreateManyOrganizationInputEnvelope
+    set?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    disconnect?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    delete?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    connect?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    update?: OrganisationToolPermissionUpdateWithWhereUniqueWithoutOrganizationInput | OrganisationToolPermissionUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: OrganisationToolPermissionUpdateManyWithWhereWithoutOrganizationInput | OrganisationToolPermissionUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: OrganisationToolPermissionScalarWhereInput | OrganisationToolPermissionScalarWhereInput[]
+  }
+
+  export type ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ComposioConnectedAccountCreateWithoutOrganizationInput, ComposioConnectedAccountUncheckedCreateWithoutOrganizationInput> | ComposioConnectedAccountCreateWithoutOrganizationInput[] | ComposioConnectedAccountUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ComposioConnectedAccountCreateOrConnectWithoutOrganizationInput | ComposioConnectedAccountCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ComposioConnectedAccountUpsertWithWhereUniqueWithoutOrganizationInput | ComposioConnectedAccountUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ComposioConnectedAccountCreateManyOrganizationInputEnvelope
+    set?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    disconnect?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    delete?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    connect?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    update?: ComposioConnectedAccountUpdateWithWhereUniqueWithoutOrganizationInput | ComposioConnectedAccountUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ComposioConnectedAccountUpdateManyWithWhereWithoutOrganizationInput | ComposioConnectedAccountUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ComposioConnectedAccountScalarWhereInput | ComposioConnectedAccountScalarWhereInput[]
+  }
+
+  export type ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ComposioTriggerCreateWithoutOrganizationInput, ComposioTriggerUncheckedCreateWithoutOrganizationInput> | ComposioTriggerCreateWithoutOrganizationInput[] | ComposioTriggerUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ComposioTriggerCreateOrConnectWithoutOrganizationInput | ComposioTriggerCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ComposioTriggerUpsertWithWhereUniqueWithoutOrganizationInput | ComposioTriggerUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ComposioTriggerCreateManyOrganizationInputEnvelope
+    set?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    disconnect?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    delete?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    connect?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    update?: ComposioTriggerUpdateWithWhereUniqueWithoutOrganizationInput | ComposioTriggerUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ComposioTriggerUpdateManyWithWhereWithoutOrganizationInput | ComposioTriggerUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ComposioTriggerScalarWhereInput | ComposioTriggerScalarWhereInput[]
   }
 
   export type AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput = {
@@ -32293,6 +43835,376 @@ export namespace Prisma {
     upsert?: IntegrationUpsertWithoutActionsInput
     connect?: IntegrationWhereUniqueInput
     update?: XOR<XOR<IntegrationUpdateToOneWithWhereWithoutActionsInput, IntegrationUpdateWithoutActionsInput>, IntegrationUncheckedUpdateWithoutActionsInput>
+  }
+
+  export type ComposioToolkitCreatecategoriesInput = {
+    set: string[]
+  }
+
+  export type ComposioToolkitToolCreateNestedManyWithoutToolkitInput = {
+    create?: XOR<ComposioToolkitToolCreateWithoutToolkitInput, ComposioToolkitToolUncheckedCreateWithoutToolkitInput> | ComposioToolkitToolCreateWithoutToolkitInput[] | ComposioToolkitToolUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: ComposioToolkitToolCreateOrConnectWithoutToolkitInput | ComposioToolkitToolCreateOrConnectWithoutToolkitInput[]
+    createMany?: ComposioToolkitToolCreateManyToolkitInputEnvelope
+    connect?: ComposioToolkitToolWhereUniqueInput | ComposioToolkitToolWhereUniqueInput[]
+  }
+
+  export type OrganisationEnabledToolkitCreateNestedManyWithoutToolkitInput = {
+    create?: XOR<OrganisationEnabledToolkitCreateWithoutToolkitInput, OrganisationEnabledToolkitUncheckedCreateWithoutToolkitInput> | OrganisationEnabledToolkitCreateWithoutToolkitInput[] | OrganisationEnabledToolkitUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: OrganisationEnabledToolkitCreateOrConnectWithoutToolkitInput | OrganisationEnabledToolkitCreateOrConnectWithoutToolkitInput[]
+    createMany?: OrganisationEnabledToolkitCreateManyToolkitInputEnvelope
+    connect?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+  }
+
+  export type ComposioConnectedAccountCreateNestedManyWithoutToolkitInput = {
+    create?: XOR<ComposioConnectedAccountCreateWithoutToolkitInput, ComposioConnectedAccountUncheckedCreateWithoutToolkitInput> | ComposioConnectedAccountCreateWithoutToolkitInput[] | ComposioConnectedAccountUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: ComposioConnectedAccountCreateOrConnectWithoutToolkitInput | ComposioConnectedAccountCreateOrConnectWithoutToolkitInput[]
+    createMany?: ComposioConnectedAccountCreateManyToolkitInputEnvelope
+    connect?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+  }
+
+  export type ComposioTriggerCreateNestedManyWithoutToolkitInput = {
+    create?: XOR<ComposioTriggerCreateWithoutToolkitInput, ComposioTriggerUncheckedCreateWithoutToolkitInput> | ComposioTriggerCreateWithoutToolkitInput[] | ComposioTriggerUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: ComposioTriggerCreateOrConnectWithoutToolkitInput | ComposioTriggerCreateOrConnectWithoutToolkitInput[]
+    createMany?: ComposioTriggerCreateManyToolkitInputEnvelope
+    connect?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+  }
+
+  export type ComposioToolkitToolUncheckedCreateNestedManyWithoutToolkitInput = {
+    create?: XOR<ComposioToolkitToolCreateWithoutToolkitInput, ComposioToolkitToolUncheckedCreateWithoutToolkitInput> | ComposioToolkitToolCreateWithoutToolkitInput[] | ComposioToolkitToolUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: ComposioToolkitToolCreateOrConnectWithoutToolkitInput | ComposioToolkitToolCreateOrConnectWithoutToolkitInput[]
+    createMany?: ComposioToolkitToolCreateManyToolkitInputEnvelope
+    connect?: ComposioToolkitToolWhereUniqueInput | ComposioToolkitToolWhereUniqueInput[]
+  }
+
+  export type OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutToolkitInput = {
+    create?: XOR<OrganisationEnabledToolkitCreateWithoutToolkitInput, OrganisationEnabledToolkitUncheckedCreateWithoutToolkitInput> | OrganisationEnabledToolkitCreateWithoutToolkitInput[] | OrganisationEnabledToolkitUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: OrganisationEnabledToolkitCreateOrConnectWithoutToolkitInput | OrganisationEnabledToolkitCreateOrConnectWithoutToolkitInput[]
+    createMany?: OrganisationEnabledToolkitCreateManyToolkitInputEnvelope
+    connect?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+  }
+
+  export type ComposioConnectedAccountUncheckedCreateNestedManyWithoutToolkitInput = {
+    create?: XOR<ComposioConnectedAccountCreateWithoutToolkitInput, ComposioConnectedAccountUncheckedCreateWithoutToolkitInput> | ComposioConnectedAccountCreateWithoutToolkitInput[] | ComposioConnectedAccountUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: ComposioConnectedAccountCreateOrConnectWithoutToolkitInput | ComposioConnectedAccountCreateOrConnectWithoutToolkitInput[]
+    createMany?: ComposioConnectedAccountCreateManyToolkitInputEnvelope
+    connect?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+  }
+
+  export type ComposioTriggerUncheckedCreateNestedManyWithoutToolkitInput = {
+    create?: XOR<ComposioTriggerCreateWithoutToolkitInput, ComposioTriggerUncheckedCreateWithoutToolkitInput> | ComposioTriggerCreateWithoutToolkitInput[] | ComposioTriggerUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: ComposioTriggerCreateOrConnectWithoutToolkitInput | ComposioTriggerCreateOrConnectWithoutToolkitInput[]
+    createMany?: ComposioTriggerCreateManyToolkitInputEnvelope
+    connect?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+  }
+
+  export type ComposioToolkitUpdatecategoriesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type EnumComposioConnectionTierFieldUpdateOperationsInput = {
+    set?: $Enums.ComposioConnectionTier
+  }
+
+  export type ComposioToolkitToolUpdateManyWithoutToolkitNestedInput = {
+    create?: XOR<ComposioToolkitToolCreateWithoutToolkitInput, ComposioToolkitToolUncheckedCreateWithoutToolkitInput> | ComposioToolkitToolCreateWithoutToolkitInput[] | ComposioToolkitToolUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: ComposioToolkitToolCreateOrConnectWithoutToolkitInput | ComposioToolkitToolCreateOrConnectWithoutToolkitInput[]
+    upsert?: ComposioToolkitToolUpsertWithWhereUniqueWithoutToolkitInput | ComposioToolkitToolUpsertWithWhereUniqueWithoutToolkitInput[]
+    createMany?: ComposioToolkitToolCreateManyToolkitInputEnvelope
+    set?: ComposioToolkitToolWhereUniqueInput | ComposioToolkitToolWhereUniqueInput[]
+    disconnect?: ComposioToolkitToolWhereUniqueInput | ComposioToolkitToolWhereUniqueInput[]
+    delete?: ComposioToolkitToolWhereUniqueInput | ComposioToolkitToolWhereUniqueInput[]
+    connect?: ComposioToolkitToolWhereUniqueInput | ComposioToolkitToolWhereUniqueInput[]
+    update?: ComposioToolkitToolUpdateWithWhereUniqueWithoutToolkitInput | ComposioToolkitToolUpdateWithWhereUniqueWithoutToolkitInput[]
+    updateMany?: ComposioToolkitToolUpdateManyWithWhereWithoutToolkitInput | ComposioToolkitToolUpdateManyWithWhereWithoutToolkitInput[]
+    deleteMany?: ComposioToolkitToolScalarWhereInput | ComposioToolkitToolScalarWhereInput[]
+  }
+
+  export type OrganisationEnabledToolkitUpdateManyWithoutToolkitNestedInput = {
+    create?: XOR<OrganisationEnabledToolkitCreateWithoutToolkitInput, OrganisationEnabledToolkitUncheckedCreateWithoutToolkitInput> | OrganisationEnabledToolkitCreateWithoutToolkitInput[] | OrganisationEnabledToolkitUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: OrganisationEnabledToolkitCreateOrConnectWithoutToolkitInput | OrganisationEnabledToolkitCreateOrConnectWithoutToolkitInput[]
+    upsert?: OrganisationEnabledToolkitUpsertWithWhereUniqueWithoutToolkitInput | OrganisationEnabledToolkitUpsertWithWhereUniqueWithoutToolkitInput[]
+    createMany?: OrganisationEnabledToolkitCreateManyToolkitInputEnvelope
+    set?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    disconnect?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    delete?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    connect?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    update?: OrganisationEnabledToolkitUpdateWithWhereUniqueWithoutToolkitInput | OrganisationEnabledToolkitUpdateWithWhereUniqueWithoutToolkitInput[]
+    updateMany?: OrganisationEnabledToolkitUpdateManyWithWhereWithoutToolkitInput | OrganisationEnabledToolkitUpdateManyWithWhereWithoutToolkitInput[]
+    deleteMany?: OrganisationEnabledToolkitScalarWhereInput | OrganisationEnabledToolkitScalarWhereInput[]
+  }
+
+  export type ComposioConnectedAccountUpdateManyWithoutToolkitNestedInput = {
+    create?: XOR<ComposioConnectedAccountCreateWithoutToolkitInput, ComposioConnectedAccountUncheckedCreateWithoutToolkitInput> | ComposioConnectedAccountCreateWithoutToolkitInput[] | ComposioConnectedAccountUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: ComposioConnectedAccountCreateOrConnectWithoutToolkitInput | ComposioConnectedAccountCreateOrConnectWithoutToolkitInput[]
+    upsert?: ComposioConnectedAccountUpsertWithWhereUniqueWithoutToolkitInput | ComposioConnectedAccountUpsertWithWhereUniqueWithoutToolkitInput[]
+    createMany?: ComposioConnectedAccountCreateManyToolkitInputEnvelope
+    set?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    disconnect?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    delete?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    connect?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    update?: ComposioConnectedAccountUpdateWithWhereUniqueWithoutToolkitInput | ComposioConnectedAccountUpdateWithWhereUniqueWithoutToolkitInput[]
+    updateMany?: ComposioConnectedAccountUpdateManyWithWhereWithoutToolkitInput | ComposioConnectedAccountUpdateManyWithWhereWithoutToolkitInput[]
+    deleteMany?: ComposioConnectedAccountScalarWhereInput | ComposioConnectedAccountScalarWhereInput[]
+  }
+
+  export type ComposioTriggerUpdateManyWithoutToolkitNestedInput = {
+    create?: XOR<ComposioTriggerCreateWithoutToolkitInput, ComposioTriggerUncheckedCreateWithoutToolkitInput> | ComposioTriggerCreateWithoutToolkitInput[] | ComposioTriggerUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: ComposioTriggerCreateOrConnectWithoutToolkitInput | ComposioTriggerCreateOrConnectWithoutToolkitInput[]
+    upsert?: ComposioTriggerUpsertWithWhereUniqueWithoutToolkitInput | ComposioTriggerUpsertWithWhereUniqueWithoutToolkitInput[]
+    createMany?: ComposioTriggerCreateManyToolkitInputEnvelope
+    set?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    disconnect?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    delete?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    connect?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    update?: ComposioTriggerUpdateWithWhereUniqueWithoutToolkitInput | ComposioTriggerUpdateWithWhereUniqueWithoutToolkitInput[]
+    updateMany?: ComposioTriggerUpdateManyWithWhereWithoutToolkitInput | ComposioTriggerUpdateManyWithWhereWithoutToolkitInput[]
+    deleteMany?: ComposioTriggerScalarWhereInput | ComposioTriggerScalarWhereInput[]
+  }
+
+  export type ComposioToolkitToolUncheckedUpdateManyWithoutToolkitNestedInput = {
+    create?: XOR<ComposioToolkitToolCreateWithoutToolkitInput, ComposioToolkitToolUncheckedCreateWithoutToolkitInput> | ComposioToolkitToolCreateWithoutToolkitInput[] | ComposioToolkitToolUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: ComposioToolkitToolCreateOrConnectWithoutToolkitInput | ComposioToolkitToolCreateOrConnectWithoutToolkitInput[]
+    upsert?: ComposioToolkitToolUpsertWithWhereUniqueWithoutToolkitInput | ComposioToolkitToolUpsertWithWhereUniqueWithoutToolkitInput[]
+    createMany?: ComposioToolkitToolCreateManyToolkitInputEnvelope
+    set?: ComposioToolkitToolWhereUniqueInput | ComposioToolkitToolWhereUniqueInput[]
+    disconnect?: ComposioToolkitToolWhereUniqueInput | ComposioToolkitToolWhereUniqueInput[]
+    delete?: ComposioToolkitToolWhereUniqueInput | ComposioToolkitToolWhereUniqueInput[]
+    connect?: ComposioToolkitToolWhereUniqueInput | ComposioToolkitToolWhereUniqueInput[]
+    update?: ComposioToolkitToolUpdateWithWhereUniqueWithoutToolkitInput | ComposioToolkitToolUpdateWithWhereUniqueWithoutToolkitInput[]
+    updateMany?: ComposioToolkitToolUpdateManyWithWhereWithoutToolkitInput | ComposioToolkitToolUpdateManyWithWhereWithoutToolkitInput[]
+    deleteMany?: ComposioToolkitToolScalarWhereInput | ComposioToolkitToolScalarWhereInput[]
+  }
+
+  export type OrganisationEnabledToolkitUncheckedUpdateManyWithoutToolkitNestedInput = {
+    create?: XOR<OrganisationEnabledToolkitCreateWithoutToolkitInput, OrganisationEnabledToolkitUncheckedCreateWithoutToolkitInput> | OrganisationEnabledToolkitCreateWithoutToolkitInput[] | OrganisationEnabledToolkitUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: OrganisationEnabledToolkitCreateOrConnectWithoutToolkitInput | OrganisationEnabledToolkitCreateOrConnectWithoutToolkitInput[]
+    upsert?: OrganisationEnabledToolkitUpsertWithWhereUniqueWithoutToolkitInput | OrganisationEnabledToolkitUpsertWithWhereUniqueWithoutToolkitInput[]
+    createMany?: OrganisationEnabledToolkitCreateManyToolkitInputEnvelope
+    set?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    disconnect?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    delete?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    connect?: OrganisationEnabledToolkitWhereUniqueInput | OrganisationEnabledToolkitWhereUniqueInput[]
+    update?: OrganisationEnabledToolkitUpdateWithWhereUniqueWithoutToolkitInput | OrganisationEnabledToolkitUpdateWithWhereUniqueWithoutToolkitInput[]
+    updateMany?: OrganisationEnabledToolkitUpdateManyWithWhereWithoutToolkitInput | OrganisationEnabledToolkitUpdateManyWithWhereWithoutToolkitInput[]
+    deleteMany?: OrganisationEnabledToolkitScalarWhereInput | OrganisationEnabledToolkitScalarWhereInput[]
+  }
+
+  export type ComposioConnectedAccountUncheckedUpdateManyWithoutToolkitNestedInput = {
+    create?: XOR<ComposioConnectedAccountCreateWithoutToolkitInput, ComposioConnectedAccountUncheckedCreateWithoutToolkitInput> | ComposioConnectedAccountCreateWithoutToolkitInput[] | ComposioConnectedAccountUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: ComposioConnectedAccountCreateOrConnectWithoutToolkitInput | ComposioConnectedAccountCreateOrConnectWithoutToolkitInput[]
+    upsert?: ComposioConnectedAccountUpsertWithWhereUniqueWithoutToolkitInput | ComposioConnectedAccountUpsertWithWhereUniqueWithoutToolkitInput[]
+    createMany?: ComposioConnectedAccountCreateManyToolkitInputEnvelope
+    set?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    disconnect?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    delete?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    connect?: ComposioConnectedAccountWhereUniqueInput | ComposioConnectedAccountWhereUniqueInput[]
+    update?: ComposioConnectedAccountUpdateWithWhereUniqueWithoutToolkitInput | ComposioConnectedAccountUpdateWithWhereUniqueWithoutToolkitInput[]
+    updateMany?: ComposioConnectedAccountUpdateManyWithWhereWithoutToolkitInput | ComposioConnectedAccountUpdateManyWithWhereWithoutToolkitInput[]
+    deleteMany?: ComposioConnectedAccountScalarWhereInput | ComposioConnectedAccountScalarWhereInput[]
+  }
+
+  export type ComposioTriggerUncheckedUpdateManyWithoutToolkitNestedInput = {
+    create?: XOR<ComposioTriggerCreateWithoutToolkitInput, ComposioTriggerUncheckedCreateWithoutToolkitInput> | ComposioTriggerCreateWithoutToolkitInput[] | ComposioTriggerUncheckedCreateWithoutToolkitInput[]
+    connectOrCreate?: ComposioTriggerCreateOrConnectWithoutToolkitInput | ComposioTriggerCreateOrConnectWithoutToolkitInput[]
+    upsert?: ComposioTriggerUpsertWithWhereUniqueWithoutToolkitInput | ComposioTriggerUpsertWithWhereUniqueWithoutToolkitInput[]
+    createMany?: ComposioTriggerCreateManyToolkitInputEnvelope
+    set?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    disconnect?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    delete?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    connect?: ComposioTriggerWhereUniqueInput | ComposioTriggerWhereUniqueInput[]
+    update?: ComposioTriggerUpdateWithWhereUniqueWithoutToolkitInput | ComposioTriggerUpdateWithWhereUniqueWithoutToolkitInput[]
+    updateMany?: ComposioTriggerUpdateManyWithWhereWithoutToolkitInput | ComposioTriggerUpdateManyWithWhereWithoutToolkitInput[]
+    deleteMany?: ComposioTriggerScalarWhereInput | ComposioTriggerScalarWhereInput[]
+  }
+
+  export type ComposioToolkitToolCreatetagsInput = {
+    set: string[]
+  }
+
+  export type ComposioToolkitCreateNestedOneWithoutToolsInput = {
+    create?: XOR<ComposioToolkitCreateWithoutToolsInput, ComposioToolkitUncheckedCreateWithoutToolsInput>
+    connectOrCreate?: ComposioToolkitCreateOrConnectWithoutToolsInput
+    connect?: ComposioToolkitWhereUniqueInput
+  }
+
+  export type OrganisationToolPermissionCreateNestedManyWithoutToolInput = {
+    create?: XOR<OrganisationToolPermissionCreateWithoutToolInput, OrganisationToolPermissionUncheckedCreateWithoutToolInput> | OrganisationToolPermissionCreateWithoutToolInput[] | OrganisationToolPermissionUncheckedCreateWithoutToolInput[]
+    connectOrCreate?: OrganisationToolPermissionCreateOrConnectWithoutToolInput | OrganisationToolPermissionCreateOrConnectWithoutToolInput[]
+    createMany?: OrganisationToolPermissionCreateManyToolInputEnvelope
+    connect?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+  }
+
+  export type OrganisationToolPermissionUncheckedCreateNestedManyWithoutToolInput = {
+    create?: XOR<OrganisationToolPermissionCreateWithoutToolInput, OrganisationToolPermissionUncheckedCreateWithoutToolInput> | OrganisationToolPermissionCreateWithoutToolInput[] | OrganisationToolPermissionUncheckedCreateWithoutToolInput[]
+    connectOrCreate?: OrganisationToolPermissionCreateOrConnectWithoutToolInput | OrganisationToolPermissionCreateOrConnectWithoutToolInput[]
+    createMany?: OrganisationToolPermissionCreateManyToolInputEnvelope
+    connect?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+  }
+
+  export type ComposioToolkitToolUpdatetagsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ComposioToolkitUpdateOneRequiredWithoutToolsNestedInput = {
+    create?: XOR<ComposioToolkitCreateWithoutToolsInput, ComposioToolkitUncheckedCreateWithoutToolsInput>
+    connectOrCreate?: ComposioToolkitCreateOrConnectWithoutToolsInput
+    upsert?: ComposioToolkitUpsertWithoutToolsInput
+    connect?: ComposioToolkitWhereUniqueInput
+    update?: XOR<XOR<ComposioToolkitUpdateToOneWithWhereWithoutToolsInput, ComposioToolkitUpdateWithoutToolsInput>, ComposioToolkitUncheckedUpdateWithoutToolsInput>
+  }
+
+  export type OrganisationToolPermissionUpdateManyWithoutToolNestedInput = {
+    create?: XOR<OrganisationToolPermissionCreateWithoutToolInput, OrganisationToolPermissionUncheckedCreateWithoutToolInput> | OrganisationToolPermissionCreateWithoutToolInput[] | OrganisationToolPermissionUncheckedCreateWithoutToolInput[]
+    connectOrCreate?: OrganisationToolPermissionCreateOrConnectWithoutToolInput | OrganisationToolPermissionCreateOrConnectWithoutToolInput[]
+    upsert?: OrganisationToolPermissionUpsertWithWhereUniqueWithoutToolInput | OrganisationToolPermissionUpsertWithWhereUniqueWithoutToolInput[]
+    createMany?: OrganisationToolPermissionCreateManyToolInputEnvelope
+    set?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    disconnect?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    delete?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    connect?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    update?: OrganisationToolPermissionUpdateWithWhereUniqueWithoutToolInput | OrganisationToolPermissionUpdateWithWhereUniqueWithoutToolInput[]
+    updateMany?: OrganisationToolPermissionUpdateManyWithWhereWithoutToolInput | OrganisationToolPermissionUpdateManyWithWhereWithoutToolInput[]
+    deleteMany?: OrganisationToolPermissionScalarWhereInput | OrganisationToolPermissionScalarWhereInput[]
+  }
+
+  export type OrganisationToolPermissionUncheckedUpdateManyWithoutToolNestedInput = {
+    create?: XOR<OrganisationToolPermissionCreateWithoutToolInput, OrganisationToolPermissionUncheckedCreateWithoutToolInput> | OrganisationToolPermissionCreateWithoutToolInput[] | OrganisationToolPermissionUncheckedCreateWithoutToolInput[]
+    connectOrCreate?: OrganisationToolPermissionCreateOrConnectWithoutToolInput | OrganisationToolPermissionCreateOrConnectWithoutToolInput[]
+    upsert?: OrganisationToolPermissionUpsertWithWhereUniqueWithoutToolInput | OrganisationToolPermissionUpsertWithWhereUniqueWithoutToolInput[]
+    createMany?: OrganisationToolPermissionCreateManyToolInputEnvelope
+    set?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    disconnect?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    delete?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    connect?: OrganisationToolPermissionWhereUniqueInput | OrganisationToolPermissionWhereUniqueInput[]
+    update?: OrganisationToolPermissionUpdateWithWhereUniqueWithoutToolInput | OrganisationToolPermissionUpdateWithWhereUniqueWithoutToolInput[]
+    updateMany?: OrganisationToolPermissionUpdateManyWithWhereWithoutToolInput | OrganisationToolPermissionUpdateManyWithWhereWithoutToolInput[]
+    deleteMany?: OrganisationToolPermissionScalarWhereInput | OrganisationToolPermissionScalarWhereInput[]
+  }
+
+  export type EnumComposioSyncTypeFieldUpdateOperationsInput = {
+    set?: $Enums.ComposioSyncType
+  }
+
+  export type EnumComposioSyncStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ComposioSyncStatus
+  }
+
+  export type OrganizationCreateNestedOneWithoutEnabled_toolkitsInput = {
+    create?: XOR<OrganizationCreateWithoutEnabled_toolkitsInput, OrganizationUncheckedCreateWithoutEnabled_toolkitsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutEnabled_toolkitsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type ComposioToolkitCreateNestedOneWithoutEnabled_orgsInput = {
+    create?: XOR<ComposioToolkitCreateWithoutEnabled_orgsInput, ComposioToolkitUncheckedCreateWithoutEnabled_orgsInput>
+    connectOrCreate?: ComposioToolkitCreateOrConnectWithoutEnabled_orgsInput
+    connect?: ComposioToolkitWhereUniqueInput
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutEnabled_toolkitsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutEnabled_toolkitsInput, OrganizationUncheckedCreateWithoutEnabled_toolkitsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutEnabled_toolkitsInput
+    upsert?: OrganizationUpsertWithoutEnabled_toolkitsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutEnabled_toolkitsInput, OrganizationUpdateWithoutEnabled_toolkitsInput>, OrganizationUncheckedUpdateWithoutEnabled_toolkitsInput>
+  }
+
+  export type ComposioToolkitUpdateOneRequiredWithoutEnabled_orgsNestedInput = {
+    create?: XOR<ComposioToolkitCreateWithoutEnabled_orgsInput, ComposioToolkitUncheckedCreateWithoutEnabled_orgsInput>
+    connectOrCreate?: ComposioToolkitCreateOrConnectWithoutEnabled_orgsInput
+    upsert?: ComposioToolkitUpsertWithoutEnabled_orgsInput
+    connect?: ComposioToolkitWhereUniqueInput
+    update?: XOR<XOR<ComposioToolkitUpdateToOneWithWhereWithoutEnabled_orgsInput, ComposioToolkitUpdateWithoutEnabled_orgsInput>, ComposioToolkitUncheckedUpdateWithoutEnabled_orgsInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutTool_permissionsInput = {
+    create?: XOR<OrganizationCreateWithoutTool_permissionsInput, OrganizationUncheckedCreateWithoutTool_permissionsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutTool_permissionsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type ComposioToolkitToolCreateNestedOneWithoutPermissionsInput = {
+    create?: XOR<ComposioToolkitToolCreateWithoutPermissionsInput, ComposioToolkitToolUncheckedCreateWithoutPermissionsInput>
+    connectOrCreate?: ComposioToolkitToolCreateOrConnectWithoutPermissionsInput
+    connect?: ComposioToolkitToolWhereUniqueInput
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutTool_permissionsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutTool_permissionsInput, OrganizationUncheckedCreateWithoutTool_permissionsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutTool_permissionsInput
+    upsert?: OrganizationUpsertWithoutTool_permissionsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutTool_permissionsInput, OrganizationUpdateWithoutTool_permissionsInput>, OrganizationUncheckedUpdateWithoutTool_permissionsInput>
+  }
+
+  export type ComposioToolkitToolUpdateOneRequiredWithoutPermissionsNestedInput = {
+    create?: XOR<ComposioToolkitToolCreateWithoutPermissionsInput, ComposioToolkitToolUncheckedCreateWithoutPermissionsInput>
+    connectOrCreate?: ComposioToolkitToolCreateOrConnectWithoutPermissionsInput
+    upsert?: ComposioToolkitToolUpsertWithoutPermissionsInput
+    connect?: ComposioToolkitToolWhereUniqueInput
+    update?: XOR<XOR<ComposioToolkitToolUpdateToOneWithWhereWithoutPermissionsInput, ComposioToolkitToolUpdateWithoutPermissionsInput>, ComposioToolkitToolUncheckedUpdateWithoutPermissionsInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutComposio_accountsInput = {
+    create?: XOR<OrganizationCreateWithoutComposio_accountsInput, OrganizationUncheckedCreateWithoutComposio_accountsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutComposio_accountsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type ComposioToolkitCreateNestedOneWithoutConnected_accountsInput = {
+    create?: XOR<ComposioToolkitCreateWithoutConnected_accountsInput, ComposioToolkitUncheckedCreateWithoutConnected_accountsInput>
+    connectOrCreate?: ComposioToolkitCreateOrConnectWithoutConnected_accountsInput
+    connect?: ComposioToolkitWhereUniqueInput
+  }
+
+  export type EnumComposioAccountStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ComposioAccountStatus
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutComposio_accountsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutComposio_accountsInput, OrganizationUncheckedCreateWithoutComposio_accountsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutComposio_accountsInput
+    upsert?: OrganizationUpsertWithoutComposio_accountsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutComposio_accountsInput, OrganizationUpdateWithoutComposio_accountsInput>, OrganizationUncheckedUpdateWithoutComposio_accountsInput>
+  }
+
+  export type ComposioToolkitUpdateOneRequiredWithoutConnected_accountsNestedInput = {
+    create?: XOR<ComposioToolkitCreateWithoutConnected_accountsInput, ComposioToolkitUncheckedCreateWithoutConnected_accountsInput>
+    connectOrCreate?: ComposioToolkitCreateOrConnectWithoutConnected_accountsInput
+    upsert?: ComposioToolkitUpsertWithoutConnected_accountsInput
+    connect?: ComposioToolkitWhereUniqueInput
+    update?: XOR<XOR<ComposioToolkitUpdateToOneWithWhereWithoutConnected_accountsInput, ComposioToolkitUpdateWithoutConnected_accountsInput>, ComposioToolkitUncheckedUpdateWithoutConnected_accountsInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutComposio_triggersInput = {
+    create?: XOR<OrganizationCreateWithoutComposio_triggersInput, OrganizationUncheckedCreateWithoutComposio_triggersInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutComposio_triggersInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type ComposioToolkitCreateNestedOneWithoutTriggersInput = {
+    create?: XOR<ComposioToolkitCreateWithoutTriggersInput, ComposioToolkitUncheckedCreateWithoutTriggersInput>
+    connectOrCreate?: ComposioToolkitCreateOrConnectWithoutTriggersInput
+    connect?: ComposioToolkitWhereUniqueInput
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutComposio_triggersNestedInput = {
+    create?: XOR<OrganizationCreateWithoutComposio_triggersInput, OrganizationUncheckedCreateWithoutComposio_triggersInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutComposio_triggersInput
+    upsert?: OrganizationUpsertWithoutComposio_triggersInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutComposio_triggersInput, OrganizationUpdateWithoutComposio_triggersInput>, OrganizationUncheckedUpdateWithoutComposio_triggersInput>
+  }
+
+  export type ComposioToolkitUpdateOneRequiredWithoutTriggersNestedInput = {
+    create?: XOR<ComposioToolkitCreateWithoutTriggersInput, ComposioToolkitUncheckedCreateWithoutTriggersInput>
+    connectOrCreate?: ComposioToolkitCreateOrConnectWithoutTriggersInput
+    upsert?: ComposioToolkitUpsertWithoutTriggersInput
+    connect?: ComposioToolkitWhereUniqueInput
+    update?: XOR<XOR<ComposioToolkitUpdateToOneWithWhereWithoutTriggersInput, ComposioToolkitUpdateWithoutTriggersInput>, ComposioToolkitUncheckedUpdateWithoutTriggersInput>
   }
 
   export type EnumDocumentTypeFieldUpdateOperationsInput = {
@@ -33041,6 +44953,74 @@ export namespace Prisma {
     _max?: NestedEnumMcpAuthTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumComposioConnectionTierFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioConnectionTier | EnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioConnectionTierFilter<$PrismaModel> | $Enums.ComposioConnectionTier
+  }
+
+  export type NestedEnumComposioConnectionTierWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioConnectionTier | EnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioConnectionTierWithAggregatesFilter<$PrismaModel> | $Enums.ComposioConnectionTier
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumComposioConnectionTierFilter<$PrismaModel>
+    _max?: NestedEnumComposioConnectionTierFilter<$PrismaModel>
+  }
+
+  export type NestedEnumComposioSyncTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioSyncType | EnumComposioSyncTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioSyncType[] | ListEnumComposioSyncTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioSyncType[] | ListEnumComposioSyncTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioSyncTypeFilter<$PrismaModel> | $Enums.ComposioSyncType
+  }
+
+  export type NestedEnumComposioSyncStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioSyncStatus | EnumComposioSyncStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioSyncStatus[] | ListEnumComposioSyncStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioSyncStatus[] | ListEnumComposioSyncStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioSyncStatusFilter<$PrismaModel> | $Enums.ComposioSyncStatus
+  }
+
+  export type NestedEnumComposioSyncTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioSyncType | EnumComposioSyncTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioSyncType[] | ListEnumComposioSyncTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioSyncType[] | ListEnumComposioSyncTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioSyncTypeWithAggregatesFilter<$PrismaModel> | $Enums.ComposioSyncType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumComposioSyncTypeFilter<$PrismaModel>
+    _max?: NestedEnumComposioSyncTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumComposioSyncStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioSyncStatus | EnumComposioSyncStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioSyncStatus[] | ListEnumComposioSyncStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioSyncStatus[] | ListEnumComposioSyncStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioSyncStatusWithAggregatesFilter<$PrismaModel> | $Enums.ComposioSyncStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumComposioSyncStatusFilter<$PrismaModel>
+    _max?: NestedEnumComposioSyncStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumComposioAccountStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioAccountStatus | EnumComposioAccountStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioAccountStatus[] | ListEnumComposioAccountStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioAccountStatus[] | ListEnumComposioAccountStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioAccountStatusFilter<$PrismaModel> | $Enums.ComposioAccountStatus
+  }
+
+  export type NestedEnumComposioAccountStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioAccountStatus | EnumComposioAccountStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ComposioAccountStatus[] | ListEnumComposioAccountStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ComposioAccountStatus[] | ListEnumComposioAccountStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumComposioAccountStatusWithAggregatesFilter<$PrismaModel> | $Enums.ComposioAccountStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumComposioAccountStatusFilter<$PrismaModel>
+    _max?: NestedEnumComposioAccountStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumDocumentTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.DocumentType | EnumDocumentTypeFieldRefInput<$PrismaModel>
     in?: $Enums.DocumentType[] | ListEnumDocumentTypeFieldRefInput<$PrismaModel>
@@ -33304,6 +45284,7 @@ export namespace Prisma {
   export type ConversationCreateWithoutUserInput = {
     uuid?: string
     title?: string | null
+    composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     organization: OrganizationCreateNestedOneWithoutConversationsInput
@@ -33316,6 +45297,7 @@ export namespace Prisma {
     uuid?: string
     org_uuid: string
     title?: string | null
+    composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
@@ -33500,6 +45482,7 @@ export namespace Prisma {
     org_uuid?: StringFilter<"Conversation"> | string
     user_uuid?: StringFilter<"Conversation"> | string
     title?: StringNullableFilter<"Conversation"> | string | null
+    composio_session_id?: StringNullableFilter<"Conversation"> | string | null
     created_at?: DateTimeFilter<"Conversation"> | Date | string
     updated_at?: DateTimeFilter<"Conversation"> | Date | string
   }
@@ -33707,6 +45690,140 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type OrganisationEnabledToolkitCreateWithoutOrganizationInput = {
+    uuid?: string
+    is_enabled?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    toolkit: ComposioToolkitCreateNestedOneWithoutEnabled_orgsInput
+  }
+
+  export type OrganisationEnabledToolkitUncheckedCreateWithoutOrganizationInput = {
+    id?: number
+    uuid?: string
+    toolkit_uuid: string
+    is_enabled?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OrganisationEnabledToolkitCreateOrConnectWithoutOrganizationInput = {
+    where: OrganisationEnabledToolkitWhereUniqueInput
+    create: XOR<OrganisationEnabledToolkitCreateWithoutOrganizationInput, OrganisationEnabledToolkitUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type OrganisationEnabledToolkitCreateManyOrganizationInputEnvelope = {
+    data: OrganisationEnabledToolkitCreateManyOrganizationInput | OrganisationEnabledToolkitCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganisationToolPermissionCreateWithoutOrganizationInput = {
+    uuid?: string
+    enabled?: boolean
+    requires_approval?: boolean
+    required_permission_key?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    tool: ComposioToolkitToolCreateNestedOneWithoutPermissionsInput
+  }
+
+  export type OrganisationToolPermissionUncheckedCreateWithoutOrganizationInput = {
+    id?: number
+    uuid?: string
+    tool_uuid: string
+    enabled?: boolean
+    requires_approval?: boolean
+    required_permission_key?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OrganisationToolPermissionCreateOrConnectWithoutOrganizationInput = {
+    where: OrganisationToolPermissionWhereUniqueInput
+    create: XOR<OrganisationToolPermissionCreateWithoutOrganizationInput, OrganisationToolPermissionUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type OrganisationToolPermissionCreateManyOrganizationInputEnvelope = {
+    data: OrganisationToolPermissionCreateManyOrganizationInput | OrganisationToolPermissionCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ComposioConnectedAccountCreateWithoutOrganizationInput = {
+    uuid?: string
+    composio_account_id: string
+    composio_user_id: string
+    user_uuid?: string | null
+    status?: $Enums.ComposioAccountStatus
+    account_label?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    toolkit: ComposioToolkitCreateNestedOneWithoutConnected_accountsInput
+  }
+
+  export type ComposioConnectedAccountUncheckedCreateWithoutOrganizationInput = {
+    id?: number
+    uuid?: string
+    composio_account_id: string
+    composio_user_id: string
+    user_uuid?: string | null
+    toolkit_uuid: string
+    status?: $Enums.ComposioAccountStatus
+    account_label?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioConnectedAccountCreateOrConnectWithoutOrganizationInput = {
+    where: ComposioConnectedAccountWhereUniqueInput
+    create: XOR<ComposioConnectedAccountCreateWithoutOrganizationInput, ComposioConnectedAccountUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ComposioConnectedAccountCreateManyOrganizationInputEnvelope = {
+    data: ComposioConnectedAccountCreateManyOrganizationInput | ComposioConnectedAccountCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ComposioTriggerCreateWithoutOrganizationInput = {
+    uuid?: string
+    composio_trigger_id: string
+    composio_user_id: string
+    trigger_slug: string
+    connected_account_id: string
+    is_enabled?: boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    toolkit: ComposioToolkitCreateNestedOneWithoutTriggersInput
+  }
+
+  export type ComposioTriggerUncheckedCreateWithoutOrganizationInput = {
+    id?: number
+    uuid?: string
+    composio_trigger_id: string
+    composio_user_id: string
+    toolkit_uuid: string
+    trigger_slug: string
+    connected_account_id: string
+    is_enabled?: boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioTriggerCreateOrConnectWithoutOrganizationInput = {
+    where: ComposioTriggerWhereUniqueInput
+    create: XOR<ComposioTriggerCreateWithoutOrganizationInput, ComposioTriggerUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ComposioTriggerCreateManyOrganizationInputEnvelope = {
+    data: ComposioTriggerCreateManyOrganizationInput | ComposioTriggerCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AiProviderCreateWithoutOrganizationInput = {
     uuid?: string
     provider: $Enums.AiProviderType
@@ -33747,6 +45864,7 @@ export namespace Prisma {
   export type ConversationCreateWithoutOrganizationInput = {
     uuid?: string
     title?: string | null
+    composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     user: UserCreateNestedOneWithoutConversationsInput
@@ -33759,6 +45877,7 @@ export namespace Prisma {
     uuid?: string
     user_uuid: string
     title?: string | null
+    composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
@@ -33949,6 +46068,135 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"Integration"> | Date | string
   }
 
+  export type OrganisationEnabledToolkitUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: OrganisationEnabledToolkitWhereUniqueInput
+    update: XOR<OrganisationEnabledToolkitUpdateWithoutOrganizationInput, OrganisationEnabledToolkitUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<OrganisationEnabledToolkitCreateWithoutOrganizationInput, OrganisationEnabledToolkitUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type OrganisationEnabledToolkitUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: OrganisationEnabledToolkitWhereUniqueInput
+    data: XOR<OrganisationEnabledToolkitUpdateWithoutOrganizationInput, OrganisationEnabledToolkitUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type OrganisationEnabledToolkitUpdateManyWithWhereWithoutOrganizationInput = {
+    where: OrganisationEnabledToolkitScalarWhereInput
+    data: XOR<OrganisationEnabledToolkitUpdateManyMutationInput, OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type OrganisationEnabledToolkitScalarWhereInput = {
+    AND?: OrganisationEnabledToolkitScalarWhereInput | OrganisationEnabledToolkitScalarWhereInput[]
+    OR?: OrganisationEnabledToolkitScalarWhereInput[]
+    NOT?: OrganisationEnabledToolkitScalarWhereInput | OrganisationEnabledToolkitScalarWhereInput[]
+    id?: IntFilter<"OrganisationEnabledToolkit"> | number
+    uuid?: StringFilter<"OrganisationEnabledToolkit"> | string
+    org_uuid?: StringFilter<"OrganisationEnabledToolkit"> | string
+    toolkit_uuid?: StringFilter<"OrganisationEnabledToolkit"> | string
+    is_enabled?: BoolFilter<"OrganisationEnabledToolkit"> | boolean
+    created_at?: DateTimeFilter<"OrganisationEnabledToolkit"> | Date | string
+    updated_at?: DateTimeFilter<"OrganisationEnabledToolkit"> | Date | string
+  }
+
+  export type OrganisationToolPermissionUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: OrganisationToolPermissionWhereUniqueInput
+    update: XOR<OrganisationToolPermissionUpdateWithoutOrganizationInput, OrganisationToolPermissionUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<OrganisationToolPermissionCreateWithoutOrganizationInput, OrganisationToolPermissionUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type OrganisationToolPermissionUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: OrganisationToolPermissionWhereUniqueInput
+    data: XOR<OrganisationToolPermissionUpdateWithoutOrganizationInput, OrganisationToolPermissionUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type OrganisationToolPermissionUpdateManyWithWhereWithoutOrganizationInput = {
+    where: OrganisationToolPermissionScalarWhereInput
+    data: XOR<OrganisationToolPermissionUpdateManyMutationInput, OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type OrganisationToolPermissionScalarWhereInput = {
+    AND?: OrganisationToolPermissionScalarWhereInput | OrganisationToolPermissionScalarWhereInput[]
+    OR?: OrganisationToolPermissionScalarWhereInput[]
+    NOT?: OrganisationToolPermissionScalarWhereInput | OrganisationToolPermissionScalarWhereInput[]
+    id?: IntFilter<"OrganisationToolPermission"> | number
+    uuid?: StringFilter<"OrganisationToolPermission"> | string
+    org_uuid?: StringFilter<"OrganisationToolPermission"> | string
+    tool_uuid?: StringFilter<"OrganisationToolPermission"> | string
+    enabled?: BoolFilter<"OrganisationToolPermission"> | boolean
+    requires_approval?: BoolFilter<"OrganisationToolPermission"> | boolean
+    required_permission_key?: StringNullableFilter<"OrganisationToolPermission"> | string | null
+    created_at?: DateTimeFilter<"OrganisationToolPermission"> | Date | string
+    updated_at?: DateTimeFilter<"OrganisationToolPermission"> | Date | string
+  }
+
+  export type ComposioConnectedAccountUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ComposioConnectedAccountWhereUniqueInput
+    update: XOR<ComposioConnectedAccountUpdateWithoutOrganizationInput, ComposioConnectedAccountUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ComposioConnectedAccountCreateWithoutOrganizationInput, ComposioConnectedAccountUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ComposioConnectedAccountUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ComposioConnectedAccountWhereUniqueInput
+    data: XOR<ComposioConnectedAccountUpdateWithoutOrganizationInput, ComposioConnectedAccountUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ComposioConnectedAccountUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ComposioConnectedAccountScalarWhereInput
+    data: XOR<ComposioConnectedAccountUpdateManyMutationInput, ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type ComposioConnectedAccountScalarWhereInput = {
+    AND?: ComposioConnectedAccountScalarWhereInput | ComposioConnectedAccountScalarWhereInput[]
+    OR?: ComposioConnectedAccountScalarWhereInput[]
+    NOT?: ComposioConnectedAccountScalarWhereInput | ComposioConnectedAccountScalarWhereInput[]
+    id?: IntFilter<"ComposioConnectedAccount"> | number
+    uuid?: StringFilter<"ComposioConnectedAccount"> | string
+    composio_account_id?: StringFilter<"ComposioConnectedAccount"> | string
+    composio_user_id?: StringFilter<"ComposioConnectedAccount"> | string
+    org_uuid?: StringFilter<"ComposioConnectedAccount"> | string
+    user_uuid?: StringNullableFilter<"ComposioConnectedAccount"> | string | null
+    toolkit_uuid?: StringFilter<"ComposioConnectedAccount"> | string
+    status?: EnumComposioAccountStatusFilter<"ComposioConnectedAccount"> | $Enums.ComposioAccountStatus
+    account_label?: StringNullableFilter<"ComposioConnectedAccount"> | string | null
+    last_synced_at?: DateTimeNullableFilter<"ComposioConnectedAccount"> | Date | string | null
+    created_at?: DateTimeFilter<"ComposioConnectedAccount"> | Date | string
+    updated_at?: DateTimeFilter<"ComposioConnectedAccount"> | Date | string
+  }
+
+  export type ComposioTriggerUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ComposioTriggerWhereUniqueInput
+    update: XOR<ComposioTriggerUpdateWithoutOrganizationInput, ComposioTriggerUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ComposioTriggerCreateWithoutOrganizationInput, ComposioTriggerUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ComposioTriggerUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ComposioTriggerWhereUniqueInput
+    data: XOR<ComposioTriggerUpdateWithoutOrganizationInput, ComposioTriggerUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ComposioTriggerUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ComposioTriggerScalarWhereInput
+    data: XOR<ComposioTriggerUpdateManyMutationInput, ComposioTriggerUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type ComposioTriggerScalarWhereInput = {
+    AND?: ComposioTriggerScalarWhereInput | ComposioTriggerScalarWhereInput[]
+    OR?: ComposioTriggerScalarWhereInput[]
+    NOT?: ComposioTriggerScalarWhereInput | ComposioTriggerScalarWhereInput[]
+    id?: IntFilter<"ComposioTrigger"> | number
+    uuid?: StringFilter<"ComposioTrigger"> | string
+    composio_trigger_id?: StringFilter<"ComposioTrigger"> | string
+    org_uuid?: StringFilter<"ComposioTrigger"> | string
+    composio_user_id?: StringFilter<"ComposioTrigger"> | string
+    toolkit_uuid?: StringFilter<"ComposioTrigger"> | string
+    trigger_slug?: StringFilter<"ComposioTrigger"> | string
+    connected_account_id?: StringFilter<"ComposioTrigger"> | string
+    is_enabled?: BoolFilter<"ComposioTrigger"> | boolean
+    config?: JsonFilter<"ComposioTrigger">
+    webhook_subscription_id?: StringNullableFilter<"ComposioTrigger"> | string | null
+    created_at?: DateTimeFilter<"ComposioTrigger"> | Date | string
+    updated_at?: DateTimeFilter<"ComposioTrigger"> | Date | string
+  }
+
   export type AiProviderUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: AiProviderWhereUniqueInput
     update: XOR<AiProviderUpdateWithoutOrganizationInput, AiProviderUncheckedUpdateWithoutOrganizationInput>
@@ -34041,6 +46289,10 @@ export namespace Prisma {
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
@@ -34058,6 +46310,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -34150,6 +46406,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
@@ -34167,6 +46427,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -34255,6 +46519,10 @@ export namespace Prisma {
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
@@ -34272,6 +46540,10 @@ export namespace Prisma {
     members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -34354,6 +46626,10 @@ export namespace Prisma {
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
@@ -34371,6 +46647,10 @@ export namespace Prisma {
     members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -34562,6 +46842,10 @@ export namespace Prisma {
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
@@ -34579,6 +46863,10 @@ export namespace Prisma {
     members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -34649,6 +46937,10 @@ export namespace Prisma {
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
@@ -34666,6 +46958,10 @@ export namespace Prisma {
     members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -34726,6 +47022,10 @@ export namespace Prisma {
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
@@ -34743,6 +47043,10 @@ export namespace Prisma {
     members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -34877,6 +47181,9 @@ export namespace Prisma {
 
   export type ToolCallCreateWithoutIntegrationInput = {
     uuid?: string
+    provider_type?: string | null
+    composio_tool_slug?: string | null
+    composio_session_id?: string | null
     tool_name: string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -34893,6 +47200,9 @@ export namespace Prisma {
     id?: number
     uuid?: string
     execution_uuid: string
+    provider_type?: string | null
+    composio_tool_slug?: string | null
+    composio_session_id?: string | null
     tool_name: string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -34935,6 +47245,10 @@ export namespace Prisma {
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
@@ -34952,6 +47266,10 @@ export namespace Prisma {
     members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -35121,6 +47439,9 @@ export namespace Prisma {
     uuid?: StringFilter<"ToolCall"> | string
     execution_uuid?: StringFilter<"ToolCall"> | string
     integration_uuid?: StringNullableFilter<"ToolCall"> | string | null
+    provider_type?: StringNullableFilter<"ToolCall"> | string | null
+    composio_tool_slug?: StringNullableFilter<"ToolCall"> | string | null
+    composio_session_id?: StringNullableFilter<"ToolCall"> | string | null
     tool_name?: StringFilter<"ToolCall"> | string
     input?: JsonNullableFilter<"ToolCall">
     output?: JsonNullableFilter<"ToolCall">
@@ -35476,6 +47797,1149 @@ export namespace Prisma {
     tool_calls?: ToolCallUncheckedUpdateManyWithoutIntegrationNestedInput
   }
 
+  export type ComposioToolkitToolCreateWithoutToolkitInput = {
+    uuid?: string
+    slug: string
+    name: string
+    description?: string
+    input_schema: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolCreatetagsInput | string[]
+    is_enabled?: boolean
+    composio_version?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    permissions?: OrganisationToolPermissionCreateNestedManyWithoutToolInput
+  }
+
+  export type ComposioToolkitToolUncheckedCreateWithoutToolkitInput = {
+    id?: number
+    uuid?: string
+    slug: string
+    name: string
+    description?: string
+    input_schema: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolCreatetagsInput | string[]
+    is_enabled?: boolean
+    composio_version?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutToolInput
+  }
+
+  export type ComposioToolkitToolCreateOrConnectWithoutToolkitInput = {
+    where: ComposioToolkitToolWhereUniqueInput
+    create: XOR<ComposioToolkitToolCreateWithoutToolkitInput, ComposioToolkitToolUncheckedCreateWithoutToolkitInput>
+  }
+
+  export type ComposioToolkitToolCreateManyToolkitInputEnvelope = {
+    data: ComposioToolkitToolCreateManyToolkitInput | ComposioToolkitToolCreateManyToolkitInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganisationEnabledToolkitCreateWithoutToolkitInput = {
+    uuid?: string
+    is_enabled?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutEnabled_toolkitsInput
+  }
+
+  export type OrganisationEnabledToolkitUncheckedCreateWithoutToolkitInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    is_enabled?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OrganisationEnabledToolkitCreateOrConnectWithoutToolkitInput = {
+    where: OrganisationEnabledToolkitWhereUniqueInput
+    create: XOR<OrganisationEnabledToolkitCreateWithoutToolkitInput, OrganisationEnabledToolkitUncheckedCreateWithoutToolkitInput>
+  }
+
+  export type OrganisationEnabledToolkitCreateManyToolkitInputEnvelope = {
+    data: OrganisationEnabledToolkitCreateManyToolkitInput | OrganisationEnabledToolkitCreateManyToolkitInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ComposioConnectedAccountCreateWithoutToolkitInput = {
+    uuid?: string
+    composio_account_id: string
+    composio_user_id: string
+    user_uuid?: string | null
+    status?: $Enums.ComposioAccountStatus
+    account_label?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutComposio_accountsInput
+  }
+
+  export type ComposioConnectedAccountUncheckedCreateWithoutToolkitInput = {
+    id?: number
+    uuid?: string
+    composio_account_id: string
+    composio_user_id: string
+    org_uuid: string
+    user_uuid?: string | null
+    status?: $Enums.ComposioAccountStatus
+    account_label?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioConnectedAccountCreateOrConnectWithoutToolkitInput = {
+    where: ComposioConnectedAccountWhereUniqueInput
+    create: XOR<ComposioConnectedAccountCreateWithoutToolkitInput, ComposioConnectedAccountUncheckedCreateWithoutToolkitInput>
+  }
+
+  export type ComposioConnectedAccountCreateManyToolkitInputEnvelope = {
+    data: ComposioConnectedAccountCreateManyToolkitInput | ComposioConnectedAccountCreateManyToolkitInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ComposioTriggerCreateWithoutToolkitInput = {
+    uuid?: string
+    composio_trigger_id: string
+    composio_user_id: string
+    trigger_slug: string
+    connected_account_id: string
+    is_enabled?: boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutComposio_triggersInput
+  }
+
+  export type ComposioTriggerUncheckedCreateWithoutToolkitInput = {
+    id?: number
+    uuid?: string
+    composio_trigger_id: string
+    org_uuid: string
+    composio_user_id: string
+    trigger_slug: string
+    connected_account_id: string
+    is_enabled?: boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioTriggerCreateOrConnectWithoutToolkitInput = {
+    where: ComposioTriggerWhereUniqueInput
+    create: XOR<ComposioTriggerCreateWithoutToolkitInput, ComposioTriggerUncheckedCreateWithoutToolkitInput>
+  }
+
+  export type ComposioTriggerCreateManyToolkitInputEnvelope = {
+    data: ComposioTriggerCreateManyToolkitInput | ComposioTriggerCreateManyToolkitInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ComposioToolkitToolUpsertWithWhereUniqueWithoutToolkitInput = {
+    where: ComposioToolkitToolWhereUniqueInput
+    update: XOR<ComposioToolkitToolUpdateWithoutToolkitInput, ComposioToolkitToolUncheckedUpdateWithoutToolkitInput>
+    create: XOR<ComposioToolkitToolCreateWithoutToolkitInput, ComposioToolkitToolUncheckedCreateWithoutToolkitInput>
+  }
+
+  export type ComposioToolkitToolUpdateWithWhereUniqueWithoutToolkitInput = {
+    where: ComposioToolkitToolWhereUniqueInput
+    data: XOR<ComposioToolkitToolUpdateWithoutToolkitInput, ComposioToolkitToolUncheckedUpdateWithoutToolkitInput>
+  }
+
+  export type ComposioToolkitToolUpdateManyWithWhereWithoutToolkitInput = {
+    where: ComposioToolkitToolScalarWhereInput
+    data: XOR<ComposioToolkitToolUpdateManyMutationInput, ComposioToolkitToolUncheckedUpdateManyWithoutToolkitInput>
+  }
+
+  export type ComposioToolkitToolScalarWhereInput = {
+    AND?: ComposioToolkitToolScalarWhereInput | ComposioToolkitToolScalarWhereInput[]
+    OR?: ComposioToolkitToolScalarWhereInput[]
+    NOT?: ComposioToolkitToolScalarWhereInput | ComposioToolkitToolScalarWhereInput[]
+    id?: IntFilter<"ComposioToolkitTool"> | number
+    uuid?: StringFilter<"ComposioToolkitTool"> | string
+    toolkit_uuid?: StringFilter<"ComposioToolkitTool"> | string
+    slug?: StringFilter<"ComposioToolkitTool"> | string
+    name?: StringFilter<"ComposioToolkitTool"> | string
+    description?: StringFilter<"ComposioToolkitTool"> | string
+    input_schema?: JsonFilter<"ComposioToolkitTool">
+    output_schema?: JsonNullableFilter<"ComposioToolkitTool">
+    tags?: StringNullableListFilter<"ComposioToolkitTool">
+    is_enabled?: BoolFilter<"ComposioToolkitTool"> | boolean
+    composio_version?: StringNullableFilter<"ComposioToolkitTool"> | string | null
+    last_synced_at?: DateTimeNullableFilter<"ComposioToolkitTool"> | Date | string | null
+    created_at?: DateTimeFilter<"ComposioToolkitTool"> | Date | string
+    updated_at?: DateTimeFilter<"ComposioToolkitTool"> | Date | string
+  }
+
+  export type OrganisationEnabledToolkitUpsertWithWhereUniqueWithoutToolkitInput = {
+    where: OrganisationEnabledToolkitWhereUniqueInput
+    update: XOR<OrganisationEnabledToolkitUpdateWithoutToolkitInput, OrganisationEnabledToolkitUncheckedUpdateWithoutToolkitInput>
+    create: XOR<OrganisationEnabledToolkitCreateWithoutToolkitInput, OrganisationEnabledToolkitUncheckedCreateWithoutToolkitInput>
+  }
+
+  export type OrganisationEnabledToolkitUpdateWithWhereUniqueWithoutToolkitInput = {
+    where: OrganisationEnabledToolkitWhereUniqueInput
+    data: XOR<OrganisationEnabledToolkitUpdateWithoutToolkitInput, OrganisationEnabledToolkitUncheckedUpdateWithoutToolkitInput>
+  }
+
+  export type OrganisationEnabledToolkitUpdateManyWithWhereWithoutToolkitInput = {
+    where: OrganisationEnabledToolkitScalarWhereInput
+    data: XOR<OrganisationEnabledToolkitUpdateManyMutationInput, OrganisationEnabledToolkitUncheckedUpdateManyWithoutToolkitInput>
+  }
+
+  export type ComposioConnectedAccountUpsertWithWhereUniqueWithoutToolkitInput = {
+    where: ComposioConnectedAccountWhereUniqueInput
+    update: XOR<ComposioConnectedAccountUpdateWithoutToolkitInput, ComposioConnectedAccountUncheckedUpdateWithoutToolkitInput>
+    create: XOR<ComposioConnectedAccountCreateWithoutToolkitInput, ComposioConnectedAccountUncheckedCreateWithoutToolkitInput>
+  }
+
+  export type ComposioConnectedAccountUpdateWithWhereUniqueWithoutToolkitInput = {
+    where: ComposioConnectedAccountWhereUniqueInput
+    data: XOR<ComposioConnectedAccountUpdateWithoutToolkitInput, ComposioConnectedAccountUncheckedUpdateWithoutToolkitInput>
+  }
+
+  export type ComposioConnectedAccountUpdateManyWithWhereWithoutToolkitInput = {
+    where: ComposioConnectedAccountScalarWhereInput
+    data: XOR<ComposioConnectedAccountUpdateManyMutationInput, ComposioConnectedAccountUncheckedUpdateManyWithoutToolkitInput>
+  }
+
+  export type ComposioTriggerUpsertWithWhereUniqueWithoutToolkitInput = {
+    where: ComposioTriggerWhereUniqueInput
+    update: XOR<ComposioTriggerUpdateWithoutToolkitInput, ComposioTriggerUncheckedUpdateWithoutToolkitInput>
+    create: XOR<ComposioTriggerCreateWithoutToolkitInput, ComposioTriggerUncheckedCreateWithoutToolkitInput>
+  }
+
+  export type ComposioTriggerUpdateWithWhereUniqueWithoutToolkitInput = {
+    where: ComposioTriggerWhereUniqueInput
+    data: XOR<ComposioTriggerUpdateWithoutToolkitInput, ComposioTriggerUncheckedUpdateWithoutToolkitInput>
+  }
+
+  export type ComposioTriggerUpdateManyWithWhereWithoutToolkitInput = {
+    where: ComposioTriggerScalarWhereInput
+    data: XOR<ComposioTriggerUpdateManyMutationInput, ComposioTriggerUncheckedUpdateManyWithoutToolkitInput>
+  }
+
+  export type ComposioToolkitCreateWithoutToolsInput = {
+    uuid?: string
+    slug: string
+    name: string
+    description?: string | null
+    logo_url?: string | null
+    categories?: ComposioToolkitCreatecategoriesInput | string[]
+    tool_count?: number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier: $Enums.ComposioConnectionTier
+    is_enabled?: boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    enabled_orgs?: OrganisationEnabledToolkitCreateNestedManyWithoutToolkitInput
+    connected_accounts?: ComposioConnectedAccountCreateNestedManyWithoutToolkitInput
+    triggers?: ComposioTriggerCreateNestedManyWithoutToolkitInput
+  }
+
+  export type ComposioToolkitUncheckedCreateWithoutToolsInput = {
+    id?: number
+    uuid?: string
+    slug: string
+    name: string
+    description?: string | null
+    logo_url?: string | null
+    categories?: ComposioToolkitCreatecategoriesInput | string[]
+    tool_count?: number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier: $Enums.ComposioConnectionTier
+    is_enabled?: boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    enabled_orgs?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutToolkitInput
+    connected_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutToolkitInput
+    triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutToolkitInput
+  }
+
+  export type ComposioToolkitCreateOrConnectWithoutToolsInput = {
+    where: ComposioToolkitWhereUniqueInput
+    create: XOR<ComposioToolkitCreateWithoutToolsInput, ComposioToolkitUncheckedCreateWithoutToolsInput>
+  }
+
+  export type OrganisationToolPermissionCreateWithoutToolInput = {
+    uuid?: string
+    enabled?: boolean
+    requires_approval?: boolean
+    required_permission_key?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTool_permissionsInput
+  }
+
+  export type OrganisationToolPermissionUncheckedCreateWithoutToolInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    enabled?: boolean
+    requires_approval?: boolean
+    required_permission_key?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OrganisationToolPermissionCreateOrConnectWithoutToolInput = {
+    where: OrganisationToolPermissionWhereUniqueInput
+    create: XOR<OrganisationToolPermissionCreateWithoutToolInput, OrganisationToolPermissionUncheckedCreateWithoutToolInput>
+  }
+
+  export type OrganisationToolPermissionCreateManyToolInputEnvelope = {
+    data: OrganisationToolPermissionCreateManyToolInput | OrganisationToolPermissionCreateManyToolInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ComposioToolkitUpsertWithoutToolsInput = {
+    update: XOR<ComposioToolkitUpdateWithoutToolsInput, ComposioToolkitUncheckedUpdateWithoutToolsInput>
+    create: XOR<ComposioToolkitCreateWithoutToolsInput, ComposioToolkitUncheckedCreateWithoutToolsInput>
+    where?: ComposioToolkitWhereInput
+  }
+
+  export type ComposioToolkitUpdateToOneWithWhereWithoutToolsInput = {
+    where?: ComposioToolkitWhereInput
+    data: XOR<ComposioToolkitUpdateWithoutToolsInput, ComposioToolkitUncheckedUpdateWithoutToolsInput>
+  }
+
+  export type ComposioToolkitUpdateWithoutToolsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: ComposioToolkitUpdatecategoriesInput | string[]
+    tool_count?: IntFieldUpdateOperationsInput | number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    enabled_orgs?: OrganisationEnabledToolkitUpdateManyWithoutToolkitNestedInput
+    connected_accounts?: ComposioConnectedAccountUpdateManyWithoutToolkitNestedInput
+    triggers?: ComposioTriggerUpdateManyWithoutToolkitNestedInput
+  }
+
+  export type ComposioToolkitUncheckedUpdateWithoutToolsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: ComposioToolkitUpdatecategoriesInput | string[]
+    tool_count?: IntFieldUpdateOperationsInput | number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    enabled_orgs?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutToolkitNestedInput
+    connected_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutToolkitNestedInput
+    triggers?: ComposioTriggerUncheckedUpdateManyWithoutToolkitNestedInput
+  }
+
+  export type OrganisationToolPermissionUpsertWithWhereUniqueWithoutToolInput = {
+    where: OrganisationToolPermissionWhereUniqueInput
+    update: XOR<OrganisationToolPermissionUpdateWithoutToolInput, OrganisationToolPermissionUncheckedUpdateWithoutToolInput>
+    create: XOR<OrganisationToolPermissionCreateWithoutToolInput, OrganisationToolPermissionUncheckedCreateWithoutToolInput>
+  }
+
+  export type OrganisationToolPermissionUpdateWithWhereUniqueWithoutToolInput = {
+    where: OrganisationToolPermissionWhereUniqueInput
+    data: XOR<OrganisationToolPermissionUpdateWithoutToolInput, OrganisationToolPermissionUncheckedUpdateWithoutToolInput>
+  }
+
+  export type OrganisationToolPermissionUpdateManyWithWhereWithoutToolInput = {
+    where: OrganisationToolPermissionScalarWhereInput
+    data: XOR<OrganisationToolPermissionUpdateManyMutationInput, OrganisationToolPermissionUncheckedUpdateManyWithoutToolInput>
+  }
+
+  export type OrganizationCreateWithoutEnabled_toolkitsInput = {
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutEnabled_toolkitsInput = {
+    id?: number
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutEnabled_toolkitsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutEnabled_toolkitsInput, OrganizationUncheckedCreateWithoutEnabled_toolkitsInput>
+  }
+
+  export type ComposioToolkitCreateWithoutEnabled_orgsInput = {
+    uuid?: string
+    slug: string
+    name: string
+    description?: string | null
+    logo_url?: string | null
+    categories?: ComposioToolkitCreatecategoriesInput | string[]
+    tool_count?: number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier: $Enums.ComposioConnectionTier
+    is_enabled?: boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    tools?: ComposioToolkitToolCreateNestedManyWithoutToolkitInput
+    connected_accounts?: ComposioConnectedAccountCreateNestedManyWithoutToolkitInput
+    triggers?: ComposioTriggerCreateNestedManyWithoutToolkitInput
+  }
+
+  export type ComposioToolkitUncheckedCreateWithoutEnabled_orgsInput = {
+    id?: number
+    uuid?: string
+    slug: string
+    name: string
+    description?: string | null
+    logo_url?: string | null
+    categories?: ComposioToolkitCreatecategoriesInput | string[]
+    tool_count?: number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier: $Enums.ComposioConnectionTier
+    is_enabled?: boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    tools?: ComposioToolkitToolUncheckedCreateNestedManyWithoutToolkitInput
+    connected_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutToolkitInput
+    triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutToolkitInput
+  }
+
+  export type ComposioToolkitCreateOrConnectWithoutEnabled_orgsInput = {
+    where: ComposioToolkitWhereUniqueInput
+    create: XOR<ComposioToolkitCreateWithoutEnabled_orgsInput, ComposioToolkitUncheckedCreateWithoutEnabled_orgsInput>
+  }
+
+  export type OrganizationUpsertWithoutEnabled_toolkitsInput = {
+    update: XOR<OrganizationUpdateWithoutEnabled_toolkitsInput, OrganizationUncheckedUpdateWithoutEnabled_toolkitsInput>
+    create: XOR<OrganizationCreateWithoutEnabled_toolkitsInput, OrganizationUncheckedCreateWithoutEnabled_toolkitsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutEnabled_toolkitsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutEnabled_toolkitsInput, OrganizationUncheckedUpdateWithoutEnabled_toolkitsInput>
+  }
+
+  export type OrganizationUpdateWithoutEnabled_toolkitsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutEnabled_toolkitsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type ComposioToolkitUpsertWithoutEnabled_orgsInput = {
+    update: XOR<ComposioToolkitUpdateWithoutEnabled_orgsInput, ComposioToolkitUncheckedUpdateWithoutEnabled_orgsInput>
+    create: XOR<ComposioToolkitCreateWithoutEnabled_orgsInput, ComposioToolkitUncheckedCreateWithoutEnabled_orgsInput>
+    where?: ComposioToolkitWhereInput
+  }
+
+  export type ComposioToolkitUpdateToOneWithWhereWithoutEnabled_orgsInput = {
+    where?: ComposioToolkitWhereInput
+    data: XOR<ComposioToolkitUpdateWithoutEnabled_orgsInput, ComposioToolkitUncheckedUpdateWithoutEnabled_orgsInput>
+  }
+
+  export type ComposioToolkitUpdateWithoutEnabled_orgsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: ComposioToolkitUpdatecategoriesInput | string[]
+    tool_count?: IntFieldUpdateOperationsInput | number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    tools?: ComposioToolkitToolUpdateManyWithoutToolkitNestedInput
+    connected_accounts?: ComposioConnectedAccountUpdateManyWithoutToolkitNestedInput
+    triggers?: ComposioTriggerUpdateManyWithoutToolkitNestedInput
+  }
+
+  export type ComposioToolkitUncheckedUpdateWithoutEnabled_orgsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: ComposioToolkitUpdatecategoriesInput | string[]
+    tool_count?: IntFieldUpdateOperationsInput | number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    tools?: ComposioToolkitToolUncheckedUpdateManyWithoutToolkitNestedInput
+    connected_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutToolkitNestedInput
+    triggers?: ComposioTriggerUncheckedUpdateManyWithoutToolkitNestedInput
+  }
+
+  export type OrganizationCreateWithoutTool_permissionsInput = {
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutTool_permissionsInput = {
+    id?: number
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutTool_permissionsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutTool_permissionsInput, OrganizationUncheckedCreateWithoutTool_permissionsInput>
+  }
+
+  export type ComposioToolkitToolCreateWithoutPermissionsInput = {
+    uuid?: string
+    slug: string
+    name: string
+    description?: string
+    input_schema: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolCreatetagsInput | string[]
+    is_enabled?: boolean
+    composio_version?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    toolkit: ComposioToolkitCreateNestedOneWithoutToolsInput
+  }
+
+  export type ComposioToolkitToolUncheckedCreateWithoutPermissionsInput = {
+    id?: number
+    uuid?: string
+    toolkit_uuid: string
+    slug: string
+    name: string
+    description?: string
+    input_schema: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolCreatetagsInput | string[]
+    is_enabled?: boolean
+    composio_version?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioToolkitToolCreateOrConnectWithoutPermissionsInput = {
+    where: ComposioToolkitToolWhereUniqueInput
+    create: XOR<ComposioToolkitToolCreateWithoutPermissionsInput, ComposioToolkitToolUncheckedCreateWithoutPermissionsInput>
+  }
+
+  export type OrganizationUpsertWithoutTool_permissionsInput = {
+    update: XOR<OrganizationUpdateWithoutTool_permissionsInput, OrganizationUncheckedUpdateWithoutTool_permissionsInput>
+    create: XOR<OrganizationCreateWithoutTool_permissionsInput, OrganizationUncheckedCreateWithoutTool_permissionsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutTool_permissionsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutTool_permissionsInput, OrganizationUncheckedUpdateWithoutTool_permissionsInput>
+  }
+
+  export type OrganizationUpdateWithoutTool_permissionsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutTool_permissionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type ComposioToolkitToolUpsertWithoutPermissionsInput = {
+    update: XOR<ComposioToolkitToolUpdateWithoutPermissionsInput, ComposioToolkitToolUncheckedUpdateWithoutPermissionsInput>
+    create: XOR<ComposioToolkitToolCreateWithoutPermissionsInput, ComposioToolkitToolUncheckedCreateWithoutPermissionsInput>
+    where?: ComposioToolkitToolWhereInput
+  }
+
+  export type ComposioToolkitToolUpdateToOneWithWhereWithoutPermissionsInput = {
+    where?: ComposioToolkitToolWhereInput
+    data: XOR<ComposioToolkitToolUpdateWithoutPermissionsInput, ComposioToolkitToolUncheckedUpdateWithoutPermissionsInput>
+  }
+
+  export type ComposioToolkitToolUpdateWithoutPermissionsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    input_schema?: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolUpdatetagsInput | string[]
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_version?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    toolkit?: ComposioToolkitUpdateOneRequiredWithoutToolsNestedInput
+  }
+
+  export type ComposioToolkitToolUncheckedUpdateWithoutPermissionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    input_schema?: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolUpdatetagsInput | string[]
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_version?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganizationCreateWithoutComposio_accountsInput = {
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutComposio_accountsInput = {
+    id?: number
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutComposio_accountsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutComposio_accountsInput, OrganizationUncheckedCreateWithoutComposio_accountsInput>
+  }
+
+  export type ComposioToolkitCreateWithoutConnected_accountsInput = {
+    uuid?: string
+    slug: string
+    name: string
+    description?: string | null
+    logo_url?: string | null
+    categories?: ComposioToolkitCreatecategoriesInput | string[]
+    tool_count?: number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier: $Enums.ComposioConnectionTier
+    is_enabled?: boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    tools?: ComposioToolkitToolCreateNestedManyWithoutToolkitInput
+    enabled_orgs?: OrganisationEnabledToolkitCreateNestedManyWithoutToolkitInput
+    triggers?: ComposioTriggerCreateNestedManyWithoutToolkitInput
+  }
+
+  export type ComposioToolkitUncheckedCreateWithoutConnected_accountsInput = {
+    id?: number
+    uuid?: string
+    slug: string
+    name: string
+    description?: string | null
+    logo_url?: string | null
+    categories?: ComposioToolkitCreatecategoriesInput | string[]
+    tool_count?: number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier: $Enums.ComposioConnectionTier
+    is_enabled?: boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    tools?: ComposioToolkitToolUncheckedCreateNestedManyWithoutToolkitInput
+    enabled_orgs?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutToolkitInput
+    triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutToolkitInput
+  }
+
+  export type ComposioToolkitCreateOrConnectWithoutConnected_accountsInput = {
+    where: ComposioToolkitWhereUniqueInput
+    create: XOR<ComposioToolkitCreateWithoutConnected_accountsInput, ComposioToolkitUncheckedCreateWithoutConnected_accountsInput>
+  }
+
+  export type OrganizationUpsertWithoutComposio_accountsInput = {
+    update: XOR<OrganizationUpdateWithoutComposio_accountsInput, OrganizationUncheckedUpdateWithoutComposio_accountsInput>
+    create: XOR<OrganizationCreateWithoutComposio_accountsInput, OrganizationUncheckedCreateWithoutComposio_accountsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutComposio_accountsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutComposio_accountsInput, OrganizationUncheckedUpdateWithoutComposio_accountsInput>
+  }
+
+  export type OrganizationUpdateWithoutComposio_accountsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutComposio_accountsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type ComposioToolkitUpsertWithoutConnected_accountsInput = {
+    update: XOR<ComposioToolkitUpdateWithoutConnected_accountsInput, ComposioToolkitUncheckedUpdateWithoutConnected_accountsInput>
+    create: XOR<ComposioToolkitCreateWithoutConnected_accountsInput, ComposioToolkitUncheckedCreateWithoutConnected_accountsInput>
+    where?: ComposioToolkitWhereInput
+  }
+
+  export type ComposioToolkitUpdateToOneWithWhereWithoutConnected_accountsInput = {
+    where?: ComposioToolkitWhereInput
+    data: XOR<ComposioToolkitUpdateWithoutConnected_accountsInput, ComposioToolkitUncheckedUpdateWithoutConnected_accountsInput>
+  }
+
+  export type ComposioToolkitUpdateWithoutConnected_accountsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: ComposioToolkitUpdatecategoriesInput | string[]
+    tool_count?: IntFieldUpdateOperationsInput | number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    tools?: ComposioToolkitToolUpdateManyWithoutToolkitNestedInput
+    enabled_orgs?: OrganisationEnabledToolkitUpdateManyWithoutToolkitNestedInput
+    triggers?: ComposioTriggerUpdateManyWithoutToolkitNestedInput
+  }
+
+  export type ComposioToolkitUncheckedUpdateWithoutConnected_accountsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: ComposioToolkitUpdatecategoriesInput | string[]
+    tool_count?: IntFieldUpdateOperationsInput | number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    tools?: ComposioToolkitToolUncheckedUpdateManyWithoutToolkitNestedInput
+    enabled_orgs?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutToolkitNestedInput
+    triggers?: ComposioTriggerUncheckedUpdateManyWithoutToolkitNestedInput
+  }
+
+  export type OrganizationCreateWithoutComposio_triggersInput = {
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutComposio_triggersInput = {
+    id?: number
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutComposio_triggersInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutComposio_triggersInput, OrganizationUncheckedCreateWithoutComposio_triggersInput>
+  }
+
+  export type ComposioToolkitCreateWithoutTriggersInput = {
+    uuid?: string
+    slug: string
+    name: string
+    description?: string | null
+    logo_url?: string | null
+    categories?: ComposioToolkitCreatecategoriesInput | string[]
+    tool_count?: number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier: $Enums.ComposioConnectionTier
+    is_enabled?: boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    tools?: ComposioToolkitToolCreateNestedManyWithoutToolkitInput
+    enabled_orgs?: OrganisationEnabledToolkitCreateNestedManyWithoutToolkitInput
+    connected_accounts?: ComposioConnectedAccountCreateNestedManyWithoutToolkitInput
+  }
+
+  export type ComposioToolkitUncheckedCreateWithoutTriggersInput = {
+    id?: number
+    uuid?: string
+    slug: string
+    name: string
+    description?: string | null
+    logo_url?: string | null
+    categories?: ComposioToolkitCreatecategoriesInput | string[]
+    tool_count?: number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier: $Enums.ComposioConnectionTier
+    is_enabled?: boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    tools?: ComposioToolkitToolUncheckedCreateNestedManyWithoutToolkitInput
+    enabled_orgs?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutToolkitInput
+    connected_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutToolkitInput
+  }
+
+  export type ComposioToolkitCreateOrConnectWithoutTriggersInput = {
+    where: ComposioToolkitWhereUniqueInput
+    create: XOR<ComposioToolkitCreateWithoutTriggersInput, ComposioToolkitUncheckedCreateWithoutTriggersInput>
+  }
+
+  export type OrganizationUpsertWithoutComposio_triggersInput = {
+    update: XOR<OrganizationUpdateWithoutComposio_triggersInput, OrganizationUncheckedUpdateWithoutComposio_triggersInput>
+    create: XOR<OrganizationCreateWithoutComposio_triggersInput, OrganizationUncheckedCreateWithoutComposio_triggersInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutComposio_triggersInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutComposio_triggersInput, OrganizationUncheckedUpdateWithoutComposio_triggersInput>
+  }
+
+  export type OrganizationUpdateWithoutComposio_triggersInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutComposio_triggersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type ComposioToolkitUpsertWithoutTriggersInput = {
+    update: XOR<ComposioToolkitUpdateWithoutTriggersInput, ComposioToolkitUncheckedUpdateWithoutTriggersInput>
+    create: XOR<ComposioToolkitCreateWithoutTriggersInput, ComposioToolkitUncheckedCreateWithoutTriggersInput>
+    where?: ComposioToolkitWhereInput
+  }
+
+  export type ComposioToolkitUpdateToOneWithWhereWithoutTriggersInput = {
+    where?: ComposioToolkitWhereInput
+    data: XOR<ComposioToolkitUpdateWithoutTriggersInput, ComposioToolkitUncheckedUpdateWithoutTriggersInput>
+  }
+
+  export type ComposioToolkitUpdateWithoutTriggersInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: ComposioToolkitUpdatecategoriesInput | string[]
+    tool_count?: IntFieldUpdateOperationsInput | number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    tools?: ComposioToolkitToolUpdateManyWithoutToolkitNestedInput
+    enabled_orgs?: OrganisationEnabledToolkitUpdateManyWithoutToolkitNestedInput
+    connected_accounts?: ComposioConnectedAccountUpdateManyWithoutToolkitNestedInput
+  }
+
+  export type ComposioToolkitUncheckedUpdateWithoutTriggersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: ComposioToolkitUpdatecategoriesInput | string[]
+    tool_count?: IntFieldUpdateOperationsInput | number
+    auth_schemes?: JsonNullValueInput | InputJsonValue
+    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_metadata?: NullableJsonNullValueInput | InputJsonValue
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    tools?: ComposioToolkitToolUncheckedUpdateManyWithoutToolkitNestedInput
+    enabled_orgs?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutToolkitNestedInput
+    connected_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutToolkitNestedInput
+  }
+
   export type OrganizationCreateWithoutAi_providersInput = {
     uuid?: string
     name: string
@@ -35487,6 +48951,10 @@ export namespace Prisma {
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
@@ -35504,6 +48972,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -35536,6 +49008,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
@@ -35553,6 +49029,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -35569,6 +49049,10 @@ export namespace Prisma {
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
@@ -35586,6 +49070,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -35730,6 +49218,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
@@ -35747,6 +49239,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -35844,6 +49340,7 @@ export namespace Prisma {
   export type ConversationCreateWithoutMessagesInput = {
     uuid?: string
     title?: string | null
+    composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     organization: OrganizationCreateNestedOneWithoutConversationsInput
@@ -35857,6 +49354,7 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title?: string | null
+    composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     executions?: AgentExecutionUncheckedCreateNestedManyWithoutConversationInput
@@ -35926,6 +49424,7 @@ export namespace Prisma {
   export type ConversationUpdateWithoutMessagesInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutConversationsNestedInput
@@ -35939,6 +49438,7 @@ export namespace Prisma {
     org_uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     executions?: AgentExecutionUncheckedUpdateManyWithoutConversationNestedInput
@@ -35987,6 +49487,7 @@ export namespace Prisma {
   export type ConversationCreateWithoutExecutionsInput = {
     uuid?: string
     title?: string | null
+    composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     organization: OrganizationCreateNestedOneWithoutConversationsInput
@@ -36000,6 +49501,7 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title?: string | null
+    composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
@@ -36021,6 +49523,10 @@ export namespace Prisma {
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
@@ -36038,6 +49544,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -36088,6 +49598,9 @@ export namespace Prisma {
 
   export type ToolCallCreateWithoutExecutionInput = {
     uuid?: string
+    provider_type?: string | null
+    composio_tool_slug?: string | null
+    composio_session_id?: string | null
     tool_name: string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -36104,6 +49617,9 @@ export namespace Prisma {
     id?: number
     uuid?: string
     integration_uuid?: string | null
+    provider_type?: string | null
+    composio_tool_slug?: string | null
+    composio_session_id?: string | null
     tool_name: string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -36169,6 +49685,7 @@ export namespace Prisma {
   export type ConversationUpdateWithoutExecutionsInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutConversationsNestedInput
@@ -36182,6 +49699,7 @@ export namespace Prisma {
     org_uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
@@ -36209,6 +49727,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
@@ -36226,6 +49748,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -36512,6 +50038,10 @@ export namespace Prisma {
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
@@ -36529,6 +50059,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -36605,6 +50139,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
@@ -36622,6 +50160,10 @@ export namespace Prisma {
     roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -36653,6 +50195,7 @@ export namespace Prisma {
     uuid?: string
     org_uuid: string
     title?: string | null
+    composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -36752,6 +50295,7 @@ export namespace Prisma {
   export type ConversationUpdateWithoutUserInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutConversationsNestedInput
@@ -36764,6 +50308,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     org_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
@@ -36775,6 +50320,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     org_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -36913,6 +50459,55 @@ export namespace Prisma {
     updated_at?: Date | string
   }
 
+  export type OrganisationEnabledToolkitCreateManyOrganizationInput = {
+    id?: number
+    uuid?: string
+    toolkit_uuid: string
+    is_enabled?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OrganisationToolPermissionCreateManyOrganizationInput = {
+    id?: number
+    uuid?: string
+    tool_uuid: string
+    enabled?: boolean
+    requires_approval?: boolean
+    required_permission_key?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioConnectedAccountCreateManyOrganizationInput = {
+    id?: number
+    uuid?: string
+    composio_account_id: string
+    composio_user_id: string
+    user_uuid?: string | null
+    toolkit_uuid: string
+    status?: $Enums.ComposioAccountStatus
+    account_label?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioTriggerCreateManyOrganizationInput = {
+    id?: number
+    uuid?: string
+    composio_trigger_id: string
+    composio_user_id: string
+    toolkit_uuid: string
+    trigger_slug: string
+    connected_account_id: string
+    is_enabled?: boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
   export type AiProviderCreateManyOrganizationInput = {
     id?: number
     uuid?: string
@@ -36932,6 +50527,7 @@ export namespace Prisma {
     uuid?: string
     user_uuid: string
     title?: string | null
+    composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -37100,6 +50696,149 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type OrganisationEnabledToolkitUpdateWithoutOrganizationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    toolkit?: ComposioToolkitUpdateOneRequiredWithoutEnabled_orgsNestedInput
+  }
+
+  export type OrganisationEnabledToolkitUncheckedUpdateWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganisationToolPermissionUpdateWithoutOrganizationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    requires_approval?: BoolFieldUpdateOperationsInput | boolean
+    required_permission_key?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    tool?: ComposioToolkitToolUpdateOneRequiredWithoutPermissionsNestedInput
+  }
+
+  export type OrganisationToolPermissionUncheckedUpdateWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    tool_uuid?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    requires_approval?: BoolFieldUpdateOperationsInput | boolean
+    required_permission_key?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    tool_uuid?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    requires_approval?: BoolFieldUpdateOperationsInput | boolean
+    required_permission_key?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioConnectedAccountUpdateWithoutOrganizationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_account_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    user_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumComposioAccountStatusFieldUpdateOperationsInput | $Enums.ComposioAccountStatus
+    account_label?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    toolkit?: ComposioToolkitUpdateOneRequiredWithoutConnected_accountsNestedInput
+  }
+
+  export type ComposioConnectedAccountUncheckedUpdateWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_account_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    user_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    status?: EnumComposioAccountStatusFieldUpdateOperationsInput | $Enums.ComposioAccountStatus
+    account_label?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_account_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    user_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    status?: EnumComposioAccountStatusFieldUpdateOperationsInput | $Enums.ComposioAccountStatus
+    account_label?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioTriggerUpdateWithoutOrganizationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_trigger_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    trigger_slug?: StringFieldUpdateOperationsInput | string
+    connected_account_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    toolkit?: ComposioToolkitUpdateOneRequiredWithoutTriggersNestedInput
+  }
+
+  export type ComposioTriggerUncheckedUpdateWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_trigger_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    trigger_slug?: StringFieldUpdateOperationsInput | string
+    connected_account_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioTriggerUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_trigger_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    toolkit_uuid?: StringFieldUpdateOperationsInput | string
+    trigger_slug?: StringFieldUpdateOperationsInput | string
+    connected_account_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AiProviderUpdateWithoutOrganizationInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     provider?: EnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType
@@ -37144,6 +50883,7 @@ export namespace Prisma {
   export type ConversationUpdateWithoutOrganizationInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutConversationsNestedInput
@@ -37156,6 +50896,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
@@ -37167,6 +50908,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -37364,6 +51106,9 @@ export namespace Prisma {
     id?: number
     uuid?: string
     execution_uuid: string
+    provider_type?: string | null
+    composio_tool_slug?: string | null
+    composio_session_id?: string | null
     tool_name: string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -37409,6 +51154,9 @@ export namespace Prisma {
 
   export type ToolCallUpdateWithoutIntegrationInput = {
     uuid?: StringFieldUpdateOperationsInput | string
+    provider_type?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_tool_slug?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     tool_name?: StringFieldUpdateOperationsInput | string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -37425,6 +51173,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
     execution_uuid?: StringFieldUpdateOperationsInput | string
+    provider_type?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_tool_slug?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     tool_name?: StringFieldUpdateOperationsInput | string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -37440,6 +51191,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
     execution_uuid?: StringFieldUpdateOperationsInput | string
+    provider_type?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_tool_slug?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     tool_name?: StringFieldUpdateOperationsInput | string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -37449,6 +51203,263 @@ export namespace Prisma {
     cost_usd?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     duration_ms?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioToolkitToolCreateManyToolkitInput = {
+    id?: number
+    uuid?: string
+    slug: string
+    name: string
+    description?: string
+    input_schema: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolCreatetagsInput | string[]
+    is_enabled?: boolean
+    composio_version?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OrganisationEnabledToolkitCreateManyToolkitInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    is_enabled?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioConnectedAccountCreateManyToolkitInput = {
+    id?: number
+    uuid?: string
+    composio_account_id: string
+    composio_user_id: string
+    org_uuid: string
+    user_uuid?: string | null
+    status?: $Enums.ComposioAccountStatus
+    account_label?: string | null
+    last_synced_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioTriggerCreateManyToolkitInput = {
+    id?: number
+    uuid?: string
+    composio_trigger_id: string
+    org_uuid: string
+    composio_user_id: string
+    trigger_slug: string
+    connected_account_id: string
+    is_enabled?: boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ComposioToolkitToolUpdateWithoutToolkitInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    input_schema?: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolUpdatetagsInput | string[]
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_version?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: OrganisationToolPermissionUpdateManyWithoutToolNestedInput
+  }
+
+  export type ComposioToolkitToolUncheckedUpdateWithoutToolkitInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    input_schema?: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolUpdatetagsInput | string[]
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_version?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutToolNestedInput
+  }
+
+  export type ComposioToolkitToolUncheckedUpdateManyWithoutToolkitInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    input_schema?: JsonNullValueInput | InputJsonValue
+    output_schema?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ComposioToolkitToolUpdatetagsInput | string[]
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    composio_version?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganisationEnabledToolkitUpdateWithoutToolkitInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutEnabled_toolkitsNestedInput
+  }
+
+  export type OrganisationEnabledToolkitUncheckedUpdateWithoutToolkitInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganisationEnabledToolkitUncheckedUpdateManyWithoutToolkitInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioConnectedAccountUpdateWithoutToolkitInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_account_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    user_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumComposioAccountStatusFieldUpdateOperationsInput | $Enums.ComposioAccountStatus
+    account_label?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutComposio_accountsNestedInput
+  }
+
+  export type ComposioConnectedAccountUncheckedUpdateWithoutToolkitInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_account_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumComposioAccountStatusFieldUpdateOperationsInput | $Enums.ComposioAccountStatus
+    account_label?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioConnectedAccountUncheckedUpdateManyWithoutToolkitInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_account_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumComposioAccountStatusFieldUpdateOperationsInput | $Enums.ComposioAccountStatus
+    account_label?: NullableStringFieldUpdateOperationsInput | string | null
+    last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioTriggerUpdateWithoutToolkitInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_trigger_id?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    trigger_slug?: StringFieldUpdateOperationsInput | string
+    connected_account_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutComposio_triggersNestedInput
+  }
+
+  export type ComposioTriggerUncheckedUpdateWithoutToolkitInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_trigger_id?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    trigger_slug?: StringFieldUpdateOperationsInput | string
+    connected_account_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ComposioTriggerUncheckedUpdateManyWithoutToolkitInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    composio_trigger_id?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    composio_user_id?: StringFieldUpdateOperationsInput | string
+    trigger_slug?: StringFieldUpdateOperationsInput | string
+    connected_account_id?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    webhook_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganisationToolPermissionCreateManyToolInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    enabled?: boolean
+    requires_approval?: boolean
+    required_permission_key?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OrganisationToolPermissionUpdateWithoutToolInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    requires_approval?: BoolFieldUpdateOperationsInput | boolean
+    required_permission_key?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTool_permissionsNestedInput
+  }
+
+  export type OrganisationToolPermissionUncheckedUpdateWithoutToolInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    requires_approval?: BoolFieldUpdateOperationsInput | boolean
+    required_permission_key?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganisationToolPermissionUncheckedUpdateManyWithoutToolInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    requires_approval?: BoolFieldUpdateOperationsInput | boolean
+    required_permission_key?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageCreateManyConversationInput = {
@@ -37630,6 +51641,9 @@ export namespace Prisma {
     id?: number
     uuid?: string
     integration_uuid?: string | null
+    provider_type?: string | null
+    composio_tool_slug?: string | null
+    composio_session_id?: string | null
     tool_name: string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -37643,6 +51657,9 @@ export namespace Prisma {
 
   export type ToolCallUpdateWithoutExecutionInput = {
     uuid?: StringFieldUpdateOperationsInput | string
+    provider_type?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_tool_slug?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     tool_name?: StringFieldUpdateOperationsInput | string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -37659,6 +51676,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
     integration_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    provider_type?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_tool_slug?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     tool_name?: StringFieldUpdateOperationsInput | string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue
@@ -37674,6 +51694,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
     integration_uuid?: NullableStringFieldUpdateOperationsInput | string | null
+    provider_type?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_tool_slug?: NullableStringFieldUpdateOperationsInput | string | null
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     tool_name?: StringFieldUpdateOperationsInput | string
     input?: NullableJsonNullValueInput | InputJsonValue
     output?: NullableJsonNullValueInput | InputJsonValue

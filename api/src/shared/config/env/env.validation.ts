@@ -16,6 +16,8 @@ const EnvSchema = z.object({
     SENDGRID_API_KEY: z.string().optional(),
     RESEND_API_KEY: z.string().optional(),
     FROM_EMAIL: z.string().optional(),
+    COMPOSIO_API_KEY: z.string().min(1),
+    COMPOSIO_WEBHOOK_SECRET: z.string().optional(),
     TWILIO_ACCOUNT_SID: z.string().optional(),
     TWILIO_AUTH_TOKEN: z.string().optional(),
     GOOGLE_MAPS_API_KEY: z.string().optional(),

@@ -59,6 +59,30 @@ enum IntegrationProvider {
   MCP
 }
 
+enum ComposioConnectionTier {
+  ORG_SHARED
+  USER_PERSONAL
+}
+
+enum ComposioSyncType {
+  FULL
+  TOOLKIT
+  TOOLS
+}
+
+enum ComposioSyncStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum ComposioAccountStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+  PENDING
+}
+
 enum IntegrationStatus {
   ACTIVE
   INACTIVE
@@ -188,6 +212,10 @@ model Organization {
   roles                         OrganizationRole[]
   audit_logs                    AuditLog[]
   integrations                  Integration[]
+  enabled_toolkits              OrganisationEnabledToolkit[]
+  tool_permissions              OrganisationToolPermission[]
+  composio_accounts             ComposioConnectedAccount[]
+  composio_triggers             ComposioTrigger[]
   ai_providers                  AiProvider[]
   conversations                 Conversation[]
   agent_executions              AgentExecution[]
@@ -389,6 +417,160 @@ model IntegrationAction {
   @@map("integration_actions")
 }
 
+model ComposioToolkit {
+  id                Int                    @id @default(autoincrement())
+  uuid              String                 @unique @default(uuid())
+  slug              String                 @unique
+  name              String
+  description       String?
+  logo_url          String?
+  categories        String[]               @default([])
+  tool_count        Int                    @default(0)
+  auth_schemes      Json                   @default("[]")
+  connection_tier   ComposioConnectionTier
+  is_enabled        Boolean                @default(false)
+  composio_metadata Json?
+  last_synced_at    DateTime?
+  created_at        DateTime               @default(now())
+  updated_at        DateTime               @updatedAt
+
+  tools              ComposioToolkitTool[]
+  enabled_orgs       OrganisationEnabledToolkit[]
+  connected_accounts ComposioConnectedAccount[]
+  triggers           ComposioTrigger[]
+
+  @@index([is_enabled])
+  @@index([connection_tier])
+  @@map("composio_toolkits")
+}
+
+model ComposioToolkitTool {
+  id               Int       @id @default(autoincrement())
+  uuid             String    @unique @default(uuid())
+  toolkit_uuid     String
+  slug             String
+  name             String
+  description      String    @default("")
+  input_schema     Json
+  output_schema    Json?
+  tags             String[]  @default([])
+  is_enabled       Boolean   @default(true)
+  composio_version String?
+  last_synced_at   DateTime?
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+
+  toolkit     ComposioToolkit              @relation(fields: [toolkit_uuid], references: [uuid], onDelete: Cascade)
+  permissions OrganisationToolPermission[]
+
+  @@unique([toolkit_uuid, slug])
+  @@index([toolkit_uuid])
+  @@index([is_enabled])
+  @@map("composio_toolkit_tools")
+}
+
+model ComposioSyncRun {
+  id                Int                @id @default(autoincrement())
+  uuid              String             @unique @default(uuid())
+  sync_type         ComposioSyncType
+  status            ComposioSyncStatus @default(RUNNING)
+  toolkits_upserted Int                @default(0)
+  tools_upserted    Int                @default(0)
+  error             String?
+  started_at        DateTime           @default(now())
+  completed_at      DateTime?
+
+  @@index([status])
+  @@index([started_at])
+  @@map("composio_sync_runs")
+}
+
+model OrganisationEnabledToolkit {
+  id           Int      @id @default(autoincrement())
+  uuid         String   @unique @default(uuid())
+  org_uuid     String
+  toolkit_uuid String
+  is_enabled   Boolean  @default(true)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  organization Organization    @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+  toolkit      ComposioToolkit @relation(fields: [toolkit_uuid], references: [uuid], onDelete: Cascade)
+
+  @@unique([org_uuid, toolkit_uuid])
+  @@index([org_uuid])
+  @@index([toolkit_uuid])
+  @@map("organisation_enabled_toolkits")
+}
+
+model OrganisationToolPermission {
+  id                      Int      @id @default(autoincrement())
+  uuid                    String   @unique @default(uuid())
+  org_uuid                String
+  tool_uuid               String
+  enabled                 Boolean  @default(true)
+  requires_approval       Boolean  @default(false)
+  required_permission_key String?
+  created_at              DateTime @default(now())
+  updated_at              DateTime @updatedAt
+
+  organization Organization        @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+  tool         ComposioToolkitTool @relation(fields: [tool_uuid], references: [uuid], onDelete: Cascade)
+
+  @@unique([org_uuid, tool_uuid])
+  @@index([org_uuid])
+  @@index([tool_uuid])
+  @@map("organisation_tool_permissions")
+}
+
+model ComposioConnectedAccount {
+  id                  Int                   @id @default(autoincrement())
+  uuid                String                @unique @default(uuid())
+  composio_account_id String                @unique
+  composio_user_id    String
+  org_uuid            String
+  user_uuid           String?
+  toolkit_uuid        String
+  status              ComposioAccountStatus @default(PENDING)
+  account_label       String?
+  last_synced_at      DateTime?
+  created_at          DateTime              @default(now())
+  updated_at          DateTime              @updatedAt
+
+  organization Organization    @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+  toolkit      ComposioToolkit @relation(fields: [toolkit_uuid], references: [uuid], onDelete: Cascade)
+
+  @@index([org_uuid])
+  @@index([user_uuid])
+  @@index([toolkit_uuid])
+  @@index([composio_user_id])
+  @@map("composio_connected_accounts")
+}
+
+model ComposioTrigger {
+  id                      Int      @id @default(autoincrement())
+  uuid                    String   @unique @default(uuid())
+  composio_trigger_id     String   @unique
+  org_uuid                String
+  composio_user_id        String
+  toolkit_uuid            String
+  trigger_slug            String
+  connected_account_id    String
+  is_enabled              Boolean  @default(true)
+  config                  Json     @default("{}")
+  webhook_subscription_id String?
+  created_at              DateTime @default(now())
+  updated_at              DateTime @updatedAt
+
+  organization Organization    @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+  toolkit      ComposioToolkit @relation(fields: [toolkit_uuid], references: [uuid], onDelete: Cascade)
+
+  @@index([org_uuid])
+  @@index([toolkit_uuid])
+  @@index([is_enabled])
+  @@map("composio_triggers")
+}
+
 model Document {
   id         Int          @id @default(autoincrement())
   uuid       String       @unique @default(uuid())
@@ -428,13 +610,14 @@ model AiProvider {
 }
 
 model Conversation {
-  id         Int      @id @default(autoincrement())
-  uuid       String   @unique @default(uuid())
-  org_uuid   String
-  user_uuid  String
-  title      String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id                  Int      @id @default(autoincrement())
+  uuid                String   @unique @default(uuid())
+  org_uuid            String
+  user_uuid           String
+  title               String?
+  composio_session_id String?  @unique
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
 
   organization Organization     @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
   user         User             @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade)
@@ -494,19 +677,22 @@ model AgentExecution {
 }
 
 model ToolCall {
-  id               Int            @id @default(autoincrement())
-  uuid             String         @unique @default(uuid())
-  execution_uuid   String
-  integration_uuid String?
-  tool_name        String
-  input            Json?
-  output           Json?
-  status           ToolCallStatus
-  error            String?
-  tokens_used      Int            @default(0)
-  cost_usd         Decimal        @default(0)
-  duration_ms      Int            @default(0)
-  created_at       DateTime       @default(now())
+  id                  Int            @id @default(autoincrement())
+  uuid                String         @unique @default(uuid())
+  execution_uuid      String
+  integration_uuid    String?
+  provider_type       String?
+  composio_tool_slug  String?
+  composio_session_id String?
+  tool_name           String
+  input               Json?
+  output              Json?
+  status              ToolCallStatus
+  error               String?
+  tokens_used         Int            @default(0)
+  cost_usd            Decimal        @default(0)
+  duration_ms         Int            @default(0)
+  created_at          DateTime       @default(now())
 
   execution   AgentExecution @relation(fields: [execution_uuid], references: [uuid], onDelete: Cascade)
   integration Integration?   @relation(fields: [integration_uuid], references: [uuid], onDelete: SetNull)

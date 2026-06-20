@@ -37,6 +37,8 @@
     "@apidevtools/swagger-parser": "^12.1.0",
     "@bull-board/api": "^6.16.2",
     "@bull-board/express": "^6.16.2",
+    "@composio/core": "^0.11.0",
+    "@composio/vercel": "^0.9.3",
     "@elastic/elasticsearch": "^9.4.0",
     "@google-cloud/storage": "^7.18.0",
     "@hubspot/api-client": "^13.5.0",

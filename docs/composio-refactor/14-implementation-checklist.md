@@ -4,18 +4,18 @@ Use this as a sequential execution guide for the coding agent. Check off each it
 
 ## Environment & Dependencies
 
-- [ ] Add `COMPOSIO_API_KEY` to `api/.env.template` (required, not optional)
-- [ ] Add `COMPOSIO_WEBHOOK_SECRET` to `api/.env.template`
-- [ ] Add `APP_URL` for OAuth callback origin
-- [ ] Update `env.validation.ts` — require `COMPOSIO_API_KEY`
-- [ ] Install `@composio/core` and `@composio/vercel` in `api/`
+- [x] Add `COMPOSIO_API_KEY` to `api/.env.template` (required, not optional)
+- [x] Add `COMPOSIO_WEBHOOK_SECRET` to `api/.env.template`
+- [x] Add `APP_URL` for OAuth callback origin
+- [x] Update `env.validation.ts` — require `COMPOSIO_API_KEY`
+- [x] Install `@composio/core` and `@composio/vercel` in `api/`
 - [ ] Run `composio init` / verify API key works (`composio whoami`)
 
 ## Database
 
-- [ ] Create Prisma migration with all tables from `04-database-design.md`
-- [ ] Add `composio_session_id` to `conversations`
-- [ ] Add `provider_type`, `composio_tool_slug`, `composio_session_id` to `tool_calls`
+- [x] Create Prisma migration with all tables from `04-database-design.md`
+- [x] Add `composio_session_id` to `conversations`
+- [x] Add `provider_type`, `composio_tool_slug`, `composio_session_id` to `tool_calls`
 - [ ] Remove SaaS values from `IntegrationProvider` enum (Phase 5)
 - [ ] Update permission seeds
 - [ ] Run migration on dev DB
@@ -23,21 +23,21 @@ Use this as a sequential execution guide for the coding agent. Check off each it
 
 ## Backend — Composio Module
 
-- [ ] `composio.module.ts` — global module
-- [ ] `composio-client.service.ts`
-- [ ] `composio-sync.service.ts` + `OnApplicationBootstrap` hook
-- [ ] `composio-toolkits.service.ts` (admin)
-- [ ] `composio-toolkits.controller.ts` (admin)
-- [ ] `composio-connections.service.ts`
-- [ ] `composio-connections.controller.ts` (org)
-- [ ] `composio-session.service.ts`
+- [x] `composio.module.ts` — global module
+- [x] `composio-client.service.ts`
+- [x] `composio-sync.service.ts` + `OnApplicationBootstrap` hook
+- [x] `composio-toolkits.service.ts` (admin)
+- [x] `composio-toolkits.controller.ts` (admin)
+- [x] `composio-connections.service.ts`
+- [x] `composio-connections.controller.ts` (org)
+- [x] `composio-session.service.ts`
 - [ ] `composio-triggers.service.ts`
 - [ ] `composio-triggers.controller.ts`
 - [ ] `composio-webhook.controller.ts`
 - [ ] `org-toolkits.service.ts` + controller
 - [ ] All DTOs + Zod schemas
-- [ ] `SuperAdminGuard`
-- [ ] `OrganizationMatchGuard`
+- [x] `SuperAdminGuard`
+- [x] `OrganizationMatchGuard`
 
 ## Backend — Tool Registry Refactor
 

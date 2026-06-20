@@ -257,6 +257,106 @@ exports.Prisma.IntegrationActionScalarFieldEnum = {
   required_permission_key: 'required_permission_key'
 };
 
+exports.Prisma.ComposioToolkitScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  logo_url: 'logo_url',
+  categories: 'categories',
+  tool_count: 'tool_count',
+  auth_schemes: 'auth_schemes',
+  connection_tier: 'connection_tier',
+  is_enabled: 'is_enabled',
+  composio_metadata: 'composio_metadata',
+  last_synced_at: 'last_synced_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.ComposioToolkitToolScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  toolkit_uuid: 'toolkit_uuid',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  input_schema: 'input_schema',
+  output_schema: 'output_schema',
+  tags: 'tags',
+  is_enabled: 'is_enabled',
+  composio_version: 'composio_version',
+  last_synced_at: 'last_synced_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.ComposioSyncRunScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  sync_type: 'sync_type',
+  status: 'status',
+  toolkits_upserted: 'toolkits_upserted',
+  tools_upserted: 'tools_upserted',
+  error: 'error',
+  started_at: 'started_at',
+  completed_at: 'completed_at'
+};
+
+exports.Prisma.OrganisationEnabledToolkitScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  org_uuid: 'org_uuid',
+  toolkit_uuid: 'toolkit_uuid',
+  is_enabled: 'is_enabled',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.OrganisationToolPermissionScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  org_uuid: 'org_uuid',
+  tool_uuid: 'tool_uuid',
+  enabled: 'enabled',
+  requires_approval: 'requires_approval',
+  required_permission_key: 'required_permission_key',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.ComposioConnectedAccountScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  composio_account_id: 'composio_account_id',
+  composio_user_id: 'composio_user_id',
+  org_uuid: 'org_uuid',
+  user_uuid: 'user_uuid',
+  toolkit_uuid: 'toolkit_uuid',
+  status: 'status',
+  account_label: 'account_label',
+  last_synced_at: 'last_synced_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.ComposioTriggerScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  composio_trigger_id: 'composio_trigger_id',
+  org_uuid: 'org_uuid',
+  composio_user_id: 'composio_user_id',
+  toolkit_uuid: 'toolkit_uuid',
+  trigger_slug: 'trigger_slug',
+  connected_account_id: 'connected_account_id',
+  is_enabled: 'is_enabled',
+  config: 'config',
+  webhook_subscription_id: 'webhook_subscription_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.DocumentScalarFieldEnum = {
   id: 'id',
   uuid: 'uuid',
@@ -291,6 +391,7 @@ exports.Prisma.ConversationScalarFieldEnum = {
   org_uuid: 'org_uuid',
   user_uuid: 'user_uuid',
   title: 'title',
+  composio_session_id: 'composio_session_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -328,6 +429,9 @@ exports.Prisma.ToolCallScalarFieldEnum = {
   uuid: 'uuid',
   execution_uuid: 'execution_uuid',
   integration_uuid: 'integration_uuid',
+  provider_type: 'provider_type',
+  composio_tool_slug: 'composio_tool_slug',
+  composio_session_id: 'composio_session_id',
   tool_name: 'tool_name',
   input: 'input',
   output: 'output',
@@ -456,6 +560,30 @@ exports.McpAuthType = exports.$Enums.McpAuthType = {
   OAUTH: 'OAUTH'
 };
 
+exports.ComposioConnectionTier = exports.$Enums.ComposioConnectionTier = {
+  ORG_SHARED: 'ORG_SHARED',
+  USER_PERSONAL: 'USER_PERSONAL'
+};
+
+exports.ComposioSyncType = exports.$Enums.ComposioSyncType = {
+  FULL: 'FULL',
+  TOOLKIT: 'TOOLKIT',
+  TOOLS: 'TOOLS'
+};
+
+exports.ComposioSyncStatus = exports.$Enums.ComposioSyncStatus = {
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+exports.ComposioAccountStatus = exports.$Enums.ComposioAccountStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  EXPIRED: 'EXPIRED',
+  PENDING: 'PENDING'
+};
+
 exports.DocumentType = exports.$Enums.DocumentType = {
   LOGO: 'LOGO',
   BANNER: 'BANNER',
@@ -523,6 +651,13 @@ exports.Prisma.ModelName = {
   OpenApiIntegration: 'OpenApiIntegration',
   McpIntegration: 'McpIntegration',
   IntegrationAction: 'IntegrationAction',
+  ComposioToolkit: 'ComposioToolkit',
+  ComposioToolkitTool: 'ComposioToolkitTool',
+  ComposioSyncRun: 'ComposioSyncRun',
+  OrganisationEnabledToolkit: 'OrganisationEnabledToolkit',
+  OrganisationToolPermission: 'OrganisationToolPermission',
+  ComposioConnectedAccount: 'ComposioConnectedAccount',
+  ComposioTrigger: 'ComposioTrigger',
   Document: 'Document',
   AiProvider: 'AiProvider',
   Conversation: 'Conversation',
