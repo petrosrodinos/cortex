@@ -268,7 +268,7 @@ exports.Prisma.ComposioToolkitScalarFieldEnum = {
   categories: 'categories',
   tool_count: 'tool_count',
   auth_schemes: 'auth_schemes',
-  connection_tier: 'connection_tier',
+  connection_tiers: 'connection_tiers',
   is_enabled: 'is_enabled',
   composio_metadata: 'composio_metadata',
   last_synced_at: 'last_synced_at',

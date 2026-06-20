@@ -27,7 +27,7 @@ export const SyncComposioSchema = z.object({
 
 export const UpdateComposioToolkitSchema = z.object({
   is_enabled: z.boolean().optional(),
-  connection_tier: z.nativeEnum(ComposioConnectionTier).optional(),
+  connection_tiers: z.array(z.nativeEnum(ComposioConnectionTier)).min(1).optional(),
 });
 
 export const UpdateComposioToolSchema = z.object({

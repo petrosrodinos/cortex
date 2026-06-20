@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
-import type { IntegrationAppsToolkitFilters } from '../interfaces/integrationApps.interface';
+import type { IntegrationAppsConnectionTier, IntegrationAppsToolkitFilters } from '../interfaces/integrationApps.interface';
 import {
   connectIntegrationAppsToolkit,
   createIntegrationAppsTrigger,
@@ -36,7 +36,13 @@ export function useGetIntegrationAppsToolkit(organizationUuid?: string, toolkitS
 
 export function useConnectIntegrationAppsToolkit(organizationUuid?: string) {
   return useMutation({
-    mutationFn: (toolkitSlug: string) => connectIntegrationAppsToolkit(organizationUuid as string, toolkitSlug),
+    mutationFn: ({
+      toolkitSlug,
+      connectionTier,
+    }: {
+      toolkitSlug: string;
+      connectionTier?: IntegrationAppsConnectionTier;
+    }) => connectIntegrationAppsToolkit(organizationUuid as string, toolkitSlug, connectionTier),
     onSuccess: (response) => {
       window.location.assign(response.redirect_url);
     },

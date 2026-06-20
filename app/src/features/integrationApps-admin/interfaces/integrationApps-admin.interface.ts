@@ -11,7 +11,7 @@ export interface AdminIntegrationAppsToolkit {
   logo_url?: string | null;
   categories: string[];
   tool_count: number;
-  connection_tier: IntegrationAppsConnectionTier;
+  connection_tiers: IntegrationAppsConnectionTier[];
   is_enabled: boolean;
   last_synced_at?: string | null;
   created_at: string;

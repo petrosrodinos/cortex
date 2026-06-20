@@ -103,15 +103,40 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
               Enable
             </Button>
           )}
-          <Button
-            type="button"
-            className="sm:w-auto"
-            loading={connectToolkit.isPending}
-            onClick={() => connectToolkit.mutate(toolkit.slug)}
-          >
-            <Plug className="h-4 w-4" />
-            Connect
-          </Button>
+          {toolkit.connection_tiers.length === 1 ? (
+            <Button
+              type="button"
+              className="sm:w-auto"
+              loading={connectToolkit.isPending}
+              onClick={() =>
+                connectToolkit.mutate({
+                  toolkitSlug: toolkit.slug,
+                  connectionTier: toolkit.connection_tiers[0],
+                })
+              }
+            >
+              <Plug className="h-4 w-4" />
+              Connect
+            </Button>
+          ) : (
+            toolkit.connection_tiers.map((connectionTier) => (
+              <Button
+                key={connectionTier}
+                type="button"
+                className="sm:w-auto"
+                loading={connectToolkit.isPending}
+                onClick={() =>
+                  connectToolkit.mutate({
+                    toolkitSlug: toolkit.slug,
+                    connectionTier,
+                  })
+                }
+              >
+                <Plug className="h-4 w-4" />
+                {connectionTier === 'USER_PERSONAL' ? 'Connect personal' : 'Connect organization'}
+              </Button>
+            ))
+          )}
         </div>
       </header>
 

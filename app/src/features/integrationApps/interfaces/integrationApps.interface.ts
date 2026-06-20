@@ -16,7 +16,7 @@ export interface IntegrationAppsToolkit {
   description?: string | null;
   logo_url?: string | null;
   categories: string[];
-  connection_tier: IntegrationAppsConnectionTier;
+  connection_tiers: IntegrationAppsConnectionTier[];
   is_connected: boolean;
   connected_accounts: IntegrationAppsConnectedAccountSummary[];
   is_org_enabled: boolean;

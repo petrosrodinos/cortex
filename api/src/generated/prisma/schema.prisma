@@ -409,21 +409,21 @@ model IntegrationAction {
 }
 
 model ComposioToolkit {
-  id                Int                    @id @default(autoincrement())
-  uuid              String                 @unique @default(uuid())
-  slug              String                 @unique
+  id                Int                      @id @default(autoincrement())
+  uuid              String                   @unique @default(uuid())
+  slug              String                   @unique
   name              String
   description       String?
   logo_url          String?
-  categories        String[]               @default([])
-  tool_count        Int                    @default(0)
-  auth_schemes      Json                   @default("[]")
-  connection_tier   ComposioConnectionTier
-  is_enabled        Boolean                @default(false)
+  categories        String[]                 @default([])
+  tool_count        Int                      @default(0)
+  auth_schemes      Json                     @default("[]")
+  connection_tiers  ComposioConnectionTier[] @default([])
+  is_enabled        Boolean                  @default(false)
   composio_metadata Json?
   last_synced_at    DateTime?
-  created_at        DateTime               @default(now())
-  updated_at        DateTime               @updatedAt
+  created_at        DateTime                 @default(now())
+  updated_at        DateTime                 @updatedAt
 
   tools              ComposioToolkitTool[]
   enabled_orgs       OrganisationEnabledToolkit[]
@@ -431,7 +431,7 @@ model ComposioToolkit {
   triggers           ComposioTrigger[]
 
   @@index([is_enabled])
-  @@index([connection_tier])
+  @@index([connection_tiers])
   @@map("composio_toolkits")
 }
 

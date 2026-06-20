@@ -18315,7 +18315,6 @@ export namespace Prisma {
     description: string | null
     logo_url: string | null
     tool_count: number | null
-    connection_tier: $Enums.ComposioConnectionTier | null
     is_enabled: boolean | null
     last_synced_at: Date | null
     created_at: Date | null
@@ -18330,7 +18329,6 @@ export namespace Prisma {
     description: string | null
     logo_url: string | null
     tool_count: number | null
-    connection_tier: $Enums.ComposioConnectionTier | null
     is_enabled: boolean | null
     last_synced_at: Date | null
     created_at: Date | null
@@ -18347,7 +18345,7 @@ export namespace Prisma {
     categories: number
     tool_count: number
     auth_schemes: number
-    connection_tier: number
+    connection_tiers: number
     is_enabled: number
     composio_metadata: number
     last_synced_at: number
@@ -18375,7 +18373,6 @@ export namespace Prisma {
     description?: true
     logo_url?: true
     tool_count?: true
-    connection_tier?: true
     is_enabled?: true
     last_synced_at?: true
     created_at?: true
@@ -18390,7 +18387,6 @@ export namespace Prisma {
     description?: true
     logo_url?: true
     tool_count?: true
-    connection_tier?: true
     is_enabled?: true
     last_synced_at?: true
     created_at?: true
@@ -18407,7 +18403,7 @@ export namespace Prisma {
     categories?: true
     tool_count?: true
     auth_schemes?: true
-    connection_tier?: true
+    connection_tiers?: true
     is_enabled?: true
     composio_metadata?: true
     last_synced_at?: true
@@ -18512,7 +18508,7 @@ export namespace Prisma {
     categories: string[]
     tool_count: number
     auth_schemes: JsonValue
-    connection_tier: $Enums.ComposioConnectionTier
+    connection_tiers: $Enums.ComposioConnectionTier[]
     is_enabled: boolean
     composio_metadata: JsonValue | null
     last_synced_at: Date | null
@@ -18549,7 +18545,7 @@ export namespace Prisma {
     categories?: boolean
     tool_count?: boolean
     auth_schemes?: boolean
-    connection_tier?: boolean
+    connection_tiers?: boolean
     is_enabled?: boolean
     composio_metadata?: boolean
     last_synced_at?: boolean
@@ -18572,7 +18568,7 @@ export namespace Prisma {
     categories?: boolean
     tool_count?: boolean
     auth_schemes?: boolean
-    connection_tier?: boolean
+    connection_tiers?: boolean
     is_enabled?: boolean
     composio_metadata?: boolean
     last_synced_at?: boolean
@@ -18590,7 +18586,7 @@ export namespace Prisma {
     categories?: boolean
     tool_count?: boolean
     auth_schemes?: boolean
-    connection_tier?: boolean
+    connection_tiers?: boolean
     is_enabled?: boolean
     composio_metadata?: boolean
     last_synced_at?: boolean
@@ -18608,7 +18604,7 @@ export namespace Prisma {
     categories?: boolean
     tool_count?: boolean
     auth_schemes?: boolean
-    connection_tier?: boolean
+    connection_tiers?: boolean
     is_enabled?: boolean
     composio_metadata?: boolean
     last_synced_at?: boolean
@@ -18616,7 +18612,7 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type ComposioToolkitOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "slug" | "name" | "description" | "logo_url" | "categories" | "tool_count" | "auth_schemes" | "connection_tier" | "is_enabled" | "composio_metadata" | "last_synced_at" | "created_at" | "updated_at", ExtArgs["result"]["composioToolkit"]>
+  export type ComposioToolkitOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "slug" | "name" | "description" | "logo_url" | "categories" | "tool_count" | "auth_schemes" | "connection_tiers" | "is_enabled" | "composio_metadata" | "last_synced_at" | "created_at" | "updated_at", ExtArgs["result"]["composioToolkit"]>
   export type ComposioToolkitInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tools?: boolean | ComposioToolkit$toolsArgs<ExtArgs>
     enabled_orgs?: boolean | ComposioToolkit$enabled_orgsArgs<ExtArgs>
@@ -18645,7 +18641,7 @@ export namespace Prisma {
       categories: string[]
       tool_count: number
       auth_schemes: Prisma.JsonValue
-      connection_tier: $Enums.ComposioConnectionTier
+      connection_tiers: $Enums.ComposioConnectionTier[]
       is_enabled: boolean
       composio_metadata: Prisma.JsonValue | null
       last_synced_at: Date | null
@@ -19087,7 +19083,7 @@ export namespace Prisma {
     readonly categories: FieldRef<"ComposioToolkit", 'String[]'>
     readonly tool_count: FieldRef<"ComposioToolkit", 'Int'>
     readonly auth_schemes: FieldRef<"ComposioToolkit", 'Json'>
-    readonly connection_tier: FieldRef<"ComposioToolkit", 'ComposioConnectionTier'>
+    readonly connection_tiers: FieldRef<"ComposioToolkit", 'ComposioConnectionTier[]'>
     readonly is_enabled: FieldRef<"ComposioToolkit", 'Boolean'>
     readonly composio_metadata: FieldRef<"ComposioToolkit", 'Json'>
     readonly last_synced_at: FieldRef<"ComposioToolkit", 'DateTime'>
@@ -35137,7 +35133,7 @@ export namespace Prisma {
     categories: 'categories',
     tool_count: 'tool_count',
     auth_schemes: 'auth_schemes',
-    connection_tier: 'connection_tier',
+    connection_tiers: 'connection_tiers',
     is_enabled: 'is_enabled',
     composio_metadata: 'composio_metadata',
     last_synced_at: 'last_synced_at',
@@ -35613,16 +35609,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'ComposioConnectionTier'
+   * Reference to a field of type 'ComposioConnectionTier[]'
    */
-  export type EnumComposioConnectionTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComposioConnectionTier'>
+  export type ListEnumComposioConnectionTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComposioConnectionTier[]'>
     
 
 
   /**
-   * Reference to a field of type 'ComposioConnectionTier[]'
+   * Reference to a field of type 'ComposioConnectionTier'
    */
-  export type ListEnumComposioConnectionTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComposioConnectionTier[]'>
+  export type EnumComposioConnectionTierFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComposioConnectionTier'>
     
 
 
@@ -36793,7 +36789,7 @@ export namespace Prisma {
     categories?: StringNullableListFilter<"ComposioToolkit">
     tool_count?: IntFilter<"ComposioToolkit"> | number
     auth_schemes?: JsonFilter<"ComposioToolkit">
-    connection_tier?: EnumComposioConnectionTierFilter<"ComposioToolkit"> | $Enums.ComposioConnectionTier
+    connection_tiers?: EnumComposioConnectionTierNullableListFilter<"ComposioToolkit">
     is_enabled?: BoolFilter<"ComposioToolkit"> | boolean
     composio_metadata?: JsonNullableFilter<"ComposioToolkit">
     last_synced_at?: DateTimeNullableFilter<"ComposioToolkit"> | Date | string | null
@@ -36815,7 +36811,7 @@ export namespace Prisma {
     categories?: SortOrder
     tool_count?: SortOrder
     auth_schemes?: SortOrder
-    connection_tier?: SortOrder
+    connection_tiers?: SortOrder
     is_enabled?: SortOrder
     composio_metadata?: SortOrderInput | SortOrder
     last_synced_at?: SortOrderInput | SortOrder
@@ -36840,7 +36836,7 @@ export namespace Prisma {
     categories?: StringNullableListFilter<"ComposioToolkit">
     tool_count?: IntFilter<"ComposioToolkit"> | number
     auth_schemes?: JsonFilter<"ComposioToolkit">
-    connection_tier?: EnumComposioConnectionTierFilter<"ComposioToolkit"> | $Enums.ComposioConnectionTier
+    connection_tiers?: EnumComposioConnectionTierNullableListFilter<"ComposioToolkit">
     is_enabled?: BoolFilter<"ComposioToolkit"> | boolean
     composio_metadata?: JsonNullableFilter<"ComposioToolkit">
     last_synced_at?: DateTimeNullableFilter<"ComposioToolkit"> | Date | string | null
@@ -36862,7 +36858,7 @@ export namespace Prisma {
     categories?: SortOrder
     tool_count?: SortOrder
     auth_schemes?: SortOrder
-    connection_tier?: SortOrder
+    connection_tiers?: SortOrder
     is_enabled?: SortOrder
     composio_metadata?: SortOrderInput | SortOrder
     last_synced_at?: SortOrderInput | SortOrder
@@ -36888,7 +36884,7 @@ export namespace Prisma {
     categories?: StringNullableListFilter<"ComposioToolkit">
     tool_count?: IntWithAggregatesFilter<"ComposioToolkit"> | number
     auth_schemes?: JsonWithAggregatesFilter<"ComposioToolkit">
-    connection_tier?: EnumComposioConnectionTierWithAggregatesFilter<"ComposioToolkit"> | $Enums.ComposioConnectionTier
+    connection_tiers?: EnumComposioConnectionTierNullableListFilter<"ComposioToolkit">
     is_enabled?: BoolWithAggregatesFilter<"ComposioToolkit"> | boolean
     composio_metadata?: JsonNullableWithAggregatesFilter<"ComposioToolkit">
     last_synced_at?: DateTimeNullableWithAggregatesFilter<"ComposioToolkit"> | Date | string | null
@@ -39104,7 +39100,7 @@ export namespace Prisma {
     categories?: ComposioToolkitCreatecategoriesInput | string[]
     tool_count?: number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier: $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitCreateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: Date | string | null
@@ -39126,7 +39122,7 @@ export namespace Prisma {
     categories?: ComposioToolkitCreatecategoriesInput | string[]
     tool_count?: number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier: $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitCreateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: Date | string | null
@@ -39147,7 +39143,7 @@ export namespace Prisma {
     categories?: ComposioToolkitUpdatecategoriesInput | string[]
     tool_count?: IntFieldUpdateOperationsInput | number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitUpdateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: BoolFieldUpdateOperationsInput | boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39169,7 +39165,7 @@ export namespace Prisma {
     categories?: ComposioToolkitUpdatecategoriesInput | string[]
     tool_count?: IntFieldUpdateOperationsInput | number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitUpdateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: BoolFieldUpdateOperationsInput | boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39191,7 +39187,7 @@ export namespace Prisma {
     categories?: ComposioToolkitCreatecategoriesInput | string[]
     tool_count?: number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier: $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitCreateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: Date | string | null
@@ -39208,7 +39204,7 @@ export namespace Prisma {
     categories?: ComposioToolkitUpdatecategoriesInput | string[]
     tool_count?: IntFieldUpdateOperationsInput | number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitUpdateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: BoolFieldUpdateOperationsInput | boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39226,7 +39222,7 @@ export namespace Prisma {
     categories?: ComposioToolkitUpdatecategoriesInput | string[]
     tool_count?: IntFieldUpdateOperationsInput | number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitUpdateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: BoolFieldUpdateOperationsInput | boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -41607,11 +41603,12 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
-  export type EnumComposioConnectionTierFilter<$PrismaModel = never> = {
-    equals?: $Enums.ComposioConnectionTier | EnumComposioConnectionTierFieldRefInput<$PrismaModel>
-    in?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
-    not?: NestedEnumComposioConnectionTierFilter<$PrismaModel> | $Enums.ComposioConnectionTier
+  export type EnumComposioConnectionTierNullableListFilter<$PrismaModel = never> = {
+    equals?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel> | null
+    has?: $Enums.ComposioConnectionTier | EnumComposioConnectionTierFieldRefInput<$PrismaModel> | null
+    hasEvery?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    hasSome?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
   }
 
   export type ComposioToolkitToolListRelationFilter = {
@@ -41634,7 +41631,7 @@ export namespace Prisma {
     categories?: SortOrder
     tool_count?: SortOrder
     auth_schemes?: SortOrder
-    connection_tier?: SortOrder
+    connection_tiers?: SortOrder
     is_enabled?: SortOrder
     composio_metadata?: SortOrder
     last_synced_at?: SortOrder
@@ -41655,7 +41652,6 @@ export namespace Prisma {
     description?: SortOrder
     logo_url?: SortOrder
     tool_count?: SortOrder
-    connection_tier?: SortOrder
     is_enabled?: SortOrder
     last_synced_at?: SortOrder
     created_at?: SortOrder
@@ -41670,7 +41666,6 @@ export namespace Prisma {
     description?: SortOrder
     logo_url?: SortOrder
     tool_count?: SortOrder
-    connection_tier?: SortOrder
     is_enabled?: SortOrder
     last_synced_at?: SortOrder
     created_at?: SortOrder
@@ -41680,16 +41675,6 @@ export namespace Prisma {
   export type ComposioToolkitSumOrderByAggregateInput = {
     id?: SortOrder
     tool_count?: SortOrder
-  }
-
-  export type EnumComposioConnectionTierWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ComposioConnectionTier | EnumComposioConnectionTierFieldRefInput<$PrismaModel>
-    in?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
-    not?: NestedEnumComposioConnectionTierWithAggregatesFilter<$PrismaModel> | $Enums.ComposioConnectionTier
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumComposioConnectionTierFilter<$PrismaModel>
-    _max?: NestedEnumComposioConnectionTierFilter<$PrismaModel>
   }
 
   export type ComposioToolkitScalarRelationFilter = {
@@ -43987,6 +43972,10 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type ComposioToolkitCreateconnection_tiersInput = {
+    set: $Enums.ComposioConnectionTier[]
+  }
+
   export type ComposioToolkitToolCreateNestedManyWithoutToolkitInput = {
     create?: XOR<ComposioToolkitToolCreateWithoutToolkitInput, ComposioToolkitToolUncheckedCreateWithoutToolkitInput> | ComposioToolkitToolCreateWithoutToolkitInput[] | ComposioToolkitToolUncheckedCreateWithoutToolkitInput[]
     connectOrCreate?: ComposioToolkitToolCreateOrConnectWithoutToolkitInput | ComposioToolkitToolCreateOrConnectWithoutToolkitInput[]
@@ -44048,8 +44037,9 @@ export namespace Prisma {
     push?: string | string[]
   }
 
-  export type EnumComposioConnectionTierFieldUpdateOperationsInput = {
-    set?: $Enums.ComposioConnectionTier
+  export type ComposioToolkitUpdateconnection_tiersInput = {
+    set?: $Enums.ComposioConnectionTier[]
+    push?: $Enums.ComposioConnectionTier | $Enums.ComposioConnectionTier[]
   }
 
   export type ComposioToolkitToolUpdateManyWithoutToolkitNestedInput = {
@@ -45097,23 +45087,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumMcpAuthTypeFilter<$PrismaModel>
     _max?: NestedEnumMcpAuthTypeFilter<$PrismaModel>
-  }
-
-  export type NestedEnumComposioConnectionTierFilter<$PrismaModel = never> = {
-    equals?: $Enums.ComposioConnectionTier | EnumComposioConnectionTierFieldRefInput<$PrismaModel>
-    in?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
-    not?: NestedEnumComposioConnectionTierFilter<$PrismaModel> | $Enums.ComposioConnectionTier
-  }
-
-  export type NestedEnumComposioConnectionTierWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ComposioConnectionTier | EnumComposioConnectionTierFieldRefInput<$PrismaModel>
-    in?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ComposioConnectionTier[] | ListEnumComposioConnectionTierFieldRefInput<$PrismaModel>
-    not?: NestedEnumComposioConnectionTierWithAggregatesFilter<$PrismaModel> | $Enums.ComposioConnectionTier
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumComposioConnectionTierFilter<$PrismaModel>
-    _max?: NestedEnumComposioConnectionTierFilter<$PrismaModel>
   }
 
   export type NestedEnumComposioSyncTypeFilter<$PrismaModel = never> = {
@@ -48375,7 +48348,7 @@ export namespace Prisma {
     categories?: ComposioToolkitCreatecategoriesInput | string[]
     tool_count?: number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier: $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitCreateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: Date | string | null
@@ -48396,7 +48369,7 @@ export namespace Prisma {
     categories?: ComposioToolkitCreatecategoriesInput | string[]
     tool_count?: number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier: $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitCreateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: Date | string | null
@@ -48463,7 +48436,7 @@ export namespace Prisma {
     categories?: ComposioToolkitUpdatecategoriesInput | string[]
     tool_count?: IntFieldUpdateOperationsInput | number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitUpdateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: BoolFieldUpdateOperationsInput | boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48484,7 +48457,7 @@ export namespace Prisma {
     categories?: ComposioToolkitUpdatecategoriesInput | string[]
     tool_count?: IntFieldUpdateOperationsInput | number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitUpdateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: BoolFieldUpdateOperationsInput | boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48568,7 +48541,7 @@ export namespace Prisma {
     categories?: ComposioToolkitCreatecategoriesInput | string[]
     tool_count?: number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier: $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitCreateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: Date | string | null
@@ -48589,7 +48562,7 @@ export namespace Prisma {
     categories?: ComposioToolkitCreatecategoriesInput | string[]
     tool_count?: number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier: $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitCreateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: Date | string | null
@@ -48679,7 +48652,7 @@ export namespace Prisma {
     categories?: ComposioToolkitUpdatecategoriesInput | string[]
     tool_count?: IntFieldUpdateOperationsInput | number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitUpdateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: BoolFieldUpdateOperationsInput | boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48700,7 +48673,7 @@ export namespace Prisma {
     categories?: ComposioToolkitUpdatecategoriesInput | string[]
     tool_count?: IntFieldUpdateOperationsInput | number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitUpdateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: BoolFieldUpdateOperationsInput | boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48952,7 +48925,7 @@ export namespace Prisma {
     categories?: ComposioToolkitCreatecategoriesInput | string[]
     tool_count?: number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier: $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitCreateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: Date | string | null
@@ -48973,7 +48946,7 @@ export namespace Prisma {
     categories?: ComposioToolkitCreatecategoriesInput | string[]
     tool_count?: number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier: $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitCreateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: Date | string | null
@@ -49063,7 +49036,7 @@ export namespace Prisma {
     categories?: ComposioToolkitUpdatecategoriesInput | string[]
     tool_count?: IntFieldUpdateOperationsInput | number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitUpdateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: BoolFieldUpdateOperationsInput | boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49084,7 +49057,7 @@ export namespace Prisma {
     categories?: ComposioToolkitUpdatecategoriesInput | string[]
     tool_count?: IntFieldUpdateOperationsInput | number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitUpdateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: BoolFieldUpdateOperationsInput | boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49152,7 +49125,7 @@ export namespace Prisma {
     categories?: ComposioToolkitCreatecategoriesInput | string[]
     tool_count?: number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier: $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitCreateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: Date | string | null
@@ -49173,7 +49146,7 @@ export namespace Prisma {
     categories?: ComposioToolkitCreatecategoriesInput | string[]
     tool_count?: number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier: $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitCreateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: Date | string | null
@@ -49263,7 +49236,7 @@ export namespace Prisma {
     categories?: ComposioToolkitUpdatecategoriesInput | string[]
     tool_count?: IntFieldUpdateOperationsInput | number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitUpdateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: BoolFieldUpdateOperationsInput | boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49284,7 +49257,7 @@ export namespace Prisma {
     categories?: ComposioToolkitUpdatecategoriesInput | string[]
     tool_count?: IntFieldUpdateOperationsInput | number
     auth_schemes?: JsonNullValueInput | InputJsonValue
-    connection_tier?: EnumComposioConnectionTierFieldUpdateOperationsInput | $Enums.ComposioConnectionTier
+    connection_tiers?: ComposioToolkitUpdateconnection_tiersInput | $Enums.ComposioConnectionTier[]
     is_enabled?: BoolFieldUpdateOperationsInput | boolean
     composio_metadata?: NullableJsonNullValueInput | InputJsonValue
     last_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

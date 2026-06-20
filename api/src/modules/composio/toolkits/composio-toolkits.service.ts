@@ -81,8 +81,8 @@ export class ComposioToolkitsService {
       where: { slug },
       data: {
         ...(dto.is_enabled !== undefined ? { is_enabled: dto.is_enabled } : {}),
-        ...(dto.connection_tier
-          ? { connection_tier: dto.connection_tier }
+        ...(dto.connection_tiers
+          ? { connection_tiers: dto.connection_tiers }
           : {}),
       },
     });

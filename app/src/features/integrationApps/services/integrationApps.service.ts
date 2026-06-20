@@ -6,6 +6,7 @@ import type {
   IntegrationAppsToolkitDetail,
   IntegrationAppsToolkitFilters,
   IntegrationAppsTool,
+  IntegrationAppsConnectionTier,
   ConnectIntegrationAppsResponse,
   PaginatedIntegrationAppsToolkits,
 } from '../interfaces/integrationApps.interface';
@@ -50,14 +51,21 @@ export const getIntegrationAppsToolkit = async (
   }
 };
 
+const connectTierStorageKey = (toolkitSlug: string) => `integrationAppsConnectTier:${toolkitSlug}`;
+
 export const connectIntegrationAppsToolkit = async (
   organizationUuid: string,
   toolkitSlug: string,
+  connectionTier?: IntegrationAppsConnectionTier,
 ): Promise<ConnectIntegrationAppsResponse> => {
   try {
     const response = await axiosInstance.post(ApiRoutes.organizations.integrationAppsConnect(organizationUuid), {
       toolkit_slug: toolkitSlug,
+      ...(connectionTier ? { connection_tier: connectionTier } : {}),
     });
+    if (connectionTier) {
+      sessionStorage.setItem(connectTierStorageKey(toolkitSlug), connectionTier);
+    }
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.message || 'Failed to create integration connect link.');
@@ -84,12 +92,16 @@ export const verifyIntegrationAppsCallback = async (
   organizationUuid: string,
   toolkitSlug: string,
   connectionRequestId?: string,
+  connectionTier?: IntegrationAppsConnectionTier,
 ): Promise<IntegrationAppsCallbackResponse> => {
   try {
+    const storedTier = connectionTier ?? (sessionStorage.getItem(connectTierStorageKey(toolkitSlug)) as IntegrationAppsConnectionTier | null);
     const response = await axiosInstance.post(ApiRoutes.organizations.integrationAppsCallback(organizationUuid), {
       toolkit_slug: toolkitSlug,
       connection_request_id: connectionRequestId,
+      ...(storedTier ? { connection_tier: storedTier } : {}),
     });
+    sessionStorage.removeItem(connectTierStorageKey(toolkitSlug));
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.message || 'Failed to verify integration connection.');

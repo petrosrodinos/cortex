@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -31,10 +32,14 @@ export class ComposioConnectionsService {
     dto: ConnectComposioDto,
   ) {
     const toolkit = await this.getEnabledToolkit(dto.toolkit_slug);
-    this.assertCanConnect(toolkit.connection_tier, user);
+    const connectionTier = this.resolveConnectionTier(
+      toolkit.connection_tiers,
+      dto.connection_tier,
+    );
+    this.assertCanConnect(connectionTier, user);
 
     const composioUserId = this.buildComposioUserId(
-      toolkit.connection_tier,
+      connectionTier,
       organizationUuid,
       user.uuid,
     );
@@ -47,7 +52,7 @@ export class ComposioConnectionsService {
       resourceId: toolkit.slug,
       metadata: {
         toolkit_slug: toolkit.slug,
-        connection_tier: toolkit.connection_tier,
+        connection_tier: connectionTier,
         connection_request_id:
           request.id ?? request.nanoid ?? request.connectedAccountId ?? null,
       },
@@ -67,8 +72,12 @@ export class ComposioConnectionsService {
     dto: ComposioCallbackDto,
   ) {
     const toolkit = await this.getEnabledToolkit(dto.toolkit_slug);
+    const connectionTier = this.resolveConnectionTier(
+      toolkit.connection_tiers,
+      dto.connection_tier,
+    );
     const composioUserId = this.buildComposioUserId(
-      toolkit.connection_tier,
+      connectionTier,
       organizationUuid,
       user.uuid,
     );
@@ -86,6 +95,7 @@ export class ComposioConnectionsService {
           user.uuid,
           toolkit,
           account,
+          connectionTier,
         );
         await this.audit(organizationUuid, user.uuid, {
           action: 'composio.account_connected',
@@ -116,6 +126,7 @@ export class ComposioConnectionsService {
           user.uuid,
           toolkit,
           account,
+          connectionTier,
         ),
       ),
     );
@@ -166,7 +177,7 @@ export class ComposioConnectionsService {
               slug: true,
               name: true,
               logo_url: true,
-              connection_tier: true,
+              connection_tiers: true,
             },
           },
         },
@@ -190,17 +201,13 @@ export class ComposioConnectionsService {
       },
     );
 
-    if (
-      account.toolkit.connection_tier ===
-        ComposioConnectionTier.USER_PERSONAL &&
-      account.user_uuid !== user.uuid
-    ) {
+    if (account.user_uuid && account.user_uuid !== user.uuid) {
       throw new ForbiddenException(
         'Cannot disconnect another user personal account',
       );
     }
 
-    if (account.toolkit.connection_tier === ComposioConnectionTier.ORG_SHARED) {
+    if (!account.user_uuid) {
       this.assertManagePermission(user);
     }
 
@@ -216,7 +223,9 @@ export class ComposioConnectionsService {
       resourceId: connectedAccountId,
       metadata: {
         toolkit_slug: account.toolkit.slug,
-        connection_tier: account.toolkit.connection_tier,
+        connection_tier: account.user_uuid
+          ? ComposioConnectionTier.USER_PERSONAL
+          : ComposioConnectionTier.ORG_SHARED,
       },
     });
 
@@ -242,6 +251,9 @@ export class ComposioConnectionsService {
 
     return this.connect(organizationUuid, user, {
       toolkit_slug: account.toolkit.slug,
+      connection_tier: account.user_uuid
+        ? ComposioConnectionTier.USER_PERSONAL
+        : ComposioConnectionTier.ORG_SHARED,
     });
   }
 
@@ -280,6 +292,7 @@ export class ComposioConnectionsService {
     userUuid: string,
     toolkit: { uuid: string; slug: string },
     account: any,
+    connectionTier: ComposioConnectionTier,
   ) {
     const composioAccountId = account.id ?? account.nanoid ?? account.uuid;
     const composioUserId =
@@ -291,7 +304,10 @@ export class ComposioConnectionsService {
         composio_account_id: composioAccountId,
         composio_user_id: composioUserId,
         org_uuid: organizationUuid,
-        user_uuid: composioUserId?.startsWith('user:') ? userUuid : null,
+        user_uuid:
+          connectionTier === ComposioConnectionTier.USER_PERSONAL
+            ? userUuid
+            : null,
         toolkit_uuid: toolkit.uuid,
         status: this.mapStatus(account.status),
         account_label:
@@ -300,12 +316,43 @@ export class ComposioConnectionsService {
       },
       update: {
         composio_user_id: composioUserId,
+        user_uuid:
+          connectionTier === ComposioConnectionTier.USER_PERSONAL
+            ? userUuid
+            : null,
         status: this.mapStatus(account.status),
         account_label:
           account.name ?? account.label ?? account.email ?? account.status,
         last_synced_at: new Date(),
       },
     });
+  }
+
+  private resolveConnectionTier(
+    configuredTiers: ComposioConnectionTier[],
+    requestedTier?: ComposioConnectionTier,
+  ): ComposioConnectionTier {
+    if (configuredTiers.length === 0) {
+      throw new BadRequestException('Toolkit has no configured connection tiers');
+    }
+
+    if (requestedTier) {
+      if (!configuredTiers.includes(requestedTier)) {
+        throw new BadRequestException(
+          'Requested connection tier is not enabled for this toolkit',
+        );
+      }
+
+      return requestedTier;
+    }
+
+    if (configuredTiers.length === 1) {
+      return configuredTiers[0];
+    }
+
+    throw new BadRequestException(
+      'connection_tier is required when the toolkit supports multiple connection tiers',
+    );
   }
 
   private buildComposioUserId(

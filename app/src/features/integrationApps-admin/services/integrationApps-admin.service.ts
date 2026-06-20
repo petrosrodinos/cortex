@@ -41,7 +41,7 @@ export const getAdminIntegrationAppsToolkit = async (toolkitSlug: string): Promi
 
 export const updateAdminIntegrationAppsToolkit = async (
   toolkitSlug: string,
-  payload: Pick<Partial<AdminIntegrationAppsToolkit>, 'is_enabled' | 'connection_tier'>,
+  payload: Pick<Partial<AdminIntegrationAppsToolkit>, 'is_enabled' | 'connection_tiers'>,
 ): Promise<AdminIntegrationAppsToolkit> => {
   const response = await axiosInstance.patch(ApiRoutes.admin.integrationAppsToolkit(toolkitSlug), payload);
   return response.data;

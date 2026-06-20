@@ -1,4 +1,5 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { ComposioConnectionTier } from 'generated/prisma';
 
 export class ConnectComposioDto {
   @IsString()
@@ -7,4 +8,8 @@ export class ConnectComposioDto {
   @IsOptional()
   @IsString()
   connected_account_id?: string;
+
+  @IsOptional()
+  @IsEnum(ComposioConnectionTier)
+  connection_tier?: ComposioConnectionTier;
 }

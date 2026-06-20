@@ -14,7 +14,7 @@ describe('ComposioConnectionsService', () => {
             uuid: 'toolkit-uuid',
             slug: 'slack',
             is_enabled: true,
-            connection_tier: ComposioConnectionTier.ORG_SHARED,
+            connection_tiers: [ComposioConnectionTier.ORG_SHARED],
           },
         ),
       },
@@ -105,7 +105,7 @@ describe('ComposioConnectionsService', () => {
       uuid: 'toolkit-uuid',
       slug: 'gmail',
       is_enabled: true,
-      connection_tier: ComposioConnectionTier.USER_PERSONAL,
+      connection_tiers: [ComposioConnectionTier.USER_PERSONAL],
     });
 
     await expect(
@@ -126,7 +126,7 @@ describe('ComposioConnectionsService', () => {
       expect.objectContaining({
         create: expect.objectContaining({
           org_uuid: 'org-uuid',
-          user_uuid: null,
+          user_uuid: 'user-uuid',
           toolkit_uuid: 'toolkit-uuid',
           status: ComposioAccountStatus.ACTIVE,
         }),
@@ -145,7 +145,7 @@ describe('ComposioConnectionsService', () => {
       uuid: 'toolkit-uuid',
       slug: 'slack',
       is_enabled: false,
-      connection_tier: ComposioConnectionTier.ORG_SHARED,
+      connection_tiers: [ComposioConnectionTier.ORG_SHARED],
     });
 
     await expect(

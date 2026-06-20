@@ -1,4 +1,4 @@
-import { IsBoolean, IsEnum, IsOptional } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsOptional } from 'class-validator';
 import { ComposioConnectionTier } from 'generated/prisma';
 
 export class UpdateComposioToolkitDto {
@@ -7,6 +7,7 @@ export class UpdateComposioToolkitDto {
   is_enabled?: boolean;
 
   @IsOptional()
-  @IsEnum(ComposioConnectionTier)
-  connection_tier?: ComposioConnectionTier;
+  @IsArray()
+  @IsEnum(ComposioConnectionTier, { each: true })
+  connection_tiers?: ComposioConnectionTier[];
 }

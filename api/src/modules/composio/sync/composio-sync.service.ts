@@ -236,7 +236,7 @@ export class ComposioSyncService implements OnApplicationBootstrap {
 
     const existing = await this.prisma.composioToolkit.findUnique({
       where: { slug },
-      select: { connection_tier: true, is_enabled: true },
+      select: { connection_tiers: true, is_enabled: true },
     });
 
     await this.prisma.composioToolkit.upsert({
@@ -267,7 +267,7 @@ export class ComposioSyncService implements OnApplicationBootstrap {
         auth_schemes: this.toJson(
           toolkit.authSchemes ?? toolkit.auth_schemes ?? [],
         ),
-        connection_tier: this.defaultConnectionTier(slug),
+        connection_tiers: this.defaultConnectionTiers(slug),
         composio_metadata: this.toJson(toolkit),
         last_synced_at: new Date(),
       },
@@ -296,8 +296,10 @@ export class ComposioSyncService implements OnApplicationBootstrap {
         auth_schemes: this.toJson(
           toolkit.authSchemes ?? toolkit.auth_schemes ?? [],
         ),
-        connection_tier:
-          existing?.connection_tier ?? this.defaultConnectionTier(slug),
+        connection_tiers:
+          existing?.connection_tiers.length
+            ? existing.connection_tiers
+            : this.defaultConnectionTiers(slug),
         composio_metadata: this.toJson(toolkit),
         last_synced_at: new Date(),
       },
@@ -329,10 +331,10 @@ export class ComposioSyncService implements OnApplicationBootstrap {
     return existing?.is_enabled ?? true;
   }
 
-  private defaultConnectionTier(slug: string): ComposioConnectionTier {
+  private defaultConnectionTiers(slug: string): ComposioConnectionTier[] {
     return ORG_SHARED_TOOLKITS.has(slug)
-      ? ComposioConnectionTier.ORG_SHARED
-      : ComposioConnectionTier.USER_PERSONAL;
+      ? [ComposioConnectionTier.ORG_SHARED]
+      : [ComposioConnectionTier.USER_PERSONAL];
   }
 
   private getItems(page: any): UnknownRecord[] {

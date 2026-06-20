@@ -30,7 +30,7 @@ export class OrgToolkitsService {
     }
 
     if (query.tier) {
-      where.connection_tier = this.parseConnectionTier(query.tier);
+      where.connection_tiers = { has: this.parseConnectionTier(query.tier) };
     }
 
     const connected = this.toOptionalBoolean(query.connected);
@@ -68,7 +68,7 @@ export class OrgToolkitsService {
         description: toolkit.description,
         logo_url: toolkit.logo_url,
         categories: toolkit.categories,
-        connection_tier: toolkit.connection_tier,
+        connection_tiers: toolkit.connection_tiers,
         is_connected: toolkit.connected_accounts.length > 0,
         connected_accounts: toolkit.connected_accounts.map((account) => ({
           id: account.uuid,
@@ -122,7 +122,7 @@ export class OrgToolkitsService {
         description: toolkit.description,
         logo_url: toolkit.logo_url,
         categories: toolkit.categories,
-        connection_tier: toolkit.connection_tier,
+        connection_tiers: toolkit.connection_tiers,
         is_org_enabled: isOrgEnabled,
         tool_count: toolkit.tool_count,
       },

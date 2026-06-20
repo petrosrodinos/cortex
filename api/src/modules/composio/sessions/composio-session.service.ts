@@ -2,10 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ComposioClientService } from '@/integrations/composio/composio-client.service';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
-import {
-  ComposioAccountStatus,
-  ComposioConnectionTier,
-} from 'generated/prisma';
+import { ComposioAccountStatus } from 'generated/prisma';
 
 @Injectable()
 export class ComposioSessionService {
@@ -169,7 +166,7 @@ export class ComposioSessionService {
 
     const toolkits = await this.prisma.composioToolkit.findMany({
       where: { slug: { in: toolkitSlugs } },
-      select: { uuid: true, slug: true, connection_tier: true },
+      select: { uuid: true, slug: true },
     });
     const toolkitUuids = toolkits.map((toolkit) => toolkit.uuid);
 
@@ -181,22 +178,18 @@ export class ComposioSessionService {
         OR: [{ user_uuid: userUuid }, { user_uuid: null }],
       },
       include: {
-        toolkit: { select: { slug: true, connection_tier: true } },
+        toolkit: { select: { slug: true } },
       },
       orderBy: { created_at: 'desc' },
     });
 
     return accounts.reduce<Record<string, string | string[]>>(
       (result, account) => {
-        const tier = account.toolkit.connection_tier;
-        const toolkitSlug = account.toolkit.slug;
-
-        if (
-          tier === ComposioConnectionTier.USER_PERSONAL &&
-          account.user_uuid !== userUuid
-        ) {
+        if (account.user_uuid && account.user_uuid !== userUuid) {
           return result;
         }
+
+        const toolkitSlug = account.toolkit.slug;
 
         if (!result[toolkitSlug]) {
           result[toolkitSlug] = account.composio_account_id;

@@ -63,7 +63,17 @@ export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCat
               toolkit={toolkit}
               isConnecting={connectToolkit.isPending}
               isEnabling={enableToolkit.isPending}
-              onConnect={() => connectToolkit.mutate(toolkit.slug)}
+              onConnect={() => {
+                if (toolkit.connection_tiers.length === 1) {
+                  connectToolkit.mutate({
+                    toolkitSlug: toolkit.slug,
+                    connectionTier: toolkit.connection_tiers[0],
+                  });
+                  return;
+                }
+
+                onSelectToolkit(toolkit.slug);
+              }}
               onEnable={() => enableToolkit.mutate(toolkit.slug)}
               onManage={() => onSelectToolkit(toolkit.slug)}
             />

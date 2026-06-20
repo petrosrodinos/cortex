@@ -52,7 +52,7 @@ export function useUpdateAdminIntegrationAppsToolkit(toolkitSlug?: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: { is_enabled?: boolean; connection_tier?: IntegrationAppsConnectionTier }) =>
+    mutationFn: (payload: { is_enabled?: boolean; connection_tiers?: IntegrationAppsConnectionTier[] }) =>
       updateAdminIntegrationAppsToolkit(toolkitSlug as string, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: adminIntegrationAppsQueryKey });

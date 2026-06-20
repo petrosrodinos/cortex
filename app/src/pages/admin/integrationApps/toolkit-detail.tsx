@@ -10,9 +10,9 @@ import {
   useUpdateAdminIntegrationAppsToolkit,
 } from '@/features/integrationApps-admin/hooks/use-integrationApps-admin';
 import type { AdminIntegrationAppsTool } from '@/features/integrationApps-admin/interfaces/integrationApps-admin.interface';
-import type { IntegrationAppsConnectionTier } from '@/features/integrationApps/interfaces/integrationApps.interface';
 import { Routes } from '@/routes/routes';
 import { AdminToolkitDetailSkeleton } from './components/toolkit-detail-skeleton';
+import { ConnectionTierToggles, formatConnectionTiers } from './components/connection-tier-toggles';
 import { ToggleSwitch } from './components/toggle-switch';
 
 export default function AdminIntegrationAppsToolkitDetailPage() {
@@ -58,34 +58,33 @@ export default function AdminIntegrationAppsToolkitDetailPage() {
         </div>
       </header>
 
-      <div className="grid gap-3 sm:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <Metric label="Platform status" value={toolkit.is_enabled ? 'Enabled' : 'Disabled'} />
+        <Metric label="Connection tiers" value={formatConnectionTiers(toolkit.connection_tiers)} />
         <Metric label="Tools" value={String(toolkit.tools.length)} />
         <Metric label="Connected accounts" value={String(statsQuery.data?.connected_accounts_count ?? 0)} />
         <Metric label="Active triggers" value={String(statsQuery.data?.active_triggers_count ?? 0)} />
       </div>
 
       <section className="rounded-lg border border-border bg-surface p-4">
-        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
-          <label className="grid gap-1 text-sm">
-            <span className="font-medium text-foreground">Connection tier</span>
-            <select
-              value={toolkit.connection_tier}
-              onChange={(event) =>
-                updateToolkit.mutate({ connection_tier: event.target.value as IntegrationAppsConnectionTier })
-              }
-              className="h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
-            >
-              <option value="USER_PERSONAL">User personal</option>
-              <option value="ORG_SHARED">Organization shared</option>
-            </select>
-          </label>
-          <ToggleSwitch
-            checked={toolkit.is_enabled}
-            disabled={updateToolkit.isPending}
-            ariaLabel={`${toolkit.is_enabled ? 'Disable' : 'Enable'} ${toolkit.name} toolkit`}
-            onChange={(is_enabled) => updateToolkit.mutate({ is_enabled })}
-          />
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+          <div className="grid gap-2">
+            <span className="text-sm font-medium text-foreground">Connection tiers</span>
+            <ConnectionTierToggles
+              tiers={toolkit.connection_tiers}
+              disabled={updateToolkit.isPending}
+              onChange={(connection_tiers) => updateToolkit.mutate({ connection_tiers })}
+            />
+          </div>
+          <div className="flex items-center gap-3 lg:pt-7">
+            <span className="text-sm font-medium text-foreground">Toolkit enabled</span>
+            <ToggleSwitch
+              checked={toolkit.is_enabled}
+              disabled={updateToolkit.isPending}
+              ariaLabel={`${toolkit.is_enabled ? 'Disable' : 'Enable'} ${toolkit.name} toolkit`}
+              onChange={(is_enabled) => updateToolkit.mutate({ is_enabled })}
+            />
+          </div>
         </div>
       </section>
 

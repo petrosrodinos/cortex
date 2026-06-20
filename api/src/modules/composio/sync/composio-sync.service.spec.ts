@@ -91,7 +91,7 @@ describe('ComposioSyncService', () => {
         create: expect.objectContaining({
           slug: 'slack',
           name: 'Slack',
-          connection_tier: ComposioConnectionTier.ORG_SHARED,
+          connection_tiers: [ComposioConnectionTier.ORG_SHARED],
         }),
       }),
     );
