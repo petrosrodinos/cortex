@@ -336,6 +336,10 @@ export class ComposioSyncService implements OnApplicationBootstrap {
   }
 
   private getItems(page: any): UnknownRecord[] {
+    if (Array.isArray(page)) {
+      return page;
+    }
+
     const items =
       page?.items ?? page?.data ?? page?.toolkits ?? page?.tools ?? [];
     return Array.isArray(items) ? items : [];

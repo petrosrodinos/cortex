@@ -1,5 +1,5 @@
-import { useParams } from 'react-router-dom';
-import { RefreshCw } from 'lucide-react';
+import { Link, useParams } from 'react-router-dom';
+import { ArrowLeft, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   useAdminIntegrationAppsToolkit,
@@ -11,7 +11,9 @@ import {
 } from '@/features/integrationApps-admin/hooks/use-integrationApps-admin';
 import type { AdminIntegrationAppsTool } from '@/features/integrationApps-admin/interfaces/integrationApps-admin.interface';
 import type { IntegrationAppsConnectionTier } from '@/features/integrationApps/interfaces/integrationApps.interface';
-import { cn } from '@/lib/utils';
+import { Routes } from '@/routes/routes';
+import { AdminToolkitDetailSkeleton } from './components/toolkit-detail-skeleton';
+import { ToggleSwitch } from './components/toggle-switch';
 
 export default function AdminIntegrationAppsToolkitDetailPage() {
   const { toolkitSlug } = useParams<{ toolkitSlug: string }>();
@@ -23,13 +25,20 @@ export default function AdminIntegrationAppsToolkitDetailPage() {
   const toolkit = toolkitQuery.data;
 
   if (toolkitQuery.isLoading || !toolkit) {
-    return <div className="rounded-lg border border-border bg-surface p-4 text-sm text-muted">Loading toolkit...</div>;
+    return <AdminToolkitDetailSkeleton />;
   }
 
   return (
     <div className="flex flex-col gap-4">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 items-start gap-3">
+          <Link
+            to={Routes.admin.integrationAppsToolkits}
+            className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-md text-muted transition-colors hover:bg-surface-secondary hover:text-foreground"
+            aria-label="Back to toolkits"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
           {toolkit.logo_url ? (
             <img src={toolkit.logo_url} alt="" className="h-10 w-10 rounded-lg border border-border bg-background object-contain p-1" />
           ) : null}
@@ -57,7 +66,7 @@ export default function AdminIntegrationAppsToolkitDetailPage() {
       </div>
 
       <section className="rounded-lg border border-border bg-surface p-4">
-        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-end">
+        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
           <label className="grid gap-1 text-sm">
             <span className="font-medium text-foreground">Connection tier</span>
             <select
@@ -71,15 +80,12 @@ export default function AdminIntegrationAppsToolkitDetailPage() {
               <option value="ORG_SHARED">Organization shared</option>
             </select>
           </label>
-          <Button
-            type="button"
-            variant="outline"
-            className="md:w-auto"
-            loading={updateToolkit.isPending}
-            onClick={() => updateToolkit.mutate({ is_enabled: !toolkit.is_enabled })}
-          >
-            {toolkit.is_enabled ? 'Disable toolkit' : 'Enable toolkit'}
-          </Button>
+          <ToggleSwitch
+            checked={toolkit.is_enabled}
+            disabled={updateToolkit.isPending}
+            ariaLabel={`${toolkit.is_enabled ? 'Disable' : 'Enable'} ${toolkit.name} toolkit`}
+            onChange={(is_enabled) => updateToolkit.mutate({ is_enabled })}
+          />
         </div>
       </section>
 
@@ -110,24 +116,17 @@ function AdminToolRow({ toolkitSlug, tool }: { toolkitSlug: string; tool: AdminI
   const updateTool = useUpdateAdminIntegrationAppsTool(toolkitSlug);
 
   return (
-    <div className="grid gap-3 px-4 py-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+    <div className="flex items-center justify-between gap-3 px-4 py-3">
       <div className="min-w-0">
         <p className="truncate text-sm font-medium text-foreground">{tool.name}</p>
         <p className="mt-0.5 line-clamp-2 text-xs text-muted">{tool.description || tool.slug}</p>
       </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={tool.is_enabled}
+      <ToggleSwitch
+        checked={tool.is_enabled}
         disabled={updateTool.isPending}
-        className="flex w-full items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-xs text-foreground disabled:cursor-not-allowed disabled:opacity-50 sm:w-32"
-        onClick={() => updateTool.mutate({ toolSlug: tool.slug, isEnabled: !tool.is_enabled })}
-      >
-        <span>{tool.is_enabled ? 'Enabled' : 'Disabled'}</span>
-        <span className={cn('relative h-5 w-9 rounded-full', tool.is_enabled ? 'bg-accent' : 'bg-surface-secondary')}>
-          <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform', tool.is_enabled ? 'translate-x-4' : 'translate-x-0.5')} />
-        </span>
-      </button>
+        ariaLabel={`${tool.is_enabled ? 'Disable' : 'Enable'} ${tool.name}`}
+        onChange={(isEnabled) => updateTool.mutate({ toolSlug: tool.slug, isEnabled })}
+      />
     </div>
   );
 }

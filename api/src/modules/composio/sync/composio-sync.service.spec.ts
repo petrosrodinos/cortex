@@ -120,6 +120,42 @@ describe('ComposioSyncService', () => {
     });
   });
 
+  it('syncs toolkit arrays returned directly by the Composio SDK', async () => {
+    const { service, prisma } = createService({
+      toolkitPages: [
+        [
+          {
+            slug: 'github',
+            name: 'GitHub',
+            description: 'Code hosting',
+            meta: { toolsCount: 2 },
+            categories: ['developer-tools'],
+          },
+        ],
+      ],
+    });
+
+    await service.syncAll();
+
+    expect(prisma.composioToolkit.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { slug: 'github' },
+        create: expect.objectContaining({
+          slug: 'github',
+          name: 'GitHub',
+          tool_count: 2,
+        }),
+      }),
+    );
+    expect(prisma.composioSyncRun.update).toHaveBeenCalledWith({
+      where: { uuid: 'sync-run-uuid' },
+      data: expect.objectContaining({
+        status: ComposioSyncStatus.COMPLETED,
+        toolkits_upserted: 1,
+      }),
+    });
+  });
+
   it('records a failed sync run when Composio throws', async () => {
     const { service, prisma, client } = createService();
     client.toolkits.get.mockRejectedValueOnce(new Error('bad api key'));

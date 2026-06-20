@@ -10,6 +10,7 @@ import {
 } from '@/features/integrationApps-admin/hooks/use-integrationApps-admin';
 import type { AdminIntegrationAppsToolkit } from '@/features/integrationApps-admin/interfaces/integrationApps-admin.interface';
 import { Routes } from '@/routes/routes';
+import { ToggleSwitch } from './components/toggle-switch';
 
 export default function AdminIntegrationAppsToolkitsPage() {
   const [search, setSearch] = useState('');
@@ -80,20 +81,14 @@ function ToolkitRow({ toolkit }: { toolkit: AdminIntegrationAppsToolkit }) {
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
         <span>{toolkit._count?.tools ?? toolkit.tool_count} tools</span>
         <span>{toolkit._count?.enabled_orgs ?? 0} orgs</span>
-        <span className={toolkit.is_enabled ? 'text-emerald-600 dark:text-emerald-300' : undefined}>
-          {toolkit.is_enabled ? 'Enabled' : 'Disabled'}
-        </span>
       </div>
-      <div className="flex gap-2 md:justify-end">
-        <Button
-          type="button"
-          variant="outline"
-          className="h-9 w-auto px-3"
-          loading={updateToolkit.isPending}
-          onClick={() => updateToolkit.mutate({ is_enabled: !toolkit.is_enabled })}
-        >
-          {toolkit.is_enabled ? 'Disable' : 'Enable'}
-        </Button>
+      <div className="flex items-center gap-3 md:justify-end">
+        <ToggleSwitch
+          checked={toolkit.is_enabled}
+          disabled={updateToolkit.isPending}
+          ariaLabel={`${toolkit.is_enabled ? 'Disable' : 'Enable'} ${toolkit.name}`}
+          onChange={(is_enabled) => updateToolkit.mutate({ is_enabled })}
+        />
         <Link
           to={Routes.admin.integrationAppsToolkit(toolkit.slug)}
           className="inline-flex h-9 items-center rounded-md bg-accent px-3 text-sm font-medium text-accent-foreground hover:opacity-90"
