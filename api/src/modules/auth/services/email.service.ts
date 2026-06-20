@@ -84,17 +84,26 @@ export class EmailAuthService {
                 throw new UnauthorizedException('Invalid credentials');
             }
 
-
-            const token = await this.jwt_service.signToken({
-                uuid: user.uuid,
-                role: user.role,
+            let organization = await this.prisma.organization.findFirst({
+                where: {
+                    members: {
+                        some: {
+                            user_uuid: user.uuid,
+                            status: OrganizationMemberStatus.ACTIVE,
+                        },
+                    },
+                },
+                orderBy: { created_at: 'asc' },
             });
 
-            const expires_in = this.jwt_service.getExpirationTime(token);
+            if (!organization) {
+                organization = await this.organizations_service.create(user.uuid, { name: 'Default Organisation' });
+            }
 
+            const scoped_auth = await this.switchOrganization(user.uuid, { organization_uuid: organization.uuid });
             delete user.password;
 
-            return { access_token: token, expires_in: expires_in, user: user };
+            return { ...scoped_auth, user };
         } catch (error) {
             throw new BadRequestException(error.message);
         }
@@ -190,7 +199,11 @@ export class EmailAuthService {
 
             const user = await this.prisma.user.update({
                 where: { uuid: member.user_uuid },
-                data: { password: hashed_password },
+                data: {
+                    first_name: dto.first_name.trim(),
+                    last_name: dto.last_name.trim(),
+                    password: hashed_password,
+                },
             });
 
             await this.prisma.organizationMember.update({
@@ -246,6 +259,7 @@ export class EmailAuthService {
                     },
                 },
                 include: {
+                    user: true,
                     role: {
                         include: {
                             permissions: {
@@ -265,6 +279,7 @@ export class EmailAuthService {
             const organization_permissions = membership.role.permissions.map((role_permission) => role_permission.permission.key);
             const token = await this.jwt_service.signToken({
                 uuid: user_uuid,
+                role: membership.user.role,
                 organization_uuid: dto.organization_uuid,
                 organization_role: membership.role.name,
                 organization_permissions,

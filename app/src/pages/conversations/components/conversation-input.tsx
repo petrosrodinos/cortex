@@ -2,7 +2,7 @@ import { useRef, type FC } from 'react';
 import { ArrowUp, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ConversationAttachMenu } from './conversation-attach-menu';
-import type { ComposioToolkit } from '@/features/composio/interfaces/composio.interface';
+import type { IntegrationAppsToolkit } from '@/features/integrationApps/interfaces/integrationApps.interface';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import {
   ConversationDraftEditor,
@@ -20,7 +20,7 @@ interface ConversationInputProps {
   draftParts: DraftPart[];
   attachedFiles: AttachedFile[];
   integrations: Integration[];
-  toolkits: ComposioToolkit[];
+  toolkits: IntegrationAppsToolkit[];
   selectedIntegrationUuids: string[];
   selectedToolkitSlugs: string[];
   disabled: boolean;

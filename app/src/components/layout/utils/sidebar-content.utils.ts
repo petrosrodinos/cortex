@@ -17,5 +17,5 @@ export const navItems: SidebarNavItem[] = [
   { label: 'Organisations', icon: Building2, href: Routes.dashboard.organizations, end: false },
   { label: 'Integrations', icon: PlugZap, href: Routes.dashboard.integrations, end: false },
   { label: 'Settings', icon: Settings, href: Routes.dashboard.settings, end: false },
-  { label: 'Admin', icon: Shield, href: Routes.admin.composio, end: false, roles: [RoleTypes.SUPER_ADMIN] },
+  { label: 'Admin', icon: Shield, href: Routes.admin.integrationApps, end: false, roles: [RoleTypes.SUPER_ADMIN] },
 ];

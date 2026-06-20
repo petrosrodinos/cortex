@@ -25,7 +25,7 @@ import {
 } from '../admin/dto/composio-toolkits.schemas';
 import { ComposioToolkitsService } from './composio-toolkits.service';
 
-@Controller('admin/composio')
+@Controller(['admin/composio', 'admin/integrations/apps'])
 @UseGuards(JwtGuard, SuperAdminGuard)
 export class ComposioToolkitsController {
   constructor(private readonly service: ComposioToolkitsService) {}

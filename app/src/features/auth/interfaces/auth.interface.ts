@@ -13,6 +13,8 @@ export interface SignUpUser {
 
 export interface RegisterInvitationUser {
     invitation_token: string;
+    first_name: string;
+    last_name: string;
     password: string;
 }
 

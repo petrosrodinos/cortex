@@ -7,7 +7,7 @@ import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { useOrganizationStore } from '@/stores/organization';
 import { Routes } from '@/routes/routes';
 import { useGetIntegrations } from '@/features/integrations/common/hooks/use-integrations';
-import { useGetComposioToolkits } from '@/features/composio/hooks/use-composio';
+import { useGetIntegrationAppsToolkits } from '@/features/integrationApps/hooks/use-integrationApps';
 import {
   useApproveExecution,
   useCreateConversation,
@@ -69,8 +69,8 @@ const ConversationsPage: FC = () => {
 
   const { data: conversations = [], isLoading: conversationsLoading } = useGetConversations(organizationUuid);
   const { data: integrations = [] } = useGetIntegrations(organizationUuid);
-  const { data: composioToolkitsResponse } = useGetComposioToolkits(organizationUuid, { limit: 100 });
-  const composioToolkits = composioToolkitsResponse?.data ?? [];
+  const { data: integrationAppsToolkitsResponse } = useGetIntegrationAppsToolkits(organizationUuid, { limit: 100 });
+  const integrationAppsToolkits = integrationAppsToolkitsResponse?.data ?? [];
   const { data: messages = [], isLoading: messagesLoading } = useGetMessages(organizationUuid, conversationUuid);
   const createConversation = useCreateConversation(organizationUuid);
   const deleteConversation = useDeleteConversation(organizationUuid);
@@ -98,7 +98,7 @@ const ConversationsPage: FC = () => {
     () => toolEligibleIntegrations.map((integration) => integration.uuid),
     [toolEligibleIntegrations],
   );
-  const toolEligibleToolkits = useMemo(() => getToolEligibleToolkits(composioToolkits), [composioToolkits]);
+  const toolEligibleToolkits = useMemo(() => getToolEligibleToolkits(integrationAppsToolkits), [integrationAppsToolkits]);
   const toolEligibleToolkitSlugs = useMemo(
     () => toolEligibleToolkits.map((toolkit) => toolkit.slug),
     [toolEligibleToolkits],
@@ -538,7 +538,7 @@ const ConversationsPage: FC = () => {
               draftParts={draftParts}
               attachedFiles={attachedFiles}
               integrations={integrations}
-              toolkits={composioToolkits}
+              toolkits={integrationAppsToolkits}
               selectedIntegrationUuids={selectedIntegrationUuids}
               selectedToolkitSlugs={selectedToolkitSlugs}
               disabled={sendMessage.isPending || isRunning}

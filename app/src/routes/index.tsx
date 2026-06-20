@@ -8,7 +8,7 @@ import DashboardLayout from "@/pages/dashboard/layout";
 import DashboardHome from "@/pages/dashboard";
 import OrganizationsPage from "@/pages/organizations";
 import IntegrationsPage from "@/pages/integrations";
-import ComposioCallbackPage from "@/pages/integrations/composio-callback";
+import IntegrationAppsCallbackPage from "@/pages/integrations/integrationApps-callback";
 import ConversationsPage from "@/pages/conversations";
 import SettingsLayout from "@/pages/settings";
 import ProfilePage from "@/pages/settings/profile";
@@ -16,11 +16,11 @@ import PersonalizationPage from "@/pages/settings/personalization";
 import UsagePage from "@/pages/settings/usage";
 import AuditLogsPage from "@/pages/settings/audit-logs";
 import ExecutionDetailPage from "@/pages/executions";
-import AdminComposioLayout from "@/pages/admin/composio/layout";
-import AdminComposioDashboardPage from "@/pages/admin/composio";
-import AdminComposioToolkitsPage from "@/pages/admin/composio/toolkits";
-import AdminComposioToolkitDetailPage from "@/pages/admin/composio/toolkit-detail";
-import AdminComposioSyncPage from "@/pages/admin/composio/sync";
+import AdminIntegrationAppsLayout from "@/pages/admin/integrationApps/layout";
+import AdminIntegrationAppsDashboardPage from "@/pages/admin/integrationApps";
+import AdminIntegrationAppsToolkitsPage from "@/pages/admin/integrationApps/toolkits";
+import AdminIntegrationAppsToolkitDetailPage from "@/pages/admin/integrationApps/toolkit-detail";
+import AdminIntegrationAppsSyncPage from "@/pages/admin/integrationApps/sync";
 import { RoleTypes } from "@/features/user/interfaces/user.interface";
 
 export default function AppRoutes() {
@@ -52,7 +52,7 @@ export default function AppRoutes() {
         <Route index element={<DashboardHome />} />
         <Route path="organizations" element={<OrganizationsPage />} />
         <Route path="integrations" element={<IntegrationsPage />} />
-        <Route path="integrations/callback" element={<ComposioCallbackPage />} />
+        <Route path="integrations/callback" element={<IntegrationAppsCallbackPage />} />
         <Route path="integrations/ai/:aiProviderUuid" element={<IntegrationsPage />} />
         <Route path="integrations/:integrationUuid" element={<IntegrationsPage />} />
         <Route path="conversations" element={<ConversationsPage />} />
@@ -75,15 +75,17 @@ export default function AppRoutes() {
         path="/admin/*"
         element={
           <ProtectedRoute loggedIn={true} requiredRoles={[RoleTypes.SUPER_ADMIN]} fallbackPath={Routes.dashboard.root}>
-            <AdminComposioLayout />
+            <DashboardLayout />
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to={Routes.admin.composio} replace />} />
-        <Route path="composio" element={<AdminComposioDashboardPage />} />
-        <Route path="composio/toolkits" element={<AdminComposioToolkitsPage />} />
-        <Route path="composio/toolkits/:toolkitSlug" element={<AdminComposioToolkitDetailPage />} />
-        <Route path="composio/sync" element={<AdminComposioSyncPage />} />
+        <Route element={<AdminIntegrationAppsLayout />}>
+          <Route index element={<Navigate to={Routes.admin.integrationApps} replace />} />
+          <Route path="integrations/apps" element={<AdminIntegrationAppsDashboardPage />} />
+          <Route path="integrations/apps/toolkits" element={<AdminIntegrationAppsToolkitsPage />} />
+          <Route path="integrations/apps/toolkits/:toolkitSlug" element={<AdminIntegrationAppsToolkitDetailPage />} />
+          <Route path="integrations/apps/sync" element={<AdminIntegrationAppsSyncPage />} />
+        </Route>
       </Route>
 
       {/* Default redirect */}

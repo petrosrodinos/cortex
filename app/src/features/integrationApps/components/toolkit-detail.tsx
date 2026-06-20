@@ -3,17 +3,17 @@ import { ArrowLeft, Check, Plug, ShieldCheck, ShieldQuestion, Trash2 } from 'luc
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  useConnectComposioToolkit,
-  useCreateComposioTrigger,
-  useDeleteComposioTrigger,
-  useDisableComposioToolkit,
-  useEnableComposioToolkit,
-  useGetComposioTriggers,
-  useGetComposioToolkit,
-  useUpdateComposioTrigger,
-  useUpdateComposioToolPermission,
-} from '@/features/composio/hooks/use-composio';
-import type { ComposioTool, ComposioTrigger } from '@/features/composio/interfaces/composio.interface';
+  useConnectIntegrationAppsToolkit,
+  useCreateIntegrationAppsTrigger,
+  useDeleteIntegrationAppsTrigger,
+  useDisableIntegrationAppsToolkit,
+  useEnableIntegrationAppsToolkit,
+  useGetIntegrationAppsTriggers,
+  useGetIntegrationAppsToolkit,
+  useUpdateIntegrationAppsTrigger,
+  useUpdateIntegrationAppsToolPermission,
+} from '@/features/integrationApps/hooks/use-integrationApps';
+import type { IntegrationAppsTool, IntegrationAppsTrigger } from '@/features/integrationApps/interfaces/integrationApps.interface';
 import { cn } from '@/lib/utils';
 
 interface ToolkitDetailProps {
@@ -27,13 +27,13 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
   const [selectedAccountId, setSelectedAccountId] = useState('');
   const [triggerConfig, setTriggerConfig] = useState('{}');
   const [triggerConfigError, setTriggerConfigError] = useState<string | null>(null);
-  const detailQuery = useGetComposioToolkit(organizationUuid, toolkitSlug);
-  const triggersQuery = useGetComposioTriggers(organizationUuid);
-  const connectToolkit = useConnectComposioToolkit(organizationUuid);
-  const enableToolkit = useEnableComposioToolkit(organizationUuid);
-  const disableToolkit = useDisableComposioToolkit(organizationUuid);
-  const updateToolPermission = useUpdateComposioToolPermission(organizationUuid, toolkitSlug);
-  const createTrigger = useCreateComposioTrigger(organizationUuid);
+  const detailQuery = useGetIntegrationAppsToolkit(organizationUuid, toolkitSlug);
+  const triggersQuery = useGetIntegrationAppsTriggers(organizationUuid);
+  const connectToolkit = useConnectIntegrationAppsToolkit(organizationUuid);
+  const enableToolkit = useEnableIntegrationAppsToolkit(organizationUuid);
+  const disableToolkit = useDisableIntegrationAppsToolkit(organizationUuid);
+  const updateToolPermission = useUpdateIntegrationAppsToolPermission(organizationUuid, toolkitSlug);
+  const createTrigger = useCreateIntegrationAppsTrigger(organizationUuid);
   const detail = detailQuery.data;
   const toolkit = detail?.toolkit;
   const connections = detail?.connections ?? [];
@@ -131,12 +131,12 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
         ) : (
           <div className="divide-y divide-border">
             {connections.map((connection) => (
-              <div key={connection.composio_account_id} className="flex items-center justify-between gap-3 px-4 py-3">
+              <div key={connection.account_id} className="flex items-center justify-between gap-3 px-4 py-3">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-foreground">
-                    {connection.account_label || connection.composio_account_id}
+                    {connection.account_label || connection.account_id}
                   </p>
-                  <p className="text-xs text-muted">{connection.composio_account_id}</p>
+                  <p className="text-xs text-muted">{connection.account_id}</p>
                 </div>
                 <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">
                   {connection.status}
@@ -201,8 +201,8 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
             >
               <option value="">Select account</option>
               {connections.map((connection) => (
-                <option key={connection.composio_account_id} value={connection.composio_account_id}>
-                  {connection.account_label || connection.composio_account_id}
+                <option key={connection.account_id} value={connection.account_id}>
+                  {connection.account_label || connection.account_id}
                 </option>
               ))}
             </select>
@@ -269,7 +269,7 @@ function Metric({ label, value }: { label: string; value: string }) {
 }
 
 interface ToolPermissionRowProps {
-  tool: ComposioTool;
+  tool: IntegrationAppsTool;
   disabled: boolean;
   onToggleEnabled: (enabled: boolean) => void;
   onToggleApproval: (requiresApproval: boolean) => void;
@@ -299,10 +299,10 @@ function TriggerRow({
   trigger,
 }: {
   organizationUuid: string;
-  trigger: ComposioTrigger;
+  trigger: IntegrationAppsTrigger;
 }) {
-  const updateTrigger = useUpdateComposioTrigger(organizationUuid);
-  const deleteTrigger = useDeleteComposioTrigger(organizationUuid);
+  const updateTrigger = useUpdateIntegrationAppsTrigger(organizationUuid);
+  const deleteTrigger = useDeleteIntegrationAppsTrigger(organizationUuid);
 
   return (
     <div className="grid gap-3 px-4 py-3 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center">

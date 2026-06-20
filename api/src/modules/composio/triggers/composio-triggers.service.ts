@@ -23,16 +23,21 @@ export class ComposioTriggersService {
   ) {}
 
   async list(organizationUuid: string) {
-    return {
-      data: await this.prisma.composioTrigger.findMany({
-        where: { org_uuid: organizationUuid },
-        include: {
-          toolkit: {
-            select: { uuid: true, slug: true, name: true, logo_url: true },
-          },
+    const triggers = await this.prisma.composioTrigger.findMany({
+      where: { org_uuid: organizationUuid },
+      include: {
+        toolkit: {
+          select: { uuid: true, slug: true, name: true, logo_url: true },
         },
-        orderBy: { created_at: 'desc' },
-      }),
+      },
+      orderBy: { created_at: 'desc' },
+    });
+
+    return {
+      data: triggers.map((trigger) => ({
+        ...trigger,
+        integration_trigger_id: trigger.composio_trigger_id,
+      })),
     };
   }
 
@@ -72,7 +77,7 @@ export class ComposioTriggersService {
       );
     }
 
-    return this.prisma.composioTrigger.upsert({
+    const trigger = await this.prisma.composioTrigger.upsert({
       where: { composio_trigger_id: composioTriggerId },
       create: {
         composio_trigger_id: composioTriggerId,
@@ -100,6 +105,11 @@ export class ComposioTriggersService {
         },
       },
     });
+
+    return {
+      ...trigger,
+      integration_trigger_id: trigger.composio_trigger_id,
+    };
   }
 
   async update(
@@ -117,7 +127,7 @@ export class ComposioTriggersService {
       await this.updateRemoteConfig(trigger.composio_trigger_id, dto.config);
     }
 
-    return this.prisma.composioTrigger.update({
+    const updated = await this.prisma.composioTrigger.update({
       where: { uuid: triggerUuid },
       data: {
         ...(dto.is_enabled !== undefined ? { is_enabled: dto.is_enabled } : {}),
@@ -131,6 +141,11 @@ export class ComposioTriggersService {
         },
       },
     });
+
+    return {
+      ...updated,
+      integration_trigger_id: updated.composio_trigger_id,
+    };
   }
 
   async remove(organizationUuid: string, triggerUuid: string) {

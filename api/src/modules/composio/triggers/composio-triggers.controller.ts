@@ -22,7 +22,10 @@ import {
 import { CreateComposioTriggerDto } from './dto/create-composio-trigger.dto';
 import { UpdateComposioTriggerDto } from './dto/update-composio-trigger.dto';
 
-@Controller('organizations/:organization_uuid/integrations/composio/triggers')
+@Controller([
+  'organizations/:organization_uuid/integrations/composio/triggers',
+  'organizations/:organization_uuid/integrations/apps/triggers',
+])
 @UseGuards(
   JwtGuard,
   OrganizationMatchGuard,

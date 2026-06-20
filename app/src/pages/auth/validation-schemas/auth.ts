@@ -27,6 +27,8 @@ export const SignUpSchema = z.object({
 });
 
 export const InvitationSignUpSchema = z.object({
+    first_name: z.string().min(1, { message: "Please enter your first name" }),
+    last_name: z.string().min(1, { message: "Please enter your last name" }),
     password: z
         .string()
         .min(1, {

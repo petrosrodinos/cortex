@@ -1,29 +1,29 @@
-export type ComposioConnectionTier = 'ORG_SHARED' | 'USER_PERSONAL';
-export type ComposioAccountStatus = 'ACTIVE' | 'PENDING' | 'EXPIRED' | 'INACTIVE';
+export type IntegrationAppsConnectionTier = 'ORG_SHARED' | 'USER_PERSONAL';
+export type IntegrationAppsAccountStatus = 'ACTIVE' | 'PENDING' | 'EXPIRED' | 'INACTIVE';
 
-export interface ComposioConnectedAccountSummary {
+export interface IntegrationAppsConnectedAccountSummary {
   id: string;
-  composio_account_id: string;
+  account_id: string;
   label?: string | null;
-  status: ComposioAccountStatus;
+  status: IntegrationAppsAccountStatus;
   user_uuid?: string | null;
 }
 
-export interface ComposioToolkit {
+export interface IntegrationAppsToolkit {
   uuid: string;
   slug: string;
   name: string;
   description?: string | null;
   logo_url?: string | null;
   categories: string[];
-  connection_tier: ComposioConnectionTier;
+  connection_tier: IntegrationAppsConnectionTier;
   is_connected: boolean;
-  connected_accounts: ComposioConnectedAccountSummary[];
+  connected_accounts: IntegrationAppsConnectedAccountSummary[];
   is_org_enabled: boolean;
   tool_count: number;
 }
 
-export interface ComposioTool {
+export interface IntegrationAppsTool {
   uuid: string;
   slug: string;
   name: string;
@@ -34,20 +34,20 @@ export interface ComposioTool {
   required_permission_key?: string | null;
 }
 
-export interface ComposioToolkitDetail {
-  toolkit: Omit<ComposioToolkit, 'is_connected' | 'connected_accounts'>;
-  tools: ComposioTool[];
+export interface IntegrationAppsToolkitDetail {
+  toolkit: Omit<IntegrationAppsToolkit, 'is_connected' | 'connected_accounts'>;
+  tools: IntegrationAppsTool[];
   connections: Array<{
     uuid: string;
-    composio_account_id: string;
+    account_id: string;
     account_label?: string | null;
-    status: ComposioAccountStatus;
+    status: IntegrationAppsAccountStatus;
     user_uuid?: string | null;
   }>;
 }
 
-export interface PaginatedComposioToolkits {
-  data: ComposioToolkit[];
+export interface PaginatedIntegrationAppsToolkits {
+  data: IntegrationAppsToolkit[];
   pagination: {
     total: number;
     page: number;
@@ -56,30 +56,30 @@ export interface PaginatedComposioToolkits {
   };
 }
 
-export interface ComposioToolkitFilters {
+export interface IntegrationAppsToolkitFilters {
   search?: string;
   category?: string;
-  tier?: ComposioConnectionTier;
+  tier?: IntegrationAppsConnectionTier;
   connected?: boolean;
   page?: number;
   limit?: number;
 }
 
-export interface ConnectComposioResponse {
+export interface ConnectIntegrationAppsResponse {
   redirect_url: string;
   connection_request_id?: string;
   toolkit_slug: string;
 }
 
-export interface ComposioCallbackResponse {
+export interface IntegrationAppsCallbackResponse {
   status: string;
   connected_account_id?: string;
   toolkit_slug?: string;
 }
 
-export interface ComposioTrigger {
+export interface IntegrationAppsTrigger {
   uuid: string;
-  composio_trigger_id: string;
+  integration_trigger_id: string;
   trigger_slug: string;
   connected_account_id: string;
   is_enabled: boolean;

@@ -7,10 +7,18 @@ describe('EmailAuthService switchOrganization', () => {
     user: {
       findUnique: jest.fn(),
       create: jest.fn(),
+      update: jest.fn(),
     },
-    organizationMember: { findFirst: jest.fn() },
+    organization: {
+      findFirst: jest.fn(),
+    },
+    organizationMember: {
+      findFirst: jest.fn(),
+      update: jest.fn(),
+    },
   };
   const jwt_service: any = {
+    verifyToken: jest.fn(),
     signToken: jest.fn(),
     getExpirationTime: jest.fn(),
   };
@@ -34,6 +42,9 @@ describe('EmailAuthService switchOrganization', () => {
           { permission: { key: 'org:integrations:manage' } },
         ],
       },
+      user: {
+        role: 'USER',
+      },
     });
     const service = new EmailAuthService(
       prisma,
@@ -56,10 +67,113 @@ describe('EmailAuthService switchOrganization', () => {
     );
     expect(jwt_service.signToken).toHaveBeenCalledWith({
       uuid: 'user-uuid',
+      role: 'USER',
       organization_uuid: 'organization-uuid',
       organization_role: 'Admin',
       organization_permissions: ['org:update', 'org:integrations:manage'],
     });
+  });
+
+  it('returns a scoped owner token when logging in with an active organization', async () => {
+    prisma.user.findUnique.mockResolvedValue({
+      uuid: 'user-uuid',
+      email: 'person@example.com',
+      password: '$2b$10$eImiTXuWVxfM37uY4JANjQ==',
+      role: 'USER',
+    });
+    prisma.organization.findFirst.mockResolvedValue({
+      uuid: 'organization-uuid',
+      name: 'Acme',
+    });
+    prisma.organizationMember.findFirst.mockResolvedValue({
+      role: {
+        name: 'Owner',
+        permissions: [
+          { permission: { key: 'org:read' } },
+          { permission: { key: 'org:update' } },
+        ],
+      },
+      user: {
+        role: 'USER',
+      },
+    });
+    const bcrypt = await import('bcrypt');
+    jest.spyOn(bcrypt, 'compare').mockResolvedValueOnce(true as never);
+    const service = new EmailAuthService(
+      prisma,
+      jwt_service,
+      mail_service,
+      organizations_service,
+    );
+
+    const result = await service.loginWithEmail({
+      email: 'person@example.com',
+      password: 'password123',
+    });
+
+    expect(organizations_service.create).not.toHaveBeenCalled();
+    expect(jwt_service.signToken).toHaveBeenCalledWith({
+      uuid: 'user-uuid',
+      role: 'USER',
+      organization_uuid: 'organization-uuid',
+      organization_role: 'Owner',
+      organization_permissions: ['org:read', 'org:update'],
+    });
+    expect(result).toMatchObject({
+      access_token: 'scoped-token',
+      organization_uuid: 'organization-uuid',
+      organization_role: 'Owner',
+      organization_permissions: ['org:read', 'org:update'],
+    });
+    expect(result.user.password).toBeUndefined();
+  });
+
+  it('creates a default organization when logging in without an active organization', async () => {
+    prisma.user.findUnique.mockResolvedValue({
+      uuid: 'user-uuid',
+      email: 'person@example.com',
+      password: '$2b$10$eImiTXuWVxfM37uY4JANjQ==',
+      role: 'SUPER_ADMIN',
+    });
+    prisma.organization.findFirst.mockResolvedValue(null);
+    organizations_service.create.mockResolvedValue({
+      uuid: 'new-organization-uuid',
+      name: 'Default Organisation',
+    });
+    prisma.organizationMember.findFirst.mockResolvedValue({
+      role: {
+        name: 'Owner',
+        permissions: [{ permission: { key: 'org:read' } }],
+      },
+      user: {
+        role: 'SUPER_ADMIN',
+      },
+    });
+    const bcrypt = await import('bcrypt');
+    jest.spyOn(bcrypt, 'compare').mockResolvedValueOnce(true as never);
+    const service = new EmailAuthService(
+      prisma,
+      jwt_service,
+      mail_service,
+      organizations_service,
+    );
+
+    const result = await service.loginWithEmail({
+      email: 'person@example.com',
+      password: 'password123',
+    });
+
+    expect(organizations_service.create).toHaveBeenCalledWith('user-uuid', {
+      name: 'Default Organisation',
+    });
+    expect(jwt_service.signToken).toHaveBeenCalledWith({
+      uuid: 'user-uuid',
+      role: 'SUPER_ADMIN',
+      organization_uuid: 'new-organization-uuid',
+      organization_role: 'Owner',
+      organization_permissions: ['org:read'],
+    });
+    expect(result.organization_uuid).toBe('new-organization-uuid');
   });
 
   it('rejects users who are not active members of the requested organization', async () => {
@@ -116,6 +230,9 @@ describe('EmailAuthService switchOrganization', () => {
           { permission: { key: 'org:delete' } },
         ],
       },
+      user: {
+        role: 'USER',
+      },
     });
     const service = new EmailAuthService(
       prisma,
@@ -157,9 +274,80 @@ describe('EmailAuthService switchOrganization', () => {
     expect(result.user.password).toBeUndefined();
     expect(jwt_service.signToken).toHaveBeenCalledWith({
       uuid: 'user-uuid',
+      role: 'USER',
       organization_uuid: 'organization-uuid',
       organization_role: 'Owner',
       organization_permissions: ['org:read', 'org:delete'],
     });
+  });
+
+  it('stores first and last name when registering from an invitation', async () => {
+    jwt_service.verifyToken.mockResolvedValue({
+      type: 'organization_invitation',
+      member_uuid: 'member-uuid',
+      user_uuid: 'user-uuid',
+      organization_uuid: 'organization-uuid',
+      email: 'person@example.com',
+    });
+    prisma.organizationMember.findFirst
+      .mockResolvedValueOnce({
+        uuid: 'member-uuid',
+        user_uuid: 'user-uuid',
+        user: {
+          uuid: 'user-uuid',
+          email: 'person@example.com',
+          password: '',
+        },
+      })
+      .mockResolvedValueOnce({
+        role: {
+          name: 'Member',
+          permissions: [{ permission: { key: 'files:read' } }],
+        },
+        user: {
+          role: 'USER',
+        },
+      });
+    prisma.user.update.mockResolvedValue({
+      uuid: 'user-uuid',
+      email: 'person@example.com',
+      first_name: 'Jane',
+      last_name: 'Doe',
+      password: 'hashed-password',
+    });
+    prisma.organizationMember.update.mockResolvedValue({
+      uuid: 'member-uuid',
+      status: OrganizationMemberStatus.ACTIVE,
+    });
+    const service = new EmailAuthService(
+      prisma,
+      jwt_service,
+      mail_service,
+      organizations_service,
+    );
+
+    const result = await service.registerFromInvitation({
+      invitation_token: 'invitation-token',
+      first_name: ' Jane ',
+      last_name: ' Doe ',
+      password: 'password123',
+    });
+
+    expect(prisma.user.update).toHaveBeenCalledWith({
+      where: { uuid: 'user-uuid' },
+      data: {
+        first_name: 'Jane',
+        last_name: 'Doe',
+        password: expect.any(String),
+      },
+    });
+    expect(prisma.organizationMember.update).toHaveBeenCalledWith({
+      where: { uuid: 'member-uuid' },
+      data: {
+        status: OrganizationMemberStatus.ACTIVE,
+        joined_at: expect.any(Date),
+      },
+    });
+    expect(result.user.password).toBeUndefined();
   });
 });

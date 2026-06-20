@@ -10,6 +10,22 @@ export class RegisterInvitationDto {
   invitation_token: string;
 
   @ApiProperty({
+    description: 'User first name',
+    example: 'John',
+  })
+  @IsString()
+  @MinLength(1)
+  first_name: string;
+
+  @ApiProperty({
+    description: 'User last name',
+    example: 'Doe',
+  })
+  @IsString()
+  @MinLength(1)
+  last_name: string;
+
+  @ApiProperty({
     description: 'User password (minimum 6 characters)',
     example: 'password123',
     minLength: 6,

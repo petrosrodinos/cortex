@@ -23,7 +23,10 @@ import {
 } from './dto/composio-connections.schemas';
 import { ConnectComposioDto } from './dto/connect-composio.dto';
 
-@Controller('organizations/:organization_uuid/integrations/composio')
+@Controller([
+  'organizations/:organization_uuid/integrations/composio',
+  'organizations/:organization_uuid/integrations/apps',
+])
 @UseGuards(
   JwtGuard,
   OrganizationMatchGuard,

@@ -1,6 +1,6 @@
 import { useMemo, type FC } from 'react';
 import { Check } from 'lucide-react';
-import type { ComposioToolkit } from '@/features/composio/interfaces/composio.interface';
+import type { IntegrationAppsToolkit } from '@/features/integrationApps/interfaces/integrationApps.interface';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import {
   IntegrationStatuses,
@@ -18,7 +18,7 @@ export function getToolEligibleIntegrations(integrations: Integration[]): Integr
 
 interface ConversationToolsMenuProps {
   integrations: Integration[];
-  toolkits: ComposioToolkit[];
+  toolkits: IntegrationAppsToolkit[];
   selectedIntegrationUuids: string[];
   selectedToolkitSlugs: string[];
   onIntegrationSelectionChange: (integrationUuids: string[]) => void;
@@ -44,7 +44,7 @@ export const ConversationToolsMenu: FC<ConversationToolsMenuProps> = ({
     <div className="max-h-[min(340px,55dvh)] w-[280px] overflow-y-auto p-1">
       {toolToolkits.length > 0 ? (
         <div className="pb-1">
-          <div className="px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-muted">Composio apps</div>
+          <div className="px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-muted">Integrations</div>
           {toolToolkits.map((toolkit) => (
             <ToolkitToolRow
               key={toolkit.slug}
@@ -86,7 +86,7 @@ export const ConversationToolsMenu: FC<ConversationToolsMenuProps> = ({
   );
 };
 
-export function getToolEligibleToolkits(toolkits: ComposioToolkit[]): ComposioToolkit[] {
+export function getToolEligibleToolkits(toolkits: IntegrationAppsToolkit[]): IntegrationAppsToolkit[] {
   return toolkits.filter((toolkit) => toolkit.is_org_enabled && toolkit.tool_count > 0);
 }
 
@@ -95,7 +95,7 @@ function ToolkitToolRow({
   selected,
   onSelect,
 }: {
-  toolkit: ComposioToolkit;
+  toolkit: IntegrationAppsToolkit;
   selected: boolean;
   onSelect: () => void;
 }) {

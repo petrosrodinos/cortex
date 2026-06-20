@@ -22,9 +22,9 @@ export const Routes = {
     },
     admin: {
         root: "/admin",
-        composio: "/admin/composio",
-        composioToolkits: "/admin/composio/toolkits",
-        composioToolkit: (toolkitSlug: string) => `/admin/composio/toolkits/${toolkitSlug}`,
-        composioSync: "/admin/composio/sync",
+        integrationApps: "/admin/integrations/apps",
+        integrationAppsToolkits: "/admin/integrations/apps/toolkits",
+        integrationAppsToolkit: (toolkitSlug: string) => `/admin/integrations/apps/toolkits/${toolkitSlug}`,
+        integrationAppsSync: "/admin/integrations/apps/sync",
     },
 };

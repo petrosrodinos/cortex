@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  useAdminComposioSyncRuns,
-  useStartAdminComposioSync,
-} from '@/features/composio-admin/hooks/use-composio-admin';
-import type { AdminComposioSyncRun, ComposioSyncType } from '@/features/composio-admin/interfaces/composio-admin.interface';
+  useAdminIntegrationAppsSyncRuns,
+  useStartAdminIntegrationAppsSync,
+} from '@/features/integrationApps-admin/hooks/use-integrationApps-admin';
+import type { AdminIntegrationAppsSyncRun, IntegrationAppsSyncType } from '@/features/integrationApps-admin/interfaces/integrationApps-admin.interface';
 
-export default function AdminComposioSyncPage() {
-  const [syncType, setSyncType] = useState<ComposioSyncType>('FULL');
+export default function AdminIntegrationAppsSyncPage() {
+  const [syncType, setSyncType] = useState<IntegrationAppsSyncType>('FULL');
   const [toolkitSlug, setToolkitSlug] = useState('');
-  const syncRunsQuery = useAdminComposioSyncRuns();
-  const startSync = useStartAdminComposioSync();
+  const syncRunsQuery = useAdminIntegrationAppsSyncRuns();
+  const startSync = useStartAdminIntegrationAppsSync();
   const needsToolkit = syncType !== 'FULL';
 
   return (
@@ -31,7 +31,7 @@ export default function AdminComposioSyncPage() {
             <span className="font-medium text-foreground">Sync type</span>
             <select
               value={syncType}
-              onChange={(event) => setSyncType(event.target.value as ComposioSyncType)}
+              onChange={(event) => setSyncType(event.target.value as IntegrationAppsSyncType)}
               className="h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
             >
               <option value="FULL">Full</option>
@@ -74,7 +74,7 @@ export default function AdminComposioSyncPage() {
   );
 }
 
-function SyncRunRow({ run }: { run: AdminComposioSyncRun }) {
+function SyncRunRow({ run }: { run: AdminIntegrationAppsSyncRun }) {
   return (
     <div className="grid gap-2 px-4 py-3 md:grid-cols-[120px_120px_1fr_auto] md:items-center">
       <span className="text-sm font-medium text-foreground">{run.sync_type}</span>

@@ -1,9 +1,9 @@
-import type { ComposioConnectionTier } from '@/features/composio/interfaces/composio.interface';
+import type { IntegrationAppsConnectionTier } from '@/features/integrationApps/interfaces/integrationApps.interface';
 
-export type ComposioSyncType = 'FULL' | 'TOOLKIT' | 'TOOLS';
-export type ComposioSyncStatus = 'RUNNING' | 'COMPLETED' | 'FAILED';
+export type IntegrationAppsSyncType = 'FULL' | 'TOOLKIT' | 'TOOLS';
+export type IntegrationAppsSyncStatus = 'RUNNING' | 'COMPLETED' | 'FAILED';
 
-export interface AdminComposioToolkit {
+export interface AdminIntegrationAppsToolkit {
   uuid: string;
   slug: string;
   name: string;
@@ -11,7 +11,7 @@ export interface AdminComposioToolkit {
   logo_url?: string | null;
   categories: string[];
   tool_count: number;
-  connection_tier: ComposioConnectionTier;
+  connection_tier: IntegrationAppsConnectionTier;
   is_enabled: boolean;
   last_synced_at?: string | null;
   created_at: string;
@@ -22,7 +22,7 @@ export interface AdminComposioToolkit {
   };
 }
 
-export interface AdminComposioTool {
+export interface AdminIntegrationAppsTool {
   uuid: string;
   slug: string;
   name: string;
@@ -32,10 +32,10 @@ export interface AdminComposioTool {
   last_synced_at?: string | null;
 }
 
-export interface AdminComposioSyncRun {
+export interface AdminIntegrationAppsSyncRun {
   uuid: string;
-  sync_type: ComposioSyncType;
-  status: ComposioSyncStatus;
+  sync_type: IntegrationAppsSyncType;
+  status: IntegrationAppsSyncStatus;
   toolkits_upserted: number;
   tools_upserted: number;
   error?: string | null;
@@ -43,17 +43,17 @@ export interface AdminComposioSyncRun {
   completed_at?: string | null;
 }
 
-export interface AdminComposioToolkitDetail extends AdminComposioToolkit {
-  tools: AdminComposioTool[];
+export interface AdminIntegrationAppsToolkitDetail extends AdminIntegrationAppsToolkit {
+  tools: AdminIntegrationAppsTool[];
 }
 
-export interface AdminComposioToolkitStats {
+export interface AdminIntegrationAppsToolkitStats {
   connected_accounts_count: number;
   active_triggers_count: number;
 }
 
-export interface PaginatedAdminComposioToolkits {
-  data: AdminComposioToolkit[];
+export interface PaginatedAdminIntegrationAppsToolkits {
+  data: AdminIntegrationAppsToolkit[];
   pagination: {
     total: number;
     page: number;

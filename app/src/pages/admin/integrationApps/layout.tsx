@@ -1,28 +1,20 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
 import { Routes } from '@/routes/routes';
 import { cn } from '@/lib/utils';
 
 const adminNav = [
-  { label: 'Overview', href: Routes.admin.composio },
-  { label: 'Toolkits', href: Routes.admin.composioToolkits },
-  { label: 'Sync', href: Routes.admin.composioSync },
+  { label: 'Overview', href: Routes.admin.integrationApps },
+  { label: 'Toolkits', href: Routes.admin.integrationAppsToolkits },
+  { label: 'Sync', href: Routes.admin.integrationAppsSync },
 ];
 
-export default function AdminComposioLayout() {
+export default function AdminIntegrationAppsLayout() {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-5">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <NavLink
-            to={Routes.dashboard.root}
-            className="mb-2 inline-flex items-center gap-1.5 text-xs font-medium text-muted hover:text-foreground"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Dashboard
-          </NavLink>
-          <h1 className="text-xl font-semibold text-foreground">Composio admin</h1>
-          <p className="mt-1 text-sm text-muted">Sync, enable, and inspect Composio toolkits.</p>
+          <h1 className="text-xl font-semibold text-foreground">Integrations admin</h1>
+          <p className="mt-1 text-sm text-muted">Sync, enable, and inspect integrations.</p>
         </div>
       </header>
 
@@ -32,7 +24,7 @@ export default function AdminComposioLayout() {
             <NavLink
               key={item.href}
               to={item.href}
-              end={item.href === Routes.admin.composio}
+              end={item.href === Routes.admin.integrationApps}
               className={({ isActive }) =>
                 cn(
                   'shrink-0 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',

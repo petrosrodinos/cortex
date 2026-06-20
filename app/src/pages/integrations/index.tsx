@@ -17,8 +17,8 @@ import {
 import { isAiCatalogProvider } from '@/features/integrations/utils/integration.utils';
 import { useGetAiProviders } from '@/features/ai-providers/hooks/use-ai-providers';
 import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
-import { ToolkitCatalog } from '@/features/composio/components/toolkit-catalog';
-import { ToolkitDetail } from '@/features/composio/components/toolkit-detail';
+import { ToolkitCatalog } from '@/features/integrationApps/components/toolkit-catalog';
+import { ToolkitDetail } from '@/features/integrationApps/components/toolkit-detail';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
 import { cn } from '@/lib/utils';
@@ -35,7 +35,7 @@ export default function IntegrationsPage() {
   const navigate = useNavigate();
   const currentOrganization = useOrganizationStore((state) => state.current_organization);
   const [connectingProvider, setConnectingProvider] = useState<CatalogProvider | null>(null);
-  const [activeSection, setActiveSection] = useState<'composio' | 'custom' | 'ai'>('composio');
+  const [activeSection, setActiveSection] = useState<'integrationApps' | 'custom' | 'ai'>('integrationApps');
   const [selectedToolkitSlug, setSelectedToolkitSlug] = useState<string | null>(null);
   const integrationsQuery = useGetIntegrations(currentOrganization?.uuid);
   const aiProvidersQuery = useGetAiProviders(currentOrganization?.uuid);
@@ -117,7 +117,7 @@ export default function IntegrationsPage() {
         </header>
       ) : selectedToolkitSlug ? (
         <header className="sr-only">
-          <h1>Composio toolkit detail</h1>
+          <h1>Integration detail</h1>
         </header>
       ) : (
         <header>
@@ -150,7 +150,7 @@ export default function IntegrationsPage() {
       ) : (
         <div className="flex flex-col gap-5">
           <IntegrationSectionTabs activeSection={activeSection} onSectionChange={setActiveSection} />
-          {activeSection === 'composio' ? (
+          {activeSection === 'integrationApps' ? (
             <ToolkitCatalog
               organizationUuid={currentOrganization.uuid}
               onSelectToolkit={(toolkitSlug) => setSelectedToolkitSlug(toolkitSlug)}
@@ -192,11 +192,11 @@ function IntegrationSectionTabs({
   activeSection,
   onSectionChange,
 }: {
-  activeSection: 'composio' | 'custom' | 'ai';
-  onSectionChange: (section: 'composio' | 'custom' | 'ai') => void;
+  activeSection: 'integrationApps' | 'custom' | 'ai';
+  onSectionChange: (section: 'integrationApps' | 'custom' | 'ai') => void;
 }) {
   const tabs = [
-    { id: 'composio', label: 'Composio apps' },
+    { id: 'integrationApps', label: 'Integrations' },
     { id: 'custom', label: 'Custom' },
     { id: 'ai', label: 'AI providers' },
   ] as const;

@@ -1,14 +1,14 @@
 import { useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, Loader2, XCircle } from 'lucide-react';
-import { useVerifyComposioCallback } from '@/features/composio/hooks/use-composio';
+import { useVerifyIntegrationAppsCallback } from '@/features/integrationApps/hooks/use-integrationApps';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
 
-export default function ComposioCallbackPage() {
+export default function IntegrationAppsCallbackPage() {
   const [searchParams] = useSearchParams();
   const organizationUuid = useOrganizationStore((state) => state.current_organization?.uuid);
-  const verifyCallback = useVerifyComposioCallback(organizationUuid);
+  const verifyCallback = useVerifyIntegrationAppsCallback(organizationUuid);
 
   const callbackParams = useMemo(() => {
     const toolkitSlug =
@@ -45,11 +45,11 @@ export default function ComposioCallbackPage() {
         />
         <div className="min-w-0 flex-1">
           <h1 className="text-lg font-semibold text-foreground">
-            {verifyCallback.isSuccess ? 'Composio connected' : missingToolkit ? 'Connection needs attention' : 'Verifying connection'}
+            {verifyCallback.isSuccess ? 'Integration connected' : missingToolkit ? 'Connection needs attention' : 'Verifying connection'}
           </h1>
           <p className="mt-1 text-sm text-muted">
             {verifyCallback.isSuccess
-              ? 'The connected account was mirrored into Cortex and is ready for agent tools.'
+              ? 'The connected account is ready for agent tools.'
               : missingToolkit
                 ? 'The callback URL did not include a toolkit slug.'
                 : verifyCallback.isError

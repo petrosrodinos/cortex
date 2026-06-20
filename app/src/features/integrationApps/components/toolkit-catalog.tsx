@@ -3,11 +3,11 @@ import { Check, Plug, Search, Settings2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  useConnectComposioToolkit,
-  useEnableComposioToolkit,
-  useGetComposioToolkits,
-} from '@/features/composio/hooks/use-composio';
-import type { ComposioToolkit } from '@/features/composio/interfaces/composio.interface';
+  useConnectIntegrationAppsToolkit,
+  useEnableIntegrationAppsToolkit,
+  useGetIntegrationAppsToolkits,
+} from '@/features/integrationApps/hooks/use-integrationApps';
+import type { IntegrationAppsToolkit } from '@/features/integrationApps/interfaces/integrationApps.interface';
 import { cn } from '@/lib/utils';
 
 interface ToolkitCatalogProps {
@@ -17,9 +17,9 @@ interface ToolkitCatalogProps {
 
 export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCatalogProps) {
   const [search, setSearch] = useState('');
-  const toolkitsQuery = useGetComposioToolkits(organizationUuid, { search, limit: 60 });
-  const connectToolkit = useConnectComposioToolkit(organizationUuid);
-  const enableToolkit = useEnableComposioToolkit(organizationUuid);
+  const toolkitsQuery = useGetIntegrationAppsToolkits(organizationUuid, { search, limit: 60 });
+  const connectToolkit = useConnectIntegrationAppsToolkit(organizationUuid);
+  const enableToolkit = useEnableIntegrationAppsToolkit(organizationUuid);
   const toolkits = toolkitsQuery.data?.data ?? [];
 
   const connectedCount = useMemo(
@@ -31,8 +31,8 @@ export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCat
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <h2 className="text-base font-semibold text-foreground">Composio apps</h2>
-          <p className="text-sm text-muted">{connectedCount} connected apps available to this organization.</p>
+          <h2 className="text-base font-semibold text-foreground">Integrations</h2>
+          <p className="text-sm text-muted">{connectedCount} connected integrations available to this organization.</p>
         </div>
         <div className="relative w-full sm:max-w-xs">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
@@ -40,7 +40,7 @@ export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCat
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             className="pl-9"
-            placeholder="Search apps"
+            placeholder="Search integrations"
           />
         </div>
       </div>
@@ -53,7 +53,7 @@ export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCat
         </div>
       ) : toolkits.length === 0 ? (
         <div className="rounded-lg border border-border bg-surface px-4 py-8 text-center text-sm text-muted">
-          No Composio apps found.
+          No integrations found.
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -75,7 +75,7 @@ export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCat
 }
 
 interface ToolkitCardProps {
-  toolkit: ComposioToolkit;
+  toolkit: IntegrationAppsToolkit;
   isConnecting: boolean;
   isEnabling: boolean;
   onConnect: () => void;
@@ -128,7 +128,7 @@ function ToolkitCard({ toolkit, isConnecting, isEnabling, onConnect, onEnable, o
   );
 }
 
-function ToolkitLogo({ toolkit }: { toolkit: ComposioToolkit }) {
+function ToolkitLogo({ toolkit }: { toolkit: IntegrationAppsToolkit }) {
   if (toolkit.logo_url) {
     return (
       <img

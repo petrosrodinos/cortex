@@ -1,7 +1,7 @@
 import { useMemo, type FC } from 'react';
 import { Button, Dropdown, Label } from '@heroui/react';
 import { Paperclip, Plus, Settings2 } from 'lucide-react';
-import type { ComposioToolkit } from '@/features/composio/interfaces/composio.interface';
+import type { IntegrationAppsToolkit } from '@/features/integrationApps/interfaces/integrationApps.interface';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import { cn } from '@/lib/utils';
 import {
@@ -12,7 +12,7 @@ import {
 
 interface ConversationAttachMenuProps {
   integrations: Integration[];
-  toolkits: ComposioToolkit[];
+  toolkits: IntegrationAppsToolkit[];
   selectedIntegrationUuids: string[];
   selectedToolkitSlugs: string[];
   disabled?: boolean;

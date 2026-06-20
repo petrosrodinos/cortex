@@ -72,6 +72,7 @@ export class OrgToolkitsService {
         is_connected: toolkit.connected_accounts.length > 0,
         connected_accounts: toolkit.connected_accounts.map((account) => ({
           id: account.uuid,
+          account_id: account.composio_account_id,
           composio_account_id: account.composio_account_id,
           label: account.account_label,
           status: account.status,
@@ -139,7 +140,10 @@ export class OrgToolkitsService {
           required_permission_key: permission?.required_permission_key ?? null,
         };
       }),
-      connections: toolkit.connected_accounts,
+      connections: toolkit.connected_accounts.map((account) => ({
+        ...account,
+        account_id: account.composio_account_id,
+      })),
     };
   }
 

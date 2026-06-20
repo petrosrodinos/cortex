@@ -30,7 +30,7 @@ export function SignUpForm() {
 
   const invitationForm = useForm<InvitationSignUpFormValues>({
     resolver: zodResolver(InvitationSignUpSchema),
-    defaultValues: { password: "" },
+    defaultValues: { first_name: "", last_name: "", password: "" },
   });
 
   if (isInvitationFlow && invitationQuery.isError) {
@@ -52,12 +52,38 @@ export function SignUpForm() {
       if (!invitationToken) return;
       registerInvitationMutation.mutate({
         invitation_token: invitationToken,
+        first_name: data.first_name.trim(),
+        last_name: data.last_name.trim(),
         password: data.password,
       });
     }
 
     return (
       <Form onSubmit={handleSubmit(onSubmitInvitation)} className="grid gap-4 text-left">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="signup-first-name">First name</Label>
+            <Input
+              id="signup-first-name"
+              {...register("first_name")}
+              placeholder="John"
+              fullWidth
+            />
+            {errors.first_name && <FieldError>{errors.first_name.message}</FieldError>}
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="signup-last-name">Last name</Label>
+            <Input
+              id="signup-last-name"
+              {...register("last_name")}
+              placeholder="Doe"
+              fullWidth
+            />
+            {errors.last_name && <FieldError>{errors.last_name.message}</FieldError>}
+          </div>
+        </div>
+
         <div className="flex flex-col gap-1">
           <Label htmlFor="signup-email">Email</Label>
           <Input

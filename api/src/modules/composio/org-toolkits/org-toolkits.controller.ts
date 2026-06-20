@@ -22,7 +22,10 @@ import {
 import { UpdateOrgToolPermissionDto } from './dto/update-org-tool-permission.dto';
 import { OrgToolkitsService } from './org-toolkits.service';
 
-@Controller('organizations/:organization_uuid/integrations/composio')
+@Controller([
+  'organizations/:organization_uuid/integrations/composio',
+  'organizations/:organization_uuid/integrations/apps',
+])
 @UseGuards(
   JwtGuard,
   OrganizationMatchGuard,

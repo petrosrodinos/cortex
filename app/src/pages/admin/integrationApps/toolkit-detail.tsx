@@ -1,26 +1,25 @@
-import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, RefreshCw } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
-  useAdminComposioToolkit,
-  useAdminComposioToolkitStats,
-  useRefreshAdminComposioToolkit,
-  useSyncAdminComposioToolkitTools,
-  useUpdateAdminComposioTool,
-  useUpdateAdminComposioToolkit,
-} from '@/features/composio-admin/hooks/use-composio-admin';
-import type { AdminComposioTool } from '@/features/composio-admin/interfaces/composio-admin.interface';
-import type { ComposioConnectionTier } from '@/features/composio/interfaces/composio.interface';
-import { Routes } from '@/routes/routes';
+  useAdminIntegrationAppsToolkit,
+  useAdminIntegrationAppsToolkitStats,
+  useRefreshAdminIntegrationAppsToolkit,
+  useSyncAdminIntegrationAppsToolkitTools,
+  useUpdateAdminIntegrationAppsTool,
+  useUpdateAdminIntegrationAppsToolkit,
+} from '@/features/integrationApps-admin/hooks/use-integrationApps-admin';
+import type { AdminIntegrationAppsTool } from '@/features/integrationApps-admin/interfaces/integrationApps-admin.interface';
+import type { IntegrationAppsConnectionTier } from '@/features/integrationApps/interfaces/integrationApps.interface';
 import { cn } from '@/lib/utils';
 
-export default function AdminComposioToolkitDetailPage() {
+export default function AdminIntegrationAppsToolkitDetailPage() {
   const { toolkitSlug } = useParams<{ toolkitSlug: string }>();
-  const toolkitQuery = useAdminComposioToolkit(toolkitSlug);
-  const statsQuery = useAdminComposioToolkitStats(toolkitSlug);
-  const updateToolkit = useUpdateAdminComposioToolkit(toolkitSlug);
-  const refreshToolkit = useRefreshAdminComposioToolkit(toolkitSlug);
-  const syncTools = useSyncAdminComposioToolkitTools(toolkitSlug);
+  const toolkitQuery = useAdminIntegrationAppsToolkit(toolkitSlug);
+  const statsQuery = useAdminIntegrationAppsToolkitStats(toolkitSlug);
+  const updateToolkit = useUpdateAdminIntegrationAppsToolkit(toolkitSlug);
+  const refreshToolkit = useRefreshAdminIntegrationAppsToolkit(toolkitSlug);
+  const syncTools = useSyncAdminIntegrationAppsToolkitTools(toolkitSlug);
   const toolkit = toolkitQuery.data;
 
   if (toolkitQuery.isLoading || !toolkit) {
@@ -31,12 +30,6 @@ export default function AdminComposioToolkitDetailPage() {
     <div className="flex flex-col gap-4">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 items-start gap-3">
-          <Link
-            to={Routes.admin.composioToolkits}
-            className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-md text-muted hover:bg-surface-secondary hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
           {toolkit.logo_url ? (
             <img src={toolkit.logo_url} alt="" className="h-10 w-10 rounded-lg border border-border bg-background object-contain p-1" />
           ) : null}
@@ -70,7 +63,7 @@ export default function AdminComposioToolkitDetailPage() {
             <select
               value={toolkit.connection_tier}
               onChange={(event) =>
-                updateToolkit.mutate({ connection_tier: event.target.value as ComposioConnectionTier })
+                updateToolkit.mutate({ connection_tier: event.target.value as IntegrationAppsConnectionTier })
               }
               className="h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
             >
@@ -113,8 +106,8 @@ function Metric({ label, value }: { label: string; value: string }) {
   );
 }
 
-function AdminToolRow({ toolkitSlug, tool }: { toolkitSlug: string; tool: AdminComposioTool }) {
-  const updateTool = useUpdateAdminComposioTool(toolkitSlug);
+function AdminToolRow({ toolkitSlug, tool }: { toolkitSlug: string; tool: AdminIntegrationAppsTool }) {
+  const updateTool = useUpdateAdminIntegrationAppsTool(toolkitSlug);
 
   return (
     <div className="grid gap-3 px-4 py-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">

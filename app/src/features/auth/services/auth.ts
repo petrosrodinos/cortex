@@ -56,11 +56,15 @@ export const getInvitationDetails = async (invitation_token: string): Promise<In
 
 export const registerFromInvitation = async ({
     invitation_token,
+    first_name,
+    last_name,
     password,
 }: RegisterInvitationUser): Promise<LoggedInUser> => {
     try {
         const response = await axiosInstance.post(ApiRoutes.auth.email.register_invitation, {
             invitation_token,
+            first_name,
+            last_name,
             password,
         });
 

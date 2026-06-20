@@ -4,18 +4,18 @@ import { Plus, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  useAdminComposioToolkits,
-  useCreateAdminComposioToolkit,
-  useUpdateAdminComposioToolkit,
-} from '@/features/composio-admin/hooks/use-composio-admin';
-import type { AdminComposioToolkit } from '@/features/composio-admin/interfaces/composio-admin.interface';
+  useAdminIntegrationAppsToolkits,
+  useCreateAdminIntegrationAppsToolkit,
+  useUpdateAdminIntegrationAppsToolkit,
+} from '@/features/integrationApps-admin/hooks/use-integrationApps-admin';
+import type { AdminIntegrationAppsToolkit } from '@/features/integrationApps-admin/interfaces/integrationApps-admin.interface';
 import { Routes } from '@/routes/routes';
 
-export default function AdminComposioToolkitsPage() {
+export default function AdminIntegrationAppsToolkitsPage() {
   const [search, setSearch] = useState('');
   const [newSlug, setNewSlug] = useState('');
-  const toolkitsQuery = useAdminComposioToolkits({ search, limit: 100 });
-  const createToolkit = useCreateAdminComposioToolkit();
+  const toolkitsQuery = useAdminIntegrationAppsToolkits({ search, limit: 100 });
+  const createToolkit = useCreateAdminIntegrationAppsToolkit();
   const toolkits = toolkitsQuery.data?.data ?? [];
 
   return (
@@ -59,8 +59,8 @@ export default function AdminComposioToolkitsPage() {
   );
 }
 
-function ToolkitRow({ toolkit }: { toolkit: AdminComposioToolkit }) {
-  const updateToolkit = useUpdateAdminComposioToolkit(toolkit.slug);
+function ToolkitRow({ toolkit }: { toolkit: AdminIntegrationAppsToolkit }) {
+  const updateToolkit = useUpdateAdminIntegrationAppsToolkit(toolkit.slug);
 
   return (
     <div className="grid gap-3 px-4 py-3 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center">
@@ -95,7 +95,7 @@ function ToolkitRow({ toolkit }: { toolkit: AdminComposioToolkit }) {
           {toolkit.is_enabled ? 'Disable' : 'Enable'}
         </Button>
         <Link
-          to={Routes.admin.composioToolkit(toolkit.slug)}
+          to={Routes.admin.integrationAppsToolkit(toolkit.slug)}
           className="inline-flex h-9 items-center rounded-md bg-accent px-3 text-sm font-medium text-accent-foreground hover:opacity-90"
         >
           Detail

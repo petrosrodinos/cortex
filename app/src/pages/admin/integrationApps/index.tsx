@@ -2,16 +2,16 @@ import { Link } from 'react-router-dom';
 import { RefreshCw, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
-  useAdminComposioSyncRuns,
-  useAdminComposioToolkits,
-  useStartAdminComposioSync,
-} from '@/features/composio-admin/hooks/use-composio-admin';
+  useAdminIntegrationAppsSyncRuns,
+  useAdminIntegrationAppsToolkits,
+  useStartAdminIntegrationAppsSync,
+} from '@/features/integrationApps-admin/hooks/use-integrationApps-admin';
 import { Routes } from '@/routes/routes';
 
-export default function AdminComposioDashboardPage() {
-  const toolkitsQuery = useAdminComposioToolkits({ limit: 100 });
-  const syncRunsQuery = useAdminComposioSyncRuns();
-  const startSync = useStartAdminComposioSync();
+export default function AdminIntegrationAppsDashboardPage() {
+  const toolkitsQuery = useAdminIntegrationAppsToolkits({ limit: 100 });
+  const syncRunsQuery = useAdminIntegrationAppsSyncRuns();
+  const startSync = useStartAdminIntegrationAppsSync();
   const toolkits = toolkitsQuery.data?.data ?? [];
   const enabledCount = toolkits.filter((toolkit) => toolkit.is_enabled).length;
   const latestRun = syncRunsQuery.data?.data[0];
@@ -34,7 +34,7 @@ export default function AdminComposioDashboardPage() {
             <Wrench className="h-4 w-4 text-muted" />
           </div>
           <Link
-            to={Routes.admin.composioToolkits}
+            to={Routes.admin.integrationAppsToolkits}
             className="mt-4 inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:opacity-90"
           >
             Open toolkits
@@ -44,8 +44,8 @@ export default function AdminComposioDashboardPage() {
         <section className="rounded-lg border border-border bg-surface p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h2 className="text-sm font-semibold text-foreground">Sync Composio</h2>
-              <p className="mt-1 text-xs text-muted">Refresh toolkit metadata from the configured Composio project.</p>
+              <h2 className="text-sm font-semibold text-foreground">Sync integrations</h2>
+              <p className="mt-1 text-xs text-muted">Refresh integration metadata from the configured provider.</p>
             </div>
             <RefreshCw className="h-4 w-4 text-muted" />
           </div>
