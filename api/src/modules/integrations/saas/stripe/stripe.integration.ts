@@ -7,7 +7,7 @@ import { SaasActionDefinition, SaasIntegration, emptySchema, loadRuntimePackage,
 import { STRIPE_REQUIRED_CONFIG_KEYS } from './config/stripe.config';
 import { StripeService } from './services/stripe.service';
 
-const metadataSchema = z.record(z.string()).optional();
+const metadataSchema = z.record(z.string(), z.string()).optional();
 
 @Injectable()
 export class StripeIntegration extends SaasIntegration {

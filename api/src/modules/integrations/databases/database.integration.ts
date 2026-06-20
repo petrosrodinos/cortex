@@ -36,26 +36,26 @@ const insertSchema = z.object({
   integration_uuid: z.string().optional(),
   table: z.string().min(1).optional(),
   collection: z.string().min(1).optional(),
-  values: z.record(z.any()).optional(),
-  document: z.record(z.any()).optional(),
+  values: z.record(z.string(), z.any()).optional(),
+  document: z.record(z.string(), z.any()).optional(),
 });
 
 const updateSchema = z.object({
   integration_uuid: z.string().optional(),
   table: z.string().min(1).optional(),
   collection: z.string().min(1).optional(),
-  values: z.record(z.any()).optional(),
-  filter: z.record(z.any()).optional(),
-  update: z.record(z.any()).optional(),
-  where: z.record(z.any()).optional(),
+  values: z.record(z.string(), z.any()).optional(),
+  filter: z.record(z.string(), z.any()).optional(),
+  update: z.record(z.string(), z.any()).optional(),
+  where: z.record(z.string(), z.any()).optional(),
 });
 
 const deleteSchema = z.object({
   integration_uuid: z.string().optional(),
   table: z.string().min(1).optional(),
   collection: z.string().min(1).optional(),
-  filter: z.record(z.any()).optional(),
-  where: z.record(z.any()).optional(),
+  filter: z.record(z.string(), z.any()).optional(),
+  where: z.record(z.string(), z.any()).optional(),
 });
 
 @Injectable()

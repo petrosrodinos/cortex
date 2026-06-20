@@ -7,7 +7,7 @@ import { SaasActionDefinition, SaasIntegration, emptySchema, loadRuntimePackage,
 import { HUBSPOT_REQUIRED_CONFIG_KEYS } from './config/hubspot.config';
 import { HubSpotService } from './services/hubspot.service';
 
-const propertiesSchema = z.record(z.string());
+const propertiesSchema = z.record(z.string(), z.string());
 
 @Injectable()
 export class HubSpotIntegration extends SaasIntegration {

@@ -24,7 +24,7 @@ export class PostHogIntegration extends SaasIntegration {
       key: 'capture_event',
       label: 'Capture event',
       description: 'Send a custom event to PostHog.',
-      schema: z.object({ distinctId: z.string(), event: z.string(), properties: z.record(z.any()).optional() }),
+      schema: z.object({ distinctId: z.string(), event: z.string(), properties: z.record(z.string(), z.any()).optional() }),
       parameters: this.jsonSchema({ distinctId: { type: 'string' }, event: { type: 'string' }, properties: { type: 'object' } }, ['distinctId', 'event']),
     },
 
