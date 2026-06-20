@@ -16,10 +16,10 @@ Use this as a sequential execution guide for the coding agent. Check off each it
 - [x] Create Prisma migration with all tables from `04-database-design.md`
 - [x] Add `composio_session_id` to `conversations`
 - [x] Add `provider_type`, `composio_tool_slug`, `composio_session_id` to `tool_calls`
-- [ ] Remove SaaS values from `IntegrationProvider` enum (Phase 5)
+- [x] Remove SaaS values from `IntegrationProvider` enum (Phase 5)
 - [x] Update permission seeds
 - [ ] Run migration on dev DB
-- [ ] Delete legacy SaaS integration rows (Phase 5)
+- [x] Add Phase 5 migration to delete legacy SaaS integration rows
 
 ## Backend — Composio Module
 

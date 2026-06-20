@@ -114,13 +114,13 @@ describe('ToolDispatcherService', () => {
     const { service, prisma, registry, idempotency } = createService({
       cached: { cached: true },
       prepared: {
-        toolName: 'smtp__send_email',
+        toolName: 'openapi_abcdef12__send_email',
         input: { to: 'person@example.com', attachment_ids: ['doc-uuid'] },
       },
-      integration: { uuid: 'smtp-integration-uuid' },
+      integration: { uuid: 'openapi-integration-uuid' },
       action: {
         required_permission_key: null,
-        integration: { provider: IntegrationProvider.SMTP },
+        integration: { provider: IntegrationProvider.OPENAPI },
       },
     });
 
@@ -128,7 +128,7 @@ describe('ToolDispatcherService', () => {
       service.dispatch(
         'org-uuid',
         'user-uuid',
-        'smtp__send_email',
+        'openapi_abcdef12__send_email',
         { to: 'person@example.com', attachment_document_uuids: ['doc-uuid'] },
         'execution-uuid',
         [],
@@ -137,7 +137,7 @@ describe('ToolDispatcherService', () => {
 
     expect(idempotency.getCachedResult).toHaveBeenCalledWith(
       'execution-uuid',
-      'smtp__send_email',
+      'openapi_abcdef12__send_email',
       { to: 'person@example.com', attachment_ids: ['doc-uuid'] },
     );
     expect(registry.executeTool).not.toHaveBeenCalled();

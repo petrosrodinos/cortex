@@ -39,19 +39,6 @@ enum OrganizationMemberStatus {
 }
 
 enum IntegrationProvider {
-  GITHUB
-  SLACK
-  STRIPE
-  HUBSPOT
-  LINEAR
-  NOTION
-  GOOGLE_DRIVE
-  SMTP
-  GMAIL
-  RESEND
-  SENDGRID
-  POSTHOG
-  INTERCOM
   DATABASE_PG
   DATABASE_MYSQL
   DATABASE_MONGO

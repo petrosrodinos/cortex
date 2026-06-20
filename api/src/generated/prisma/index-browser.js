@@ -501,19 +501,6 @@ exports.OrganizationMemberStatus = exports.$Enums.OrganizationMemberStatus = {
 };
 
 exports.IntegrationProvider = exports.$Enums.IntegrationProvider = {
-  GITHUB: 'GITHUB',
-  SLACK: 'SLACK',
-  STRIPE: 'STRIPE',
-  HUBSPOT: 'HUBSPOT',
-  LINEAR: 'LINEAR',
-  NOTION: 'NOTION',
-  GOOGLE_DRIVE: 'GOOGLE_DRIVE',
-  SMTP: 'SMTP',
-  GMAIL: 'GMAIL',
-  RESEND: 'RESEND',
-  SENDGRID: 'SENDGRID',
-  POSTHOG: 'POSTHOG',
-  INTERCOM: 'INTERCOM',
   DATABASE_PG: 'DATABASE_PG',
   DATABASE_MYSQL: 'DATABASE_MYSQL',
   DATABASE_MONGO: 'DATABASE_MONGO',

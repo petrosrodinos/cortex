@@ -16,12 +16,12 @@ One Composio project per environment — never share keys.
 ### Step 1: Database migration
 Deploy migration adding Composio tables. No behavior change yet.
 
-### Step 2: API with Composio module (feature-flagged)
+### Step 2: API with Composio module
 Deploy backend with:
-- `COMPOSIO_ENABLED=true` env flag
+- `COMPOSIO_API_KEY`
+- `APP_URL`
 - Startup sync runs
 - Admin endpoints live
-- Agent still uses legacy if flag off
 
 ### Step 3: Admin bootstrap
 SUPER_ADMIN:
@@ -33,11 +33,11 @@ SUPER_ADMIN:
 ### Step 4: Frontend admin + user UI
 Deploy frontend with new integrations experience.
 
-### Step 5: Enable agent Composio
-Set `COMPOSIO_AGENT_ENABLED=true` — agent uses meta tools.
+### Step 5: Verify agent Composio
+Agent uses Composio meta tools once the API is deployed with enabled toolkits and connected accounts.
 
 ### Step 6: Remove legacy SaaS
-Deploy Phase 5 deletion after 1 week staging soak.
+Deploy Phase 5 enum/data cleanup after staging verification.
 
 ### Step 7: Triggers
 Enable webhook URL in Composio dashboard per environment.
@@ -53,12 +53,7 @@ APP_URL=https://app.example.com
 # Staging/production
 COMPOSIO_WEBHOOK_SECRET=
 
-# Feature flags (temporary)
-COMPOSIO_ENABLED=true
-COMPOSIO_AGENT_ENABLED=true
 ```
-
-Remove feature flags after full cutover.
 
 ## Monitoring
 
@@ -90,11 +85,11 @@ Include: `org_uuid`, `user_uuid`, `toolkit_slug`, `composio_session_id` (never t
 | Phase | Rollback |
 |-------|----------|
 | Migration only | Tables exist but unused — no action |
-| Composio module | Set `COMPOSIO_ENABLED=false` |
-| Agent Composio | Set `COMPOSIO_AGENT_ENABLED=false` — legacy SaaS must still exist |
+| Composio module | Redeploy previous API build before Phase 5 enum cleanup |
+| Agent Composio | Disable enabled toolkits / connected accounts while investigating |
 | Legacy removed | **Cannot rollback without redeploying previous git tag** |
 
-**Critical:** Do not deploy Phase 5 (SaaS deletion) until staging soak passes.
+**Critical:** Do not deploy Phase 5 enum cleanup until staging verification passes.
 
 ## Staging Soak Criteria (1 week)
 

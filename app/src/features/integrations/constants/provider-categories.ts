@@ -1,49 +1,12 @@
-import { IntegrationProviders, type IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
+import { IntegrationProviders } from '@/features/integrations/common/interfaces/integration.interface';
 import { AiProviderTypes } from '@/features/integrations/constants/ai-provider-types';
 import type { CatalogProvider } from '@/features/integrations/constants/catalog-provider';
-
-export interface ProviderGroup {
-  label: string;
-  providers: IntegrationProvider[];
-}
 
 export interface CatalogTab {
   id: string;
   label: string;
   providers: CatalogProvider[];
 }
-
-export const saasProviderGroups: ProviderGroup[] = [
-  {
-    label: 'Development',
-    providers: [IntegrationProviders.GITHUB, IntegrationProviders.LINEAR],
-  },
-  {
-    label: 'Communication',
-    providers: [IntegrationProviders.SLACK],
-  },
-  {
-    label: 'Email',
-    providers: [
-      IntegrationProviders.GMAIL,
-      IntegrationProviders.SMTP,
-      IntegrationProviders.RESEND,
-      IntegrationProviders.SENDGRID,
-    ],
-  },
-  {
-    label: 'Productivity',
-    providers: [IntegrationProviders.NOTION, IntegrationProviders.GOOGLE_DRIVE],
-  },
-  {
-    label: 'Sales & CRM',
-    providers: [IntegrationProviders.HUBSPOT, IntegrationProviders.STRIPE],
-  },
-  {
-    label: 'Analytics & Support',
-    providers: [IntegrationProviders.POSTHOG, IntegrationProviders.INTERCOM],
-  },
-];
 
 export const INTEGRATION_CATALOG_TABS: CatalogTab[] = [
   {
