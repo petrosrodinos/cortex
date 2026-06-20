@@ -1,13 +1,20 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
+import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
 import { DatabaseIntegrationsService } from './database-integrations.service';
 import { CreateDatabaseIntegrationDto } from './dto/create-database-integration.dto';
 import { TestDatabaseConnectionDto } from './dto/test-database-connection.dto';
 
 @Controller('organizations/:organization_uuid/database-integrations')
-@UseGuards(JwtGuard, OrganizationGuard)
+@UseGuards(
+  JwtGuard,
+  OrganizationMatchGuard,
+  OrganizationActiveMemberGuard,
+  OrganizationGuard,
+)
 export class DatabaseIntegrationsController {
   constructor(private readonly databaseIntegrationsService: DatabaseIntegrationsService) {}
 

@@ -2,7 +2,7 @@ import { Module, Global } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import type { RedisOptions } from 'ioredis';
 import { REDIS_OPTIONS } from '../databases/redis/redis.constants';
-import { AGENT_RUN_QUEUE } from './queues.constants';
+import { AGENT_RUN_QUEUE, COMPOSIO_TRIGGER_QUEUE } from './queues.constants';
 
 @Global()
 @Module({
@@ -20,6 +20,7 @@ import { AGENT_RUN_QUEUE } from './queues.constants';
             },
         }),
         BullModule.registerQueue({ name: AGENT_RUN_QUEUE }),
+        BullModule.registerQueue({ name: COMPOSIO_TRIGGER_QUEUE }),
     ],
     exports: [BullModule],
 })

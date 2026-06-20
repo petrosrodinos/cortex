@@ -61,14 +61,6 @@ export interface Integration {
   actions?: IntegrationAction[];
 }
 
-export interface CreateIntegrationDto {
-  name: string;
-  description?: string;
-  provider: IntegrationProvider;
-  config: Record<string, unknown>;
-  metadata?: Record<string, unknown>;
-}
-
 export interface UpdateIntegrationDto {
   name?: string;
   description?: string | null;

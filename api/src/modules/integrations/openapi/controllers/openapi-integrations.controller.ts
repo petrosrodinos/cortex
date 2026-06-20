@@ -1,13 +1,20 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
+import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
 import { CreateOpenApiIntegrationDto } from '../dto/create-openapi-integration.dto';
 import { ParseOpenApiSpecDto } from '../dto/parse-openapi-spec.dto';
 import { OpenApiIntegrationsService } from '../services/openapi-integrations.service';
 
 @Controller('organizations/:organization_uuid/openapi-integrations')
-@UseGuards(JwtGuard, OrganizationGuard)
+@UseGuards(
+  JwtGuard,
+  OrganizationMatchGuard,
+  OrganizationActiveMemberGuard,
+  OrganizationGuard,
+)
 export class OpenApiIntegrationsController {
   constructor(private readonly openApiIntegrationsService: OpenApiIntegrationsService) {}
 

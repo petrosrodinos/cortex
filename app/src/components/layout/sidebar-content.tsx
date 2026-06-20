@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/stores/auth';
 import { navItems } from './utils/sidebar-content.utils';
 
 interface SidebarContentProps {
@@ -70,9 +71,12 @@ function NavItem({
 }
 
 export default function SidebarContent({ collapsed, onNavigate }: SidebarContentProps) {
+  const role = useAuthStore((state) => state.role);
+  const visibleNavItems = navItems.filter((item) => !item.roles || (role && item.roles.includes(role)));
+
   return (
     <ul className="space-y-0.5">
-      {navItems.map(({ label, icon, href, end }) => (
+      {visibleNavItems.map(({ label, icon, href, end }) => (
         <NavItem
           key={href}
           label={label}

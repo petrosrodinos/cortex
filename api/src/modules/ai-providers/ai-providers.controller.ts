@@ -1,13 +1,20 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
+import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
 import { CreateAiProviderDto } from './dto/create-ai-provider.dto';
 import { UpdateAiProviderDto } from './dto/update-ai-provider.dto';
 import { AiProvidersService } from './ai-providers.service';
 
 @Controller('organizations/:organization_uuid/ai-providers')
-@UseGuards(JwtGuard, OrganizationGuard)
+@UseGuards(
+  JwtGuard,
+  OrganizationMatchGuard,
+  OrganizationActiveMemberGuard,
+  OrganizationGuard,
+)
 export class AiProvidersController {
   constructor(private readonly service: AiProvidersService) {}
 

@@ -128,6 +128,15 @@ export class ComposioToolkitsService {
     return this.syncService.getSyncRun(syncRunUuid);
   }
 
+  async listSyncRuns(limit?: string) {
+    return {
+      data: await this.prisma.composioSyncRun.findMany({
+        orderBy: { started_at: 'desc' },
+        take: Math.min(this.toPositiveInt(limit, 25), 100),
+      }),
+    };
+  }
+
   async refreshToolkit(slug: string) {
     await this.syncService.syncToolkit(slug);
     return this.findOne(slug);

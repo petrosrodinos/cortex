@@ -1,7 +1,11 @@
 import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { IntegrationRegistry } from '@/modules/integrations/framework/registry/integration-registry.service';
-import { IntegrationProvider, IntegrationStatus, ToolCallStatus } from 'generated/prisma';
+import {
+  IntegrationProvider,
+  IntegrationStatus,
+  ToolCallStatus,
+} from 'generated/prisma';
 import { calculateAiCost } from '@/integrations/ai/utils/ai-cost';
 import { AiProviders } from '@/integrations/ai/interfaces/ai.interface';
 import { DATABASE_PROVIDERS } from '@/modules/integrations/databases/database-integration.types';
@@ -16,6 +20,11 @@ export interface ToolDispatchResult {
   durationMs: number;
   tokensUsed: number;
   costUsd: number;
+}
+
+interface LegacyToolContext {
+  integrationUuid?: string;
+  providerType?: string;
 }
 
 @Injectable()
@@ -41,17 +50,39 @@ export class ToolDispatcherService {
     const started = Date.now();
 
     try {
-      const prepared = await this.emailToolPreprocessor.prepare(userUuid, toolName, input);
-      await this.assertToolAllowed(organizationUuid, prepared.toolName, userPermissions);
+      const prepared = await this.emailToolPreprocessor.prepare(
+        userUuid,
+        toolName,
+        input,
+      );
+      const toolContext = await this.assertToolAllowed(
+        organizationUuid,
+        prepared.toolName,
+        prepared.input,
+        userPermissions,
+      );
 
-      const cached = await this.idempotency.getCachedResult(executionUuid, toolName, input);
+      const cached = await this.idempotency.getCachedResult(
+        executionUuid,
+        prepared.toolName,
+        prepared.input,
+      );
       if (cached) {
         const durationMs = Date.now() - started;
-        return { success: true, result: cached, durationMs, tokensUsed: 0, costUsd: 0 };
+        return {
+          success: true,
+          result: cached,
+          durationMs,
+          tokensUsed: 0,
+          costUsd: 0,
+        };
       }
 
-      const integrationUuid = await this.resolveIntegrationUuid(organizationUuid, prepared.toolName);
-      const result = await this.registry.executeTool(organizationUuid, prepared.toolName, prepared.input);
+      const result = await this.registry.executeTool(
+        organizationUuid,
+        prepared.toolName,
+        prepared.input,
+      );
       const serializedResult = toJsonValue(result);
       const durationMs = Date.now() - started;
       const tokensUsed = 0;
@@ -61,7 +92,8 @@ export class ToolDispatcherService {
         data: {
           ...(callId ? { uuid: callId } : {}),
           execution_uuid: executionUuid,
-          integration_uuid: integrationUuid,
+          integration_uuid: toolContext.integrationUuid,
+          provider_type: toolContext.providerType,
           tool_name: prepared.toolName,
           input: prepared.input as object,
           output: serializedResult as object,
@@ -72,15 +104,23 @@ export class ToolDispatcherService {
         },
       });
 
-      return { success: true, result: serializedResult, durationMs, tokensUsed, costUsd };
+      return {
+        success: true,
+        result: serializedResult,
+        durationMs,
+        tokensUsed,
+        costUsd,
+      };
     } catch (error) {
       const durationMs = Date.now() - started;
-      const message = error instanceof Error ? error.message : 'Tool execution failed';
+      const message =
+        error instanceof Error ? error.message : 'Tool execution failed';
 
       await this.prisma.toolCall.create({
         data: {
           ...(callId ? { uuid: callId } : {}),
           execution_uuid: executionUuid,
+          provider_type: this.resolveProviderType(toolName),
           tool_name: toolName,
           input: input as object,
           output: { error: message },
@@ -91,7 +131,13 @@ export class ToolDispatcherService {
       });
 
       this.logger.warn(`Tool ${toolName} failed: ${message}`);
-      return { success: false, error: message, durationMs, tokensUsed: 0, costUsd: 0 };
+      return {
+        success: false,
+        error: message,
+        durationMs,
+        tokensUsed: 0,
+        costUsd: 0,
+      };
     }
   }
 
@@ -142,49 +188,113 @@ export class ToolDispatcherService {
     };
   }
 
-  private async assertToolAllowed(organizationUuid: string, toolName: string, userPermissions: string[]) {
+  private async assertToolAllowed(
+    organizationUuid: string,
+    toolName: string,
+    input: Record<string, unknown>,
+    userPermissions: string[],
+  ): Promise<LegacyToolContext> {
     const actionKey = this.extractActionKey(toolName);
-    const provider = this.extractProvider(toolName);
+    const providerType = this.resolveProviderType(toolName);
 
     if (!actionKey) {
-      return;
+      return { providerType };
     }
 
-    const integration = await this.prisma.integration.findFirst({
+    const integration = await this.resolveIntegrationForTool(
+      organizationUuid,
+      toolName,
+      input,
+    );
+
+    if (!integration) {
+      throw new ForbiddenException(`Tool ${toolName} is not enabled`);
+    }
+
+    const action = await this.prisma.integrationAction.findFirst({
       where: {
-        org_uuid: organizationUuid,
-        status: IntegrationStatus.ACTIVE,
-        ...(provider ? { provider } : {}),
+        integration_uuid: integration.uuid,
+        key: actionKey,
+        enabled: true,
       },
       include: {
-        actions: {
-          where: { key: actionKey, enabled: true },
-        },
+        integration: true,
       },
     });
 
-    const action = integration?.actions[0];
     if (!action) {
       throw new ForbiddenException(`Tool ${toolName} is not enabled`);
     }
 
-    if (action.required_permission_key && !userPermissions.includes(action.required_permission_key)) {
+    if (
+      action.required_permission_key &&
+      !userPermissions.includes(action.required_permission_key)
+    ) {
       throw new ForbiddenException(`Missing permission for tool ${toolName}`);
     }
+
+    return { integrationUuid: integration.uuid, providerType };
   }
 
-  private async resolveIntegrationUuid(organizationUuid: string, toolName: string): Promise<string | undefined> {
-    const provider = this.extractProvider(toolName);
-    if (!provider) {
-      return undefined;
+  private async resolveIntegrationForTool(
+    organizationUuid: string,
+    toolName: string,
+    input: Record<string, unknown>,
+  ): Promise<{ uuid: string } | null> {
+    if (toolName.startsWith('db__')) {
+      const integrationUuid = input.integration_uuid;
+      return this.prisma.integration.findFirst({
+        where: {
+          org_uuid: organizationUuid,
+          status: IntegrationStatus.ACTIVE,
+          provider: { in: [...DATABASE_PROVIDERS] },
+          ...(typeof integrationUuid === 'string'
+            ? { uuid: integrationUuid }
+            : {}),
+        },
+        select: { uuid: true },
+      });
     }
 
-    const integration = await this.prisma.integration.findFirst({
-      where: { org_uuid: organizationUuid, provider, status: IntegrationStatus.ACTIVE },
+    const openapiMatch = toolName.match(/^openapi_([^_]+)__/);
+    if (openapiMatch) {
+      return this.prisma.integration.findFirst({
+        where: {
+          org_uuid: organizationUuid,
+          status: IntegrationStatus.ACTIVE,
+          provider: IntegrationProvider.OPENAPI,
+          uuid: { startsWith: openapiMatch[1] },
+        },
+        select: { uuid: true },
+      });
+    }
+
+    const mcpMatch = toolName.match(/^mcp_([^_]+)__/);
+    if (mcpMatch) {
+      return this.prisma.integration.findFirst({
+        where: {
+          org_uuid: organizationUuid,
+          status: IntegrationStatus.ACTIVE,
+          provider: IntegrationProvider.MCP,
+          uuid: { startsWith: mcpMatch[1] },
+        },
+        select: { uuid: true },
+      });
+    }
+
+    const provider = this.extractProvider(toolName);
+    if (!provider) {
+      return null;
+    }
+
+    return this.prisma.integration.findFirst({
+      where: {
+        org_uuid: organizationUuid,
+        provider,
+        status: IntegrationStatus.ACTIVE,
+      },
       select: { uuid: true },
     });
-
-    return integration?.uuid;
   }
 
   private extractActionKey(toolName: string): string | null {
@@ -225,5 +335,22 @@ export class ToolDispatcherService {
     }
 
     return providerKey.toUpperCase() as IntegrationProvider;
+  }
+
+  private resolveProviderType(toolName: string): string | undefined {
+    if (toolName.startsWith('db__')) {
+      return 'DATABASE';
+    }
+
+    if (toolName.startsWith('openapi_')) {
+      return 'OPENAPI';
+    }
+
+    if (toolName.startsWith('mcp_')) {
+      return 'MCP';
+    }
+
+    const provider = this.extractProvider(toolName);
+    return provider ?? undefined;
   }
 }

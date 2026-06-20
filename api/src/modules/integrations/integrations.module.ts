@@ -6,12 +6,20 @@ import { IntegrationsController } from './integrations.controller';
 import { IntegrationsService } from './integrations.service';
 import { OpenApiIntegrationsModule } from './openapi/openapi-integrations.module';
 import { McpIntegrationsModule } from './mcp/mcp-integrations.module';
-import { SaasIntegrationsModule } from './saas/saas-integrations.module';
 
 @Module({
-  imports: [IntegrationFrameworkModule, SaasIntegrationsModule, DatabaseIntegrationsModule, OpenApiIntegrationsModule, McpIntegrationsModule],
+  imports: [
+    IntegrationFrameworkModule,
+    DatabaseIntegrationsModule,
+    OpenApiIntegrationsModule,
+    McpIntegrationsModule,
+  ],
   controllers: [IntegrationsController],
   providers: [IntegrationsService, IntegrationActionsService],
-  exports: [IntegrationFrameworkModule, IntegrationsService, IntegrationActionsService],
+  exports: [
+    IntegrationFrameworkModule,
+    IntegrationsService,
+    IntegrationActionsService,
+  ],
 })
 export class IntegrationsModule {}

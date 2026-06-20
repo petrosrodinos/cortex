@@ -22,10 +22,15 @@ export class MessagesService {
     private readonly memory: ConversationMemoryService,
     private readonly providerFactory: AiProviderFactoryService,
     private readonly gcs: GcsService,
-    @InjectQueue(AGENT_RUN_QUEUE) private readonly agentQueue: Queue<AgentRunJobData>,
+    @InjectQueue(AGENT_RUN_QUEUE)
+    private readonly agentQueue: Queue<AgentRunJobData>,
   ) {}
 
-  async findAll(userUuid: string, organizationUuid: string, conversationUuid: string) {
+  async findAll(
+    userUuid: string,
+    organizationUuid: string,
+    conversationUuid: string,
+  ) {
     await this.organizations.requireActiveMember(userUuid, organizationUuid);
     await this.getConversation(userUuid, organizationUuid, conversationUuid);
 
@@ -34,7 +39,9 @@ export class MessagesService {
       orderBy: { created_at: 'asc' },
     });
 
-    return Promise.all(messages.map((message) => this.withViewableAttachmentUrls(message)));
+    return Promise.all(
+      messages.map((message) => this.withViewableAttachmentUrls(message)),
+    );
   }
 
   private async withViewableAttachmentUrls(message: {
@@ -70,9 +77,13 @@ export class MessagesService {
           };
         }
 
-        const url = await this.gcs.getSignedUrlForObjectPath(document.path, 60, {
-          contentType: document.mimetype,
-        });
+        const url = await this.gcs.getSignedUrlForObjectPath(
+          document.path,
+          60,
+          {
+            contentType: document.mimetype,
+          },
+        );
 
         return {
           uuid: attachment.uuid,
@@ -92,10 +103,23 @@ export class MessagesService {
     };
   }
 
-  async sendMessage(userUuid: string, organizationUuid: string, conversationUuid: string, dto: SendMessageDto) {
+  async sendMessage(
+    userUuid: string,
+    organizationUuid: string,
+    conversationUuid: string,
+    dto: SendMessageDto,
+  ) {
     await this.organizations.requireActiveMember(userUuid, organizationUuid);
-    const conversation = await this.getConversation(userUuid, organizationUuid, conversationUuid);
-    const attachments = await this.resolveMessageAttachments(userUuid, dto.documentUuids ?? []);
+    const conversation = await this.getConversation(
+      userUuid,
+      organizationUuid,
+      conversationUuid,
+    );
+    const attachments = await this.resolveMessageAttachments(
+      userUuid,
+      dto.documentUuids ?? [],
+    );
+    const toolkitSlugs = this.resolveToolkitSlugs(dto);
 
     const userMessage = await this.prisma.message.create({
       data: {
@@ -120,6 +144,7 @@ export class MessagesService {
           content: dto.content,
           documentUuids: dto.documentUuids ?? [],
           integrationUuids: dto.integrationUuids ?? [],
+          toolkitSlugs,
         },
       },
     });
@@ -134,6 +159,7 @@ export class MessagesService {
         executionUuid: execution.uuid,
         documentUuids: dto.documentUuids ?? [],
         integrationUuids: dto.integrationUuids ?? [],
+        toolkitSlugs,
       },
       {
         jobId: `run-${execution.uuid}`,
@@ -153,9 +179,16 @@ export class MessagesService {
       where: { conversation_uuid: conversation.uuid },
     });
 
-    if (messageCount === 1 && (!conversation.title || conversation.title === DEFAULT_CONVERSATION_TITLE)) {
+    if (
+      messageCount === 1 &&
+      (!conversation.title || conversation.title === DEFAULT_CONVERSATION_TITLE)
+    ) {
       setImmediate(() => {
-        void this.generateAndSetTitle(organizationUuid, conversation.uuid, dto.content);
+        void this.generateAndSetTitle(
+          organizationUuid,
+          conversation.uuid,
+          dto.content,
+        );
       });
     }
 
@@ -165,9 +198,16 @@ export class MessagesService {
     };
   }
 
-  private async generateAndSetTitle(organizationUuid: string, conversationUuid: string, userMessage: string) {
+  private async generateAndSetTitle(
+    organizationUuid: string,
+    conversationUuid: string,
+    userMessage: string,
+  ) {
     try {
-      const title = await this.generateTitleFromMessage(organizationUuid, userMessage);
+      const title = await this.generateTitleFromMessage(
+        organizationUuid,
+        userMessage,
+      );
       await this.prisma.conversation.update({
         where: { uuid: conversationUuid },
         data: { title },
@@ -175,11 +215,15 @@ export class MessagesService {
     } catch {}
   }
 
-  private async generateTitleFromMessage(organizationUuid: string, message: string): Promise<string> {
+  private async generateTitleFromMessage(
+    organizationUuid: string,
+    message: string,
+  ): Promise<string> {
     const fallback = message.trim().slice(0, 60) || DEFAULT_CONVERSATION_TITLE;
 
     try {
-      const resolved = await this.providerFactory.resolveProvider(organizationUuid);
+      const resolved =
+        await this.providerFactory.resolveProvider(organizationUuid);
       const { text } = await generateText({
         model: resolved.model,
         system:
@@ -201,7 +245,10 @@ export class MessagesService {
     }
   }
 
-  private async resolveMessageAttachments(userUuid: string, documentUuids: string[]) {
+  private async resolveMessageAttachments(
+    userUuid: string,
+    documentUuids: string[],
+  ) {
     if (documentUuids.length === 0) {
       return null;
     }
@@ -225,7 +272,20 @@ export class MessagesService {
     }));
   }
 
-  private async getConversation(userUuid: string, organizationUuid: string, conversationUuid: string) {
+  private resolveToolkitSlugs(dto: SendMessageDto): string[] | undefined {
+    const values = dto.toolkitSlugs ?? dto.toolkit_slugs;
+    if (!values?.length) {
+      return undefined;
+    }
+
+    return [...new Set(values.map((slug) => slug.trim()).filter(Boolean))];
+  }
+
+  private async getConversation(
+    userUuid: string,
+    organizationUuid: string,
+    conversationUuid: string,
+  ) {
     const conversation = await this.prisma.conversation.findFirst({
       where: {
         uuid: conversationUuid,

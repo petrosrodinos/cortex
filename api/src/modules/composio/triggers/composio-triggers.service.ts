@@ -3,7 +3,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
+import { COMPOSIO_TRIGGER_QUEUE } from '@/core/queues/queues.constants';
+import type { ComposioTriggerJobData } from '@/core/queues/processors/composio-trigger.processor';
 import { ComposioClientService } from '@/integrations/composio/composio-client.service';
 import { Prisma } from 'generated/prisma';
 import { CreateComposioTriggerDto } from './dto/create-composio-trigger.dto';
@@ -14,6 +18,8 @@ export class ComposioTriggersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly composioClient: ComposioClientService,
+    @InjectQueue(COMPOSIO_TRIGGER_QUEUE)
+    private readonly triggerQueue: Queue<ComposioTriggerJobData>,
   ) {}
 
   async list(organizationUuid: string) {
@@ -56,7 +62,7 @@ export class ComposioTriggersService {
       this.composioClient.getClient() as any
     ).triggers.create(account.composio_user_id, dto.trigger_slug, {
       connectedAccountId: dto.connected_account_id,
-      config: dto.config ?? {},
+      triggerConfig: dto.config ?? {},
     });
     const composioTriggerId = this.getRemoteId(remoteTrigger);
 
@@ -107,6 +113,10 @@ export class ComposioTriggersService {
       await this.setRemoteEnabled(trigger.composio_trigger_id, dto.is_enabled);
     }
 
+    if (dto.config !== undefined) {
+      await this.updateRemoteConfig(trigger.composio_trigger_id, dto.config);
+    }
+
     return this.prisma.composioTrigger.update({
       where: { uuid: triggerUuid },
       data: {
@@ -132,12 +142,8 @@ export class ComposioTriggersService {
   }
 
   async handleEvent(payload: any) {
-    const composioTriggerId =
-      payload?.triggerId ??
-      payload?.trigger_id ??
-      payload?.trigger?.id ??
-      payload?.data?.triggerId ??
-      payload?.data?.trigger_id;
+    const composioTriggerId = this.getTriggerIdFromPayload(payload);
+    const webhookId = this.getWebhookIdFromPayload(payload);
 
     const trigger = composioTriggerId
       ? await this.prisma.composioTrigger.findUnique({
@@ -146,8 +152,30 @@ export class ComposioTriggersService {
         })
       : null;
 
+    await this.triggerQueue.add(
+      'process',
+      {
+        triggerUuid: trigger?.uuid ?? null,
+        composioTriggerId,
+        webhookId,
+        payload,
+      },
+      {
+        jobId:
+          webhookId ??
+          (composioTriggerId
+            ? `trigger-${composioTriggerId}-${Date.now()}`
+            : undefined),
+        attempts: 5,
+        backoff: { type: 'exponential', delay: 2000 },
+        removeOnComplete: 500,
+        removeOnFail: 500,
+      },
+    );
+
     return {
       accepted: true,
+      queued: true,
       trigger_uuid: trigger?.uuid ?? null,
       toolkit_slug: trigger?.toolkit.slug ?? null,
     };
@@ -199,6 +227,41 @@ export class ComposioTriggersService {
       remoteTrigger?.uuid ??
       remoteTrigger?.nanoid ??
       remoteTrigger?.triggerId
+    );
+  }
+
+  private async updateRemoteConfig(
+    composioTriggerId: string,
+    config: Record<string, unknown>,
+  ) {
+    const triggers = (this.composioClient.getClient() as any).triggers;
+
+    if (typeof triggers.update === 'function') {
+      return triggers.update(composioTriggerId, { triggerConfig: config });
+    }
+  }
+
+  private getTriggerIdFromPayload(payload: any): string | null {
+    return (
+      payload?.triggerId ??
+      payload?.trigger_id ??
+      payload?.trigger?.id ??
+      payload?.data?.triggerId ??
+      payload?.data?.trigger_id ??
+      payload?.metadata?.triggerId ??
+      payload?.metadata?.trigger_id ??
+      null
+    );
+  }
+
+  private getWebhookIdFromPayload(payload: any): string | null {
+    return (
+      payload?.webhookId ??
+      payload?.webhook_id ??
+      payload?.id ??
+      payload?.metadata?.webhookId ??
+      payload?.metadata?.webhook_id ??
+      null
     );
   }
 }

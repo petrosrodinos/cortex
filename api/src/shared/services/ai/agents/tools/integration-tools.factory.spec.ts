@@ -1,6 +1,6 @@
-import { IntegrationToolsFactory } from './integration-tools.factory';
+import { LegacyIntegrationToolProvider } from './legacy-integration-tool.provider';
 
-describe('IntegrationToolsFactory', () => {
+describe('LegacyIntegrationToolProvider', () => {
   it('exposes send_email tools but hides raw attachment email integration tools', async () => {
     const registry = {
       getAllTools: jest.fn().mockResolvedValue([
@@ -27,21 +27,28 @@ describe('IntegrationToolsFactory', () => {
         },
       ]),
     };
-    const prisma = { integrationAction: { findMany: jest.fn().mockResolvedValue([]) } };
-    const factory = new IntegrationToolsFactory(
+    const prisma = {
+      integrationAction: { findMany: jest.fn().mockResolvedValue([]) },
+    };
+    const factory = new LegacyIntegrationToolProvider(
       registry as any,
       prisma as any,
       {} as any,
-      {} as any,
-      { buildTools: jest.fn().mockResolvedValue({}) } as any,
-      { buildTools: jest.fn().mockReturnValue({}) } as any,
-      { buildTools: jest.fn().mockReturnValue({}) } as any,
     );
 
-    const tools = await factory.buildTools('org-uuid', 'user-uuid', 'execution-uuid', []);
+    const tools = await factory.buildTools({
+      organizationUuid: 'org-uuid',
+      userUuid: 'user-uuid',
+      conversationUuid: 'conversation-uuid',
+      executionUuid: 'execution-uuid',
+      userPermissions: [],
+      documentUuids: [],
+    });
 
     expect(Object.keys(tools)).toContain('smtp__send_email');
-    expect(Object.keys(tools)).not.toContain('smtp__send_email_with_attachments');
+    expect(Object.keys(tools)).not.toContain(
+      'smtp__send_email_with_attachments',
+    );
     expect((tools.smtp__send_email as any).needsApproval).toBe(false);
   });
 });

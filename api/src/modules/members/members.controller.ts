@@ -1,12 +1,14 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
+import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
 import { InviteMemberDto } from './dto/invite-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { MembersService } from './members.service';
 
 @Controller('organizations/:organization_uuid/members')
-@UseGuards(JwtGuard)
+@UseGuards(JwtGuard, OrganizationMatchGuard, OrganizationActiveMemberGuard)
 export class MembersController {
   constructor(private readonly members_service: MembersService) {}
 

@@ -7,6 +7,7 @@ import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { useOrganizationStore } from '@/stores/organization';
 import { Routes } from '@/routes/routes';
 import { useGetIntegrations } from '@/features/integrations/common/hooks/use-integrations';
+import { useGetComposioToolkits } from '@/features/composio/hooks/use-composio';
 import {
   useApproveExecution,
   useCreateConversation,
@@ -26,7 +27,7 @@ import { ConversationEmptyState } from './components/conversation-empty-state';
 import { ConversationDocumentsModal } from './components/conversation-documents-modal';
 import { ConversationHeader } from './components/conversation-header';
 import { ConversationInput } from './components/conversation-input';
-import { getToolEligibleIntegrations } from './components/conversation-tools-menu';
+import { getToolEligibleIntegrations, getToolEligibleToolkits } from './components/conversation-tools-menu';
 import {
   createEmptyDraft,
   draftPartsToPlainText,
@@ -57,6 +58,7 @@ const ConversationsPage: FC = () => {
   const [activeExecutionId, setActiveExecutionId] = useState<string | null>(null);
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
   const [selectedIntegrationUuids, setSelectedIntegrationUuids] = useState<string[]>([]);
+  const [selectedToolkitSlugs, setSelectedToolkitSlugs] = useState<string[]>([]);
   const [pendingUserMessage, setPendingUserMessage] = useState<string | null>(null);
   const [pendingUserAttachments, setPendingUserAttachments] = useState<MessageAttachment[]>([]);
   const [deleteTargetUuid, setDeleteTargetUuid] = useState<string | null>(null);
@@ -67,6 +69,8 @@ const ConversationsPage: FC = () => {
 
   const { data: conversations = [], isLoading: conversationsLoading } = useGetConversations(organizationUuid);
   const { data: integrations = [] } = useGetIntegrations(organizationUuid);
+  const { data: composioToolkitsResponse } = useGetComposioToolkits(organizationUuid, { limit: 100 });
+  const composioToolkits = composioToolkitsResponse?.data ?? [];
   const { data: messages = [], isLoading: messagesLoading } = useGetMessages(organizationUuid, conversationUuid);
   const createConversation = useCreateConversation(organizationUuid);
   const deleteConversation = useDeleteConversation(organizationUuid);
@@ -94,8 +98,14 @@ const ConversationsPage: FC = () => {
     () => toolEligibleIntegrations.map((integration) => integration.uuid),
     [toolEligibleIntegrations],
   );
+  const toolEligibleToolkits = useMemo(() => getToolEligibleToolkits(composioToolkits), [composioToolkits]);
+  const toolEligibleToolkitSlugs = useMemo(
+    () => toolEligibleToolkits.map((toolkit) => toolkit.slug),
+    [toolEligibleToolkits],
+  );
 
   const toolEligibleIntegrationUuidsRef = useRef<string[]>([]);
+  const toolEligibleToolkitSlugsRef = useRef<string[]>([]);
 
   useEffect(() => {
     const previousEligible = new Set(toolEligibleIntegrationUuidsRef.current);
@@ -116,6 +126,26 @@ const ConversationsPage: FC = () => {
 
     toolEligibleIntegrationUuidsRef.current = currentEligible;
   }, [toolEligibleIntegrationUuids]);
+
+  useEffect(() => {
+    const previousEligible = new Set(toolEligibleToolkitSlugsRef.current);
+    const currentEligible = toolEligibleToolkitSlugs;
+
+    setSelectedToolkitSlugs((prev) => {
+      const available = new Set(currentEligible);
+
+      if (prev.length === 0) {
+        return currentEligible;
+      }
+
+      const kept = prev.filter((slug) => available.has(slug));
+      const newlyEligible = currentEligible.filter((slug) => !previousEligible.has(slug));
+
+      return [...kept, ...newlyEligible];
+    });
+
+    toolEligibleToolkitSlugsRef.current = currentEligible;
+  }, [toolEligibleToolkitSlugs]);
 
   useEffect(() => {
     try {
@@ -259,6 +289,7 @@ const ConversationsPage: FC = () => {
       content,
       documentUuids,
       integrationUuids,
+      toolkitSlugs: selectedToolkitSlugs,
       attachments: sentAttachments,
       isFirstMessage,
     });
@@ -268,12 +299,14 @@ const ConversationsPage: FC = () => {
     content,
     documentUuids,
     integrationUuids,
+    toolkitSlugs,
     attachments,
     isFirstMessage = false,
   }: {
     content: string;
     documentUuids: string[];
     integrationUuids: string[];
+    toolkitSlugs: string[];
     attachments: MessageAttachment[];
     isFirstMessage?: boolean;
   }) => {
@@ -290,6 +323,7 @@ const ConversationsPage: FC = () => {
         content,
         documentUuids,
         integrationUuids,
+        toolkitSlugs,
       });
       setActiveExecutionId(response.executionId);
 
@@ -310,6 +344,7 @@ const ConversationsPage: FC = () => {
       content: message.content,
       documentUuids: attachments.map((attachment) => attachment.uuid),
       integrationUuids: selectedIntegrationUuids,
+      toolkitSlugs: selectedToolkitSlugs,
       attachments,
     });
   };
@@ -503,7 +538,9 @@ const ConversationsPage: FC = () => {
               draftParts={draftParts}
               attachedFiles={attachedFiles}
               integrations={integrations}
+              toolkits={composioToolkits}
               selectedIntegrationUuids={selectedIntegrationUuids}
+              selectedToolkitSlugs={selectedToolkitSlugs}
               disabled={sendMessage.isPending || isRunning}
               isUploading={uploadDocument.isPending}
               onDraftPartsChange={setDraftParts}
@@ -511,6 +548,7 @@ const ConversationsPage: FC = () => {
               onFileSelect={(event) => void handleFileSelect(event)}
               onRemoveFile={removeAttachedFile}
               onIntegrationSelectionChange={setSelectedIntegrationUuids}
+              onToolkitSelectionChange={setSelectedToolkitSlugs}
             />
           </div>
         )}

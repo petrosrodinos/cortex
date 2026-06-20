@@ -1,14 +1,21 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
-import { AgentExecutionStatus, MessageRole, OrganizationMemberStatus } from 'generated/prisma';
+import {
+  AgentExecutionStatus,
+  MessageRole,
+  OrganizationMemberStatus,
+} from 'generated/prisma';
 import type { ModelMessage } from 'ai';
 import { AiProviderFactoryService } from '../../providers/ai-provider-factory.service';
 import { ConversationMemoryService } from '../../memory/conversation-memory.service';
-import { IntegrationToolsFactory } from '../tools/integration-tools.factory';
+import { AgentToolsFactory } from '../tools/agent-tools.factory';
 import { SystemPromptBuilder } from '../prompt/system-prompt.builder';
 import { detectOutputType } from '../prompt/output-detector';
 import { isExportFollowUpRequest } from '../outputs/tools/output-tools.factory';
-import { extractGeneratedDocuments, isEmailSendRequest } from '../prompt/email-send.utils';
+import {
+  extractGeneratedDocuments,
+  isEmailSendRequest,
+} from '../prompt/email-send.utils';
 import {
   isWidgetFollowUpRequest,
   isWidgetRequest,
@@ -24,7 +31,12 @@ interface SavedExecutionInput {
   content?: string;
   documentUuids?: string[];
   integrationUuids?: string[];
-  approvalRequests?: Array<{ approvalId: string; toolName?: string; input?: unknown }>;
+  toolkitSlugs?: string[];
+  approvalRequests?: Array<{
+    approvalId: string;
+    toolName?: string;
+    input?: unknown;
+  }>;
   agentMessages?: ModelMessage[];
   responseMessages?: ModelMessage[];
 }
@@ -45,7 +57,7 @@ export class AgentRunnerService {
     private readonly prisma: PrismaService,
     private readonly providerFactory: AiProviderFactoryService,
     private readonly memory: ConversationMemoryService,
-    private readonly toolsFactory: IntegrationToolsFactory,
+    private readonly toolsFactory: AgentToolsFactory,
     private readonly systemPromptBuilder: SystemPromptBuilder,
     private readonly progressEmitter: AgentProgressEmitterService,
     private readonly toolDispatcher: ToolDispatcherService,
@@ -63,6 +75,7 @@ export class AgentRunnerService {
       resumeApprovals?: Array<{ approvalId: string; approved: boolean }>;
       documentUuids?: string[];
       integrationUuids?: string[];
+      toolkitSlugs?: string[];
     },
   ): Promise<AgentRunResult> {
     const existingExecution = await this.prisma.agentExecution.findUnique({
@@ -70,7 +83,10 @@ export class AgentRunnerService {
     });
     const savedInput = (existingExecution?.input ?? {}) as SavedExecutionInput;
 
-    if (existingExecution?.status === AgentExecutionStatus.COMPLETED && existingExecution.output) {
+    if (
+      existingExecution?.status === AgentExecutionStatus.COMPLETED &&
+      existingExecution.output
+    ) {
       const output = existingExecution.output as {
         content?: string;
         files?: string[];
@@ -102,10 +118,17 @@ export class AgentRunnerService {
       data: { status: AgentExecutionStatus.RUNNING, started_at: new Date() },
     });
 
-    const progress = this.progressEmitter.createScope(organizationUuid, conversationId, executionUuid);
+    const progress = this.progressEmitter.createScope(
+      organizationUuid,
+      conversationId,
+      executionUuid,
+    );
 
     try {
-      const noAiConnectorMessage = await this.systemPromptBuilder.getNoAiConnectorMessage(organizationUuid);
+      const noAiConnectorMessage =
+        await this.systemPromptBuilder.getNoAiConnectorMessage(
+          organizationUuid,
+        );
       if (noAiConnectorMessage) {
         return this.completeWithDirectResponse(
           organizationUuid,
@@ -115,12 +138,22 @@ export class AgentRunnerService {
         );
       }
 
-      const permissions = await this.loadUserPermissions(userUuid, organizationUuid);
-      const resolved = await this.providerFactory.resolveProvider(organizationUuid);
-      const messages = await this.memory.getMessages(organizationUuid, conversationId);
+      const permissions = await this.loadUserPermissions(
+        userUuid,
+        organizationUuid,
+      );
+      const resolved =
+        await this.providerFactory.resolveProvider(organizationUuid);
+      const messages = await this.memory.getMessages(
+        organizationUuid,
+        conversationId,
+      );
 
-      const documentUuids = options?.documentUuids ?? savedInput.documentUuids ?? [];
-      const integrationUuids = options?.integrationUuids ?? savedInput.integrationUuids;
+      const documentUuids =
+        options?.documentUuids ?? savedInput.documentUuids ?? [];
+      const integrationUuids =
+        options?.integrationUuids ?? savedInput.integrationUuids;
+      const toolkitSlugs = options?.toolkitSlugs ?? savedInput.toolkitSlugs;
       const attachedDocuments =
         documentUuids.length > 0
           ? await this.documentReader.getAttachedMetadata(documentUuids)
@@ -130,16 +163,22 @@ export class AgentRunnerService {
         options?.resumeApprovals?.length && savedInput.agentMessages?.length
           ? savedInput.agentMessages
           : this.buildAgentMessages(messages, attachedDocuments);
-      const messagesForAgent = this.buildMessagesForAgent(agentMessages, savedInput, options?.resumeApprovals);
+      const messagesForAgent = this.buildMessagesForAgent(
+        agentMessages,
+        savedInput,
+        options?.resumeApprovals,
+      );
 
       const tools = await this.toolsFactory.buildTools(
         organizationUuid,
         userUuid,
+        conversationId,
         executionUuid,
         permissions,
         {
           documentUuids,
           integrationUuids,
+          toolkitSlugs,
           userMessage,
           progress,
         },
@@ -153,21 +192,31 @@ export class AgentRunnerService {
         userMessage,
         messagesForAgent,
       );
-      const agent = this.providerFactory.createAgent(resolved, tools, instructions);
+      const agent = this.providerFactory.createAgent(
+        resolved,
+        tools,
+        instructions,
+      );
 
       const result = await agent.generate({
         messages: messagesForAgent,
         onStepFinish: async (step) => {
           const usage = step?.usage;
           if (usage) {
-            await this.toolDispatcher.recordStepUsage(executionUuid, 'agent-step', usage, resolved.modelId);
+            await this.toolDispatcher.recordStepUsage(
+              executionUuid,
+              'agent-step',
+              usage,
+              resolved.modelId,
+            );
           }
         },
       });
 
       const approvalRequests = this.extractApprovalRequests(result);
       if (approvalRequests.length > 0 && !options?.resumeApprovals?.length) {
-        const usage = await this.toolDispatcher.syncExecutionUsageTotals(executionUuid);
+        const usage =
+          await this.toolDispatcher.syncExecutionUsageTotals(executionUuid);
 
         await this.prisma.agentExecution.update({
           where: { uuid: executionUuid },
@@ -180,6 +229,7 @@ export class AgentRunnerService {
               responseMessages: result.response.messages,
               documentUuids,
               integrationUuids,
+              toolkitSlugs,
             } as object,
             tokens_used: usage.tokensUsed,
             cost_usd: usage.costUsd,
@@ -202,11 +252,17 @@ export class AgentRunnerService {
         };
       }
 
-      const toolResults = (result.steps ?? []).flatMap((step: any) => step.toolResults ?? []);
+      const toolResults = (result.steps ?? []).flatMap(
+        (step: any) => step.toolResults ?? [],
+      );
       const generatedDocuments = extractGeneratedDocuments(toolResults);
-      const content = this.sanitizeAssistantContent(result.text ?? '', toolResults);
+      const content = this.sanitizeAssistantContent(
+        result.text ?? '',
+        toolResults,
+      );
       const detection = detectOutputType(userMessage, content, toolResults);
-      const usage = await this.toolDispatcher.syncExecutionUsageTotals(executionUuid);
+      const usage =
+        await this.toolDispatcher.syncExecutionUsageTotals(executionUuid);
 
       const completionUpdate = await this.prisma.agentExecution.updateMany({
         where: {
@@ -271,13 +327,19 @@ export class AgentRunnerService {
         outputType: detection.outputType,
       };
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Agent execution failed';
-      this.logger.error(message, error instanceof Error ? error.stack : undefined);
+      const message =
+        error instanceof Error ? error.message : 'Agent execution failed';
+      this.logger.error(
+        message,
+        error instanceof Error ? error.stack : undefined,
+      );
 
-      const usage = await this.toolDispatcher.syncExecutionUsageTotals(executionUuid).catch(() => ({
-        tokensUsed: 0,
-        costUsd: 0,
-      }));
+      const usage = await this.toolDispatcher
+        .syncExecutionUsageTotals(executionUuid)
+        .catch(() => ({
+          tokensUsed: 0,
+          costUsd: 0,
+        }));
 
       await this.prisma.agentExecution.update({
         where: { uuid: executionUuid },
@@ -297,8 +359,13 @@ export class AgentRunnerService {
       try {
         await this.sandboxCode.closeSession(executionUuid);
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to close sandbox session';
-        this.logger.warn(`Sandbox cleanup failed for ${executionUuid}: ${message}`);
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Failed to close sandbox session';
+        this.logger.warn(
+          `Sandbox cleanup failed for ${executionUuid}: ${message}`,
+        );
       }
     }
   }
@@ -309,11 +376,17 @@ export class AgentRunnerService {
     executionUuid: string,
     content: string,
   ): Promise<AgentRunResult> {
-    const progress = this.progressEmitter.createScope(organizationUuid, conversationId, executionUuid);
-    const usage = await this.toolDispatcher.syncExecutionUsageTotals(executionUuid).catch(() => ({
-      tokensUsed: 0,
-      costUsd: 0,
-    }));
+    const progress = this.progressEmitter.createScope(
+      organizationUuid,
+      conversationId,
+      executionUuid,
+    );
+    const usage = await this.toolDispatcher
+      .syncExecutionUsageTotals(executionUuid)
+      .catch(() => ({
+        tokensUsed: 0,
+        costUsd: 0,
+      }));
 
     await this.prisma.agentExecution.updateMany({
       where: {
@@ -389,7 +462,9 @@ export class AgentRunnerService {
   private async buildInstructions(
     organizationUuid: string,
     userUuid: string,
-    attachedDocuments: Awaited<ReturnType<DocumentReaderService['getAttachedMetadata']>>,
+    attachedDocuments: Awaited<
+      ReturnType<DocumentReaderService['getAttachedMetadata']>
+    >,
     integrationUuids: string[] | undefined,
     userMessage: string,
     messagesForAgent: ModelMessage[],
@@ -403,7 +478,10 @@ export class AgentRunnerService {
 
     const guidance: string[] = [];
 
-    if (isExportFollowUpRequest(userMessage) && messagesForAgent.some((m) => m.role === 'assistant')) {
+    if (
+      isExportFollowUpRequest(userMessage) &&
+      messagesForAgent.some((m) => m.role === 'assistant')
+    ) {
       guidance.push(
         'The latest user message is a follow-up export request.',
         'Use the data already present in this conversation to build the requested file now.',
@@ -411,19 +489,25 @@ export class AgentRunnerService {
       );
     }
 
-    if (isEmailSendRequest(userMessage) && messagesForAgent.some((m) => m.role === 'assistant')) {
+    if (
+      isEmailSendRequest(userMessage) &&
+      messagesForAgent.some((m) => m.role === 'assistant')
+    ) {
       guidance.push(
         'The latest user message asks to send content by email.',
-        'First gather the needed organization or output data with the appropriate tools, then send email with a connected email integration tool such as smtp__send_email, sendgrid__send_email, resend__send_email, or gmail__send_message.',
-        'Use the to field for the recipient email address. Attach generated files with attachment_document_uuids from earlier output tool results or generatedDocuments metadata in the conversation.',
-        'Do not claim an email was sent until an email integration send tool completes successfully.',
+        'First gather the needed organization or output data with the appropriate tools, then send email with an available Composio email tool from the connected toolkits.',
+        'Use generated file URLs or generatedDocuments metadata from earlier output tool results when the selected email tool supports attachments or links.',
+        'Do not claim an email was sent until the email tool completes successfully.',
       );
     }
 
     if (isWidgetRequest(userMessage)) {
       guidance.push(...WIDGET_AGENT_GUIDANCE);
 
-      if (isWidgetFollowUpRequest(userMessage) && messagesForAgent.some((message) => message.role === 'assistant')) {
+      if (
+        isWidgetFollowUpRequest(userMessage) &&
+        messagesForAgent.some((message) => message.role === 'assistant')
+      ) {
         guidance.push(...WIDGET_FOLLOW_UP_GUIDANCE);
       }
     }
@@ -437,24 +521,29 @@ export class AgentRunnerService {
 
   private buildAgentMessages(
     messages: ModelMessage[],
-    attachedDocuments: Awaited<ReturnType<DocumentReaderService['getAttachedMetadata']>>,
+    attachedDocuments: Awaited<
+      ReturnType<DocumentReaderService['getAttachedMetadata']>
+    >,
   ): ModelMessage[] {
     if (attachedDocuments.length === 0) {
       return messages;
     }
 
-    const documentContext = this.documentReader.formatMetadataForPrompt(attachedDocuments);
+    const documentContext =
+      this.documentReader.formatMetadataForPrompt(attachedDocuments);
     return [
       ...messages,
       {
         role: 'user',
-        content:
-          `The user attached files to this message. Use document__list and the matching document__read_* tool to load their content before answering.\n\n${documentContext}`,
+        content: `The user attached files to this message. Use document__list and the matching document__read_* tool to load their content before answering.\n\n${documentContext}`,
       },
     ];
   }
 
-  private async loadUserPermissions(userUuid: string, organizationUuid: string) {
+  private async loadUserPermissions(
+    userUuid: string,
+    organizationUuid: string,
+  ) {
     const membership = await this.prisma.organizationMember.findFirst({
       where: {
         user_uuid: userUuid,
@@ -470,11 +559,17 @@ export class AgentRunnerService {
       },
     });
 
-    return membership?.role.permissions.map((entry) => entry.permission.key) ?? [];
+    return (
+      membership?.role.permissions.map((entry) => entry.permission.key) ?? []
+    );
   }
 
   private extractApprovalRequests(result: any) {
-    const requests: Array<{ toolName?: string; input?: unknown; approvalId?: string }> = [];
+    const requests: Array<{
+      toolName?: string;
+      input?: unknown;
+      approvalId?: string;
+    }> = [];
     const seenApprovalIds = new Set<string>();
 
     const collect = (parts: unknown[]) => {
@@ -484,7 +579,10 @@ export class AgentRunnerService {
         }
 
         const record = part as Record<string, unknown>;
-        if (record.type !== 'tool-approval-request' || typeof record.approvalId !== 'string') {
+        if (
+          record.type !== 'tool-approval-request' ||
+          typeof record.approvalId !== 'string'
+        ) {
           continue;
         }
 
@@ -500,7 +598,10 @@ export class AgentRunnerService {
 
         requests.push({
           approvalId: record.approvalId,
-          toolName: typeof toolCall?.toolName === 'string' ? toolCall.toolName : undefined,
+          toolName:
+            typeof toolCall?.toolName === 'string'
+              ? toolCall.toolName
+              : undefined,
           input: toolCall?.input,
         });
       }
@@ -521,7 +622,10 @@ export class AgentRunnerService {
     return requests;
   }
 
-  private sanitizeAssistantContent(content: string, toolResults: unknown[]): string {
+  private sanitizeAssistantContent(
+    content: string,
+    toolResults: unknown[],
+  ): string {
     const imageUrls = new Set<string>();
 
     for (const result of toolResults) {
@@ -547,11 +651,13 @@ export class AgentRunnerService {
     let sanitized = content;
     for (const url of imageUrls) {
       const escaped = url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      sanitized = sanitized.replace(new RegExp(`!\\[[^\\]]*\\]\\(${escaped}\\)`, 'g'), '');
+      sanitized = sanitized.replace(
+        new RegExp(`!\\[[^\\]]*\\]\\(${escaped}\\)`, 'g'),
+        '',
+      );
       sanitized = sanitized.replace(new RegExp(escaped, 'g'), '');
     }
 
     return sanitized.replace(/\n{3,}/g, '\n\n').trim();
   }
 }
-

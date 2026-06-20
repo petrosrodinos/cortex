@@ -19,6 +19,7 @@ export class ComposioSessionService {
     conversationUuid: string,
     organizationUuid: string,
     userUuid: string,
+    toolkitSlugs?: string[],
   ) {
     const conversation = await this.prisma.conversation.findFirstOrThrow({
       where: {
@@ -28,11 +29,19 @@ export class ComposioSessionService {
       },
       select: { uuid: true, composio_session_id: true },
     });
-    const toolkitSlugs = await this.getEnabledToolkitSlugs(organizationUuid);
+    const enabledToolkitSlugs = await this.getEnabledToolkitSlugs(
+      organizationUuid,
+      toolkitSlugs,
+    );
+    const enabledTools = await this.getEnabledToolsByToolkit(
+      organizationUuid,
+      enabledToolkitSlugs,
+    );
     const sessionConfig = await this.buildSessionConfig(
       organizationUuid,
       userUuid,
-      toolkitSlugs,
+      enabledToolkitSlugs,
+      enabledTools,
     );
     const client = this.composioClient.getClient() as any;
 
@@ -53,13 +62,19 @@ export class ComposioSessionService {
     return session;
   }
 
-  async getEnabledToolkitSlugs(organizationUuid: string): Promise<string[]> {
+  async getEnabledToolkitSlugs(
+    organizationUuid: string,
+    toolkitSlugs?: string[],
+  ): Promise<string[]> {
     const enabledToolkits =
       await this.prisma.organisationEnabledToolkit.findMany({
         where: {
           org_uuid: organizationUuid,
           is_enabled: true,
-          toolkit: { is_enabled: true },
+          toolkit: {
+            is_enabled: true,
+            ...(toolkitSlugs?.length ? { slug: { in: toolkitSlugs } } : {}),
+          },
         },
         select: { toolkit: { select: { slug: true } } },
         orderBy: { created_at: 'asc' },
@@ -72,6 +87,7 @@ export class ComposioSessionService {
     organizationUuid: string,
     userUuid: string,
     toolkitSlugs: string[],
+    enabledTools: Record<string, string[]>,
   ) {
     const connectedAccounts = await this.getConnectedAccountConfig(
       organizationUuid,
@@ -84,12 +100,62 @@ export class ComposioSessionService {
 
     return {
       toolkits: { enable: toolkitSlugs },
+      tools: enabledTools,
       connectedAccounts,
       manageConnections: {
         enable: true,
         ...(callbackUrl ? { callbackUrl } : {}),
       },
     };
+  }
+
+  private async getEnabledToolsByToolkit(
+    organizationUuid: string,
+    toolkitSlugs: string[],
+  ): Promise<Record<string, string[]>> {
+    if (toolkitSlugs.length === 0) {
+      return {};
+    }
+
+    const enabledToolkits =
+      await this.prisma.organisationEnabledToolkit.findMany({
+        where: {
+          org_uuid: organizationUuid,
+          is_enabled: true,
+          toolkit: { is_enabled: true, slug: { in: toolkitSlugs } },
+        },
+        include: {
+          toolkit: {
+            select: {
+              slug: true,
+              tools: {
+                where: { is_enabled: true },
+                include: {
+                  permissions: {
+                    where: { org_uuid: organizationUuid },
+                    take: 1,
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+    return enabledToolkits.reduce<Record<string, string[]>>(
+      (result, enabledToolkit) => {
+        const toolSlugs = enabledToolkit.toolkit.tools
+          .filter((tool) => tool.permissions[0]?.enabled ?? true)
+          .map((tool) => tool.slug);
+
+        if (toolSlugs.length > 0) {
+          result[enabledToolkit.toolkit.slug] = toolSlugs;
+        }
+
+        return result;
+      },
+      {},
+    );
   }
 
   private async getConnectedAccountConfig(

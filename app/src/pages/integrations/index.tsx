@@ -17,8 +17,11 @@ import {
 import { isAiCatalogProvider } from '@/features/integrations/utils/integration.utils';
 import { useGetAiProviders } from '@/features/ai-providers/hooks/use-ai-providers';
 import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
+import { ToolkitCatalog } from '@/features/composio/components/toolkit-catalog';
+import { ToolkitDetail } from '@/features/composio/components/toolkit-detail';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
+import { cn } from '@/lib/utils';
 import { AiProviderDetail } from './components/ai-provider-detail';
 import { IntegrationDetail } from './components/integration-detail';
 import { IntegrationsSkeleton } from './components/integrations-skeleton';
@@ -32,6 +35,8 @@ export default function IntegrationsPage() {
   const navigate = useNavigate();
   const currentOrganization = useOrganizationStore((state) => state.current_organization);
   const [connectingProvider, setConnectingProvider] = useState<CatalogProvider | null>(null);
+  const [activeSection, setActiveSection] = useState<'composio' | 'custom' | 'ai'>('composio');
+  const [selectedToolkitSlug, setSelectedToolkitSlug] = useState<string | null>(null);
   const integrationsQuery = useGetIntegrations(currentOrganization?.uuid);
   const aiProvidersQuery = useGetAiProviders(currentOrganization?.uuid);
   const integrations = integrationsQuery.data ?? [];
@@ -64,7 +69,8 @@ export default function IntegrationsPage() {
 
   const isIntegrationDetail = !!(integrationUuid && selectedIntegration);
   const isAiProviderDetail = !!(aiProviderUuid && selectedAiProvider);
-  const isDetailView = isIntegrationDetail || isAiProviderDetail;
+  const isToolkitDetail = !!selectedToolkitSlug && !isIntegrationDetail && !isAiProviderDetail;
+  const isDetailView = isIntegrationDetail || isAiProviderDetail || isToolkitDetail;
 
   const detailIconMeta = isIntegrationDetail
     ? PROVIDER_ICON_META[selectedIntegration.provider]
@@ -109,6 +115,10 @@ export default function IntegrationsPage() {
             <p className="mt-1 max-w-2xl text-sm text-muted">{detailSubtitle}</p>
           </div>
         </header>
+      ) : selectedToolkitSlug ? (
+        <header className="sr-only">
+          <h1>Composio toolkit detail</h1>
+        </header>
       ) : (
         <header>
           <div className="flex flex-wrap items-center gap-2">
@@ -127,18 +137,35 @@ export default function IntegrationsPage() {
         <NoOrgPanel />
       ) : loading ? (
         <IntegrationsSkeleton />
+      ) : isToolkitDetail && selectedToolkitSlug ? (
+        <ToolkitDetail
+          organizationUuid={currentOrganization.uuid}
+          toolkitSlug={selectedToolkitSlug}
+          onBack={() => setSelectedToolkitSlug(null)}
+        />
       ) : isIntegrationDetail && selectedIntegration ? (
         <IntegrationDetail organizationUuid={currentOrganization.uuid} integration={selectedIntegration} />
       ) : isAiProviderDetail && selectedAiProvider ? (
         <AiProviderDetail organizationUuid={currentOrganization.uuid} provider={selectedAiProvider} />
       ) : (
-        <ProviderCatalog
-          integrations={integrations}
-          aiProviders={aiProviders}
-          onConnect={(provider) => setConnectingProvider(provider)}
-          onManageIntegration={handleManageIntegration}
-          onManageAiProvider={handleManageAiProvider}
-        />
+        <div className="flex flex-col gap-5">
+          <IntegrationSectionTabs activeSection={activeSection} onSectionChange={setActiveSection} />
+          {activeSection === 'composio' ? (
+            <ToolkitCatalog
+              organizationUuid={currentOrganization.uuid}
+              onSelectToolkit={(toolkitSlug) => setSelectedToolkitSlug(toolkitSlug)}
+            />
+          ) : (
+            <ProviderCatalog
+              integrations={integrations}
+              aiProviders={activeSection === 'ai' ? aiProviders : []}
+              onConnect={(provider) => setConnectingProvider(provider)}
+              onManageIntegration={handleManageIntegration}
+              onManageAiProvider={handleManageAiProvider}
+              mode={activeSection}
+            />
+          )}
+        </div>
       )}
 
       {connectingProvider && currentOrganization && isAiCatalogProvider(connectingProvider) ? (
@@ -157,6 +184,42 @@ export default function IntegrationsPage() {
           onClose={() => setConnectingProvider(null)}
         />
       ) : null}
+    </div>
+  );
+}
+
+function IntegrationSectionTabs({
+  activeSection,
+  onSectionChange,
+}: {
+  activeSection: 'composio' | 'custom' | 'ai';
+  onSectionChange: (section: 'composio' | 'custom' | 'ai') => void;
+}) {
+  const tabs = [
+    { id: 'composio', label: 'Composio apps' },
+    { id: 'custom', label: 'Custom' },
+    { id: 'ai', label: 'AI providers' },
+  ] as const;
+
+  return (
+    <div className="-mx-1 overflow-x-auto px-1">
+      <div className="flex w-max gap-1 rounded-lg border border-border bg-surface p-1">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => onSectionChange(tab.id)}
+            className={cn(
+              'shrink-0 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+              activeSection === tab.id
+                ? 'bg-surface-secondary text-foreground'
+                : 'text-muted hover:text-foreground',
+            )}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

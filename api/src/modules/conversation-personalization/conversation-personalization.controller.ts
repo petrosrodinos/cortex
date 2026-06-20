@@ -2,13 +2,20 @@ import { Body, Controller, Get, Patch, Param, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
+import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
 import { UpdateConversationPersonalizationDto } from './dto/update-conversation-personalization.dto';
 import { ConversationPersonalizationService } from './conversation-personalization.service';
 
 @ApiTags('Conversation Personalization')
 @Controller('organizations/:organization_uuid/conversation-personalization')
-@UseGuards(JwtGuard, OrganizationGuard)
+@UseGuards(
+  JwtGuard,
+  OrganizationMatchGuard,
+  OrganizationActiveMemberGuard,
+  OrganizationGuard,
+)
 export class ConversationPersonalizationController {
   constructor(private readonly service: ConversationPersonalizationService) {}
 

@@ -11,6 +11,7 @@ export interface AgentRunJobData {
   executionUuid: string;
   documentUuids?: string[];
   integrationUuids?: string[];
+  toolkitSlugs?: string[];
   resumeApprovals?: Array<{ approvalId: string; approved: boolean }>;
 }
 
@@ -31,6 +32,7 @@ export class AgentProcessor extends WorkerHost {
         resumeApprovals: job.data.resumeApprovals,
         documentUuids: job.data.documentUuids,
         integrationUuids: job.data.integrationUuids,
+        toolkitSlugs: job.data.toolkitSlugs,
       },
     );
   }

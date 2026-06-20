@@ -1,4 +1,9 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { Prisma } from 'generated/prisma';
@@ -19,7 +24,8 @@ export class ExecutionsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly organizations: OrganizationsService,
-    @InjectQueue(AGENT_RUN_QUEUE) private readonly agentQueue: Queue<AgentRunJobData>,
+    @InjectQueue(AGENT_RUN_QUEUE)
+    private readonly agentQueue: Queue<AgentRunJobData>,
   ) {}
 
   async findAll(userUuid: string, organizationUuid: string) {
@@ -33,13 +39,25 @@ export class ExecutionsService {
     });
   }
 
-  async findOne(userUuid: string, organizationUuid: string, executionUuid: string) {
+  async findOne(
+    userUuid: string,
+    organizationUuid: string,
+    executionUuid: string,
+  ) {
     await this.organizations.requireActiveMember(userUuid, organizationUuid);
     return this.getExecution(userUuid, organizationUuid, executionUuid);
   }
 
-  async approve(userUuid: string, organizationUuid: string, executionUuid: string) {
-    const execution = await this.getExecution(userUuid, organizationUuid, executionUuid);
+  async approve(
+    userUuid: string,
+    organizationUuid: string,
+    executionUuid: string,
+  ) {
+    const execution = await this.getExecution(
+      userUuid,
+      organizationUuid,
+      executionUuid,
+    );
 
     if (execution.status !== AgentExecutionStatus.AWAITING_APPROVAL) {
       throw new BadRequestException('Execution is not awaiting approval');
@@ -50,6 +68,7 @@ export class ExecutionsService {
       content?: string;
       documentUuids?: string[];
       integrationUuids?: string[];
+      toolkitSlugs?: string[];
     };
 
     await this.prisma.agentExecution.update({
@@ -67,6 +86,7 @@ export class ExecutionsService {
         executionUuid: execution.uuid,
         documentUuids: input.documentUuids ?? [],
         integrationUuids: input.integrationUuids,
+        toolkitSlugs: input.toolkitSlugs,
         resumeApprovals: (input.approvalRequests ?? []).map((request) => ({
           approvalId: request.approvalId,
           approved: true,
@@ -84,8 +104,16 @@ export class ExecutionsService {
     return { approved: true, executionId: execution.uuid };
   }
 
-  async reject(userUuid: string, organizationUuid: string, executionUuid: string) {
-    const execution = await this.getExecution(userUuid, organizationUuid, executionUuid);
+  async reject(
+    userUuid: string,
+    organizationUuid: string,
+    executionUuid: string,
+  ) {
+    const execution = await this.getExecution(
+      userUuid,
+      organizationUuid,
+      executionUuid,
+    );
 
     if (execution.status !== AgentExecutionStatus.AWAITING_APPROVAL) {
       throw new BadRequestException('Execution is not awaiting approval');
@@ -104,8 +132,16 @@ export class ExecutionsService {
     return { rejected: true, executionId: execution.uuid };
   }
 
-  async getUsage(userUuid: string, organizationUuid: string, query: UsageQueryType) {
-    const scope = await this.resolveUsageScope(userUuid, organizationUuid, query.member_uuid);
+  async getUsage(
+    userUuid: string,
+    organizationUuid: string,
+    query: UsageQueryType,
+  ) {
+    const scope = await this.resolveUsageScope(
+      userUuid,
+      organizationUuid,
+      query.member_uuid,
+    );
     const where = this.buildUsageWhere(organizationUuid, scope, query);
 
     const aggregate = await this.prisma.agentExecution.aggregate({
@@ -153,8 +189,16 @@ export class ExecutionsService {
     };
   }
 
-  async getUsageRecords(userUuid: string, organizationUuid: string, query: UsageQueryType) {
-    const scope = await this.resolveUsageScope(userUuid, organizationUuid, query.member_uuid);
+  async getUsageRecords(
+    userUuid: string,
+    organizationUuid: string,
+    query: UsageQueryType,
+  ) {
+    const scope = await this.resolveUsageScope(
+      userUuid,
+      organizationUuid,
+      query.member_uuid,
+    );
     const where = this.buildUsageWhere(organizationUuid, scope, query);
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
@@ -193,7 +237,9 @@ export class ExecutionsService {
       select: { uuid: true, user_uuid: true },
     });
 
-    const memberUuidByUserUuid = new Map(memberUuids.map((member) => [member.user_uuid, member.uuid]));
+    const memberUuidByUserUuid = new Map(
+      memberUuids.map((member) => [member.user_uuid, member.uuid]),
+    );
 
     const data = records.map((record) => ({
       uuid: record.uuid,
@@ -237,8 +283,14 @@ export class ExecutionsService {
     organizationUuid: string,
     memberUuid?: string,
   ): Promise<UsageScope> {
-    const membership = await this.organizations.requireActiveMember(userUuid, organizationUuid);
-    const canViewOrgUsage = this.organizations.hasPermission(membership, 'ai:usage:read');
+    const membership = await this.organizations.requireActiveMember(
+      userUuid,
+      organizationUuid,
+    );
+    const canViewOrgUsage = this.organizations.hasPermission(
+      membership,
+      'ai:usage:read',
+    );
 
     if (!memberUuid) {
       return {
@@ -302,18 +354,29 @@ export class ExecutionsService {
     const defaultStart = new Date(today);
     defaultStart.setDate(defaultStart.getDate() - 29);
 
-    const rangeStart = query.date_from ? this.startOfDay(query.date_from) : this.startOfDay(defaultStart);
-    const rangeEnd = query.date_to ? this.endOfDay(query.date_to) : this.endOfDay(today);
+    const rangeStart = query.date_from
+      ? this.startOfDay(query.date_from)
+      : this.startOfDay(defaultStart);
+    const rangeEnd = query.date_to
+      ? this.endOfDay(query.date_to)
+      : this.endOfDay(today);
 
     return { rangeStart, rangeEnd };
   }
 
   private createDailyMap(rangeStart: Date, rangeEnd: Date) {
-    const dailyMap = new Map<string, { tokens: number; cost_usd: number; count: number }>();
+    const dailyMap = new Map<
+      string,
+      { tokens: number; cost_usd: number; count: number }
+    >();
     const cursor = new Date(rangeStart);
 
     while (cursor <= rangeEnd) {
-      dailyMap.set(cursor.toISOString().slice(0, 10), { tokens: 0, cost_usd: 0, count: 0 });
+      dailyMap.set(cursor.toISOString().slice(0, 10), {
+        tokens: 0,
+        cost_usd: 0,
+        count: 0,
+      });
       cursor.setDate(cursor.getDate() + 1);
     }
 
@@ -321,18 +384,28 @@ export class ExecutionsService {
   }
 
   private startOfDay(value: string | Date) {
-    const date = typeof value === 'string' ? new Date(`${value}T00:00:00.000Z`) : new Date(value);
+    const date =
+      typeof value === 'string'
+        ? new Date(`${value}T00:00:00.000Z`)
+        : new Date(value);
     date.setUTCHours(0, 0, 0, 0);
     return date;
   }
 
   private endOfDay(value: string | Date) {
-    const date = typeof value === 'string' ? new Date(`${value}T00:00:00.000Z`) : new Date(value);
+    const date =
+      typeof value === 'string'
+        ? new Date(`${value}T00:00:00.000Z`)
+        : new Date(value);
     date.setUTCHours(23, 59, 59, 999);
     return date;
   }
 
-  private async getExecution(userUuid: string, organizationUuid: string, executionUuid: string) {
+  private async getExecution(
+    userUuid: string,
+    organizationUuid: string,
+    executionUuid: string,
+  ) {
     const execution = await this.prisma.agentExecution.findFirst({
       where: {
         uuid: executionUuid,

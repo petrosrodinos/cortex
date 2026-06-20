@@ -1,6 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
+import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
 import { OrganizationsService } from './organizations.service';
@@ -29,6 +31,7 @@ export class OrganizationsController {
   }
 
   @Get(':organization_uuid')
+  @UseGuards(OrganizationMatchGuard, OrganizationActiveMemberGuard)
   async findOne(@CurrentUser('uuid') user_uuid: string, @Param('organization_uuid') organization_uuid: string) {
     try {
       return await this.organizations_service.findOne(user_uuid, organization_uuid);
@@ -38,6 +41,7 @@ export class OrganizationsController {
   }
 
   @Patch(':organization_uuid')
+  @UseGuards(OrganizationMatchGuard, OrganizationActiveMemberGuard)
   async update(
     @CurrentUser('uuid') user_uuid: string,
     @Param('organization_uuid') organization_uuid: string,
@@ -51,6 +55,7 @@ export class OrganizationsController {
   }
 
   @Delete(':organization_uuid')
+  @UseGuards(OrganizationMatchGuard, OrganizationActiveMemberGuard)
   async delete(@CurrentUser('uuid') user_uuid: string, @Param('organization_uuid') organization_uuid: string) {
     try {
       return await this.organizations_service.delete(user_uuid, organization_uuid);

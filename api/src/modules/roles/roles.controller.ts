@@ -1,6 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
+import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { RolesService } from './roles.service';
 import { SetRolePermissionsDto } from './dto/set-role-permissions.dto';
@@ -21,6 +23,7 @@ export class RolesController {
   }
 
   @Get('organizations/:organization_uuid/roles')
+  @UseGuards(OrganizationMatchGuard, OrganizationActiveMemberGuard)
   async findAll(@CurrentUser('uuid') user_uuid: string, @Param('organization_uuid') organization_uuid: string) {
     try {
       return await this.roles_service.findAll(user_uuid, organization_uuid);
@@ -30,6 +33,7 @@ export class RolesController {
   }
 
   @Post('organizations/:organization_uuid/roles')
+  @UseGuards(OrganizationMatchGuard, OrganizationActiveMemberGuard)
   async create(@CurrentUser('uuid') user_uuid: string, @Param('organization_uuid') organization_uuid: string, @Body() dto: CreateRoleDto) {
     try {
       return await this.roles_service.create(user_uuid, organization_uuid, dto);
@@ -39,6 +43,7 @@ export class RolesController {
   }
 
   @Patch('organizations/:organization_uuid/roles/:organization_role_uuid')
+  @UseGuards(OrganizationMatchGuard, OrganizationActiveMemberGuard)
   async update(
     @CurrentUser('uuid') user_uuid: string,
     @Param('organization_uuid') organization_uuid: string,
@@ -53,6 +58,7 @@ export class RolesController {
   }
 
   @Put('organizations/:organization_uuid/roles/:organization_role_uuid/permissions')
+  @UseGuards(OrganizationMatchGuard, OrganizationActiveMemberGuard)
   async setPermissions(
     @CurrentUser('uuid') user_uuid: string,
     @Param('organization_uuid') organization_uuid: string,
@@ -67,6 +73,7 @@ export class RolesController {
   }
 
   @Delete('organizations/:organization_uuid/roles/:organization_role_uuid')
+  @UseGuards(OrganizationMatchGuard, OrganizationActiveMemberGuard)
   async delete(
     @CurrentUser('uuid') user_uuid: string,
     @Param('organization_uuid') organization_uuid: string,

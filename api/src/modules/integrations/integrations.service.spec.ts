@@ -4,13 +4,9 @@ import { IntegrationProvider, IntegrationStatus } from 'generated/prisma';
 describe('IntegrationsService', () => {
   const prisma: any = {
     integration: {
-      create: jest.fn(),
+      findMany: jest.fn(),
       findFirst: jest.fn(),
     },
-    integrationAction: {
-      createMany: jest.fn(),
-    },
-    $transaction: jest.fn(),
   };
   const encryption: any = {
     encrypt: jest.fn(),
@@ -22,61 +18,53 @@ describe('IntegrationsService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    prisma.$transaction.mockImplementation((callback) => callback(prisma));
-    encryption.encrypt.mockReturnValue('ciphertext');
   });
 
-  it('encrypts config and seeds provider actions when creating an integration', async () => {
-    registry.getByProvider.mockReturnValue({
-      defaultActions: jest.fn().mockReturnValue([
-        {
-          key: 'call',
-          label: 'Call endpoint',
-          description: 'Call an endpoint',
-          required_permission_key: 'org:integrations:manage',
-        },
-      ]),
-    });
-    prisma.integration.create.mockResolvedValue({
-      uuid: 'integration-uuid',
-      provider: IntegrationProvider.GITHUB,
-      status: IntegrationStatus.ACTIVE,
-    });
+  it('lists only retained DB/OpenAPI/MCP integrations', async () => {
+    prisma.integration.findMany.mockResolvedValue([
+      {
+        uuid: 'openapi-uuid',
+        provider: IntegrationProvider.OPENAPI,
+        status: IntegrationStatus.ACTIVE,
+        config: 'ciphertext',
+        actions: [],
+        openapi: { uuid: 'openapi-details-uuid', auth_config: 'ciphertext' },
+      },
+    ]);
     const service = new IntegrationsService(prisma, encryption, registry);
 
-    await service.create('organization-uuid', {
-      name: 'OpenAPI',
-      provider: IntegrationProvider.GITHUB,
-      config: { token: 'secret' },
-    });
-
-    expect(encryption.encrypt).toHaveBeenCalledWith(JSON.stringify({ token: 'secret' }));
-    expect(prisma.integration.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        org_uuid: 'organization-uuid',
-        config: 'ciphertext',
+    await expect(service.findAll('organization-uuid')).resolves.toEqual([
+      expect.objectContaining({
+        uuid: 'openapi-uuid',
+        provider: IntegrationProvider.OPENAPI,
+        openapi: { uuid: 'openapi-details-uuid' },
       }),
-    });
-    expect(prisma.integrationAction.createMany).toHaveBeenCalledWith({
-      data: [
-        expect.objectContaining({
-          integration_uuid: 'integration-uuid',
-          key: 'call',
-        }),
-      ],
-      skipDuplicates: true,
+    ]);
+
+    expect(prisma.integration.findMany).toHaveBeenCalledWith({
+      where: {
+        org_uuid: 'organization-uuid',
+        provider: {
+          in: [
+            IntegrationProvider.DATABASE_PG,
+            IntegrationProvider.DATABASE_MYSQL,
+            IntegrationProvider.DATABASE_MONGO,
+            IntegrationProvider.OPENAPI,
+            IntegrationProvider.MCP,
+          ],
+        },
+      },
+      include: { actions: true, database: true, openapi: true, mcp: true },
+      orderBy: { created_at: 'desc' },
     });
   });
 
-  it('rejects OpenAPI creation through the generic integration endpoint', async () => {
+  it('does not return removed SaaS integrations by UUID', async () => {
+    prisma.integration.findFirst.mockResolvedValue(null);
     const service = new IntegrationsService(prisma, encryption, registry);
 
     await expect(
-      service.create('organization-uuid', {
-        name: 'OpenAPI',
-        provider: IntegrationProvider.OPENAPI,
-        config: { token: 'secret' },
-      }),
-    ).rejects.toThrow('Use the OpenAPI integration endpoint');
+      service.findOne('organization-uuid', 'github-integration-uuid'),
+    ).rejects.toThrow('Integration not found');
   });
 });

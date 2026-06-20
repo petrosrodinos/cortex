@@ -2,6 +2,7 @@ import { useRef, type FC } from 'react';
 import { ArrowUp, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ConversationAttachMenu } from './conversation-attach-menu';
+import type { ComposioToolkit } from '@/features/composio/interfaces/composio.interface';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import {
   ConversationDraftEditor,
@@ -19,7 +20,9 @@ interface ConversationInputProps {
   draftParts: DraftPart[];
   attachedFiles: AttachedFile[];
   integrations: Integration[];
+  toolkits: ComposioToolkit[];
   selectedIntegrationUuids: string[];
+  selectedToolkitSlugs: string[];
   disabled: boolean;
   isUploading: boolean;
   onDraftPartsChange: (parts: DraftPart[]) => void;
@@ -27,13 +30,16 @@ interface ConversationInputProps {
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onRemoveFile: (file: File) => void;
   onIntegrationSelectionChange: (integrationUuids: string[]) => void;
+  onToolkitSelectionChange: (toolkitSlugs: string[]) => void;
 }
 
 export const ConversationInput: FC<ConversationInputProps> = ({
   draftParts,
   attachedFiles,
   integrations,
+  toolkits,
   selectedIntegrationUuids,
+  selectedToolkitSlugs,
   disabled,
   isUploading,
   onDraftPartsChange,
@@ -41,6 +47,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   onFileSelect,
   onRemoveFile,
   onIntegrationSelectionChange,
+  onToolkitSelectionChange,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canSend =
@@ -78,10 +85,13 @@ export const ConversationInput: FC<ConversationInputProps> = ({
         <input ref={fileInputRef} type="file" className="hidden" onChange={onFileSelect} />
         <ConversationAttachMenu
           integrations={integrations}
+          toolkits={toolkits}
           selectedIntegrationUuids={selectedIntegrationUuids}
+          selectedToolkitSlugs={selectedToolkitSlugs}
           disabled={disabled || isUploading}
           onUpload={() => fileInputRef.current?.click()}
           onIntegrationSelectionChange={onIntegrationSelectionChange}
+          onToolkitSelectionChange={onToolkitSelectionChange}
         />
 
         <ConversationDraftEditor

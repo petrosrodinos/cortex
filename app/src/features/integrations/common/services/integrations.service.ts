@@ -1,7 +1,6 @@
 import axiosInstance from '@/config/api/axios';
 import { ApiRoutes } from '@/config/api/routes';
 import type {
-  CreateIntegrationDto,
   Integration,
   IntegrationAction,
   TestIntegrationResponse,
@@ -24,15 +23,6 @@ export const getIntegration = async (organizationUuid: string, integrationUuid: 
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.message || 'Failed to load integration. Please try again.');
-  }
-};
-
-export const createIntegration = async (organizationUuid: string, payload: CreateIntegrationDto): Promise<Integration> => {
-  try {
-    const response = await axiosInstance.post(ApiRoutes.organizations.integrations(organizationUuid), payload);
-    return response.data;
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.message || 'Failed to create integration. Please try again.');
   }
 };
 

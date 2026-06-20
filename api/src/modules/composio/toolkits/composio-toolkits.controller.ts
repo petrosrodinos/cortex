@@ -43,6 +43,11 @@ export class ComposioToolkitsController {
     return this.service.sync(dto);
   }
 
+  @Get('sync')
+  listSyncRuns(@Query('limit') limit?: string) {
+    return this.service.listSyncRuns(limit);
+  }
+
   @Get('sync/:sync_run_uuid')
   getSyncRun(@Param('sync_run_uuid') syncRunUuid: string) {
     return this.service.getSyncRun(syncRunUuid);

@@ -41,68 +41,68 @@ Use this as a sequential execution guide for the coding agent. Check off each it
 
 ## Backend — Tool Registry Refactor
 
-- [ ] `UnifiedToolRegistry` + provider interfaces
-- [ ] `ComposioToolProvider`
-- [ ] Migrate DB/OpenAPI/MCP to provider pattern
-- [ ] `OutputToolProvider`, `DocumentToolProvider`, `OrganizationToolProvider`, `SandboxToolProvider`
-- [ ] Refactor `IntegrationToolsFactory` → `AgentToolsFactory`
-- [ ] Update `ToolDispatcherService`
-- [ ] Update `AgentRunnerService` — session resolution
-- [ ] Update `messages.service.ts` DTO — `toolkit_slugs`
+- [x] `UnifiedToolRegistry` + provider interfaces
+- [x] `ComposioToolProvider`
+- [x] Migrate DB/OpenAPI/MCP to provider pattern
+- [x] `OutputToolProvider`, `DocumentToolProvider`, `OrganizationToolProvider`, `SandboxToolProvider`
+- [x] Refactor `IntegrationToolsFactory` → `AgentToolsFactory`
+- [x] Update `ToolDispatcherService`
+- [x] Update `AgentRunnerService` — session resolution
+- [x] Update `messages.service.ts` DTO — `toolkit_slugs`
 
 ## Backend — Removal
 
-- [ ] Delete `api/src/modules/integrations/saas/` entire directory
-- [ ] Remove SaaS routes from `integrations.controller.ts`
-- [ ] Remove email test endpoints (smtp/resend/sendgrid)
-- [ ] Update `integrations.module.ts` imports
-- [ ] Remove dead permission keys
+- [x] Delete `api/src/modules/integrations/saas/` entire directory
+- [x] Remove SaaS routes from `integrations.controller.ts`
+- [x] Remove email test endpoints (smtp/resend/sendgrid)
+- [x] Update `integrations.module.ts` imports
+- [x] Remove dead permission keys
 
 ## Frontend — Composio Feature
 
-- [ ] `app/src/features/composio/` — services, hooks, types
-- [ ] Update `app/src/config/api/routes.ts`
-- [ ] `ToolkitCatalog` component
-- [ ] `ToolkitDetail` component
-- [ ] `/dashboard/integrations/callback` page
-- [ ] Refactor `IntegrationsPage` tabs
-- [ ] Remove SaaS `AddIntegrationModal` credential forms
-- [ ] Update conversation tool pickers for `toolkit_slugs`
-- [ ] Update `conversations.service.ts` message payload
+- [x] `app/src/features/composio/` — services, hooks, types
+- [x] Update `app/src/config/api/routes.ts`
+- [x] `ToolkitCatalog` component
+- [x] `ToolkitDetail` component
+- [x] `/dashboard/integrations/callback` page
+- [x] Refactor `IntegrationsPage` tabs
+- [x] Remove SaaS `AddIntegrationModal` credential forms
+- [x] Update conversation tool pickers for `toolkit_slugs`
+- [x] Update `conversations.service.ts` message payload
 
 ## Frontend — Admin
 
-- [ ] `/admin` layout with SUPER_ADMIN guard
-- [ ] `/admin/composio` dashboard
-- [ ] `/admin/composio/toolkits` list
-- [ ] `/admin/composio/toolkits/:slug` detail
-- [ ] `/admin/composio/sync` history
-- [ ] Admin sidebar link (SUPER_ADMIN only)
-- [ ] `app/src/features/composio-admin/`
+- [x] `/admin` layout with SUPER_ADMIN guard
+- [x] `/admin/composio` dashboard
+- [x] `/admin/composio/toolkits` list
+- [x] `/admin/composio/toolkits/:slug` detail
+- [x] `/admin/composio/sync` history
+- [x] Admin sidebar link (SUPER_ADMIN only)
+- [x] `app/src/features/composio-admin/`
 
 ## Triggers
 
 - [x] Webhook route + signature verification
 - [x] Trigger CRUD API
-- [ ] Trigger UI in toolkit detail
-- [ ] BullMQ processor for trigger events
+- [x] Trigger UI in toolkit detail
+- [x] BullMQ processor for trigger events
 - [ ] Register webhook URL in Composio dashboard
 
 ## Security Hardening
 
-- [ ] `OrganizationMatchGuard` on all org routes
-- [ ] Active membership check on integration routes
-- [ ] Rate limit connect endpoints
-- [ ] Audit log connect/disconnect events
-- [ ] Never expose `COMPOSIO_API_KEY` to frontend
+- [x] `OrganizationMatchGuard` on all org routes
+- [x] Active membership check on integration routes
+- [x] Rate limit connect endpoints
+- [x] Audit log connect/disconnect events
+- [x] Never expose `COMPOSIO_API_KEY` to frontend
 
 ## Testing
 
-- [ ] Unit tests for sync, session, connections
-- [ ] Admin guard tests
-- [ ] Agent execution test with mocked Composio
-- [ ] Legacy DB/OpenAPI/MCP regression tests
-- [ ] Remove obsolete SaaS tests
+- [x] Unit tests for sync, session, connections
+- [x] Admin guard tests
+- [x] Agent execution test with mocked Composio
+- [x] Legacy DB/OpenAPI/MCP regression tests
+- [x] Remove obsolete SaaS tests
 
 ## Bootstrap
 
@@ -115,4 +115,4 @@ Use this as a sequential execution guide for the coding agent. Check off each it
 ## Documentation
 
 - [x] Update `api/.env.template` comments
-- [ ] Remove references to manual OAuth in any remaining setup guides
+- [x] Remove references to manual OAuth in any remaining setup guides

@@ -8,6 +8,7 @@ import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import {
   ComposioAccountStatus,
   ComposioConnectionTier,
+  Prisma,
 } from 'generated/prisma';
 import { ComposioCallbackDto } from './dto/composio-callback.dto';
 import { ConnectComposioDto } from './dto/connect-composio.dto';
@@ -40,6 +41,17 @@ export class ComposioConnectionsService {
     const request = await (
       this.composioClient.getClient() as any
     ).toolkits.authorize(composioUserId, toolkit.slug);
+    await this.audit(organizationUuid, user.uuid, {
+      action: 'composio.connect_link_created',
+      resourceType: 'composio_toolkit',
+      resourceId: toolkit.slug,
+      metadata: {
+        toolkit_slug: toolkit.slug,
+        connection_tier: toolkit.connection_tier,
+        connection_request_id:
+          request.id ?? request.nanoid ?? request.connectedAccountId ?? null,
+      },
+    });
 
     return {
       redirect_url: request.redirectUrl ?? request.redirect_url,
@@ -75,6 +87,15 @@ export class ComposioConnectionsService {
           toolkit,
           account,
         );
+        await this.audit(organizationUuid, user.uuid, {
+          action: 'composio.account_connected',
+          resourceType: 'composio_account',
+          resourceId: mirrored.composio_account_id,
+          metadata: {
+            toolkit_slug: toolkit.slug,
+            status: mirrored.status,
+          },
+        });
         return {
           status: mirrored.status.toLowerCase(),
           connected_account_id: mirrored.composio_account_id,
@@ -101,13 +122,25 @@ export class ComposioConnectionsService {
     const active = mirrored.find(
       (account) => account.status === ComposioAccountStatus.ACTIVE,
     );
+    const mirroredAccount = active ?? mirrored[0];
+
+    if (mirroredAccount) {
+      await this.audit(organizationUuid, user.uuid, {
+        action: 'composio.account_connected',
+        resourceType: 'composio_account',
+        resourceId: mirroredAccount.composio_account_id,
+        metadata: {
+          toolkit_slug: toolkit.slug,
+          status: mirroredAccount.status,
+        },
+      });
+    }
 
     return {
       status: active
         ? 'connected'
         : (mirrored[0]?.status?.toLowerCase() ?? 'pending'),
-      connected_account_id:
-        active?.composio_account_id ?? mirrored[0]?.composio_account_id,
+      connected_account_id: mirroredAccount?.composio_account_id,
       toolkit_slug: toolkit.slug,
     };
   }
@@ -176,6 +209,15 @@ export class ComposioConnectionsService {
     );
     await this.prisma.composioConnectedAccount.delete({
       where: { composio_account_id: connectedAccountId },
+    });
+    await this.audit(organizationUuid, user.uuid, {
+      action: 'composio.account_disconnected',
+      resourceType: 'composio_account',
+      resourceId: connectedAccountId,
+      metadata: {
+        toolkit_slug: account.toolkit.slug,
+        connection_tier: account.toolkit.connection_tier,
+      },
     });
 
     return { success: true };
@@ -309,5 +351,31 @@ export class ComposioConnectionsService {
     }
 
     return ComposioAccountStatus.PENDING;
+  }
+
+  private async audit(
+    organizationUuid: string,
+    userUuid: string,
+    event: {
+      action: string;
+      resourceType: string;
+      resourceId?: string | null;
+      metadata?: Record<string, unknown>;
+    },
+  ) {
+    try {
+      await this.prisma.auditLog.create({
+        data: {
+          org_uuid: organizationUuid,
+          user_uuid: userUuid,
+          action: event.action,
+          resource_type: event.resourceType,
+          resource_id: event.resourceId,
+          metadata: (event.metadata ?? {}) as Prisma.InputJsonValue,
+        },
+      });
+    } catch {
+      return;
+    }
   }
 }

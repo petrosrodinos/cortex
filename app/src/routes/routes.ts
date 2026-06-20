@@ -7,6 +7,7 @@ export const Routes = {
         root: "/dashboard",
         organizations: "/dashboard/organizations",
         integrations: "/dashboard/integrations",
+        integrationsCallback: "/dashboard/integrations/callback",
         conversations: "/dashboard/conversations",
         conversation: (conversationUuid: string) => `/dashboard/conversations/${conversationUuid}`,
         integration: (integrationUuid: string) => `/dashboard/integrations/${integrationUuid}`,
@@ -18,5 +19,12 @@ export const Routes = {
         settingsUsage: '/dashboard/settings/usage',
         settingsAuditLogs: '/dashboard/settings/audit-logs',
         execution: (executionUuid: string) => `/dashboard/executions/${executionUuid}`,
+    },
+    admin: {
+        root: "/admin",
+        composio: "/admin/composio",
+        composioToolkits: "/admin/composio/toolkits",
+        composioToolkit: (toolkitSlug: string) => `/admin/composio/toolkits/${toolkitSlug}`,
+        composioSync: "/admin/composio/sync",
     },
 };

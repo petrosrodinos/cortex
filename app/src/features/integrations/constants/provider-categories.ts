@@ -45,21 +45,12 @@ export const saasProviderGroups: ProviderGroup[] = [
   },
 ];
 
-function toTabId(label: string) {
-  return label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-}
-
 export const INTEGRATION_CATALOG_TABS: CatalogTab[] = [
   {
     id: 'ai',
     label: 'AI',
     providers: [AiProviderTypes.OPENAI, AiProviderTypes.CLAUDE, AiProviderTypes.GROK],
   },
-  ...saasProviderGroups.map((group) => ({
-    id: toTabId(group.label),
-    label: group.label,
-    providers: group.providers,
-  })),
   {
     id: 'databases',
     label: 'Databases',

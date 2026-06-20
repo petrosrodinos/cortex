@@ -1,4 +1,10 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException, Scope } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  Scope,
+} from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { IntegrationProvider, IntegrationStatus } from 'generated/prisma';
 import { DATABASE_PROVIDERS } from '../../databases/database-integration.types';
@@ -19,13 +25,19 @@ export class IntegrationRegistry {
     const integration = this.integrations.get(provider);
 
     if (!integration) {
-      throw new BadRequestException(`Integration provider ${provider} is not registered`);
+      throw new BadRequestException(
+        `Integration provider ${provider} is not registered`,
+      );
     }
 
     return integration;
   }
 
-  async executeTool(organizationUuid: string, toolName: string, input: Record<string, any>) {
+  async executeTool(
+    organizationUuid: string,
+    toolName: string,
+    input: Record<string, any>,
+  ) {
     if (toolName.startsWith('db__')) {
       return await this.executeDatabaseTool(organizationUuid, toolName, input);
     }
@@ -38,30 +50,13 @@ export class IntegrationRegistry {
       return await this.executeMcpTool(organizationUuid, toolName, input);
     }
 
-    const [providerKey] = toolName.split('__');
-
-    if (!providerKey || providerKey === toolName) {
-      throw new ForbiddenException('Integration tool names must be provider-prefixed');
-    }
-
-    const provider = providerKey.toUpperCase() as IntegrationProvider;
-    const handler = this.getByProvider(provider);
-    const integration = await this.prisma.integration.findFirst({
-      where: {
-        org_uuid: organizationUuid,
-        provider,
-        status: IntegrationStatus.ACTIVE,
-      },
-    });
-
-    if (!integration) {
-      throw new NotFoundException(`No active ${provider} integration is available`);
-    }
-
-    return await handler.executeTool(toolName, input, integration);
+    throw new ForbiddenException('Unsupported integration tool prefix');
   }
 
-  async getAllTools(organizationUuid: string, integrationUuids?: string[]): Promise<AiTool[]> {
+  async getAllTools(
+    organizationUuid: string,
+    integrationUuids?: string[],
+  ): Promise<AiTool[]> {
     const integrations = await this.prisma.integration.findMany({
       where: {
         org_uuid: organizationUuid,
@@ -88,13 +83,21 @@ export class IntegrationRegistry {
       const enabled_tool_names = new Set(
         integration.actions.flatMap((action) => [
           `${integration.provider.toLowerCase()}__${action.key}`,
-          ...(DATABASE_PROVIDERS.includes(integration.provider as any) ? [`db__${action.key}`] : []),
-          ...(integration.provider === IntegrationProvider.OPENAPI ? [`openapi_${integration.uuid.slice(0, 8)}__${action.key}`] : []),
-          ...(integration.provider === IntegrationProvider.MCP ? [`mcp_${integration.uuid.slice(0, 8)}__${action.key}`] : []),
+          ...(DATABASE_PROVIDERS.includes(integration.provider as any)
+            ? [`db__${action.key}`]
+            : []),
+          ...(integration.provider === IntegrationProvider.OPENAPI
+            ? [`openapi_${integration.uuid.slice(0, 8)}__${action.key}`]
+            : []),
+          ...(integration.provider === IntegrationProvider.MCP
+            ? [`mcp_${integration.uuid.slice(0, 8)}__${action.key}`]
+            : []),
         ]),
       );
 
-      return handler.getTools(integration).filter((tool) => enabled_tool_names.has(tool.function.name));
+      return handler
+        .getTools(integration)
+        .filter((tool) => enabled_tool_names.has(tool.function.name));
     });
 
     const deduped = new Map<string, AiTool>();
@@ -108,7 +111,11 @@ export class IntegrationRegistry {
     return Array.from(deduped.values());
   }
 
-  private async executeDatabaseTool(organizationUuid: string, toolName: string, input: Record<string, any>) {
+  private async executeDatabaseTool(
+    organizationUuid: string,
+    toolName: string,
+    input: Record<string, any>,
+  ) {
     const integrationUuid = input?.integration_uuid;
     const integration = integrationUuid
       ? await this.prisma.integration.findFirst({
@@ -122,7 +129,9 @@ export class IntegrationRegistry {
       : await this.resolveOnlyActiveDatabaseIntegration(organizationUuid);
 
     if (!integration) {
-      throw new NotFoundException('No active database integration is available');
+      throw new NotFoundException(
+        'No active database integration is available',
+      );
     }
 
     const handler = this.getByProvider(integration.provider);
@@ -140,17 +149,25 @@ export class IntegrationRegistry {
     });
 
     if (integrations.length > 1) {
-      throw new BadRequestException('integration_uuid is required when multiple database integrations are active');
+      throw new BadRequestException(
+        'integration_uuid is required when multiple database integrations are active',
+      );
     }
 
     return integrations[0] ?? null;
   }
 
-  private async executeOpenApiTool(organizationUuid: string, toolName: string, input: Record<string, any>) {
+  private async executeOpenApiTool(
+    organizationUuid: string,
+    toolName: string,
+    input: Record<string, any>,
+  ) {
     const match = toolName.match(/^openapi_([^_]+)__(.+)$/);
 
     if (!match) {
-      throw new ForbiddenException('OpenAPI tool names must include an integration prefix');
+      throw new ForbiddenException(
+        'OpenAPI tool names must include an integration prefix',
+      );
     }
 
     const integration = await this.prisma.integration.findFirst({
@@ -163,18 +180,26 @@ export class IntegrationRegistry {
     });
 
     if (!integration) {
-      throw new NotFoundException('No active OpenAPI integration is available for this tool');
+      throw new NotFoundException(
+        'No active OpenAPI integration is available for this tool',
+      );
     }
 
     const handler = this.getByProvider(IntegrationProvider.OPENAPI);
     return await handler.executeTool(toolName, input, integration);
   }
 
-  private async executeMcpTool(organizationUuid: string, toolName: string, input: Record<string, any>) {
+  private async executeMcpTool(
+    organizationUuid: string,
+    toolName: string,
+    input: Record<string, any>,
+  ) {
     const match = toolName.match(/^mcp_([^_]+)__(.+)$/);
 
     if (!match) {
-      throw new ForbiddenException('MCP tool names must include an integration prefix');
+      throw new ForbiddenException(
+        'MCP tool names must include an integration prefix',
+      );
     }
 
     const integration = await this.prisma.integration.findFirst({
@@ -187,7 +212,9 @@ export class IntegrationRegistry {
     });
 
     if (!integration) {
-      throw new NotFoundException('No active MCP integration is available for this tool');
+      throw new NotFoundException(
+        'No active MCP integration is available for this tool',
+      );
     }
 
     const handler = this.getByProvider(IntegrationProvider.MCP);

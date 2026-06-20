@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
+import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
 import { ZodValidationPipe } from '@/shared/pipes/zod.validation.pipe';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { UpdateConversationDto } from './dto/update-conversation.dto';
@@ -12,7 +14,12 @@ import { MessagesService } from './messages.service';
 import { ExecutionsService } from './executions.service';
 
 @Controller('organizations/:organization_uuid/conversations')
-@UseGuards(JwtGuard, OrganizationGuard)
+@UseGuards(
+  JwtGuard,
+  OrganizationMatchGuard,
+  OrganizationActiveMemberGuard,
+  OrganizationGuard,
+)
 export class ConversationsController {
   constructor(
     private readonly conversations: ConversationsService,
@@ -82,7 +89,12 @@ export class ConversationsController {
 }
 
 @Controller('organizations/:organization_uuid/executions')
-@UseGuards(JwtGuard, OrganizationGuard)
+@UseGuards(
+  JwtGuard,
+  OrganizationMatchGuard,
+  OrganizationActiveMemberGuard,
+  OrganizationGuard,
+)
 export class ExecutionsController {
   constructor(private readonly executions: ExecutionsService) {}
 

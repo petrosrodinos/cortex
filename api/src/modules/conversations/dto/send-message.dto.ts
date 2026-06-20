@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsOptional, IsString, IsUUID, MinLength } from 'class-validator';
+import {
+  IsArray,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MinLength,
+} from 'class-validator';
 
 export class SendMessageDto {
   @ApiProperty()
@@ -18,4 +24,24 @@ export class SendMessageDto {
   @IsArray()
   @IsUUID('4', { each: true })
   integrationUuids?: string[];
+
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'Composio toolkit slugs used to scope the agent session.',
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  toolkitSlugs?: string[];
+
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'Snake_case alias for toolkitSlugs.',
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  toolkit_slugs?: string[];
 }

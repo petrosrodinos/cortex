@@ -31,13 +31,20 @@ describe('EmailAuthService switchOrganization', () => {
         name: 'Admin',
         permissions: [
           { permission: { key: 'org:update' } },
-          { permission: { key: 'integrations:github:read_repos' } },
+          { permission: { key: 'org:integrations:manage' } },
         ],
       },
     });
-    const service = new EmailAuthService(prisma, jwt_service, mail_service, organizations_service);
+    const service = new EmailAuthService(
+      prisma,
+      jwt_service,
+      mail_service,
+      organizations_service,
+    );
 
-    const result = await service.switchOrganization('user-uuid', { organization_uuid: 'organization-uuid' });
+    const result = await service.switchOrganization('user-uuid', {
+      organization_uuid: 'organization-uuid',
+    });
 
     expect(result.access_token).toBe('scoped-token');
     expect(prisma.organizationMember.findFirst).toHaveBeenCalledWith(
@@ -51,22 +58,42 @@ describe('EmailAuthService switchOrganization', () => {
       uuid: 'user-uuid',
       organization_uuid: 'organization-uuid',
       organization_role: 'Admin',
-      organization_permissions: ['org:update', 'integrations:github:read_repos'],
+      organization_permissions: ['org:update', 'org:integrations:manage'],
     });
   });
 
   it('rejects users who are not active members of the requested organization', async () => {
     prisma.organizationMember.findFirst.mockResolvedValue(null);
-    const service = new EmailAuthService(prisma, jwt_service, mail_service, organizations_service);
+    const service = new EmailAuthService(
+      prisma,
+      jwt_service,
+      mail_service,
+      organizations_service,
+    );
 
-    await expect(service.switchOrganization('user-uuid', { organization_uuid: 'organization-uuid' })).rejects.toBeInstanceOf(ForbiddenException);
+    await expect(
+      service.switchOrganization('user-uuid', {
+        organization_uuid: 'organization-uuid',
+      }),
+    ).rejects.toBeInstanceOf(ForbiddenException);
   });
 
   it('wraps unexpected switch organization failures', async () => {
-    prisma.organizationMember.findFirst.mockRejectedValue(new Error('database offline'));
-    const service = new EmailAuthService(prisma, jwt_service, mail_service, organizations_service);
+    prisma.organizationMember.findFirst.mockRejectedValue(
+      new Error('database offline'),
+    );
+    const service = new EmailAuthService(
+      prisma,
+      jwt_service,
+      mail_service,
+      organizations_service,
+    );
 
-    await expect(service.switchOrganization('user-uuid', { organization_uuid: 'organization-uuid' })).rejects.toBeInstanceOf(BadRequestException);
+    await expect(
+      service.switchOrganization('user-uuid', {
+        organization_uuid: 'organization-uuid',
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
   });
 
   it('creates a default organization and returns a scoped owner token when registering', async () => {
@@ -77,14 +104,25 @@ describe('EmailAuthService switchOrganization', () => {
       password: 'hashed-password',
       role: 'USER',
     });
-    organizations_service.create.mockResolvedValue({ uuid: 'organization-uuid', name: 'Default Organisation' });
+    organizations_service.create.mockResolvedValue({
+      uuid: 'organization-uuid',
+      name: 'Default Organisation',
+    });
     prisma.organizationMember.findFirst.mockResolvedValue({
       role: {
         name: 'Owner',
-        permissions: [{ permission: { key: 'org:read' } }, { permission: { key: 'org:delete' } }],
+        permissions: [
+          { permission: { key: 'org:read' } },
+          { permission: { key: 'org:delete' } },
+        ],
       },
     });
-    const service = new EmailAuthService(prisma, jwt_service, mail_service, organizations_service);
+    const service = new EmailAuthService(
+      prisma,
+      jwt_service,
+      mail_service,
+      organizations_service,
+    );
 
     const result = await service.registerWithEmail({
       first_name: 'John',
@@ -102,7 +140,9 @@ describe('EmailAuthService switchOrganization', () => {
       }),
     });
 
-    expect(organizations_service.create).toHaveBeenCalledWith('user-uuid', { name: 'Default Organisation' });
+    expect(organizations_service.create).toHaveBeenCalledWith('user-uuid', {
+      name: 'Default Organisation',
+    });
     expect(result).toMatchObject({
       access_token: 'scoped-token',
       expires_in: 999,

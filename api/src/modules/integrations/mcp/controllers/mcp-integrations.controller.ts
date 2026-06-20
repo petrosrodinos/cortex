@@ -1,12 +1,19 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
+import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
 import { CreateMcpIntegrationDto, TestMcpConnectionDto } from '../dto/create-mcp-integration.dto';
 import { McpIntegrationsService } from '../services/mcp-integrations.service';
 
 @Controller('organizations/:organization_uuid/integrations/mcp')
-@UseGuards(JwtGuard, OrganizationGuard)
+@UseGuards(
+  JwtGuard,
+  OrganizationMatchGuard,
+  OrganizationActiveMemberGuard,
+  OrganizationGuard,
+)
 export class McpIntegrationsController {
   constructor(private readonly mcpIntegrationsService: McpIntegrationsService) {}
 

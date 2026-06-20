@@ -1,12 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import type {
-  CreateIntegrationDto,
   ToggleIntegrationActionDto,
   UpdateIntegrationDto,
 } from '../interfaces/integration.interface';
 import {
-  createIntegration,
   deleteIntegration,
   getIntegration,
   getIntegrationActions,
@@ -31,21 +29,6 @@ export function useGetIntegration(organizationUuid?: string, integrationUuid?: s
     queryKey: [...integrationsQueryKey, organizationUuid, integrationUuid],
     queryFn: () => getIntegration(organizationUuid as string, integrationUuid as string),
     enabled: !!organizationUuid && !!integrationUuid,
-  });
-}
-
-export function useCreateIntegration(organizationUuid?: string) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (payload: CreateIntegrationDto) => createIntegration(organizationUuid as string, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: integrationsQueryKey });
-      toast({ title: 'Integration created', description: 'The integration has been connected.', duration: 2000 });
-    },
-    onError: (error: Error) => {
-      toast({ title: 'Could not create integration', description: error.message, variant: 'error', duration: 3000 });
-    },
   });
 }
 

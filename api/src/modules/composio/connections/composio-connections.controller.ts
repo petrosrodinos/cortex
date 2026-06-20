@@ -10,10 +10,12 @@ import {
 } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
 import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
 import { ZodValidationPipe } from '@/shared/pipes/zod.validation.pipe';
 import { ComposioConnectionsService } from './composio-connections.service';
+import { ComposioConnectRateLimitGuard } from './composio-connect-rate-limit.guard';
 import { ComposioCallbackDto } from './dto/composio-callback.dto';
 import {
   ComposioCallbackSchema,
@@ -22,11 +24,17 @@ import {
 import { ConnectComposioDto } from './dto/connect-composio.dto';
 
 @Controller('organizations/:organization_uuid/integrations/composio')
-@UseGuards(JwtGuard, OrganizationMatchGuard, OrganizationGuard)
+@UseGuards(
+  JwtGuard,
+  OrganizationMatchGuard,
+  OrganizationActiveMemberGuard,
+  OrganizationGuard,
+)
 export class ComposioConnectionsController {
   constructor(private readonly service: ComposioConnectionsService) {}
 
   @Post('connect')
+  @UseGuards(ComposioConnectRateLimitGuard)
   connect(
     @Param('organization_uuid') organizationUuid: string,
     @CurrentUser() user: any,
@@ -63,6 +71,7 @@ export class ComposioConnectionsController {
   }
 
   @Post('accounts/:connected_account_id/reconnect')
+  @UseGuards(ComposioConnectRateLimitGuard)
   reconnect(
     @Param('organization_uuid') organizationUuid: string,
     @CurrentUser() user: any,

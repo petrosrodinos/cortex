@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import type { AiProviderType } from '@/features/integrations/constants/ai-provider-types';
 import { INTEGRATION_CATALOG_TABS } from '@/features/integrations/constants/provider-categories';
@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 interface ProviderCatalogProps {
   integrations: Integration[];
   aiProviders: AiProvider[];
+  mode?: 'custom' | 'ai';
   onConnect: (provider: CatalogProvider) => void;
   onManageIntegration: (integration: Integration) => void;
   onManageAiProvider: (provider: AiProvider) => void;
@@ -23,11 +24,23 @@ interface ProviderCatalogProps {
 export function ProviderCatalog({
   integrations,
   aiProviders,
+  mode = 'custom',
   onConnect,
   onManageIntegration,
   onManageAiProvider,
 }: ProviderCatalogProps) {
-  const [activeTabId, setActiveTabId] = useState(INTEGRATION_CATALOG_TABS[0].id);
+  const visibleTabs = useMemo(
+    () =>
+      INTEGRATION_CATALOG_TABS.filter((tab) =>
+        mode === 'ai' ? tab.id === 'ai' : tab.id !== 'ai',
+      ),
+    [mode],
+  );
+  const [activeTabId, setActiveTabId] = useState(visibleTabs[0]?.id ?? 'custom');
+
+  useEffect(() => {
+    setActiveTabId(visibleTabs[0]?.id ?? 'custom');
+  }, [visibleTabs]);
 
   const connectedByProvider = useMemo(() => {
     const map = new Map<CatalogProvider, Integration[]>();
@@ -50,13 +63,13 @@ export function ProviderCatalog({
     return map;
   }, [aiProviders]);
 
-  const activeTab = INTEGRATION_CATALOG_TABS.find((tab) => tab.id === activeTabId) ?? INTEGRATION_CATALOG_TABS[0];
+  const activeTab = visibleTabs.find((tab) => tab.id === activeTabId) ?? visibleTabs[0];
 
   return (
     <div className="flex flex-col gap-5">
       <div className="-mx-1 overflow-x-auto px-1">
         <div className="flex w-max gap-1 rounded-lg border border-border bg-surface p-1">
-          {INTEGRATION_CATALOG_TABS.map((tab) => (
+          {visibleTabs.map((tab) => (
             <button
               key={tab.id}
               type="button"
@@ -74,14 +87,16 @@ export function ProviderCatalog({
         </div>
       </div>
 
-      <ProviderGrid
-        providers={activeTab.providers}
-        connectedByProvider={connectedByProvider}
-        connectedAiByType={connectedAiByType}
-        onConnect={onConnect}
-        onManageIntegration={onManageIntegration}
-        onManageAiProvider={onManageAiProvider}
-      />
+      {activeTab ? (
+        <ProviderGrid
+          providers={activeTab.providers}
+          connectedByProvider={connectedByProvider}
+          connectedAiByType={connectedAiByType}
+          onConnect={onConnect}
+          onManageIntegration={onManageIntegration}
+          onManageAiProvider={onManageAiProvider}
+        />
+      ) : null}
     </div>
   );
 }

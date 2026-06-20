@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { PROVIDER_CONFIG_FIELDS, type ProviderConfigField } from '@/features/integrations/constants/provider-config-fields';
-import { useCreateIntegration } from '@/features/integrations/common/hooks/use-integrations';
-import { IntegrationProviders, type IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
+import type { IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
 import {
   useCreateDatabaseIntegration,
   useTestDatabaseConnection,
@@ -23,9 +22,6 @@ import {
   useParseOpenApiSpec,
 } from '@/features/integrations/openapi/hooks/use-openapi-integration';
 import { OpenApiAuthTypes, type OpenApiAuthType } from '@/features/integrations/openapi/interfaces/openapi.interface';
-import { useTestSmtpConnection } from '@/features/integrations/smtp/hooks/use-smtp-integration';
-import { useTestResendConnection } from '@/features/integrations/resend/hooks/use-resend-integration';
-import { useTestSendGridConnection } from '@/features/integrations/sendgrid/hooks/use-sendgrid-integration';
 import {
   createIntegrationSchema,
   type CreateIntegrationFormData,
@@ -41,14 +37,10 @@ interface AddIntegrationModalProps {
 }
 
 export function AddIntegrationModal({ organizationUuid, provider, onClose }: AddIntegrationModalProps) {
-  const createIntegrationMutation = useCreateIntegration(organizationUuid);
   const createDatabaseIntegrationMutation = useCreateDatabaseIntegration(organizationUuid);
   const createOpenApiIntegrationMutation = useCreateOpenApiIntegration(organizationUuid);
   const createMcpIntegrationMutation = useCreateMcpIntegration(organizationUuid);
   const testDatabaseConnectionMutation = useTestDatabaseConnection(organizationUuid);
-  const testSmtpConnectionMutation = useTestSmtpConnection(organizationUuid);
-  const testResendConnectionMutation = useTestResendConnection(organizationUuid);
-  const testSendGridConnectionMutation = useTestSendGridConnection(organizationUuid);
   const parseOpenApiMutation = useParseOpenApiSpec(organizationUuid);
   const testMcpConnectionMutation = useTestMcpConnection(organizationUuid);
   const [openApiMode, setOpenApiMode] = useState<'url' | 'json'>('url');
@@ -73,18 +65,11 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
   const isDatabase = isDatabaseProvider(provider);
   const isOpenApi = isOpenApiProvider(provider);
   const isMcp = isMcpProvider(provider);
-  const isSMTP = provider === IntegrationProviders.SMTP;
-  const isResend = provider === IntegrationProviders.RESEND;
-  const isSendGrid = provider === IntegrationProviders.SENDGRID;
   const busy =
-    createIntegrationMutation.isPending ||
     createDatabaseIntegrationMutation.isPending ||
     createOpenApiIntegrationMutation.isPending ||
     createMcpIntegrationMutation.isPending ||
     testDatabaseConnectionMutation.isPending ||
-    testSmtpConnectionMutation.isPending ||
-    testResendConnectionMutation.isPending ||
-    testSendGridConnectionMutation.isPending ||
     parseOpenApiMutation.isPending ||
     testMcpConnectionMutation.isPending;
 
@@ -134,12 +119,6 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
       return;
     }
 
-    await createIntegrationMutation.mutateAsync({
-      name: values.name,
-      description: values.description,
-      provider: values.provider as IntegrationProvider,
-      config,
-    });
     onClose();
   }
 
@@ -148,33 +127,6 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
     await testDatabaseConnectionMutation.mutateAsync({
       provider: provider as Extract<IntegrationProvider, 'DATABASE_PG' | 'DATABASE_MYSQL' | 'DATABASE_MONGO'>,
       connectionString: String(config.connectionString ?? ''),
-    });
-  }
-
-  async function testSmtpConnection() {
-    const config = buildConfig(form.getValues('config') ?? {}, configFields);
-    await testSmtpConnectionMutation.mutateAsync({
-      host: String(config.host ?? ''),
-      port: Number(config.port ?? 587),
-      user: config.user ? String(config.user) : undefined,
-      password: config.password ? String(config.password) : undefined,
-      from: String(config.from ?? ''),
-    });
-  }
-
-  async function testResendConnection() {
-    const config = buildConfig(form.getValues('config') ?? {}, configFields);
-    await testResendConnectionMutation.mutateAsync({
-      apiKey: String(config.apiKey ?? ''),
-      from: String(config.from ?? ''),
-    });
-  }
-
-  async function testSendGridConnection() {
-    const config = buildConfig(form.getValues('config') ?? {}, configFields);
-    await testSendGridConnectionMutation.mutateAsync({
-      apiKey: String(config.apiKey ?? ''),
-      from: String(config.from ?? ''),
     });
   }
 
@@ -493,90 +445,6 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
                   <div className="max-h-56 overflow-auto rounded-md border border-border">
                     <SchemaTreeInline schema={testDatabaseConnectionMutation.data.schema} />
                   </div>
-                ) : null}
-              </div>
-            ) : null}
-
-            {isSMTP ? (
-              <div className="grid gap-3 rounded-lg border border-border p-3">
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={testSmtpConnection}
-                    loading={testSmtpConnectionMutation.isPending}
-                    className="sm:w-auto"
-                  >
-                    <FlaskConical className="h-4 w-4" />
-                    Test connection
-                  </Button>
-                  {testSmtpConnectionMutation.data?.success ? (
-                    <span className="flex items-center gap-1.5 text-sm text-emerald-600 dark:text-emerald-300">
-                      <CheckCircle2 className="h-4 w-4" />
-                      SMTP server reachable
-                    </span>
-                  ) : null}
-                </div>
-                {testSmtpConnectionMutation.data && !testSmtpConnectionMutation.data.success ? (
-                  <p className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-600 dark:text-red-300">
-                    {testSmtpConnectionMutation.data.error ?? 'Connection failed'}
-                  </p>
-                ) : null}
-              </div>
-            ) : null}
-
-            {isResend ? (
-              <div className="grid gap-3 rounded-lg border border-border p-3">
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={testResendConnection}
-                    loading={testResendConnectionMutation.isPending}
-                    className="sm:w-auto"
-                  >
-                    <FlaskConical className="h-4 w-4" />
-                    Test connection
-                  </Button>
-                  {testResendConnectionMutation.data?.success ? (
-                    <span className="flex items-center gap-1.5 text-sm text-emerald-600 dark:text-emerald-300">
-                      <CheckCircle2 className="h-4 w-4" />
-                      Resend API key valid
-                    </span>
-                  ) : null}
-                </div>
-                {testResendConnectionMutation.data && !testResendConnectionMutation.data.success ? (
-                  <p className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-600 dark:text-red-300">
-                    {testResendConnectionMutation.data.error ?? 'Connection failed'}
-                  </p>
-                ) : null}
-              </div>
-            ) : null}
-
-            {isSendGrid ? (
-              <div className="grid gap-3 rounded-lg border border-border p-3">
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={testSendGridConnection}
-                    loading={testSendGridConnectionMutation.isPending}
-                    className="sm:w-auto"
-                  >
-                    <FlaskConical className="h-4 w-4" />
-                    Test connection
-                  </Button>
-                  {testSendGridConnectionMutation.data?.success ? (
-                    <span className="flex items-center gap-1.5 text-sm text-emerald-600 dark:text-emerald-300">
-                      <CheckCircle2 className="h-4 w-4" />
-                      SendGrid API key valid
-                    </span>
-                  ) : null}
-                </div>
-                {testSendGridConnectionMutation.data && !testSendGridConnectionMutation.data.success ? (
-                  <p className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-600 dark:text-red-300">
-                    {testSendGridConnectionMutation.data.error ?? 'Connection failed'}
-                  </p>
                 ) : null}
               </div>
             ) : null}

@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
 import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
 import { ZodValidationPipe } from '@/shared/pipes/zod.validation.pipe';
@@ -22,7 +23,12 @@ import { UpdateOrgToolPermissionDto } from './dto/update-org-tool-permission.dto
 import { OrgToolkitsService } from './org-toolkits.service';
 
 @Controller('organizations/:organization_uuid/integrations/composio')
-@UseGuards(JwtGuard, OrganizationMatchGuard, OrganizationGuard)
+@UseGuards(
+  JwtGuard,
+  OrganizationMatchGuard,
+  OrganizationActiveMemberGuard,
+  OrganizationGuard,
+)
 export class OrgToolkitsController {
   constructor(private readonly service: OrgToolkitsService) {}
 
