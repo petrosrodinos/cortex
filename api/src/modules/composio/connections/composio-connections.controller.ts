@@ -1,10 +1,24 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
 import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
+import { ZodValidationPipe } from '@/shared/pipes/zod.validation.pipe';
 import { ComposioConnectionsService } from './composio-connections.service';
 import { ComposioCallbackDto } from './dto/composio-callback.dto';
+import {
+  ComposioCallbackSchema,
+  ConnectComposioSchema,
+} from './dto/composio-connections.schemas';
 import { ConnectComposioDto } from './dto/connect-composio.dto';
 
 @Controller('organizations/:organization_uuid/integrations/composio')
@@ -16,7 +30,7 @@ export class ComposioConnectionsController {
   connect(
     @Param('organization_uuid') organizationUuid: string,
     @CurrentUser() user: any,
-    @Body() dto: ConnectComposioDto,
+    @Body(new ZodValidationPipe(ConnectComposioSchema)) dto: ConnectComposioDto,
   ) {
     return this.service.connect(organizationUuid, user, dto);
   }
@@ -25,7 +39,8 @@ export class ComposioConnectionsController {
   verifyCallback(
     @Param('organization_uuid') organizationUuid: string,
     @CurrentUser() user: any,
-    @Body() dto: ComposioCallbackDto,
+    @Body(new ZodValidationPipe(ComposioCallbackSchema))
+    dto: ComposioCallbackDto,
   ) {
     return this.service.verifyCallback(organizationUuid, user, dto);
   }

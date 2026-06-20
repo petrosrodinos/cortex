@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ComposioClientService } from '@/integrations/composio/composio-client.service';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
-import { ComposioAccountStatus, ComposioConnectionTier } from 'generated/prisma';
+import {
+  ComposioAccountStatus,
+  ComposioConnectionTier,
+} from 'generated/prisma';
 
 @Injectable()
 export class ComposioSessionService {
@@ -12,13 +15,25 @@ export class ComposioSessionService {
     private readonly composioClient: ComposioClientService,
   ) {}
 
-  async resolveSession(conversationUuid: string, organizationUuid: string, userUuid: string) {
+  async resolveSession(
+    conversationUuid: string,
+    organizationUuid: string,
+    userUuid: string,
+  ) {
     const conversation = await this.prisma.conversation.findFirstOrThrow({
-      where: { uuid: conversationUuid, org_uuid: organizationUuid, user_uuid: userUuid },
+      where: {
+        uuid: conversationUuid,
+        org_uuid: organizationUuid,
+        user_uuid: userUuid,
+      },
       select: { uuid: true, composio_session_id: true },
     });
     const toolkitSlugs = await this.getEnabledToolkitSlugs(organizationUuid);
-    const sessionConfig = await this.buildSessionConfig(organizationUuid, userUuid, toolkitSlugs);
+    const sessionConfig = await this.buildSessionConfig(
+      organizationUuid,
+      userUuid,
+      toolkitSlugs,
+    );
     const client = this.composioClient.getClient() as any;
 
     if (conversation.composio_session_id) {
@@ -39,21 +54,30 @@ export class ComposioSessionService {
   }
 
   async getEnabledToolkitSlugs(organizationUuid: string): Promise<string[]> {
-    const enabledToolkits = await this.prisma.organisationEnabledToolkit.findMany({
-      where: {
-        org_uuid: organizationUuid,
-        is_enabled: true,
-        toolkit: { is_enabled: true },
-      },
-      select: { toolkit: { select: { slug: true } } },
-      orderBy: { created_at: 'asc' },
-    });
+    const enabledToolkits =
+      await this.prisma.organisationEnabledToolkit.findMany({
+        where: {
+          org_uuid: organizationUuid,
+          is_enabled: true,
+          toolkit: { is_enabled: true },
+        },
+        select: { toolkit: { select: { slug: true } } },
+        orderBy: { created_at: 'asc' },
+      });
 
     return enabledToolkits.map((enabledToolkit) => enabledToolkit.toolkit.slug);
   }
 
-  private async buildSessionConfig(organizationUuid: string, userUuid: string, toolkitSlugs: string[]) {
-    const connectedAccounts = await this.getConnectedAccountConfig(organizationUuid, userUuid, toolkitSlugs);
+  private async buildSessionConfig(
+    organizationUuid: string,
+    userUuid: string,
+    toolkitSlugs: string[],
+  ) {
+    const connectedAccounts = await this.getConnectedAccountConfig(
+      organizationUuid,
+      userUuid,
+      toolkitSlugs,
+    );
     const callbackUrl = this.configService.get<string>('APP_URL')
       ? `${this.configService.get<string>('APP_URL')}/dashboard/integrations/callback`
       : undefined;
@@ -96,25 +120,31 @@ export class ComposioSessionService {
       orderBy: { created_at: 'desc' },
     });
 
-    return accounts.reduce<Record<string, string | string[]>>((result, account) => {
-      const tier = account.toolkit.connection_tier;
-      const toolkitSlug = account.toolkit.slug;
+    return accounts.reduce<Record<string, string | string[]>>(
+      (result, account) => {
+        const tier = account.toolkit.connection_tier;
+        const toolkitSlug = account.toolkit.slug;
 
-      if (tier === ComposioConnectionTier.USER_PERSONAL && account.user_uuid !== userUuid) {
+        if (
+          tier === ComposioConnectionTier.USER_PERSONAL &&
+          account.user_uuid !== userUuid
+        ) {
+          return result;
+        }
+
+        if (!result[toolkitSlug]) {
+          result[toolkitSlug] = account.composio_account_id;
+          return result;
+        }
+
+        const current = result[toolkitSlug];
+        result[toolkitSlug] = Array.isArray(current)
+          ? [...current, account.composio_account_id]
+          : [current, account.composio_account_id];
+
         return result;
-      }
-
-      if (!result[toolkitSlug]) {
-        result[toolkitSlug] = account.composio_account_id;
-        return result;
-      }
-
-      const current = result[toolkitSlug];
-      result[toolkitSlug] = Array.isArray(current)
-        ? [...current, account.composio_account_id]
-        : [current, account.composio_account_id];
-
-      return result;
-    }, {});
+      },
+      {},
+    );
   }
 }

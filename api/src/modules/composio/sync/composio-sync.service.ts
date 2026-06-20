@@ -49,7 +49,9 @@ export class ComposioSyncService implements OnApplicationBootstrap {
         toolkitsUpserted += 1;
 
         if (await this.shouldSyncTools(toolkit)) {
-          toolsUpserted += await this.syncToolsForToolkit(this.getSlug(toolkit));
+          toolsUpserted += await this.syncToolsForToolkit(
+            this.getSlug(toolkit),
+          );
         }
       }
 
@@ -100,23 +102,33 @@ export class ComposioSyncService implements OnApplicationBootstrap {
           slug,
           name: this.getString(tool, ['name']) ?? slug,
           description: this.getString(tool, ['description']) ?? '',
-          input_schema: this.toJson(tool.inputParameters ?? tool.input_schema ?? tool.inputSchema ?? {}),
+          input_schema: this.toJson(
+            tool.inputParameters ?? tool.input_schema ?? tool.inputSchema ?? {},
+          ),
           output_schema: this.toNullableJson(
             tool.outputParameters ?? tool.output_schema ?? tool.outputSchema,
           ),
           tags: this.getStringArray(tool, ['tags']),
-          composio_version: this.getString(tool, ['version', 'composio_version']),
+          composio_version: this.getString(tool, [
+            'version',
+            'composio_version',
+          ]),
           last_synced_at: new Date(),
         },
         update: {
           name: this.getString(tool, ['name']) ?? slug,
           description: this.getString(tool, ['description']) ?? '',
-          input_schema: this.toJson(tool.inputParameters ?? tool.input_schema ?? tool.inputSchema ?? {}),
+          input_schema: this.toJson(
+            tool.inputParameters ?? tool.input_schema ?? tool.inputSchema ?? {},
+          ),
           output_schema: this.toNullableJson(
             tool.outputParameters ?? tool.output_schema ?? tool.outputSchema,
           ),
           tags: this.getStringArray(tool, ['tags']),
-          composio_version: this.getString(tool, ['version', 'composio_version']),
+          composio_version: this.getString(tool, [
+            'version',
+            'composio_version',
+          ]),
           last_synced_at: new Date(),
         },
       });
@@ -133,7 +145,9 @@ export class ComposioSyncService implements OnApplicationBootstrap {
     });
 
     try {
-      const toolkit = await (this.composioClient.getClient() as any).toolkits.get(toolkitSlug);
+      const toolkit = await (
+        this.composioClient.getClient() as any
+      ).toolkits.get(toolkitSlug);
       await this.upsertToolkit(toolkit);
 
       return this.prisma.composioSyncRun.update({
@@ -230,23 +244,60 @@ export class ComposioSyncService implements OnApplicationBootstrap {
       create: {
         slug,
         name: this.getString(toolkit, ['name']) ?? slug,
-        description: this.getString(toolkit, ['description', 'meta.description']),
-        logo_url: this.getString(toolkit, ['logo', 'logoUrl', 'meta.logo', 'meta.logoUrl']),
-        categories: this.getStringArray(toolkit, ['categories', 'meta.categories']),
-        tool_count: this.getNumber(toolkit, ['toolsCount', 'tool_count', 'meta.toolsCount']) ?? 0,
-        auth_schemes: this.toJson(toolkit.authSchemes ?? toolkit.auth_schemes ?? []),
+        description: this.getString(toolkit, [
+          'description',
+          'meta.description',
+        ]),
+        logo_url: this.getString(toolkit, [
+          'logo',
+          'logoUrl',
+          'meta.logo',
+          'meta.logoUrl',
+        ]),
+        categories: this.getStringArray(toolkit, [
+          'categories',
+          'meta.categories',
+        ]),
+        tool_count:
+          this.getNumber(toolkit, [
+            'toolsCount',
+            'tool_count',
+            'meta.toolsCount',
+          ]) ?? 0,
+        auth_schemes: this.toJson(
+          toolkit.authSchemes ?? toolkit.auth_schemes ?? [],
+        ),
         connection_tier: this.defaultConnectionTier(slug),
         composio_metadata: this.toJson(toolkit),
         last_synced_at: new Date(),
       },
       update: {
         name: this.getString(toolkit, ['name']) ?? slug,
-        description: this.getString(toolkit, ['description', 'meta.description']),
-        logo_url: this.getString(toolkit, ['logo', 'logoUrl', 'meta.logo', 'meta.logoUrl']),
-        categories: this.getStringArray(toolkit, ['categories', 'meta.categories']),
-        tool_count: this.getNumber(toolkit, ['toolsCount', 'tool_count', 'meta.toolsCount']) ?? 0,
-        auth_schemes: this.toJson(toolkit.authSchemes ?? toolkit.auth_schemes ?? []),
-        connection_tier: existing?.connection_tier ?? this.defaultConnectionTier(slug),
+        description: this.getString(toolkit, [
+          'description',
+          'meta.description',
+        ]),
+        logo_url: this.getString(toolkit, [
+          'logo',
+          'logoUrl',
+          'meta.logo',
+          'meta.logoUrl',
+        ]),
+        categories: this.getStringArray(toolkit, [
+          'categories',
+          'meta.categories',
+        ]),
+        tool_count:
+          this.getNumber(toolkit, [
+            'toolsCount',
+            'tool_count',
+            'meta.toolsCount',
+          ]) ?? 0,
+        auth_schemes: this.toJson(
+          toolkit.authSchemes ?? toolkit.auth_schemes ?? [],
+        ),
+        connection_tier:
+          existing?.connection_tier ?? this.defaultConnectionTier(slug),
         composio_metadata: this.toJson(toolkit),
         last_synced_at: new Date(),
       },
@@ -285,12 +336,15 @@ export class ComposioSyncService implements OnApplicationBootstrap {
   }
 
   private getItems(page: any): UnknownRecord[] {
-    const items = page?.items ?? page?.data ?? page?.toolkits ?? page?.tools ?? [];
+    const items =
+      page?.items ?? page?.data ?? page?.toolkits ?? page?.tools ?? [];
     return Array.isArray(items) ? items : [];
   }
 
   private getNextCursor(page: any): string | undefined {
-    return page?.nextCursor ?? page?.next_cursor ?? page?.pagination?.nextCursor;
+    return (
+      page?.nextCursor ?? page?.next_cursor ?? page?.pagination?.nextCursor
+    );
   }
 
   private getSlug(value: UnknownRecord): string {
@@ -321,7 +375,9 @@ export class ComposioSyncService implements OnApplicationBootstrap {
     for (const path of paths) {
       const result = this.getPath(value, path);
       if (Array.isArray(result)) {
-        return result.filter((item): item is string => typeof item === 'string');
+        return result.filter(
+          (item): item is string => typeof item === 'string',
+        );
       }
     }
     return [];
@@ -335,7 +391,9 @@ export class ComposioSyncService implements OnApplicationBootstrap {
     return (value ?? {}) as Prisma.InputJsonValue;
   }
 
-  private toNullableJson(value: unknown): Prisma.NullableJsonNullValueInput | Prisma.InputJsonValue {
+  private toNullableJson(
+    value: unknown,
+  ): Prisma.NullableJsonNullValueInput | Prisma.InputJsonValue {
     if (value === undefined || value === null) {
       return Prisma.DbNull;
     }

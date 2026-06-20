@@ -1,10 +1,28 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ZodValidationPipe } from '@/shared/pipes/zod.validation.pipe';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { SuperAdminGuard } from '@/shared/guards/super-admin.guard';
 import { CreateComposioToolkitDto } from '../admin/dto/create-composio-toolkit.dto';
 import { ListComposioToolkitsDto } from '../admin/dto/list-composio-toolkits.dto';
 import { SyncComposioDto } from '../admin/dto/sync-composio.dto';
 import { UpdateComposioToolkitDto } from '../admin/dto/update-composio-toolkit.dto';
+import {
+  CreateComposioToolkitSchema,
+  ListComposioToolkitsSchema,
+  SyncComposioSchema,
+  UpdateComposioToolSchema,
+  UpdateComposioToolkitSchema,
+} from '../admin/dto/composio-toolkits.schemas';
 import { ComposioToolkitsService } from './composio-toolkits.service';
 
 @Controller('admin/composio')
@@ -13,12 +31,15 @@ export class ComposioToolkitsController {
   constructor(private readonly service: ComposioToolkitsService) {}
 
   @Get('toolkits')
-  findAll(@Query() query: ListComposioToolkitsDto) {
+  findAll(
+    @Query(new ZodValidationPipe(ListComposioToolkitsSchema))
+    query: ListComposioToolkitsDto,
+  ) {
     return this.service.findAll(query);
   }
 
   @Post('sync')
-  sync(@Body() dto: SyncComposioDto) {
+  sync(@Body(new ZodValidationPipe(SyncComposioSchema)) dto: SyncComposioDto) {
     return this.service.sync(dto);
   }
 
@@ -28,7 +49,10 @@ export class ComposioToolkitsController {
   }
 
   @Post('toolkits')
-  create(@Body() dto: CreateComposioToolkitDto) {
+  create(
+    @Body(new ZodValidationPipe(CreateComposioToolkitSchema))
+    dto: CreateComposioToolkitDto,
+  ) {
     return this.service.create(dto);
   }
 
@@ -38,7 +62,11 @@ export class ComposioToolkitsController {
   }
 
   @Patch('toolkits/:slug')
-  update(@Param('slug') slug: string, @Body() dto: UpdateComposioToolkitDto) {
+  update(
+    @Param('slug') slug: string,
+    @Body(new ZodValidationPipe(UpdateComposioToolkitSchema))
+    dto: UpdateComposioToolkitDto,
+  ) {
     return this.service.update(slug, dto);
   }
 
@@ -58,7 +86,11 @@ export class ComposioToolkitsController {
   }
 
   @Get('toolkits/:slug/tools')
-  findTools(@Param('slug') slug: string, @Query() query: ListComposioToolkitsDto) {
+  findTools(
+    @Param('slug') slug: string,
+    @Query(new ZodValidationPipe(ListComposioToolkitsSchema))
+    query: ListComposioToolkitsDto,
+  ) {
     return this.service.findTools(slug, query);
   }
 
@@ -66,9 +98,10 @@ export class ComposioToolkitsController {
   updateTool(
     @Param('slug') slug: string,
     @Param('tool_slug') toolSlug: string,
-    @Body('is_enabled') isEnabled: boolean,
+    @Body(new ZodValidationPipe(UpdateComposioToolSchema))
+    dto: { is_enabled: boolean },
   ) {
-    return this.service.updateTool(slug, toolSlug, isEnabled);
+    return this.service.updateTool(slug, toolSlug, dto.is_enabled);
   }
 
   @Get('toolkits/:slug/stats')

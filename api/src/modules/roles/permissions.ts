@@ -10,10 +10,11 @@ export const PERMISSIONS = [
   { key: 'org:roles:create', label: 'Create roles', group: 'org' },
   { key: 'org:roles:update', label: 'Update roles', group: 'org' },
   { key: 'org:roles:delete', label: 'Delete roles', group: 'org' },
-  { key: 'org:integrations:manage', label: 'Manage integrations', group: 'integrations' },
-  { key: 'integrations:github:read_repos', label: 'Read GitHub repositories', group: 'integrations' },
-  { key: 'integrations:github:connect', label: 'Connect GitHub', group: 'integrations' },
-  { key: 'integrations:stripe:manage', label: 'Manage Stripe', group: 'integrations' },
+  {
+    key: 'org:integrations:manage',
+    label: 'Manage integrations',
+    group: 'integrations',
+  },
   { key: 'ai:prompts:read', label: 'View AI prompts', group: 'ai' },
   { key: 'ai:prompts:write', label: 'Manage AI prompts', group: 'ai' },
   { key: 'ai:usage:read', label: 'View AI usage', group: 'ai' },
@@ -22,21 +23,30 @@ export const PERMISSIONS = [
   { key: 'files:delete', label: 'Delete files', group: 'files' },
 ] as const;
 
-export const SYSTEM_ROLE_NAMES = ['Owner', 'Admin', 'Manager', 'Employee'] as const;
+export const SYSTEM_ROLE_NAMES = [
+  'Owner',
+  'Admin',
+  'Manager',
+  'Employee',
+] as const;
 
-export const SYSTEM_ROLE_PERMISSIONS: Record<(typeof SYSTEM_ROLE_NAMES)[number], string[]> = {
+export const SYSTEM_ROLE_PERMISSIONS: Record<
+  (typeof SYSTEM_ROLE_NAMES)[number],
+  string[]
+> = {
   Owner: PERMISSIONS.map((permission) => permission.key),
-  Admin: PERMISSIONS.filter((permission) => permission.key !== 'org:delete').map((permission) => permission.key),
+  Admin: PERMISSIONS.filter(
+    (permission) => permission.key !== 'org:delete',
+  ).map((permission) => permission.key),
   Manager: [
     'org:read',
     'org:members:read',
     'org:roles:read',
     'org:integrations:manage',
-    'integrations:github:read_repos',
     'ai:prompts:read',
     'ai:usage:read',
     'files:read',
     'files:write',
   ],
-  Employee: ['org:read', 'integrations:github:read_repos', 'ai:prompts:read', 'files:read'],
+  Employee: ['org:read', 'ai:prompts:read', 'files:read'],
 };

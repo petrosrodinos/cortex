@@ -1,6 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
-import { ComposioConnectionTier, ComposioSyncType, Prisma } from 'generated/prisma';
+import {
+  ComposioConnectionTier,
+  ComposioSyncType,
+  Prisma,
+} from 'generated/prisma';
 import { ComposioSyncService } from '../sync/composio-sync.service';
 import { CreateComposioToolkitDto } from '../admin/dto/create-composio-toolkit.dto';
 import { ListComposioToolkitsDto } from '../admin/dto/list-composio-toolkits.dto';
@@ -77,7 +81,9 @@ export class ComposioToolkitsService {
       where: { slug },
       data: {
         ...(dto.is_enabled !== undefined ? { is_enabled: dto.is_enabled } : {}),
-        ...(dto.connection_tier ? { connection_tier: dto.connection_tier } : {}),
+        ...(dto.connection_tier
+          ? { connection_tier: dto.connection_tier }
+          : {}),
       },
     });
   }
@@ -106,7 +112,9 @@ export class ComposioToolkitsService {
     }
 
     if (!dto.toolkit_slug) {
-      throw new BadRequestException('toolkit_slug is required for TOOLKIT and TOOLS sync');
+      throw new BadRequestException(
+        'toolkit_slug is required for TOOLKIT and TOOLS sync',
+      );
     }
 
     if (syncType === ComposioSyncType.TOOLKIT) {
@@ -135,7 +143,9 @@ export class ComposioToolkitsService {
 
   async findTools(slug: string, query: ListComposioToolkitsDto) {
     const toolkit = await this.findToolkitUuid(slug);
-    const where: Prisma.ComposioToolkitToolWhereInput = { toolkit_uuid: toolkit.uuid };
+    const where: Prisma.ComposioToolkitToolWhereInput = {
+      toolkit_uuid: toolkit.uuid,
+    };
 
     if (query.search) {
       where.OR = [
@@ -165,12 +175,20 @@ export class ComposioToolkitsService {
 
   async getStats(slug: string) {
     const toolkit = await this.findToolkitUuid(slug);
-    const [connectedAccountsCount, activeTriggersCount] = await this.prisma.$transaction([
-      this.prisma.composioConnectedAccount.count({ where: { toolkit_uuid: toolkit.uuid } }),
-      this.prisma.composioTrigger.count({ where: { toolkit_uuid: toolkit.uuid, is_enabled: true } }),
-    ]);
+    const [connectedAccountsCount, activeTriggersCount] =
+      await this.prisma.$transaction([
+        this.prisma.composioConnectedAccount.count({
+          where: { toolkit_uuid: toolkit.uuid },
+        }),
+        this.prisma.composioTrigger.count({
+          where: { toolkit_uuid: toolkit.uuid, is_enabled: true },
+        }),
+      ]);
 
-    return { connected_accounts_count: connectedAccountsCount, active_triggers_count: activeTriggersCount };
+    return {
+      connected_accounts_count: connectedAccountsCount,
+      active_triggers_count: activeTriggersCount,
+    };
   }
 
   private async findToolkitUuid(slug: string): Promise<{ uuid: string }> {
@@ -180,7 +198,10 @@ export class ComposioToolkitsService {
     });
   }
 
-  private async findToolUuid(toolkitSlug: string, toolSlug: string): Promise<string> {
+  private async findToolUuid(
+    toolkitSlug: string,
+    toolSlug: string,
+  ): Promise<string> {
     const tool = await this.prisma.composioToolkitTool.findFirstOrThrow({
       where: { slug: toolSlug, toolkit: { slug: toolkitSlug } },
       select: { uuid: true },

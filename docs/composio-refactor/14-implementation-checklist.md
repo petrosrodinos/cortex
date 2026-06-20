@@ -17,7 +17,7 @@ Use this as a sequential execution guide for the coding agent. Check off each it
 - [x] Add `composio_session_id` to `conversations`
 - [x] Add `provider_type`, `composio_tool_slug`, `composio_session_id` to `tool_calls`
 - [ ] Remove SaaS values from `IntegrationProvider` enum (Phase 5)
-- [ ] Update permission seeds
+- [x] Update permission seeds
 - [ ] Run migration on dev DB
 - [ ] Delete legacy SaaS integration rows (Phase 5)
 
@@ -31,11 +31,11 @@ Use this as a sequential execution guide for the coding agent. Check off each it
 - [x] `composio-connections.service.ts`
 - [x] `composio-connections.controller.ts` (org)
 - [x] `composio-session.service.ts`
-- [ ] `composio-triggers.service.ts`
-- [ ] `composio-triggers.controller.ts`
-- [ ] `composio-webhook.controller.ts`
-- [ ] `org-toolkits.service.ts` + controller
-- [ ] All DTOs + Zod schemas
+- [x] `composio-triggers.service.ts`
+- [x] `composio-triggers.controller.ts`
+- [x] `composio-webhook.controller.ts`
+- [x] `org-toolkits.service.ts` + controller
+- [x] All DTOs + Zod schemas
 - [x] `SuperAdminGuard`
 - [x] `OrganizationMatchGuard`
 
@@ -82,8 +82,8 @@ Use this as a sequential execution guide for the coding agent. Check off each it
 
 ## Triggers
 
-- [ ] Webhook route + signature verification
-- [ ] Trigger CRUD API
+- [x] Webhook route + signature verification
+- [x] Trigger CRUD API
 - [ ] Trigger UI in toolkit detail
 - [ ] BullMQ processor for trigger events
 - [ ] Register webhook URL in Composio dashboard
@@ -114,5 +114,5 @@ Use this as a sequential execution guide for the coding agent. Check off each it
 
 ## Documentation
 
-- [ ] Update `api/.env.template` comments
+- [x] Update `api/.env.template` comments
 - [ ] Remove references to manual OAuth in any remaining setup guides
