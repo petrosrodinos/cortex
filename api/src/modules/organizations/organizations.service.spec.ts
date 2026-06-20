@@ -60,6 +60,12 @@ describe('OrganizationsService', () => {
 
     expect(result.uuid).toBe('org-uuid');
     expect(prisma.$transaction).toHaveBeenCalled();
+    expect(tx.organization.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        user_uuid: 'user-uuid',
+        name: 'Acme',
+      }),
+    });
     expect(tx.organizationRole.createMany).toHaveBeenCalledWith({
       data: expect.arrayContaining([
         expect.objectContaining({ org_uuid: 'org-uuid', name: 'Owner', is_system: true }),

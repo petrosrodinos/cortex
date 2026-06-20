@@ -136,6 +136,7 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.OrganizationScalarFieldEnum = {
   id: 'id',
   uuid: 'uuid',
+  user_uuid: 'user_uuid',
   name: 'name',
   slug: 'slug',
   logo_url: 'logo_url',

@@ -14,6 +14,7 @@ export class OrganizationsService {
       return await this.prisma.$transaction(async (tx) => {
         const organization = await tx.organization.create({
           data: {
+            user_uuid,
             name: dto.name,
             logo_url: dto.logo_url,
             slug: await this.createUniqueSlug(dto.name, tx),

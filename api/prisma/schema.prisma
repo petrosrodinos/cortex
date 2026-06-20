@@ -175,6 +175,7 @@ model User {
   updated_at DateTime @updatedAt
 
   organization_members OrganizationMember[]
+  created_organizations Organization[] @relation("OrganizationCreator")
   audit_logs           AuditLog[]
   conversations        Conversation[]
   agent_executions     AgentExecution[]
@@ -189,12 +190,14 @@ model User {
 model Organization {
   id         Int      @id @default(autoincrement())
   uuid       String   @unique @default(uuid())
+  user_uuid  String
   name       String
   slug       String   @unique
   logo_url   String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+  creator   User     @relation("OrganizationCreator", fields: [user_uuid], references: [uuid], onDelete: Cascade)
   members    OrganizationMember[]
   roles      OrganizationRole[]
   audit_logs AuditLog[]
@@ -209,6 +212,7 @@ model Organization {
   conversation_personalizations ConversationPersonalization[]
 
   @@index([uuid])
+  @@index([user_uuid])
   @@index([slug])
   @@map("organizations")
 }

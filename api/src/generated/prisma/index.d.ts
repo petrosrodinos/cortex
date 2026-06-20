@@ -3438,6 +3438,7 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     organization_members: number
+    created_organizations: number
     audit_logs: number
     conversations: number
     agent_executions: number
@@ -3446,6 +3447,7 @@ export namespace Prisma {
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization_members?: boolean | UserCountOutputTypeCountOrganization_membersArgs
+    created_organizations?: boolean | UserCountOutputTypeCountCreated_organizationsArgs
     audit_logs?: boolean | UserCountOutputTypeCountAudit_logsArgs
     conversations?: boolean | UserCountOutputTypeCountConversationsArgs
     agent_executions?: boolean | UserCountOutputTypeCountAgent_executionsArgs
@@ -3468,6 +3470,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountOrganization_membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OrganizationMemberWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCreated_organizationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrganizationWhereInput
   }
 
   /**
@@ -4174,6 +4183,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     organization_members?: boolean | User$organization_membersArgs<ExtArgs>
+    created_organizations?: boolean | User$created_organizationsArgs<ExtArgs>
     audit_logs?: boolean | User$audit_logsArgs<ExtArgs>
     conversations?: boolean | User$conversationsArgs<ExtArgs>
     agent_executions?: boolean | User$agent_executionsArgs<ExtArgs>
@@ -4223,6 +4233,7 @@ export namespace Prisma {
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "email" | "phone" | "first_name" | "last_name" | "password" | "role" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization_members?: boolean | User$organization_membersArgs<ExtArgs>
+    created_organizations?: boolean | User$created_organizationsArgs<ExtArgs>
     audit_logs?: boolean | User$audit_logsArgs<ExtArgs>
     conversations?: boolean | User$conversationsArgs<ExtArgs>
     agent_executions?: boolean | User$agent_executionsArgs<ExtArgs>
@@ -4236,6 +4247,7 @@ export namespace Prisma {
     name: "User"
     objects: {
       organization_members: Prisma.$OrganizationMemberPayload<ExtArgs>[]
+      created_organizations: Prisma.$OrganizationPayload<ExtArgs>[]
       audit_logs: Prisma.$AuditLogPayload<ExtArgs>[]
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
       agent_executions: Prisma.$AgentExecutionPayload<ExtArgs>[]
@@ -4647,6 +4659,7 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     organization_members<T extends User$organization_membersArgs<ExtArgs> = {}>(args?: Subset<T, User$organization_membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganizationMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    created_organizations<T extends User$created_organizationsArgs<ExtArgs> = {}>(args?: Subset<T, User$created_organizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     audit_logs<T extends User$audit_logsArgs<ExtArgs> = {}>(args?: Subset<T, User$audit_logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     conversations<T extends User$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, User$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     agent_executions<T extends User$agent_executionsArgs<ExtArgs> = {}>(args?: Subset<T, User$agent_executionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5102,6 +5115,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.created_organizations
+   */
+  export type User$created_organizationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organization
+     */
+    select?: OrganizationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organization
+     */
+    omit?: OrganizationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationInclude<ExtArgs> | null
+    where?: OrganizationWhereInput
+    orderBy?: OrganizationOrderByWithRelationInput | OrganizationOrderByWithRelationInput[]
+    cursor?: OrganizationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrganizationScalarFieldEnum | OrganizationScalarFieldEnum[]
+  }
+
+  /**
    * User.audit_logs
    */
   export type User$audit_logsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5239,6 +5276,7 @@ export namespace Prisma {
   export type OrganizationMinAggregateOutputType = {
     id: number | null
     uuid: string | null
+    user_uuid: string | null
     name: string | null
     slug: string | null
     logo_url: string | null
@@ -5249,6 +5287,7 @@ export namespace Prisma {
   export type OrganizationMaxAggregateOutputType = {
     id: number | null
     uuid: string | null
+    user_uuid: string | null
     name: string | null
     slug: string | null
     logo_url: string | null
@@ -5259,6 +5298,7 @@ export namespace Prisma {
   export type OrganizationCountAggregateOutputType = {
     id: number
     uuid: number
+    user_uuid: number
     name: number
     slug: number
     logo_url: number
@@ -5279,6 +5319,7 @@ export namespace Prisma {
   export type OrganizationMinAggregateInputType = {
     id?: true
     uuid?: true
+    user_uuid?: true
     name?: true
     slug?: true
     logo_url?: true
@@ -5289,6 +5330,7 @@ export namespace Prisma {
   export type OrganizationMaxAggregateInputType = {
     id?: true
     uuid?: true
+    user_uuid?: true
     name?: true
     slug?: true
     logo_url?: true
@@ -5299,6 +5341,7 @@ export namespace Prisma {
   export type OrganizationCountAggregateInputType = {
     id?: true
     uuid?: true
+    user_uuid?: true
     name?: true
     slug?: true
     logo_url?: true
@@ -5396,6 +5439,7 @@ export namespace Prisma {
   export type OrganizationGroupByOutputType = {
     id: number
     uuid: string
+    user_uuid: string
     name: string
     slug: string
     logo_url: string | null
@@ -5425,11 +5469,13 @@ export namespace Prisma {
   export type OrganizationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     uuid?: boolean
+    user_uuid?: boolean
     name?: boolean
     slug?: boolean
     logo_url?: boolean
     created_at?: boolean
     updated_at?: boolean
+    creator?: boolean | UserDefaultArgs<ExtArgs>
     members?: boolean | Organization$membersArgs<ExtArgs>
     roles?: boolean | Organization$rolesArgs<ExtArgs>
     audit_logs?: boolean | Organization$audit_logsArgs<ExtArgs>
@@ -5448,26 +5494,31 @@ export namespace Prisma {
   export type OrganizationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     uuid?: boolean
+    user_uuid?: boolean
     name?: boolean
     slug?: boolean
     logo_url?: boolean
     created_at?: boolean
     updated_at?: boolean
+    creator?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
   export type OrganizationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     uuid?: boolean
+    user_uuid?: boolean
     name?: boolean
     slug?: boolean
     logo_url?: boolean
     created_at?: boolean
     updated_at?: boolean
+    creator?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
   export type OrganizationSelectScalar = {
     id?: boolean
     uuid?: boolean
+    user_uuid?: boolean
     name?: boolean
     slug?: boolean
     logo_url?: boolean
@@ -5475,8 +5526,9 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "name" | "slug" | "logo_url" | "created_at" | "updated_at", ExtArgs["result"]["organization"]>
+  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "user_uuid" | "name" | "slug" | "logo_url" | "created_at" | "updated_at", ExtArgs["result"]["organization"]>
   export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    creator?: boolean | UserDefaultArgs<ExtArgs>
     members?: boolean | Organization$membersArgs<ExtArgs>
     roles?: boolean | Organization$rolesArgs<ExtArgs>
     audit_logs?: boolean | Organization$audit_logsArgs<ExtArgs>
@@ -5491,12 +5543,17 @@ export namespace Prisma {
     conversation_personalizations?: boolean | Organization$conversation_personalizationsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type OrganizationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    creator?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type OrganizationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    creator?: boolean | UserDefaultArgs<ExtArgs>
+  }
 
   export type $OrganizationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Organization"
     objects: {
+      creator: Prisma.$UserPayload<ExtArgs>
       members: Prisma.$OrganizationMemberPayload<ExtArgs>[]
       roles: Prisma.$OrganizationRolePayload<ExtArgs>[]
       audit_logs: Prisma.$AuditLogPayload<ExtArgs>[]
@@ -5513,6 +5570,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       uuid: string
+      user_uuid: string
       name: string
       slug: string
       logo_url: string | null
@@ -5912,6 +5970,7 @@ export namespace Prisma {
    */
   export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    creator<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     members<T extends Organization$membersArgs<ExtArgs> = {}>(args?: Subset<T, Organization$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganizationMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roles<T extends Organization$rolesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrganizationRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     audit_logs<T extends Organization$audit_logsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$audit_logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5955,6 +6014,7 @@ export namespace Prisma {
   interface OrganizationFieldRefs {
     readonly id: FieldRef<"Organization", 'Int'>
     readonly uuid: FieldRef<"Organization", 'String'>
+    readonly user_uuid: FieldRef<"Organization", 'String'>
     readonly name: FieldRef<"Organization", 'String'>
     readonly slug: FieldRef<"Organization", 'String'>
     readonly logo_url: FieldRef<"Organization", 'String'>
@@ -6209,6 +6269,10 @@ export namespace Prisma {
      */
     data: OrganizationCreateManyInput | OrganizationCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -6279,6 +6343,10 @@ export namespace Prisma {
      * Limit how many Organizations to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganizationIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -34904,6 +34972,7 @@ export namespace Prisma {
   export const OrganizationScalarFieldEnum: {
     id: 'id',
     uuid: 'uuid',
+    user_uuid: 'user_uuid',
     name: 'name',
     slug: 'slug',
     logo_url: 'logo_url',
@@ -35743,6 +35812,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"User"> | Date | string
     updated_at?: DateTimeFilter<"User"> | Date | string
     organization_members?: OrganizationMemberListRelationFilter
+    created_organizations?: OrganizationListRelationFilter
     audit_logs?: AuditLogListRelationFilter
     conversations?: ConversationListRelationFilter
     agent_executions?: AgentExecutionListRelationFilter
@@ -35761,6 +35831,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     organization_members?: OrganizationMemberOrderByRelationAggregateInput
+    created_organizations?: OrganizationOrderByRelationAggregateInput
     audit_logs?: AuditLogOrderByRelationAggregateInput
     conversations?: ConversationOrderByRelationAggregateInput
     agent_executions?: AgentExecutionOrderByRelationAggregateInput
@@ -35782,6 +35853,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"User"> | Date | string
     updated_at?: DateTimeFilter<"User"> | Date | string
     organization_members?: OrganizationMemberListRelationFilter
+    created_organizations?: OrganizationListRelationFilter
     audit_logs?: AuditLogListRelationFilter
     conversations?: ConversationListRelationFilter
     agent_executions?: AgentExecutionListRelationFilter
@@ -35828,11 +35900,13 @@ export namespace Prisma {
     NOT?: OrganizationWhereInput | OrganizationWhereInput[]
     id?: IntFilter<"Organization"> | number
     uuid?: StringFilter<"Organization"> | string
+    user_uuid?: StringFilter<"Organization"> | string
     name?: StringFilter<"Organization"> | string
     slug?: StringFilter<"Organization"> | string
     logo_url?: StringNullableFilter<"Organization"> | string | null
     created_at?: DateTimeFilter<"Organization"> | Date | string
     updated_at?: DateTimeFilter<"Organization"> | Date | string
+    creator?: XOR<UserScalarRelationFilter, UserWhereInput>
     members?: OrganizationMemberListRelationFilter
     roles?: OrganizationRoleListRelationFilter
     audit_logs?: AuditLogListRelationFilter
@@ -35850,11 +35924,13 @@ export namespace Prisma {
   export type OrganizationOrderByWithRelationInput = {
     id?: SortOrder
     uuid?: SortOrder
+    user_uuid?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     logo_url?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    creator?: UserOrderByWithRelationInput
     members?: OrganizationMemberOrderByRelationAggregateInput
     roles?: OrganizationRoleOrderByRelationAggregateInput
     audit_logs?: AuditLogOrderByRelationAggregateInput
@@ -35876,10 +35952,12 @@ export namespace Prisma {
     AND?: OrganizationWhereInput | OrganizationWhereInput[]
     OR?: OrganizationWhereInput[]
     NOT?: OrganizationWhereInput | OrganizationWhereInput[]
+    user_uuid?: StringFilter<"Organization"> | string
     name?: StringFilter<"Organization"> | string
     logo_url?: StringNullableFilter<"Organization"> | string | null
     created_at?: DateTimeFilter<"Organization"> | Date | string
     updated_at?: DateTimeFilter<"Organization"> | Date | string
+    creator?: XOR<UserScalarRelationFilter, UserWhereInput>
     members?: OrganizationMemberListRelationFilter
     roles?: OrganizationRoleListRelationFilter
     audit_logs?: AuditLogListRelationFilter
@@ -35897,6 +35975,7 @@ export namespace Prisma {
   export type OrganizationOrderByWithAggregationInput = {
     id?: SortOrder
     uuid?: SortOrder
+    user_uuid?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     logo_url?: SortOrderInput | SortOrder
@@ -35915,6 +35994,7 @@ export namespace Prisma {
     NOT?: OrganizationScalarWhereWithAggregatesInput | OrganizationScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Organization"> | number
     uuid?: StringWithAggregatesFilter<"Organization"> | string
+    user_uuid?: StringWithAggregatesFilter<"Organization"> | string
     name?: StringWithAggregatesFilter<"Organization"> | string
     slug?: StringWithAggregatesFilter<"Organization"> | string
     logo_url?: StringNullableWithAggregatesFilter<"Organization"> | string | null
@@ -38006,6 +38086,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationCreateNestedManyWithoutCreatorInput
     audit_logs?: AuditLogCreateNestedManyWithoutUserInput
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
@@ -38024,6 +38105,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationUncheckedCreateNestedManyWithoutCreatorInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
@@ -38041,6 +38123,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUpdateManyWithoutCreatorNestedInput
     audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
@@ -38059,6 +38142,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUncheckedUpdateManyWithoutCreatorNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
@@ -38110,6 +38194,7 @@ export namespace Prisma {
     logo_url?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
@@ -38127,6 +38212,7 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -38153,6 +38239,7 @@ export namespace Prisma {
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
@@ -38170,6 +38257,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38192,6 +38280,7 @@ export namespace Prisma {
   export type OrganizationCreateManyInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -38211,6 +38300,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40450,6 +40540,12 @@ export namespace Prisma {
     none?: OrganizationMemberWhereInput
   }
 
+  export type OrganizationListRelationFilter = {
+    every?: OrganizationWhereInput
+    some?: OrganizationWhereInput
+    none?: OrganizationWhereInput
+  }
+
   export type AuditLogListRelationFilter = {
     every?: AuditLogWhereInput
     some?: AuditLogWhereInput
@@ -40480,6 +40576,10 @@ export namespace Prisma {
   }
 
   export type OrganizationMemberOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OrganizationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -40622,6 +40722,11 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
   export type OrganizationRoleListRelationFilter = {
     every?: OrganizationRoleWhereInput
     some?: OrganizationRoleWhereInput
@@ -40695,6 +40800,7 @@ export namespace Prisma {
   export type OrganizationCountOrderByAggregateInput = {
     id?: SortOrder
     uuid?: SortOrder
+    user_uuid?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     logo_url?: SortOrder
@@ -40709,6 +40815,7 @@ export namespace Prisma {
   export type OrganizationMaxOrderByAggregateInput = {
     id?: SortOrder
     uuid?: SortOrder
+    user_uuid?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     logo_url?: SortOrder
@@ -40719,6 +40826,7 @@ export namespace Prisma {
   export type OrganizationMinOrderByAggregateInput = {
     id?: SortOrder
     uuid?: SortOrder
+    user_uuid?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     logo_url?: SortOrder
@@ -40751,11 +40859,6 @@ export namespace Prisma {
   export type OrganizationScalarRelationFilter = {
     is?: OrganizationWhereInput
     isNot?: OrganizationWhereInput
-  }
-
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
   }
 
   export type OrganizationRoleScalarRelationFilter = {
@@ -42560,6 +42663,13 @@ export namespace Prisma {
     connect?: OrganizationMemberWhereUniqueInput | OrganizationMemberWhereUniqueInput[]
   }
 
+  export type OrganizationCreateNestedManyWithoutCreatorInput = {
+    create?: XOR<OrganizationCreateWithoutCreatorInput, OrganizationUncheckedCreateWithoutCreatorInput> | OrganizationCreateWithoutCreatorInput[] | OrganizationUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: OrganizationCreateOrConnectWithoutCreatorInput | OrganizationCreateOrConnectWithoutCreatorInput[]
+    createMany?: OrganizationCreateManyCreatorInputEnvelope
+    connect?: OrganizationWhereUniqueInput | OrganizationWhereUniqueInput[]
+  }
+
   export type AuditLogCreateNestedManyWithoutUserInput = {
     create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
@@ -42593,6 +42703,13 @@ export namespace Prisma {
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutUserInput | OrganizationMemberCreateOrConnectWithoutUserInput[]
     createMany?: OrganizationMemberCreateManyUserInputEnvelope
     connect?: OrganizationMemberWhereUniqueInput | OrganizationMemberWhereUniqueInput[]
+  }
+
+  export type OrganizationUncheckedCreateNestedManyWithoutCreatorInput = {
+    create?: XOR<OrganizationCreateWithoutCreatorInput, OrganizationUncheckedCreateWithoutCreatorInput> | OrganizationCreateWithoutCreatorInput[] | OrganizationUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: OrganizationCreateOrConnectWithoutCreatorInput | OrganizationCreateOrConnectWithoutCreatorInput[]
+    createMany?: OrganizationCreateManyCreatorInputEnvelope
+    connect?: OrganizationWhereUniqueInput | OrganizationWhereUniqueInput[]
   }
 
   export type AuditLogUncheckedCreateNestedManyWithoutUserInput = {
@@ -42651,6 +42768,20 @@ export namespace Prisma {
     update?: OrganizationMemberUpdateWithWhereUniqueWithoutUserInput | OrganizationMemberUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: OrganizationMemberUpdateManyWithWhereWithoutUserInput | OrganizationMemberUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: OrganizationMemberScalarWhereInput | OrganizationMemberScalarWhereInput[]
+  }
+
+  export type OrganizationUpdateManyWithoutCreatorNestedInput = {
+    create?: XOR<OrganizationCreateWithoutCreatorInput, OrganizationUncheckedCreateWithoutCreatorInput> | OrganizationCreateWithoutCreatorInput[] | OrganizationUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: OrganizationCreateOrConnectWithoutCreatorInput | OrganizationCreateOrConnectWithoutCreatorInput[]
+    upsert?: OrganizationUpsertWithWhereUniqueWithoutCreatorInput | OrganizationUpsertWithWhereUniqueWithoutCreatorInput[]
+    createMany?: OrganizationCreateManyCreatorInputEnvelope
+    set?: OrganizationWhereUniqueInput | OrganizationWhereUniqueInput[]
+    disconnect?: OrganizationWhereUniqueInput | OrganizationWhereUniqueInput[]
+    delete?: OrganizationWhereUniqueInput | OrganizationWhereUniqueInput[]
+    connect?: OrganizationWhereUniqueInput | OrganizationWhereUniqueInput[]
+    update?: OrganizationUpdateWithWhereUniqueWithoutCreatorInput | OrganizationUpdateWithWhereUniqueWithoutCreatorInput[]
+    updateMany?: OrganizationUpdateManyWithWhereWithoutCreatorInput | OrganizationUpdateManyWithWhereWithoutCreatorInput[]
+    deleteMany?: OrganizationScalarWhereInput | OrganizationScalarWhereInput[]
   }
 
   export type AuditLogUpdateManyWithoutUserNestedInput = {
@@ -42731,6 +42862,20 @@ export namespace Prisma {
     deleteMany?: OrganizationMemberScalarWhereInput | OrganizationMemberScalarWhereInput[]
   }
 
+  export type OrganizationUncheckedUpdateManyWithoutCreatorNestedInput = {
+    create?: XOR<OrganizationCreateWithoutCreatorInput, OrganizationUncheckedCreateWithoutCreatorInput> | OrganizationCreateWithoutCreatorInput[] | OrganizationUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: OrganizationCreateOrConnectWithoutCreatorInput | OrganizationCreateOrConnectWithoutCreatorInput[]
+    upsert?: OrganizationUpsertWithWhereUniqueWithoutCreatorInput | OrganizationUpsertWithWhereUniqueWithoutCreatorInput[]
+    createMany?: OrganizationCreateManyCreatorInputEnvelope
+    set?: OrganizationWhereUniqueInput | OrganizationWhereUniqueInput[]
+    disconnect?: OrganizationWhereUniqueInput | OrganizationWhereUniqueInput[]
+    delete?: OrganizationWhereUniqueInput | OrganizationWhereUniqueInput[]
+    connect?: OrganizationWhereUniqueInput | OrganizationWhereUniqueInput[]
+    update?: OrganizationUpdateWithWhereUniqueWithoutCreatorInput | OrganizationUpdateWithWhereUniqueWithoutCreatorInput[]
+    updateMany?: OrganizationUpdateManyWithWhereWithoutCreatorInput | OrganizationUpdateManyWithWhereWithoutCreatorInput[]
+    deleteMany?: OrganizationScalarWhereInput | OrganizationScalarWhereInput[]
+  }
+
   export type AuditLogUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AuditLogCreateWithoutUserInput, AuditLogUncheckedCreateWithoutUserInput> | AuditLogCreateWithoutUserInput[] | AuditLogUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
@@ -42785,6 +42930,12 @@ export namespace Prisma {
     update?: ConversationPersonalizationUpdateWithWhereUniqueWithoutUserInput | ConversationPersonalizationUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: ConversationPersonalizationUpdateManyWithWhereWithoutUserInput | ConversationPersonalizationUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: ConversationPersonalizationScalarWhereInput | ConversationPersonalizationScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutCreated_organizationsInput = {
+    create?: XOR<UserCreateWithoutCreated_organizationsInput, UserUncheckedCreateWithoutCreated_organizationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreated_organizationsInput
+    connect?: UserWhereUniqueInput
   }
 
   export type OrganizationMemberCreateNestedManyWithoutOrganizationInput = {
@@ -42953,6 +43104,14 @@ export namespace Prisma {
     connectOrCreate?: ConversationPersonalizationCreateOrConnectWithoutOrganizationInput | ConversationPersonalizationCreateOrConnectWithoutOrganizationInput[]
     createMany?: ConversationPersonalizationCreateManyOrganizationInputEnvelope
     connect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutCreated_organizationsNestedInput = {
+    create?: XOR<UserCreateWithoutCreated_organizationsInput, UserUncheckedCreateWithoutCreated_organizationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreated_organizationsInput
+    upsert?: UserUpsertWithoutCreated_organizationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreated_organizationsInput, UserUpdateWithoutCreated_organizationsInput>, UserUncheckedUpdateWithoutCreated_organizationsInput>
   }
 
   export type OrganizationMemberUpdateManyWithoutOrganizationNestedInput = {
@@ -45237,6 +45396,59 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type OrganizationCreateWithoutCreatorInput = {
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutCreatorInput = {
+    id?: number
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutCreatorInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutCreatorInput, OrganizationUncheckedCreateWithoutCreatorInput>
+  }
+
+  export type OrganizationCreateManyCreatorInputEnvelope = {
+    data: OrganizationCreateManyCreatorInput | OrganizationCreateManyCreatorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AuditLogCreateWithoutUserInput = {
     uuid?: string
     action: string
@@ -45413,6 +45625,36 @@ export namespace Prisma {
     joined_at?: DateTimeNullableFilter<"OrganizationMember"> | Date | string | null
   }
 
+  export type OrganizationUpsertWithWhereUniqueWithoutCreatorInput = {
+    where: OrganizationWhereUniqueInput
+    update: XOR<OrganizationUpdateWithoutCreatorInput, OrganizationUncheckedUpdateWithoutCreatorInput>
+    create: XOR<OrganizationCreateWithoutCreatorInput, OrganizationUncheckedCreateWithoutCreatorInput>
+  }
+
+  export type OrganizationUpdateWithWhereUniqueWithoutCreatorInput = {
+    where: OrganizationWhereUniqueInput
+    data: XOR<OrganizationUpdateWithoutCreatorInput, OrganizationUncheckedUpdateWithoutCreatorInput>
+  }
+
+  export type OrganizationUpdateManyWithWhereWithoutCreatorInput = {
+    where: OrganizationScalarWhereInput
+    data: XOR<OrganizationUpdateManyMutationInput, OrganizationUncheckedUpdateManyWithoutCreatorInput>
+  }
+
+  export type OrganizationScalarWhereInput = {
+    AND?: OrganizationScalarWhereInput | OrganizationScalarWhereInput[]
+    OR?: OrganizationScalarWhereInput[]
+    NOT?: OrganizationScalarWhereInput | OrganizationScalarWhereInput[]
+    id?: IntFilter<"Organization"> | number
+    uuid?: StringFilter<"Organization"> | string
+    user_uuid?: StringFilter<"Organization"> | string
+    name?: StringFilter<"Organization"> | string
+    slug?: StringFilter<"Organization"> | string
+    logo_url?: StringNullableFilter<"Organization"> | string | null
+    created_at?: DateTimeFilter<"Organization"> | Date | string
+    updated_at?: DateTimeFilter<"Organization"> | Date | string
+  }
+
   export type AuditLogUpsertWithWhereUniqueWithoutUserInput = {
     where: AuditLogWhereUniqueInput
     update: XOR<AuditLogUpdateWithoutUserInput, AuditLogUncheckedUpdateWithoutUserInput>
@@ -45543,6 +45785,46 @@ export namespace Prisma {
     custom_instructions?: StringNullableFilter<"ConversationPersonalization"> | string | null
     created_at?: DateTimeFilter<"ConversationPersonalization"> | Date | string
     updated_at?: DateTimeFilter<"ConversationPersonalization"> | Date | string
+  }
+
+  export type UserCreateWithoutCreated_organizationsInput = {
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
+    audit_logs?: AuditLogCreateNestedManyWithoutUserInput
+    conversations?: ConversationCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCreated_organizationsInput = {
+    id?: number
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCreated_organizationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreated_organizationsInput, UserUncheckedCreateWithoutCreated_organizationsInput>
   }
 
   export type OrganizationMemberCreateWithoutOrganizationInput = {
@@ -45963,6 +46245,52 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserUpsertWithoutCreated_organizationsInput = {
+    update: XOR<UserUpdateWithoutCreated_organizationsInput, UserUncheckedUpdateWithoutCreated_organizationsInput>
+    create: XOR<UserCreateWithoutCreated_organizationsInput, UserUncheckedCreateWithoutCreated_organizationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreated_organizationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreated_organizationsInput, UserUncheckedUpdateWithoutCreated_organizationsInput>
+  }
+
+  export type UserUpdateWithoutCreated_organizationsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreated_organizationsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type OrganizationMemberUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: OrganizationMemberWhereUniqueInput
     update: XOR<OrganizationMemberUpdateWithoutOrganizationInput, OrganizationMemberUncheckedUpdateWithoutOrganizationInput>
@@ -46273,6 +46601,7 @@ export namespace Prisma {
     logo_url?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
@@ -46289,6 +46618,7 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutMembersInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -46322,6 +46652,7 @@ export namespace Prisma {
     role: $Enums.AuthRole
     created_at?: Date | string
     updated_at?: Date | string
+    created_organizations?: OrganizationCreateNestedManyWithoutCreatorInput
     audit_logs?: AuditLogCreateNestedManyWithoutUserInput
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
@@ -46339,6 +46670,7 @@ export namespace Prisma {
     role: $Enums.AuthRole
     created_at?: Date | string
     updated_at?: Date | string
+    created_organizations?: OrganizationUncheckedCreateNestedManyWithoutCreatorInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
@@ -46390,6 +46722,7 @@ export namespace Prisma {
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
@@ -46406,6 +46739,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutMembersInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -46445,6 +46779,7 @@ export namespace Prisma {
     role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_organizations?: OrganizationUpdateManyWithoutCreatorNestedInput
     audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
@@ -46462,6 +46797,7 @@ export namespace Prisma {
     role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_organizations?: OrganizationUncheckedUpdateManyWithoutCreatorNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
@@ -46503,6 +46839,7 @@ export namespace Prisma {
     logo_url?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
@@ -46519,6 +46856,7 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutRolesInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -46610,6 +46948,7 @@ export namespace Prisma {
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
@@ -46626,6 +46965,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutRolesInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -46826,6 +47166,7 @@ export namespace Prisma {
     logo_url?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
@@ -46842,6 +47183,7 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutAudit_logsInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -46876,6 +47218,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationCreateNestedManyWithoutCreatorInput
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
@@ -46893,6 +47236,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationUncheckedCreateNestedManyWithoutCreatorInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
@@ -46921,6 +47265,7 @@ export namespace Prisma {
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
@@ -46937,6 +47282,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutAudit_logsInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -46977,6 +47323,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUpdateManyWithoutCreatorNestedInput
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
@@ -46994,6 +47341,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUncheckedUpdateManyWithoutCreatorNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
@@ -47006,6 +47354,7 @@ export namespace Prisma {
     logo_url?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
@@ -47022,6 +47371,7 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutIntegrationsInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -47229,6 +47579,7 @@ export namespace Prisma {
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
@@ -47245,6 +47596,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutIntegrationsInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48166,6 +48518,7 @@ export namespace Prisma {
     logo_url?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
@@ -48182,6 +48535,7 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutEnabled_toolkitsInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -48269,6 +48623,7 @@ export namespace Prisma {
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
@@ -48285,6 +48640,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutEnabled_toolkitsInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48362,6 +48718,7 @@ export namespace Prisma {
     logo_url?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
@@ -48378,6 +48735,7 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutTool_permissionsInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -48457,6 +48815,7 @@ export namespace Prisma {
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
@@ -48473,6 +48832,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutTool_permissionsInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48542,6 +48902,7 @@ export namespace Prisma {
     logo_url?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
@@ -48558,6 +48919,7 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutComposio_accountsInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -48645,6 +49007,7 @@ export namespace Prisma {
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
@@ -48661,6 +49024,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutComposio_accountsInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48738,6 +49102,7 @@ export namespace Prisma {
     logo_url?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
@@ -48754,6 +49119,7 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutComposio_triggersInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -48841,6 +49207,7 @@ export namespace Prisma {
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
@@ -48857,6 +49224,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutComposio_triggersInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48934,6 +49302,7 @@ export namespace Prisma {
     logo_url?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
@@ -48950,6 +49319,7 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutAi_providersInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -48991,6 +49361,7 @@ export namespace Prisma {
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
@@ -49007,6 +49378,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutAi_providersInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49032,6 +49404,7 @@ export namespace Prisma {
     logo_url?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
@@ -49048,6 +49421,7 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutConversationsInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -49082,6 +49456,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationCreateNestedManyWithoutCreatorInput
     audit_logs?: AuditLogCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
@@ -49099,6 +49474,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationUncheckedCreateNestedManyWithoutCreatorInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
@@ -49201,6 +49577,7 @@ export namespace Prisma {
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
@@ -49217,6 +49594,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutConversationsInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49257,6 +49635,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUpdateManyWithoutCreatorNestedInput
     audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
@@ -49274,6 +49653,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUncheckedUpdateManyWithoutCreatorNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
@@ -49506,6 +49886,7 @@ export namespace Prisma {
     logo_url?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
@@ -49522,6 +49903,7 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutAgent_executionsInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -49556,6 +49938,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationCreateNestedManyWithoutCreatorInput
     audit_logs?: AuditLogCreateNestedManyWithoutUserInput
     conversations?: ConversationCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
@@ -49573,6 +49956,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationUncheckedCreateNestedManyWithoutCreatorInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
@@ -49710,6 +50094,7 @@ export namespace Prisma {
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
@@ -49726,6 +50111,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutAgent_executionsInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49766,6 +50152,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUpdateManyWithoutCreatorNestedInput
     audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
@@ -49783,6 +50170,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUncheckedUpdateManyWithoutCreatorNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
@@ -49987,6 +50375,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationCreateNestedManyWithoutCreatorInput
     audit_logs?: AuditLogCreateNestedManyWithoutUserInput
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
@@ -50004,6 +50393,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationUncheckedCreateNestedManyWithoutCreatorInput
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
@@ -50021,6 +50411,7 @@ export namespace Prisma {
     logo_url?: string | null
     created_at?: Date | string
     updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
     members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
     roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
     audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
@@ -50037,6 +50428,7 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutConversation_personalizationsInput = {
     id?: number
     uuid?: string
+    user_uuid: string
     name: string
     slug: string
     logo_url?: string | null
@@ -50082,6 +50474,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUpdateManyWithoutCreatorNestedInput
     audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
@@ -50099,6 +50492,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUncheckedUpdateManyWithoutCreatorNestedInput
     audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
@@ -50122,6 +50516,7 @@ export namespace Prisma {
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
     members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
     roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
     audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
@@ -50138,6 +50533,7 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutConversation_personalizationsInput = {
     id?: IntFieldUpdateOperationsInput | number
     uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     logo_url?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50164,6 +50560,16 @@ export namespace Prisma {
     status?: $Enums.OrganizationMemberStatus
     invited_at?: Date | string
     joined_at?: Date | string | null
+  }
+
+  export type OrganizationCreateManyCreatorInput = {
+    id?: number
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type AuditLogCreateManyUserInput = {
@@ -50245,6 +50651,59 @@ export namespace Prisma {
     status?: EnumOrganizationMemberStatusFieldUpdateOperationsInput | $Enums.OrganizationMemberStatus
     invited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     joined_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type OrganizationUpdateWithoutCreatorInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutCreatorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateManyWithoutCreatorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AuditLogUpdateWithoutUserInput = {
