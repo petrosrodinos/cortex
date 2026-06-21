@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
-import type { IntegrationAppsConnectionTier, IntegrationAppsToolkitFilters } from '../interfaces/integrationApps.interface';
+import type { IntegrationAppsConnectionTier, IntegrationAppsToolkitFilters, IntegrationAppsToolFilters } from '../interfaces/integrationApps.interface';
 import {
   connectIntegrationAppsToolkit,
   createIntegrationAppsTrigger,
@@ -10,6 +10,7 @@ import {
   enableIntegrationAppsToolkit,
   getIntegrationAppsTriggers,
   getIntegrationAppsToolkit,
+  getIntegrationAppsToolkitTools,
   getIntegrationAppsToolkits,
   updateIntegrationAppsTrigger,
   updateIntegrationAppsToolPermission,
@@ -17,6 +18,7 @@ import {
 } from '../services/integrationApps.service';
 
 export const integrationAppsToolkitsQueryKey = ['integrationApps-toolkits'] as const;
+export const integrationAppsToolkitToolsQueryKey = ['integrationApps-toolkit-tools'] as const;
 export const integrationAppsTriggersQueryKey = ['integrationApps-triggers'] as const;
 
 export function useGetIntegrationAppsToolkits(organizationUuid?: string, filters?: IntegrationAppsToolkitFilters) {
@@ -31,6 +33,18 @@ export function useGetIntegrationAppsToolkit(organizationUuid?: string, toolkitS
   return useQuery({
     queryKey: [...integrationAppsToolkitsQueryKey, organizationUuid, toolkitSlug],
     queryFn: () => getIntegrationAppsToolkit(organizationUuid as string, toolkitSlug as string),
+    enabled: !!organizationUuid && !!toolkitSlug,
+  });
+}
+
+export function useGetIntegrationAppsToolkitTools(
+  organizationUuid?: string,
+  toolkitSlug?: string,
+  filters?: IntegrationAppsToolFilters,
+) {
+  return useQuery({
+    queryKey: [...integrationAppsToolkitToolsQueryKey, organizationUuid, toolkitSlug, filters],
+    queryFn: () => getIntegrationAppsToolkitTools(organizationUuid as string, toolkitSlug as string, filters),
     enabled: !!organizationUuid && !!toolkitSlug,
   });
 }
@@ -68,6 +82,7 @@ export function useEnableIntegrationAppsToolkit(organizationUuid?: string) {
     mutationFn: (toolkitSlug: string) => enableIntegrationAppsToolkit(organizationUuid as string, toolkitSlug),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: integrationAppsToolkitsQueryKey });
+      queryClient.invalidateQueries({ queryKey: integrationAppsToolkitToolsQueryKey });
       toast({ title: 'Toolkit enabled', duration: 2000 });
     },
     onError: (error: Error) => {
@@ -83,6 +98,7 @@ export function useDisableIntegrationAppsToolkit(organizationUuid?: string) {
     mutationFn: (toolkitSlug: string) => disableIntegrationAppsToolkit(organizationUuid as string, toolkitSlug),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: integrationAppsToolkitsQueryKey });
+      queryClient.invalidateQueries({ queryKey: integrationAppsToolkitToolsQueryKey });
       toast({ title: 'Toolkit disabled', duration: 2000 });
     },
     onError: (error: Error) => {
@@ -151,7 +167,7 @@ export function useUpdateIntegrationAppsToolPermission(organizationUuid?: string
     }) => updateIntegrationAppsToolPermission(organizationUuid as string, toolSlug, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: integrationAppsToolkitsQueryKey });
-      queryClient.invalidateQueries({ queryKey: [...integrationAppsToolkitsQueryKey, organizationUuid, toolkitSlug] });
+      queryClient.invalidateQueries({ queryKey: integrationAppsToolkitToolsQueryKey });
     },
     onError: (error: Error) => {
       toast({ title: 'Could not update tool', description: error.message, variant: 'error' });

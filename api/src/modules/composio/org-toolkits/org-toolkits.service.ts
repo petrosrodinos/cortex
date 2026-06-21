@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { ComposioConnectionTier, Prisma } from 'generated/prisma';
+import { ListOrgToolkitToolsDto } from './dto/list-org-toolkit-tools.dto';
 import { ListOrgToolkitsDto } from './dto/list-org-toolkits.dto';
 import { UpdateOrgToolPermissionDto } from './dto/update-org-tool-permission.dto';
 
@@ -99,12 +100,6 @@ export class OrgToolkitsService {
           where: { org_uuid: organizationUuid },
           orderBy: { created_at: 'desc' },
         },
-        tools: {
-          orderBy: [{ is_enabled: 'desc' }, { name: 'asc' }],
-          include: {
-            permissions: { where: { org_uuid: organizationUuid }, take: 1 },
-          },
-        },
       },
     });
 
@@ -126,7 +121,65 @@ export class OrgToolkitsService {
         is_org_enabled: isOrgEnabled,
         tool_count: toolkit.tool_count,
       },
-      tools: toolkit.tools.map((tool) => {
+      connections: toolkit.connected_accounts.map((account) => ({
+        ...account,
+        account_id: account.composio_account_id,
+      })),
+    };
+  }
+
+  async listToolkitTools(
+    organizationUuid: string,
+    slug: string,
+    query: ListOrgToolkitToolsDto,
+  ) {
+    const page = this.toPositiveInt(query.page, 1);
+    const limit = Math.min(this.toPositiveInt(query.limit, 25), 100);
+    const toolkit = await this.prisma.composioToolkit.findFirst({
+      where: { slug, is_enabled: true },
+      select: {
+        uuid: true,
+        enabled_orgs: {
+          where: { org_uuid: organizationUuid },
+          take: 1,
+          select: { is_enabled: true },
+        },
+      },
+    });
+
+    if (!toolkit) {
+      throw new NotFoundException('Composio toolkit not found');
+    }
+
+    const isOrgEnabled = toolkit.enabled_orgs[0]?.is_enabled ?? false;
+    const where: Prisma.ComposioToolkitToolWhereInput = {
+      toolkit_uuid: toolkit.uuid,
+      is_enabled: true,
+    };
+
+    if (query.search) {
+      where.OR = [
+        { slug: { contains: query.search, mode: 'insensitive' } },
+        { name: { contains: query.search, mode: 'insensitive' } },
+        { description: { contains: query.search, mode: 'insensitive' } },
+      ];
+    }
+
+    const [total, tools] = await this.prisma.$transaction([
+      this.prisma.composioToolkitTool.count({ where }),
+      this.prisma.composioToolkitTool.findMany({
+        where,
+        orderBy: [{ is_enabled: 'desc' }, { name: 'asc' }],
+        skip: (page - 1) * limit,
+        take: limit,
+        include: {
+          permissions: { where: { org_uuid: organizationUuid }, take: 1 },
+        },
+      }),
+    ]);
+
+    return {
+      data: tools.map((tool) => {
         const permission = tool.permissions[0];
 
         return {
@@ -140,10 +193,12 @@ export class OrgToolkitsService {
           required_permission_key: permission?.required_permission_key ?? null,
         };
       }),
-      connections: toolkit.connected_accounts.map((account) => ({
-        ...account,
-        account_id: account.composio_account_id,
-      })),
+      pagination: {
+        total,
+        page,
+        limit,
+        total_pages: Math.ceil(total / limit),
+      },
     };
   }
 
@@ -182,27 +237,25 @@ export class OrgToolkitsService {
       return;
     }
 
-    await this.prisma.$transaction(
-      tools.map((tool) =>
-        this.prisma.organisationToolPermission.upsert({
-          where: {
-            org_uuid_tool_uuid: {
-              org_uuid: organizationUuid,
-              tool_uuid: tool.uuid,
-            },
-          },
-          create: {
-            org_uuid: organizationUuid,
-            tool_uuid: tool.uuid,
-            enabled: true,
-            requires_approval: false,
-          },
-          update: {
-            enabled: true,
-          },
-        }),
-      ),
-    );
+    const toolUuids = tools.map((tool) => tool.uuid);
+
+    await this.prisma.organisationToolPermission.createMany({
+      data: toolUuids.map((toolUuid) => ({
+        org_uuid: organizationUuid,
+        tool_uuid: toolUuid,
+        enabled: true,
+        requires_approval: false,
+      })),
+      skipDuplicates: true,
+    });
+
+    await this.prisma.organisationToolPermission.updateMany({
+      where: {
+        org_uuid: organizationUuid,
+        tool_uuid: { in: toolUuids },
+      },
+      data: { enabled: true },
+    });
   }
 
   async disableToolkit(organizationUuid: string, slug: string) {

@@ -49,6 +49,7 @@ export const ApiRoutes = {
         openApiIntegrationTest: (organizationUuid: string, integrationUuid: string) => `/organizations/${organizationUuid}/openapi-integrations/${integrationUuid}/test`,
         integrationAppsToolkits: (organizationUuid: string) => `/organizations/${organizationUuid}/integrations/apps/toolkits`,
         integrationAppsToolkit: (organizationUuid: string, toolkitSlug: string) => `/organizations/${organizationUuid}/integrations/apps/toolkits/${toolkitSlug}`,
+        integrationAppsToolkitTools: (organizationUuid: string, toolkitSlug: string) => `/organizations/${organizationUuid}/integrations/apps/toolkits/${toolkitSlug}/tools`,
         integrationAppsToolkitEnable: (organizationUuid: string, toolkitSlug: string) => `/organizations/${organizationUuid}/integrations/apps/toolkits/${toolkitSlug}/enable`,
         integrationAppsToolkitDisable: (organizationUuid: string, toolkitSlug: string) => `/organizations/${organizationUuid}/integrations/apps/toolkits/${toolkitSlug}/disable`,
         integrationAppsConnect: (organizationUuid: string) => `/organizations/${organizationUuid}/integrations/apps/connect`,

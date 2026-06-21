@@ -5,10 +5,12 @@ import type {
   IntegrationAppsTrigger,
   IntegrationAppsToolkitDetail,
   IntegrationAppsToolkitFilters,
+  IntegrationAppsToolFilters,
   IntegrationAppsTool,
   IntegrationAppsConnectionTier,
   ConnectIntegrationAppsResponse,
   PaginatedIntegrationAppsToolkits,
+  PaginatedIntegrationAppsTools,
 } from '../interfaces/integrationApps.interface';
 
 function buildToolkitQuery(filters: IntegrationAppsToolkitFilters = {}) {
@@ -18,6 +20,17 @@ function buildToolkitQuery(filters: IntegrationAppsToolkitFilters = {}) {
   if (filters.category) params.set('category', filters.category);
   if (filters.tier) params.set('tier', filters.tier);
   if (filters.connected !== undefined) params.set('connected', String(filters.connected));
+  if (filters.page) params.set('page', String(filters.page));
+  if (filters.limit) params.set('limit', String(filters.limit));
+
+  const query = params.toString();
+  return query ? `?${query}` : '';
+}
+
+function buildToolkitToolsQuery(filters: IntegrationAppsToolFilters = {}) {
+  const params = new URLSearchParams();
+
+  if (filters.search) params.set('search', filters.search);
   if (filters.page) params.set('page', String(filters.page));
   if (filters.limit) params.set('limit', String(filters.limit));
 
@@ -48,6 +61,21 @@ export const getIntegrationAppsToolkit = async (
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.message || 'Failed to load integration.');
+  }
+};
+
+export const getIntegrationAppsToolkitTools = async (
+  organizationUuid: string,
+  toolkitSlug: string,
+  filters?: IntegrationAppsToolFilters,
+): Promise<PaginatedIntegrationAppsTools> => {
+  try {
+    const response = await axiosInstance.get(
+      `${ApiRoutes.organizations.integrationAppsToolkitTools(organizationUuid, toolkitSlug)}${buildToolkitToolsQuery(filters)}`,
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to load integration tools.');
   }
 };
 

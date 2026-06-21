@@ -17,6 +17,12 @@ export const ListOrgToolkitsSchema = z.object({
   limit: positiveIntegerQueryString,
 });
 
+export const ListOrgToolkitToolsSchema = z.object({
+  search: optionalQueryString,
+  page: positiveIntegerQueryString,
+  limit: positiveIntegerQueryString,
+});
+
 export const UpdateOrgToolPermissionSchema = z.object({
   enabled: z.boolean().optional(),
   requires_approval: z.boolean().optional(),
@@ -24,6 +30,7 @@ export const UpdateOrgToolPermissionSchema = z.object({
 });
 
 export type ListOrgToolkitsType = z.infer<typeof ListOrgToolkitsSchema>;
+export type ListOrgToolkitToolsType = z.infer<typeof ListOrgToolkitToolsSchema>;
 export type UpdateOrgToolPermissionType = z.infer<
   typeof UpdateOrgToolPermissionSchema
 >;

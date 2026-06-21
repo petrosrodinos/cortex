@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { ArrowLeft, Plug, Search, ShieldCheck, ShieldQuestion, Unplug } from 'lucide-react';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { Button } from '@/components/ui/button';
@@ -9,10 +9,13 @@ import {
   useDisconnectIntegrationAppsAccount,
   useEnableIntegrationAppsToolkit,
   useGetIntegrationAppsToolkit,
+  useGetIntegrationAppsToolkitTools,
   useUpdateIntegrationAppsToolPermission,
 } from '@/features/integration-apps/hooks/use-integrationApps';
 import type { IntegrationAppsTool } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import { cn } from '@/lib/utils';
+
+const TOOLS_PAGE_SIZE = 25;
 
 interface ToolkitDetailProps {
   organizationUuid: string;
@@ -23,7 +26,13 @@ interface ToolkitDetailProps {
 export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: ToolkitDetailProps) {
   const [disconnectAccountId, setDisconnectAccountId] = useState<string | null>(null);
   const [toolSearch, setToolSearch] = useState('');
+  const [toolsPage, setToolsPage] = useState(1);
   const detailQuery = useGetIntegrationAppsToolkit(organizationUuid, toolkitSlug);
+  const toolsQuery = useGetIntegrationAppsToolkitTools(organizationUuid, toolkitSlug, {
+    search: toolSearch.trim() || undefined,
+    page: toolsPage,
+    limit: TOOLS_PAGE_SIZE,
+  });
   const connectToolkit = useConnectIntegrationAppsToolkit(organizationUuid);
   const enableToolkit = useEnableIntegrationAppsToolkit(organizationUuid);
   const disableToolkit = useDisableIntegrationAppsToolkit(organizationUuid);
@@ -32,24 +41,14 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
   const detail = detailQuery.data;
   const toolkit = detail?.toolkit;
   const connections = detail?.connections ?? [];
-  const tools = detail?.tools ?? [];
-  const filteredTools = useMemo(() => {
-    const query = toolSearch.trim().toLowerCase();
-    if (!query) {
-      return tools;
-    }
-
-    return tools.filter((tool) => {
-      const haystack = [tool.name, tool.description, tool.slug]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
-      return haystack.includes(query);
-    });
-  }, [toolSearch, tools]);
+  const tools = toolsQuery.data?.data ?? [];
+  const toolsPagination = toolsQuery.data?.pagination;
+  const toolsTotalPages = toolsPagination?.total_pages ?? 1;
+  const toolsTotal = toolsPagination?.total ?? toolkit?.tool_count ?? 0;
   const isConnected = connections.length > 0;
   const isTogglingOrgEnabled = enableToolkit.isPending || disableToolkit.isPending;
   const pendingDisconnect = connections.find((connection) => connection.account_id === disconnectAccountId);
+  const showToolsLoading = toolsQuery.isLoading || toolsQuery.isFetching;
 
   if (detailQuery.isLoading || !toolkit) {
     return (
@@ -187,26 +186,35 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
           <div className="min-w-0">
             <h3 className="text-sm font-semibold text-foreground">Tools</h3>
             <p className="mt-0.5 text-xs text-muted">
-              {filteredTools.length === tools.length
-                ? `${tools.length} tools`
-                : `${filteredTools.length} of ${tools.length} tools`}
+              {toolSearch.trim()
+                ? `${toolsTotal} matching tool${toolsTotal === 1 ? '' : 's'}`
+                : `${toolsTotal} tool${toolsTotal === 1 ? '' : 's'}`}
             </p>
           </div>
           <div className="relative w-full sm:max-w-xs">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
             <Input
               value={toolSearch}
-              onChange={(event) => setToolSearch(event.target.value)}
+              onChange={(event) => {
+                setToolSearch(event.target.value);
+                setToolsPage(1);
+              }}
               className="pl-9"
               placeholder="Search tools"
             />
           </div>
         </div>
         <div className="divide-y divide-border">
-          {filteredTools.length === 0 ? (
+          {showToolsLoading && tools.length === 0 ? (
+            <div className="space-y-0">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="h-16 animate-pulse border-b border-border bg-surface-secondary/40 last:border-b-0" />
+              ))}
+            </div>
+          ) : tools.length === 0 ? (
             <div className="px-4 py-8 text-center text-sm text-muted">No tools found.</div>
           ) : (
-            filteredTools.map((tool) => (
+            tools.map((tool) => (
               <ToolPermissionRow
                 key={tool.uuid}
                 tool={tool}
@@ -224,6 +232,33 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
             ))
           )}
         </div>
+        {!showToolsLoading && toolsTotalPages > 1 ? (
+          <div className="flex items-center justify-between border-t border-border px-4 py-3">
+            <p className="text-xs text-muted">
+              Page {toolsPage} of {toolsTotalPages}
+            </p>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-8 px-3 text-xs"
+                onClick={() => setToolsPage((current) => Math.max(1, current - 1))}
+                disabled={toolsPage === 1 || showToolsLoading}
+              >
+                Previous
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-8 px-3 text-xs"
+                onClick={() => setToolsPage((current) => Math.min(toolsTotalPages, current + 1))}
+                disabled={toolsPage === toolsTotalPages || showToolsLoading}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        ) : null}
       </section>
 
       <ConfirmationDialog

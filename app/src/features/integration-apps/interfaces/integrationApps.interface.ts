@@ -36,7 +36,6 @@ export interface IntegrationAppsTool {
 
 export interface IntegrationAppsToolkitDetail {
   toolkit: Omit<IntegrationAppsToolkit, 'is_connected' | 'connected_accounts'>;
-  tools: IntegrationAppsTool[];
   connections: Array<{
     uuid: string;
     account_id: string;
@@ -44,6 +43,22 @@ export interface IntegrationAppsToolkitDetail {
     status: IntegrationAppsAccountStatus;
     user_uuid?: string | null;
   }>;
+}
+
+export interface PaginatedIntegrationAppsTools {
+  data: IntegrationAppsTool[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    total_pages: number;
+  };
+}
+
+export interface IntegrationAppsToolFilters {
+  search?: string;
+  page?: number;
+  limit?: number;
 }
 
 export interface PaginatedIntegrationAppsToolkits {
