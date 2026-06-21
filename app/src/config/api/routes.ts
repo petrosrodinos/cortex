@@ -48,6 +48,7 @@ export const ApiRoutes = {
         openApiIntegrationRegenerate: (organizationUuid: string, integrationUuid: string) => `/organizations/${organizationUuid}/openapi-integrations/${integrationUuid}/regenerate`,
         openApiIntegrationTest: (organizationUuid: string, integrationUuid: string) => `/organizations/${organizationUuid}/openapi-integrations/${integrationUuid}/test`,
         integrationAppsToolkits: (organizationUuid: string) => `/organizations/${organizationUuid}/integrations/apps/toolkits`,
+        integrationAppsToolkitsCount: (organizationUuid: string) => `/organizations/${organizationUuid}/integrations/apps/toolkits/count`,
         integrationAppsToolkit: (organizationUuid: string, toolkitSlug: string) => `/organizations/${organizationUuid}/integrations/apps/toolkits/${toolkitSlug}`,
         integrationAppsToolkitTools: (organizationUuid: string, toolkitSlug: string) => `/organizations/${organizationUuid}/integrations/apps/toolkits/${toolkitSlug}/tools`,
         integrationAppsToolkitEnable: (organizationUuid: string, toolkitSlug: string) => `/organizations/${organizationUuid}/integrations/apps/toolkits/${toolkitSlug}/enable`,
@@ -78,6 +79,7 @@ export const ApiRoutes = {
         execution: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}`,
         executionApprove: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}/approve`,
         executionReject: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}/reject`,
+        executionConnectionTiers: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}/connection-tiers`,
     },
     permissions: {
         root: "/permissions",

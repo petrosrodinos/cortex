@@ -8,10 +8,17 @@ import {
   buildConversationToolItems,
   filterConversationToolItems,
   getConversationToolItemId,
+  getConversationToolItemLabel,
   isConversationToolItemSelected,
+  isConversationToolItemTierDisabled,
   sortConversationToolItems,
   type ConversationToolItem,
 } from './conversation-tool-items.utils';
+import {
+  getActiveToolkitConnectionTierScope,
+  getToolkitTierScopeNotice,
+  type ToolkitBinding,
+} from '../../utils/conversation-toolkit-bindings.utils';
 
 interface ConversationToolRowProps {
   item: ConversationToolItem;
@@ -58,7 +65,7 @@ const ConversationToolRow: FC<ConversationToolRowProps> = ({
           isActive ? 'font-medium text-foreground' : 'text-muted',
         )}
       >
-        {item.toolkit.name}
+        {getConversationToolItemLabel(item)}
       </span>
       {mode === 'multiple' ? (
         <span
@@ -81,9 +88,9 @@ interface ConversationToolsListProps {
   toolkits: IntegrationAppsToolkit[];
   mode: 'multiple' | 'single';
   selectedIntegrationUuids: string[];
-  selectedToolkitSlugs: string[];
+  selectedToolkitBindings: ToolkitBinding[];
   excludeIntegrationUuids?: string[];
-  excludeToolkitSlugs?: string[];
+  excludeToolkitItemIds?: string[];
   highlightedItemId?: string | null;
   filterQuery?: string;
   className?: string;
@@ -97,9 +104,9 @@ export const ConversationToolsList: FC<ConversationToolsListProps> = ({
   toolkits,
   mode,
   selectedIntegrationUuids,
-  selectedToolkitSlugs,
+  selectedToolkitBindings,
   excludeIntegrationUuids = [],
-  excludeToolkitSlugs = [],
+  excludeToolkitItemIds = [],
   highlightedItemId = null,
   filterQuery = '',
   className,
@@ -109,14 +116,22 @@ export const ConversationToolsList: FC<ConversationToolsListProps> = ({
 }) => {
   const items = useMemo(() => {
     const excludedIntegrations = new Set(excludeIntegrationUuids);
-    const excludedToolkits = new Set(excludeToolkitSlugs);
+    const excludedToolkitItems = new Set(excludeToolkitItemIds);
     const visibleIntegrations = integrations.filter(
       (integration) => !excludedIntegrations.has(integration.uuid),
     );
-    const visibleToolkits = toolkits.filter((toolkit) => !excludedToolkits.has(toolkit.slug));
-    const allItems = buildConversationToolItems(visibleIntegrations, visibleToolkits);
+    const visibleToolkits = toolkits;
+    const allItems = buildConversationToolItems(visibleIntegrations, visibleToolkits).filter(
+      (item) => !excludedToolkitItems.has(getConversationToolItemId(item)),
+    );
     return sortConversationToolItems(filterConversationToolItems(allItems, filterQuery));
-  }, [integrations, toolkits, filterQuery, excludeIntegrationUuids, excludeToolkitSlugs]);
+  }, [integrations, toolkits, filterQuery, excludeIntegrationUuids, excludeToolkitItemIds]);
+
+  const activeToolkitTierScope = useMemo(
+    () => getActiveToolkitConnectionTierScope(selectedToolkitBindings),
+    [selectedToolkitBindings],
+  );
+  const tierScopeNotice = getToolkitTierScopeNotice(activeToolkitTierScope);
 
   if (items.length === 0) {
     return (
@@ -130,15 +145,21 @@ export const ConversationToolsList: FC<ConversationToolsListProps> = ({
 
   return (
     <div className={cn('overflow-y-auto p-1', className)} role="listbox" aria-label="Tools">
+      {tierScopeNotice ? (
+        <div className="mb-1 rounded-md bg-accent/8 px-2 py-1.5 text-[11px] leading-snug text-muted">
+          {tierScopeNotice}
+        </div>
+      ) : null}
       {items.map((item) => {
         const itemId = getConversationToolItemId(item);
         const isSelected = isConversationToolItemSelected(
           item,
           selectedIntegrationUuids,
-          selectedToolkitSlugs,
+          selectedToolkitBindings,
         );
         const isHighlighted = highlightedItemId === itemId;
         const isActive = mode === 'single' ? isHighlighted : isSelected;
+        const isTierDisabled = isConversationToolItemTierDisabled(item, selectedToolkitBindings);
 
         return (
           <button
@@ -146,18 +167,28 @@ export const ConversationToolsList: FC<ConversationToolsListProps> = ({
             type="button"
             role="option"
             aria-selected={mode === 'single' ? isHighlighted : isSelected}
+            aria-disabled={isTierDisabled}
+            disabled={isTierDisabled}
             className={cn(
               'flex w-full min-w-0 items-center gap-2 rounded-md px-1.5 py-1.5 text-left transition-colors',
               isActive && 'bg-accent/12',
               mode === 'single' && isHighlighted && 'bg-accent/16',
+              isTierDisabled && 'cursor-not-allowed opacity-45',
             )}
             onMouseDown={(event) => {
               event.preventDefault();
               event.stopPropagation();
             }}
-            onMouseEnter={() => onHighlight?.(itemId)}
+            onMouseEnter={() => {
+              if (!isTierDisabled) {
+                onHighlight?.(itemId);
+              }
+            }}
             onClick={(event) => {
               event.stopPropagation();
+              if (isTierDisabled) {
+                return;
+              }
               onSelect(item);
             }}
           >

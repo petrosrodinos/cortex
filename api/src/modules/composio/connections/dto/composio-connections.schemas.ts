@@ -1,14 +1,17 @@
+import { ComposioConnectionTier } from 'generated/prisma';
 import { z } from 'zod';
 
 export const ConnectComposioSchema = z.object({
   toolkit_slug: z.string().trim().min(1),
   connected_account_id: z.string().trim().min(1).optional(),
+  connection_tier: z.nativeEnum(ComposioConnectionTier).optional(),
 });
 
 export const ComposioCallbackSchema = z.object({
   toolkit_slug: z.string().trim().min(1),
   connection_request_id: z.string().trim().min(1).optional(),
   connected_account_id: z.string().trim().min(1).optional(),
+  connection_tier: z.nativeEnum(ComposioConnectionTier).optional(),
 });
 
 export type ConnectComposioType = z.infer<typeof ConnectComposioSchema>;

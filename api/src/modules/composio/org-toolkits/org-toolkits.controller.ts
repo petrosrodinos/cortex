@@ -14,9 +14,11 @@ import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-acti
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
 import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
 import { ZodValidationPipe } from '@/shared/pipes/zod.validation.pipe';
+import { CountOrgToolkitsDto } from './dto/count-org-toolkits.dto';
 import { ListOrgToolkitToolsDto } from './dto/list-org-toolkit-tools.dto';
 import { ListOrgToolkitsDto } from './dto/list-org-toolkits.dto';
 import {
+  CountOrgToolkitsSchema,
   ListOrgToolkitToolsSchema,
   ListOrgToolkitsSchema,
   UpdateOrgToolPermissionSchema,
@@ -44,6 +46,15 @@ export class OrgToolkitsController {
     query: ListOrgToolkitsDto,
   ) {
     return this.service.listToolkits(organizationUuid, query);
+  }
+
+  @Get('toolkits/count')
+  countToolkits(
+    @Param('organization_uuid') organizationUuid: string,
+    @Query(new ZodValidationPipe(CountOrgToolkitsSchema))
+    query: CountOrgToolkitsDto,
+  ) {
+    return this.service.countToolkits(organizationUuid, query);
   }
 
   @Get('toolkits/:slug/tools')

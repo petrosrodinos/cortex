@@ -6,6 +6,7 @@ export interface IntegrationAppsConnectedAccountSummary {
   account_id: string;
   label?: string | null;
   status: IntegrationAppsAccountStatus;
+  connection_tier?: IntegrationAppsConnectionTier;
   user_uuid?: string | null;
 }
 
@@ -42,6 +43,7 @@ export interface IntegrationAppsToolkitDetail {
     account_label?: string | null;
     status: IntegrationAppsAccountStatus;
     user_uuid?: string | null;
+    connection_tier?: IntegrationAppsConnectionTier;
   }>;
 }
 
@@ -78,6 +80,17 @@ export interface IntegrationAppsToolkitFilters {
   connected?: boolean;
   page?: number;
   limit?: number;
+}
+
+export interface IntegrationAppsToolkitCountFilters {
+  search?: string;
+  category?: string;
+  tier?: IntegrationAppsConnectionTier;
+  connected?: boolean;
+}
+
+export interface IntegrationAppsToolkitCount {
+  count: number;
 }
 
 export interface ConnectIntegrationAppsResponse {

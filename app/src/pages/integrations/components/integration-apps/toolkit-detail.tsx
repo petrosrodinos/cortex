@@ -12,8 +12,16 @@ import {
   useGetIntegrationAppsToolkitTools,
   useUpdateIntegrationAppsToolPermission,
 } from '@/features/integration-apps/hooks/use-integrationApps';
-import type { IntegrationAppsTool } from '@/features/integration-apps/interfaces/integrationApps.interface';
+import type {
+  IntegrationAppsConnectionTier,
+  IntegrationAppsTool,
+} from '@/features/integration-apps/interfaces/integrationApps.interface';
 import { cn } from '@/lib/utils';
+import {
+  getConnectionTierFromAccount,
+  getConnectionTierLabel,
+  getConnectionTierOption,
+} from './connection-tier-selector';
 
 const TOOLS_PAGE_SIZE = 25;
 
@@ -25,6 +33,7 @@ interface ToolkitDetailProps {
 
 export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: ToolkitDetailProps) {
   const [disconnectAccountId, setDisconnectAccountId] = useState<string | null>(null);
+  const [connectingTier, setConnectingTier] = useState<IntegrationAppsConnectionTier | null>(null);
   const [toolSearch, setToolSearch] = useState('');
   const [toolsPage, setToolsPage] = useState(1);
   const detailQuery = useGetIntegrationAppsToolkit(organizationUuid, toolkitSlug);
@@ -46,9 +55,28 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
   const toolsTotalPages = toolsPagination?.total_pages ?? 1;
   const toolsTotal = toolsPagination?.total ?? toolkit?.tool_count ?? 0;
   const isConnected = connections.length > 0;
+  const isHybridToolkit = (toolkit?.connection_tiers.length ?? 0) > 1;
   const isTogglingOrgEnabled = enableToolkit.isPending || disableToolkit.isPending;
   const pendingDisconnect = connections.find((connection) => connection.account_id === disconnectAccountId);
   const showToolsLoading = toolsQuery.isLoading || toolsQuery.isFetching;
+
+  const getConnectionForTier = (tier: IntegrationAppsConnectionTier) =>
+    connections.find(
+      (connection) =>
+        (connection.connection_tier ?? getConnectionTierFromAccount(connection.user_uuid)) === tier,
+    );
+
+  const handleConnectTier = (tier: IntegrationAppsConnectionTier) => {
+    if (!toolkit) {
+      return;
+    }
+
+    setConnectingTier(tier);
+    connectToolkit.mutate(
+      { toolkitSlug: toolkit.slug, connectionTier: tier },
+      { onSettled: () => setConnectingTier(null) },
+    );
+  };
 
   if (detailQuery.isLoading || !toolkit) {
     return (
@@ -106,7 +134,7 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
                   }}
                 />
               </div>
-              {connections.length === 1 ? (
+              {!isHybridToolkit ? (
                 <Button
                   type="button"
                   variant="outline"
@@ -118,7 +146,7 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
                 </Button>
               ) : null}
             </>
-          ) : toolkit.connection_tiers.length === 1 ? (
+          ) : !isHybridToolkit ? (
             <Button
               type="button"
               className="sm:w-auto"
@@ -133,50 +161,69 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
               <Plug className="h-4 w-4" />
               Connect
             </Button>
-          ) : (
-            toolkit.connection_tiers.map((connectionTier) => (
-              <Button
-                key={connectionTier}
-                type="button"
-                className="sm:w-auto"
-                loading={connectToolkit.isPending}
-                onClick={() =>
-                  connectToolkit.mutate({
-                    toolkitSlug: toolkit.slug,
-                    connectionTier,
-                  })
-                }
-              >
-                <Plug className="h-4 w-4" />
-                {connectionTier === 'USER_PERSONAL' ? 'Connect personal' : 'Connect organization'}
-              </Button>
-            ))
-          )}
+          ) : null}
         </div>
       </header>
 
-      {isConnected && connections.length > 1 ? (
+      {isHybridToolkit ? (
         <section className="rounded-lg border border-border bg-surface">
           <div className="border-b border-border px-4 py-3">
             <h3 className="text-sm font-semibold text-foreground">Connections</h3>
+            <p className="mt-1 text-xs text-muted">
+              Connect organization and personal accounts separately. Each can be removed independently.
+            </p>
           </div>
           <div className="divide-y divide-border">
-            {connections.map((connection) => (
-              <div key={connection.account_id} className="flex items-center justify-between gap-3 px-4 py-3">
-                <p className="truncate text-sm font-medium text-foreground">
-                  {connection.account_label || connection.account_id}
-                </p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-9 shrink-0"
-                  onClick={() => setDisconnectAccountId(connection.account_id)}
-                >
-                  <Unplug className="h-4 w-4" />
-                  Remove
-                </Button>
-              </div>
-            ))}
+            {toolkit.connection_tiers.map((tier) => {
+              const connection = getConnectionForTier(tier);
+              const tierOption = getConnectionTierOption(tier);
+              const isConnectingThisTier = connectToolkit.isPending && connectingTier === tier;
+
+              if (connection) {
+                return (
+                  <div key={tier} className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-foreground">
+                        {getConnectionTierLabel(tier)}
+                      </p>
+                      <p className="mt-0.5 truncate text-xs text-muted">
+                        {connection.account_label || connection.account_id}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-9 shrink-0 sm:w-auto"
+                      onClick={() => setDisconnectAccountId(connection.account_id)}
+                    >
+                      <Unplug className="h-4 w-4" />
+                      Remove
+                    </Button>
+                  </div>
+                );
+              }
+
+              return (
+                <div key={tier} className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-foreground">
+                      {getConnectionTierLabel(tier)}
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted">{tierOption?.description}</p>
+                  </div>
+                  <Button
+                    type="button"
+                    className="h-9 shrink-0 sm:w-auto"
+                    loading={isConnectingThisTier}
+                    disabled={connectToolkit.isPending && !isConnectingThisTier}
+                    onClick={() => handleConnectTier(tier)}
+                  >
+                    <Plug className="h-4 w-4" />
+                    Connect
+                  </Button>
+                </div>
+              );
+            })}
           </div>
         </section>
       ) : null}
@@ -266,7 +313,12 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
         title="Remove connection?"
         description={
           pendingDisconnect
-            ? `This will disconnect ${pendingDisconnect.account_label || pendingDisconnect.account_id} from ${toolkit.name}. The agent will no longer be able to use this integration until you connect again.`
+            ? `This will disconnect the ${getConnectionTierLabel(
+                pendingDisconnect.connection_tier ??
+                  getConnectionTierFromAccount(pendingDisconnect.user_uuid),
+              ).toLowerCase()} connection${
+                pendingDisconnect.account_label ? ` (${pendingDisconnect.account_label})` : ''
+              } from ${toolkit.name}. The agent will no longer be able to use this connection until you connect again.`
             : 'This will remove the connected account. The agent will no longer be able to use this integration until you connect again.'
         }
         confirmLabel="Remove connection"

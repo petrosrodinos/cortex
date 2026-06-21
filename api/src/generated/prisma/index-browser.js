@@ -602,7 +602,8 @@ exports.AgentExecutionStatus = exports.$Enums.AgentExecutionStatus = {
   RUNNING: 'RUNNING',
   COMPLETED: 'COMPLETED',
   FAILED: 'FAILED',
-  AWAITING_APPROVAL: 'AWAITING_APPROVAL'
+  AWAITING_APPROVAL: 'AWAITING_APPROVAL',
+  AWAITING_CONNECTION_TIER: 'AWAITING_CONNECTION_TIER'
 };
 
 exports.ToolCallStatus = exports.$Enums.ToolCallStatus = {

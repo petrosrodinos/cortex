@@ -6,9 +6,11 @@ import {
   useDisableIntegrationAppsToolkit,
   useEnableIntegrationAppsToolkit,
   useGetIntegrationAppsToolkits,
+  useGetIntegrationAppsToolkitsCount,
 } from '@/features/integration-apps/hooks/use-integrationApps';
 import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import { cn } from '@/lib/utils';
+import { ConnectToolkitDialog } from './connect-toolkit-dialog';
 import {
   IntegrationCatalogCard,
   IntegrationCatalogCardAction,
@@ -24,16 +26,16 @@ interface ToolkitCatalogProps {
 
 export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCatalogProps) {
   const [search, setSearch] = useState('');
+  const [connectingToolkit, setConnectingToolkit] = useState<IntegrationAppsToolkit | null>(null);
   const toolkitsQuery = useGetIntegrationAppsToolkits(organizationUuid, { search, limit: 60 });
-  const connectedToolkitsQuery = useGetIntegrationAppsToolkits(organizationUuid, {
+  const connectedToolkitsQuery = useGetIntegrationAppsToolkitsCount(organizationUuid, {
     connected: true,
-    limit: 1,
   });
   const connectToolkit = useConnectIntegrationAppsToolkit(organizationUuid);
   const enableToolkit = useEnableIntegrationAppsToolkit(organizationUuid);
   const disableToolkit = useDisableIntegrationAppsToolkit(organizationUuid);
   const toolkits = toolkitsQuery.data?.data ?? [];
-  const connectedCount = connectedToolkitsQuery.data?.pagination.total ?? 0;
+  const connectedCount = connectedToolkitsQuery.data?.count ?? 0;
 
   return (
     <div className="flex flex-col gap-4">
@@ -76,7 +78,7 @@ export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCat
                   return;
                 }
 
-                onSelectToolkit(toolkit.slug);
+                setConnectingToolkit(toolkit);
               }}
               onToggleEnabled={(enabled) => {
                 if (enabled) {
@@ -91,6 +93,35 @@ export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCat
           ))}
         </div>
       )}
+
+      <ConnectToolkitDialog
+        open={!!connectingToolkit}
+        toolkitName={connectingToolkit?.name ?? ''}
+        connectionTiers={connectingToolkit?.connection_tiers ?? []}
+        loading={connectToolkit.isPending}
+        onOpenChange={(open) => {
+          if (!open) {
+            setConnectingToolkit(null);
+          }
+        }}
+        onConnect={(connectionTier) => {
+          if (!connectingToolkit) {
+            return;
+          }
+
+          connectToolkit.mutate(
+            {
+              toolkitSlug: connectingToolkit.slug,
+              connectionTier,
+            },
+            {
+              onSuccess: () => {
+                setConnectingToolkit(null);
+              },
+            },
+          );
+        }}
+      />
     </div>
   );
 }

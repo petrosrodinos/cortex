@@ -310,7 +310,8 @@ export const AgentExecutionStatus: {
   RUNNING: 'RUNNING',
   COMPLETED: 'COMPLETED',
   FAILED: 'FAILED',
-  AWAITING_APPROVAL: 'AWAITING_APPROVAL'
+  AWAITING_APPROVAL: 'AWAITING_APPROVAL',
+  AWAITING_CONNECTION_TIER: 'AWAITING_CONNECTION_TIER'
 };
 
 export type AgentExecutionStatus = (typeof AgentExecutionStatus)[keyof typeof AgentExecutionStatus]

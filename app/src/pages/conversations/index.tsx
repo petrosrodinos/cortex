@@ -20,6 +20,7 @@ import {
   useGetConversations,
   useGetMessages,
   useRejectExecution,
+  useResolveConnectionTiers,
   useSendMessage,
   useUpdateConversation,
   conversationsQueryKey,
@@ -38,10 +39,15 @@ import {
   createEmptyDraft,
   draftPartsToPlainText,
   getDraftIntegrationUuids,
-  getDraftToolkitSlugs,
+  getDraftToolkitBindings,
   type ConversationDraftEditorHandle,
   type DraftPart,
 } from './components/input/conversation-draft-editor';
+import { getAutoSelectableToolkitBindings } from './components/input/conversation-tool-items.utils';
+import {
+  bindingsToTierMap,
+  type ToolkitBinding,
+} from './utils/conversation-toolkit-bindings.utils';
 import { ConversationMessages } from './components/messages/conversation-messages';
 import { getMessageAttachments } from './components/messages/message-attachments';
 import { ConversationSidebar } from './components/sidebar/conversation-sidebar';
@@ -68,7 +74,7 @@ const ConversationsPage: FC = () => {
   const [activeExecutionId, setActiveExecutionId] = useState<string | null>(null);
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
   const [selectedIntegrationUuids, setSelectedIntegrationUuids] = useState<string[]>([]);
-  const [selectedToolkitSlugs, setSelectedToolkitSlugs] = useState<string[]>([]);
+  const [selectedToolkitBindings, setSelectedToolkitBindings] = useState<ToolkitBinding[]>([]);
   const [pendingUserMessage, setPendingUserMessage] = useState<string | null>(null);
   const [pendingUserAttachments, setPendingUserAttachments] = useState<MessageAttachment[]>([]);
   const [deleteTargetUuid, setDeleteTargetUuid] = useState<string | null>(null);
@@ -92,9 +98,9 @@ const ConversationsPage: FC = () => {
         description: toolkit.description,
         logo_url: toolkit.logo_url,
         categories: [],
-        connection_tiers: [],
+        connection_tiers: toolkit.connection_tiers,
         is_connected: toolkit.is_connected,
-        connected_accounts: [],
+        connected_accounts: toolkit.connected_accounts,
         is_org_enabled: true,
         tool_count: toolkit.tool_count,
       })),
@@ -108,10 +114,20 @@ const ConversationsPage: FC = () => {
   const sendMessage = useSendMessage(organizationUuid, conversationUuid);
   const approveExecution = useApproveExecution(organizationUuid);
   const rejectExecution = useRejectExecution(organizationUuid);
+  const resolveConnectionTiers = useResolveConnectionTiers(organizationUuid);
   const uploadDocument = useUploadDocument(organizationUuid);
 
   const execution = useExecution(organizationUuid, conversationUuid, activeExecutionId);
-  const { isComplete, reset: resetExecution, assistantContent, isRunning, toolCalls, approvalRequest, error: executionError } = execution;
+  const {
+    isComplete,
+    reset: resetExecution,
+    assistantContent,
+    isRunning,
+    toolCalls,
+    approvalRequest,
+    connectionTierRequest,
+    error: executionError,
+  } = execution;
 
   const activeConversation = useMemo(
     () => conversations.find((c) => c.uuid === conversationUuid),
@@ -138,13 +154,13 @@ const ConversationsPage: FC = () => {
     () => toolEligibleIntegrations.map((integration) => integration.uuid),
     [toolEligibleIntegrations],
   );
-  const toolEligibleToolkitSlugs = useMemo(
-    () => conversationToolkits.map((toolkit) => toolkit.slug),
+  const autoSelectableToolkitBindings = useMemo(
+    () => getAutoSelectableToolkitBindings(conversationToolkits),
     [conversationToolkits],
   );
 
   const toolEligibleIntegrationUuidsRef = useRef<string[]>([]);
-  const toolEligibleToolkitSlugsRef = useRef<string[]>([]);
+  const autoSelectableToolkitBindingsRef = useRef<ToolkitBinding[]>([]);
 
   useEffect(() => {
     setReplyTarget(null);
@@ -173,24 +189,33 @@ const ConversationsPage: FC = () => {
   }, [toolEligibleIntegrationUuids]);
 
   useEffect(() => {
-    const previousEligible = new Set(toolEligibleToolkitSlugsRef.current);
-    const currentEligible = toolEligibleToolkitSlugs;
+    const previousEligible = autoSelectableToolkitBindingsRef.current;
+    const currentEligible = autoSelectableToolkitBindings;
 
-    setSelectedToolkitSlugs((prev) => {
-      const available = new Set(currentEligible);
+    setSelectedToolkitBindings((prev) => {
+      const availableKeys = new Set(
+        currentEligible.map((binding) => `${binding.slug}:${binding.connectionTier}`),
+      );
 
       if (prev.length === 0) {
         return currentEligible;
       }
 
-      const kept = prev.filter((slug) => available.has(slug));
-      const newlyEligible = currentEligible.filter((slug) => !previousEligible.has(slug));
+      const kept = prev.filter((binding) =>
+        availableKeys.has(`${binding.slug}:${binding.connectionTier}`),
+      );
+      const previousKeys = new Set(
+        previousEligible.map((binding) => `${binding.slug}:${binding.connectionTier}`),
+      );
+      const newlyEligible = currentEligible.filter(
+        (binding) => !previousKeys.has(`${binding.slug}:${binding.connectionTier}`),
+      );
 
       return [...kept, ...newlyEligible];
     });
 
-    toolEligibleToolkitSlugsRef.current = currentEligible;
-  }, [toolEligibleToolkitSlugs]);
+    autoSelectableToolkitBindingsRef.current = currentEligible;
+  }, [autoSelectableToolkitBindings]);
 
   useEffect(() => {
     try {
@@ -221,7 +246,7 @@ const ConversationsPage: FC = () => {
   }, [organizationUuid, conversationsLoading, conversationUuid, sortedConversations, createConversation, navigate]);
 
   useEffect(() => {
-    if (!isComplete || !conversationUuid || !organizationUuid || approvalRequest) {
+    if (!isComplete || !conversationUuid || !organizationUuid || approvalRequest || connectionTierRequest) {
       return;
     }
 
@@ -229,7 +254,7 @@ const ConversationsPage: FC = () => {
     void queryClient.invalidateQueries({ queryKey: conversationsQueryKey });
     resetExecution();
     setActiveExecutionId(null);
-  }, [isComplete, approvalRequest, conversationUuid, organizationUuid, queryClient, resetExecution]);
+  }, [isComplete, approvalRequest, connectionTierRequest, conversationUuid, organizationUuid, queryClient, resetExecution]);
 
   const pendingAssistantContent = useMemo(() => {
     if (isComplete || assistantContent == null) {
@@ -256,11 +281,12 @@ const ConversationsPage: FC = () => {
   const showTypingIndicator =
     (sendMessage.isPending || isRunning) &&
     !approvalRequest &&
+    !connectionTierRequest &&
     pendingAssistantContent == null &&
     (isPendingUserMessageVisible || (activeExecutionId != null && !sendMessage.isPending));
 
   const showExecutionProgress =
-    (sendMessage.isPending || isRunning || approvalRequest != null) &&
+    (sendMessage.isPending || isRunning || approvalRequest != null || connectionTierRequest != null) &&
     pendingAssistantContent == null;
 
   const hasAiProvider = aiProviders.length > 0;
@@ -329,16 +355,24 @@ const ConversationsPage: FC = () => {
     const userContent = draftPartsToPlainText(draftParts);
     const content = buildMessageWithReply(userContent, replyTarget);
     const draftIntegrationUuids = getDraftIntegrationUuids(draftParts);
-    const draftToolkitSlugs = getDraftToolkitSlugs(draftParts);
+    const draftToolkitBindings = getDraftToolkitBindings(draftParts);
     if (!content || !conversationUuid || !hasAiProvider) {
       return;
     }
     const integrationUuids = [
       ...new Set([...selectedIntegrationUuids, ...draftIntegrationUuids]),
     ];
-    const toolkitSlugs = [
-      ...new Set([...selectedToolkitSlugs, ...draftToolkitSlugs]),
-    ];
+    const toolkitBindingMap = new Map<string, ToolkitBinding>();
+    const effectiveToolkitBindings =
+      selectedToolkitBindings.length > 0 || draftToolkitBindings.length > 0
+        ? [...selectedToolkitBindings, ...draftToolkitBindings]
+        : autoSelectableToolkitBindings;
+    for (const binding of effectiveToolkitBindings) {
+      toolkitBindingMap.set(binding.slug, binding);
+    }
+    const toolkitBindings = [...toolkitBindingMap.values()];
+    const toolkitSlugs = [...new Set(toolkitBindings.map((binding) => binding.slug))];
+    const toolkitConnectionTiers = bindingsToTierMap(toolkitBindings);
     const documentUuids = attachedFiles.filter((attachment) => attachment.uuid).map((attachment) => attachment.uuid as string);
     const sentAttachments: MessageAttachment[] = attachedFiles
       .filter((attachment) => attachment.uuid)
@@ -349,18 +383,22 @@ const ConversationsPage: FC = () => {
         url: attachment.url,
       }));
     const isFirstMessage = messages.length === 0;
-    setDraftParts(createEmptyDraft());
-    setAttachedFiles([]);
-    setReplyTarget(null);
 
-    await submitMessage({
+    const sent = await submitMessage({
       content,
       documentUuids,
       integrationUuids,
       toolkitSlugs,
+      toolkitConnectionTiers,
       attachments: sentAttachments,
       isFirstMessage,
     });
+
+    if (sent) {
+      setDraftParts(createEmptyDraft());
+      setAttachedFiles([]);
+      setReplyTarget(null);
+    }
   };
 
   const submitMessage = async ({
@@ -368,6 +406,7 @@ const ConversationsPage: FC = () => {
     documentUuids,
     integrationUuids,
     toolkitSlugs,
+    toolkitConnectionTiers,
     attachments,
     isFirstMessage = false,
   }: {
@@ -375,11 +414,12 @@ const ConversationsPage: FC = () => {
     documentUuids: string[];
     integrationUuids: string[];
     toolkitSlugs: string[];
+    toolkitConnectionTiers: Record<string, IntegrationAppsToolkit['connection_tiers'][number]>;
     attachments: MessageAttachment[];
     isFirstMessage?: boolean;
-  }) => {
+  }): Promise<boolean> => {
     if (!conversationUuid) {
-      return;
+      return false;
     }
 
     resetExecution();
@@ -392,6 +432,7 @@ const ConversationsPage: FC = () => {
         documentUuids,
         integrationUuids,
         toolkitSlugs,
+        toolkitConnectionTiers,
       });
       setActiveExecutionId(response.executionId);
 
@@ -400,9 +441,12 @@ const ConversationsPage: FC = () => {
           void queryClient.invalidateQueries({ queryKey: conversationsQueryKey });
         }, 2500);
       }
+
+      return true;
     } catch {
       setPendingUserMessage(null);
       setPendingUserAttachments([]);
+      return false;
     }
   };
 
@@ -412,7 +456,8 @@ const ConversationsPage: FC = () => {
       content: message.content,
       documentUuids: attachments.map((attachment) => attachment.uuid),
       integrationUuids: selectedIntegrationUuids,
-      toolkitSlugs: selectedToolkitSlugs,
+      toolkitSlugs: selectedToolkitBindings.map((binding) => binding.slug),
+      toolkitConnectionTiers: bindingsToTierMap(selectedToolkitBindings),
       attachments,
     });
   };
@@ -443,6 +488,19 @@ const ConversationsPage: FC = () => {
 
     await rejectExecution.mutateAsync(activeExecutionId);
     setActiveExecutionId(null);
+  };
+
+  const handleResolveConnectionTiers = async (
+    choices: Record<string, IntegrationAppsToolkit['connection_tiers'][number]>,
+  ) => {
+    if (!activeExecutionId) {
+      return;
+    }
+
+    const executionId = activeExecutionId;
+    setActiveExecutionId(null);
+    await resolveConnectionTiers.mutateAsync({ executionUuid: executionId, choices });
+    setActiveExecutionId(executionId);
   };
 
   const handleRename = (uuid: string, title: string) => {
@@ -614,11 +672,14 @@ const ConversationsPage: FC = () => {
               isRunning={isRunning}
               toolCalls={toolCalls}
               approvalRequest={approvalRequest}
+              connectionTierRequest={connectionTierRequest}
               executionError={executionError}
               isApproving={approveExecution.isPending}
               isRejecting={rejectExecution.isPending}
+              isResolvingConnectionTiers={resolveConnectionTiers.isPending}
               onApprove={() => void handleApprove()}
               onReject={() => void handleReject()}
+              onResolveConnectionTiers={(choices) => void handleResolveConnectionTiers(choices)}
               isSendDisabled={isChatInputDisabled}
               onRetryMessage={handleRetryMessage}
               onReplyToMessage={handleReplyToMessage}
@@ -637,7 +698,7 @@ const ConversationsPage: FC = () => {
                 integrations={toolEligibleIntegrations}
                 toolkits={conversationToolkits}
                 selectedIntegrationUuids={selectedIntegrationUuids}
-                selectedToolkitSlugs={selectedToolkitSlugs}
+                selectedToolkitBindings={selectedToolkitBindings}
                 disabled={isChatInputDisabled}
                 isUploading={uploadDocument.isPending}
                 draftEditorRef={draftEditorRef}
@@ -647,7 +708,7 @@ const ConversationsPage: FC = () => {
                 onFileSelect={(event) => void handleFileSelect(event)}
                 onRemoveFile={removeAttachedFile}
                 onIntegrationSelectionChange={setSelectedIntegrationUuids}
-                onToolkitSelectionChange={setSelectedToolkitSlugs}
+                onToolkitSelectionChange={setSelectedToolkitBindings}
               />
             )}
           </div>

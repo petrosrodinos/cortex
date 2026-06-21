@@ -12,6 +12,7 @@ import { AGENT_RUN_QUEUE } from '@/core/queues/queues.constants';
 import type { AgentRunJobData } from '@/core/queues/processors/agent.processor';
 import { SendMessageDto } from './dto/send-message.dto';
 import { CapabilitiesToolsService } from '@/shared/services/ai/agents/capabilities/capabilities-tools.service';
+import { normalizeToolkitConnectionTierMap } from '@/shared/services/ai/agents/capabilities/toolkit-connection-tiers.utils';
 import { collectDocumentUuids } from './utils/conversation-document.utils';
 
 const DEFAULT_CONVERSATION_TITLE = 'New conversation';
@@ -123,11 +124,30 @@ export class MessagesService {
       dto.documentUuids ?? [],
     );
     const toolkitSlugs = this.resolveToolkitSlugs(dto);
+    const providedTiers = normalizeToolkitConnectionTierMap(
+      dto.toolkitConnectionTiers ?? dto.toolkit_connection_tiers,
+    );
     const toolScope = await this.capabilities.resolveAgentToolScope(
       organizationUuid,
+      userUuid,
       dto.integrationUuids,
       toolkitSlugs,
+      providedTiers,
     );
+    const scopedToolkitSlugs = toolScope.toolkitSlugs ?? [];
+    const { ambiguousChoices, resolvedTierMap } =
+      await this.capabilities.resolveToolkitConnectionAmbiguities(
+        organizationUuid,
+        userUuid,
+        scopedToolkitSlugs,
+        {
+          ...(toolScope.toolkitConnectionTiers ?? {}),
+          ...providedTiers,
+        },
+      );
+    const awaitingConnectionTier = ambiguousChoices.length > 0;
+    const toolkitConnectionTiers =
+      Object.keys(resolvedTierMap).length > 0 ? resolvedTierMap : undefined;
 
     const userMessage = await this.prisma.message.create({
       data: {
@@ -147,36 +167,45 @@ export class MessagesService {
         conversation_uuid: conversation.uuid,
         org_uuid: organizationUuid,
         user_uuid: userUuid,
-        status: AgentExecutionStatus.PENDING,
+        status: awaitingConnectionTier
+          ? AgentExecutionStatus.AWAITING_CONNECTION_TIER
+          : AgentExecutionStatus.PENDING,
         input: {
           content: dto.content,
           documentUuids: dto.documentUuids ?? [],
           integrationUuids: toolScope.integrationUuids,
           toolkitSlugs: toolScope.toolkitSlugs,
-        },
+          ...(toolkitConnectionTiers ? { toolkitConnectionTiers } : {}),
+          ...(awaitingConnectionTier
+            ? { connectionTierChoices: ambiguousChoices }
+            : {}),
+        } as object,
       },
     });
 
-    await this.agentQueue.add(
-      'run',
-      {
-        organizationUuid,
-        userUuid,
-        conversationId: conversation.uuid,
-        userMessage: dto.content,
-        executionUuid: execution.uuid,
-        documentUuids: dto.documentUuids ?? [],
-        integrationUuids: toolScope.integrationUuids,
-        toolkitSlugs: toolScope.toolkitSlugs,
-      },
-      {
-        jobId: `run-${execution.uuid}`,
-        attempts: 3,
-        backoff: { type: 'exponential', delay: 2000 },
-        removeOnComplete: 100,
-        removeOnFail: 200,
-      },
-    );
+    if (!awaitingConnectionTier) {
+      await this.agentQueue.add(
+        'run',
+        {
+          organizationUuid,
+          userUuid,
+          conversationId: conversation.uuid,
+          userMessage: dto.content,
+          executionUuid: execution.uuid,
+          documentUuids: dto.documentUuids ?? [],
+          integrationUuids: toolScope.integrationUuids,
+          toolkitSlugs: toolScope.toolkitSlugs,
+          toolkitConnectionTiers,
+        },
+        {
+          jobId: `run-${execution.uuid}`,
+          attempts: 3,
+          backoff: { type: 'exponential', delay: 2000 },
+          removeOnComplete: 100,
+          removeOnFail: 200,
+        },
+      );
+    }
 
     await this.prisma.conversation.update({
       where: { uuid: conversation.uuid },
@@ -282,8 +311,12 @@ export class MessagesService {
 
   private resolveToolkitSlugs(dto: SendMessageDto): string[] | undefined {
     const values = dto.toolkitSlugs ?? dto.toolkit_slugs;
-    if (!values?.length) {
+    if (values === undefined) {
       return undefined;
+    }
+
+    if (values.length === 0) {
+      return [];
     }
 
     return [...new Set(values.map((slug) => slug.trim()).filter(Boolean))];

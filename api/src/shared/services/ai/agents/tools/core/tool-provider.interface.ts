@@ -10,6 +10,7 @@ export interface AgentToolProviderContext {
   documentUuids: string[];
   integrationUuids?: string[];
   toolkitSlugs?: string[];
+  toolkitConnectionTiers?: Record<string, string>;
   userMessage?: string;
   progress?: AgentProgressScope;
 }

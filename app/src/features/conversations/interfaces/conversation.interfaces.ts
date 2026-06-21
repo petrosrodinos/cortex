@@ -13,6 +13,7 @@ export const AgentExecutionStatuses = {
   COMPLETED: 'COMPLETED',
   FAILED: 'FAILED',
   AWAITING_APPROVAL: 'AWAITING_APPROVAL',
+  AWAITING_CONNECTION_TIER: 'AWAITING_CONNECTION_TIER',
 } as const;
 
 export type AgentExecutionStatus = (typeof AgentExecutionStatuses)[keyof typeof AgentExecutionStatuses];
@@ -55,6 +56,11 @@ export interface ConversationAgentIntegration {
   actions: string[];
 }
 
+export interface ConversationAgentConnectedAccount {
+  connection_tier: 'ORG_SHARED' | 'USER_PERSONAL';
+  account_label?: string | null;
+}
+
 export interface ConversationAgentToolkit {
   uuid: string;
   slug: string;
@@ -63,6 +69,8 @@ export interface ConversationAgentToolkit {
   logo_url: string | null;
   tool_count: number;
   is_connected: boolean;
+  connection_tiers: Array<'ORG_SHARED' | 'USER_PERSONAL'>;
+  connected_accounts: ConversationAgentConnectedAccount[];
 }
 
 export interface ConversationAgentTools {
@@ -82,6 +90,8 @@ export interface AgentExecution {
       toolName?: string;
       input?: unknown;
     }>;
+    connectionTierChoices?: ExecutionConnectionTierChoice[];
+    toolkitConnectionTiers?: Record<string, 'ORG_SHARED' | 'USER_PERSONAL'>;
   } | null;
   output?: {
     content?: string;
@@ -115,6 +125,7 @@ export interface AgentProgressState {
   isRunning: boolean;
   error: string | null;
   approvalRequest: ExecutionApprovalRequest | null;
+  connectionTierRequest: ExecutionConnectionTierRequest | null;
 }
 
 export interface ExecutionApprovalRequest {
@@ -122,6 +133,17 @@ export interface ExecutionApprovalRequest {
   input?: unknown;
   executionId: string;
   approvalRequests?: unknown[];
+}
+
+export interface ExecutionConnectionTierChoice {
+  slug: string;
+  name: string;
+  availableTiers: Array<'ORG_SHARED' | 'USER_PERSONAL'>;
+}
+
+export interface ExecutionConnectionTierRequest {
+  executionId: string;
+  connectionTierChoices: ExecutionConnectionTierChoice[];
 }
 
 export interface AgentCompleteEvent {

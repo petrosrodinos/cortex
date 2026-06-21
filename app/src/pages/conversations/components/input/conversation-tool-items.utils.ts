@@ -1,29 +1,101 @@
-import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
+import type {
+  IntegrationAppsConnectionTier,
+  IntegrationAppsToolkit,
+} from '@/features/integration-apps/interfaces/integrationApps.interface';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
+import {
+  getConnectionTierFromAccount,
+  getConnectionTierLabel,
+} from '@/pages/integrations/components/integration-apps/connection-tier-selector';
 import {
   getIntegrationDisplayLabel,
   getIntegrationSlashSlug,
   getToolEligibleIntegrations,
 } from './integration-tools-list';
+import {
+  getActiveToolkitConnectionTierScope,
+  isToolkitBindingDisabledByTierScope,
+  type ToolkitBinding,
+} from '../../utils/conversation-toolkit-bindings.utils';
 
 export type ConversationToolItem =
   | { kind: 'integration'; integration: Integration }
-  | { kind: 'toolkit'; toolkit: IntegrationAppsToolkit };
+  | {
+      kind: 'toolkit';
+      toolkit: IntegrationAppsToolkit;
+      connectionTier: IntegrationAppsConnectionTier;
+    };
+
+function getToolkitConnectedTiers(
+  toolkit: IntegrationAppsToolkit,
+): IntegrationAppsConnectionTier[] {
+  const tiers = new Set<IntegrationAppsConnectionTier>();
+
+  for (const account of toolkit.connected_accounts ?? []) {
+    tiers.add(
+      account.connection_tier ?? getConnectionTierFromAccount(account.user_uuid),
+    );
+  }
+
+  return [...tiers];
+}
+
+function expandToolkitItems(toolkit: IntegrationAppsToolkit): ConversationToolItem[] {
+  const connectedTiers = getToolkitConnectedTiers(toolkit);
+
+  if (connectedTiers.length <= 1) {
+    return [
+      {
+        kind: 'toolkit',
+        toolkit,
+        connectionTier: connectedTiers[0] ?? toolkit.connection_tiers[0] ?? 'ORG_SHARED',
+      },
+    ];
+  }
+
+  return connectedTiers.map((connectionTier) => ({
+    kind: 'toolkit',
+    toolkit,
+    connectionTier,
+  }));
+}
 
 export function getToolEligibleToolkits(toolkits: IntegrationAppsToolkit[]): IntegrationAppsToolkit[] {
   return toolkits.filter((toolkit) => toolkit.is_org_enabled && toolkit.tool_count > 0);
 }
 
+export function getAutoSelectableToolkitBindings(
+  toolkits: IntegrationAppsToolkit[],
+): ToolkitBinding[] {
+  return getToolEligibleToolkits(toolkits).flatMap((toolkit) => {
+    const connectedTiers = getToolkitConnectedTiers(toolkit);
+
+    if (connectedTiers.length !== 1) {
+      return [];
+    }
+
+    return [{ slug: toolkit.slug, connectionTier: connectedTiers[0] }];
+  });
+}
+
 export function getConversationToolItemId(item: ConversationToolItem): string {
   return item.kind === 'integration'
     ? `integration:${item.integration.uuid}`
-    : `toolkit:${item.toolkit.slug}`;
+    : `toolkit:${item.toolkit.slug}:${item.connectionTier}`;
 }
 
 export function getConversationToolItemLabel(item: ConversationToolItem): string {
-  return item.kind === 'integration'
-    ? getIntegrationDisplayLabel(item.integration)
-    : item.toolkit.name;
+  if (item.kind === 'integration') {
+    return getIntegrationDisplayLabel(item.integration);
+  }
+
+  const connectedTiers = getToolkitConnectedTiers(item.toolkit);
+
+  if (connectedTiers.length <= 1) {
+    return item.toolkit.name;
+  }
+
+  return `${item.toolkit.name} · ${getConnectionTierLabel(item.connectionTier)}`;
 }
 
 export function buildConversationToolItems(
@@ -35,10 +107,7 @@ export function buildConversationToolItems(
       kind: 'integration' as const,
       integration,
     })),
-    ...getToolEligibleToolkits(toolkits).map((toolkit) => ({
-      kind: 'toolkit' as const,
-      toolkit,
-    })),
+    ...getToolEligibleToolkits(toolkits).flatMap((toolkit) => expandToolkitItems(toolkit)),
   ]);
 }
 
@@ -78,9 +147,47 @@ export function sortConversationToolItems(items: ConversationToolItem[]): Conver
 export function isConversationToolItemSelected(
   item: ConversationToolItem,
   selectedIntegrationUuids: string[],
-  selectedToolkitSlugs: string[],
+  selectedToolkitBindings: ToolkitBinding[],
 ): boolean {
-  return item.kind === 'integration'
-    ? selectedIntegrationUuids.includes(item.integration.uuid)
-    : selectedToolkitSlugs.includes(item.toolkit.slug);
+  if (item.kind === 'integration') {
+    return selectedIntegrationUuids.includes(item.integration.uuid);
+  }
+
+  return selectedToolkitBindings.some(
+    (binding) =>
+      binding.slug === item.toolkit.slug && binding.connectionTier === item.connectionTier,
+  );
+}
+
+export function getToolkitBindingFromItem(item: ConversationToolItem): ToolkitBinding | null {
+  if (item.kind !== 'toolkit') {
+    return null;
+  }
+
+  return {
+    slug: item.toolkit.slug,
+    connectionTier: item.connectionTier,
+  };
+}
+
+export function isConversationToolItemTierDisabled(
+  item: ConversationToolItem,
+  selectedToolkitBindings: ToolkitBinding[],
+): boolean {
+  if (item.kind !== 'toolkit') {
+    return false;
+  }
+
+  const activeScope = getActiveToolkitConnectionTierScope(selectedToolkitBindings);
+  const isSelected = isConversationToolItemSelected(
+    item,
+    [],
+    selectedToolkitBindings,
+  );
+
+  return isToolkitBindingDisabledByTierScope(
+    item.connectionTier,
+    activeScope,
+    isSelected,
+  );
 }

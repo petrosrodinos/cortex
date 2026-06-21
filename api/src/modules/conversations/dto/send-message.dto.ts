@@ -1,6 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
+  IsObject,
   IsOptional,
   IsString,
   IsUUID,
@@ -44,4 +45,20 @@ export class SendMessageDto {
   @IsArray()
   @IsString({ each: true })
   toolkit_slugs?: string[];
+
+  @ApiPropertyOptional({
+    example: { linear: 'ORG_SHARED' },
+    description: 'Preferred Composio connection tier per toolkit slug.',
+  })
+  @IsOptional()
+  @IsObject()
+  toolkitConnectionTiers?: Record<string, string>;
+
+  @ApiPropertyOptional({
+    example: { linear: 'ORG_SHARED' },
+    description: 'Snake_case alias for toolkitConnectionTiers.',
+  })
+  @IsOptional()
+  @IsObject()
+  toolkit_connection_tiers?: Record<string, string>;
 }

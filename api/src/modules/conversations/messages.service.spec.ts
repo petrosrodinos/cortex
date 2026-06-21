@@ -42,6 +42,11 @@ describe('MessagesService', () => {
       resolveAgentToolScope: jest.fn().mockResolvedValue({
         integrationUuids: undefined,
         toolkitSlugs: ['gmail', 'slack'],
+        toolkitConnectionTiers: { gmail: 'USER_PERSONAL' },
+      }),
+      resolveToolkitConnectionAmbiguities: jest.fn().mockResolvedValue({
+        resolvedTierMap: { gmail: 'USER_PERSONAL' },
+        ambiguousChoices: [],
       }),
     };
 
@@ -76,8 +81,10 @@ describe('MessagesService', () => {
 
     expect(capabilities.resolveAgentToolScope).toHaveBeenCalledWith(
       'org-uuid',
+      'user-uuid',
       undefined,
       ['gmail', 'slack'],
+      {},
     );
 
     expect(prisma.message.create).toHaveBeenCalledWith({
@@ -99,6 +106,7 @@ describe('MessagesService', () => {
           documentUuids: [],
           integrationUuids: undefined,
           toolkitSlugs: ['gmail', 'slack'],
+          toolkitConnectionTiers: { gmail: 'USER_PERSONAL' },
         },
       },
     });
@@ -113,8 +121,44 @@ describe('MessagesService', () => {
         documentUuids: [],
         integrationUuids: undefined,
         toolkitSlugs: ['gmail', 'slack'],
+        toolkitConnectionTiers: { gmail: 'USER_PERSONAL' },
       }),
       expect.objectContaining({ jobId: 'run-execution-uuid' }),
     );
+  });
+
+  it('defers agent queue when toolkit connection tiers are ambiguous', async () => {
+    const { service, prisma, agentQueue, capabilities } = createService();
+    capabilities.resolveToolkitConnectionAmbiguities.mockResolvedValue({
+      resolvedTierMap: {},
+      ambiguousChoices: [
+        {
+          slug: 'linear',
+          name: 'Linear',
+          availableTiers: ['ORG_SHARED', 'USER_PERSONAL'],
+        },
+      ],
+    });
+
+    await service.sendMessage('user-uuid', 'org-uuid', 'conversation-uuid', {
+      content: 'Use Linear',
+      toolkitSlugs: ['linear'],
+    });
+
+    expect(prisma.agentExecution.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        status: AgentExecutionStatus.AWAITING_CONNECTION_TIER,
+        input: expect.objectContaining({
+          connectionTierChoices: [
+            {
+              slug: 'linear',
+              name: 'Linear',
+              availableTiers: ['ORG_SHARED', 'USER_PERSONAL'],
+            },
+          ],
+        }),
+      }),
+    });
+    expect(agentQueue.add).not.toHaveBeenCalled();
   });
 });

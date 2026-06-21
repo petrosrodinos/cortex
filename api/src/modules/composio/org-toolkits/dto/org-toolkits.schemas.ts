@@ -17,6 +17,13 @@ export const ListOrgToolkitsSchema = z.object({
   limit: positiveIntegerQueryString,
 });
 
+export const CountOrgToolkitsSchema = z.object({
+  search: optionalQueryString,
+  category: optionalQueryString,
+  connected: booleanQueryString,
+  tier: z.nativeEnum(ComposioConnectionTier).optional(),
+});
+
 export const ListOrgToolkitToolsSchema = z.object({
   search: optionalQueryString,
   page: positiveIntegerQueryString,
@@ -30,6 +37,7 @@ export const UpdateOrgToolPermissionSchema = z.object({
 });
 
 export type ListOrgToolkitsType = z.infer<typeof ListOrgToolkitsSchema>;
+export type CountOrgToolkitsType = z.infer<typeof CountOrgToolkitsSchema>;
 export type ListOrgToolkitToolsType = z.infer<typeof ListOrgToolkitToolsSchema>;
 export type UpdateOrgToolPermissionType = z.infer<
   typeof UpdateOrgToolPermissionSchema

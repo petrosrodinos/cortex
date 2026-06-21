@@ -1,3 +1,4 @@
+import { ComposioConnectionTier } from 'generated/prisma';
 import { CapabilitiesToolsService } from './capabilities-tools.service';
 
 describe('CapabilitiesToolsService', () => {
@@ -30,7 +31,8 @@ describe('CapabilitiesToolsService', () => {
               name: 'Gmail',
               description: 'Email',
               logo_url: null,
-              connected_accounts: [{ uuid: 'account-1' }],
+              connection_tiers: [ComposioConnectionTier.USER_PERSONAL],
+              connected_accounts: [{ user_uuid: 'user-uuid', account_label: null }],
               _count: { tools: 3 },
             },
           },
@@ -41,11 +43,41 @@ describe('CapabilitiesToolsService', () => {
               name: 'Slack',
               description: 'Chat',
               logo_url: null,
+              connection_tiers: [
+                ComposioConnectionTier.ORG_SHARED,
+                ComposioConnectionTier.USER_PERSONAL,
+              ],
               connected_accounts: [],
               _count: { tools: 2 },
             },
           },
         ]),
+      },
+      composioToolkit: {
+        findMany: jest.fn().mockImplementation(({ where }: any) => {
+          const slugs = where?.slug?.in ?? [];
+          const toolkits = [];
+
+          if (slugs.includes('gmail') || slugs.length === 0) {
+            toolkits.push({
+              slug: 'gmail',
+              name: 'Gmail',
+              connected_accounts: [{ user_uuid: 'user-uuid' }],
+            });
+          }
+
+          if (slugs.includes('slack') || slugs.length === 0) {
+            toolkits.push({
+              slug: 'slack',
+              name: 'Slack',
+              connected_accounts: [],
+            });
+          }
+
+          return Promise.resolve(
+            toolkits.filter((toolkit) => slugs.length === 0 || slugs.includes(toolkit.slug)),
+          );
+        }),
       },
     };
 
@@ -58,7 +90,7 @@ describe('CapabilitiesToolsService', () => {
   it('lists only tool-eligible integrations and org-enabled toolkits', async () => {
     const { service } = createService();
 
-    await expect(service.listEnabledAgentTools('org-uuid')).resolves.toEqual({
+    await expect(service.listEnabledAgentTools('org-uuid', 'user-uuid')).resolves.toEqual({
       integrations: [
         {
           uuid: 'integration-a',
@@ -76,6 +108,13 @@ describe('CapabilitiesToolsService', () => {
           logo_url: null,
           tool_count: 3,
           is_connected: true,
+          connection_tiers: [ComposioConnectionTier.USER_PERSONAL],
+          connected_accounts: [
+            {
+              connection_tier: ComposioConnectionTier.USER_PERSONAL,
+              account_label: null,
+            },
+          ],
         },
         {
           uuid: 'toolkit-b',
@@ -85,6 +124,11 @@ describe('CapabilitiesToolsService', () => {
           logo_url: null,
           tool_count: 2,
           is_connected: false,
+          connection_tiers: [
+            ComposioConnectionTier.ORG_SHARED,
+            ComposioConnectionTier.USER_PERSONAL,
+          ],
+          connected_accounts: [],
         },
       ],
     });
@@ -94,10 +138,13 @@ describe('CapabilitiesToolsService', () => {
     const { service } = createService();
 
     await expect(
-      service.resolveAgentToolScope('org-uuid'),
+      service.resolveAgentToolScope('org-uuid', 'user-uuid'),
     ).resolves.toEqual({
       integrationUuids: ['integration-a'],
       toolkitSlugs: ['gmail', 'slack'],
+      toolkitConnectionTiers: {
+        gmail: ComposioConnectionTier.USER_PERSONAL,
+      },
     });
   });
 
@@ -107,12 +154,16 @@ describe('CapabilitiesToolsService', () => {
     await expect(
       service.resolveAgentToolScope(
         'org-uuid',
+        'user-uuid',
         ['integration-a'],
         ['gmail'],
       ),
     ).resolves.toEqual({
       integrationUuids: ['integration-a'],
       toolkitSlugs: ['gmail'],
+      toolkitConnectionTiers: {
+        gmail: ComposioConnectionTier.USER_PERSONAL,
+      },
     });
   });
 
@@ -122,12 +173,16 @@ describe('CapabilitiesToolsService', () => {
     await expect(
       service.resolveAgentToolScope(
         'org-uuid',
+        'user-uuid',
         ['integration-a', 'missing-integration'],
         ['gmail', 'missing-toolkit'],
       ),
     ).resolves.toEqual({
       integrationUuids: ['integration-a'],
       toolkitSlugs: ['gmail'],
+      toolkitConnectionTiers: {
+        gmail: ComposioConnectionTier.USER_PERSONAL,
+      },
     });
   });
 
@@ -135,10 +190,11 @@ describe('CapabilitiesToolsService', () => {
     const { service } = createService();
 
     await expect(
-      service.resolveAgentToolScope('org-uuid', [], []),
+      service.resolveAgentToolScope('org-uuid', 'user-uuid', [], []),
     ).resolves.toEqual({
       integrationUuids: [],
       toolkitSlugs: [],
+      toolkitConnectionTiers: undefined,
     });
   });
 });

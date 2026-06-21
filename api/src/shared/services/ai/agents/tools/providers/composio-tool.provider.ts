@@ -45,6 +45,7 @@ export class ComposioToolProvider implements AgentToolProvider {
       context.organizationUuid,
       context.userUuid,
       context.toolkitSlugs,
+      context.toolkitConnectionTiers,
     );
     const sessionId = session.sessionId ?? session.id;
     const rawTools = (await session.tools()) as ToolSet;

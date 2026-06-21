@@ -10,6 +10,7 @@ import {
   getMessages,
   getConversationAgentTools,
   rejectExecution,
+  resolveConnectionTiers,
   sendMessage,
   updateConversation,
 } from '../services/conversations.service';
@@ -103,11 +104,13 @@ export function useSendMessage(organizationUuid?: string, conversationUuid?: str
       documentUuids,
       integrationUuids,
       toolkitSlugs,
+      toolkitConnectionTiers,
     }: {
       content: string;
       documentUuids?: string[];
       integrationUuids?: string[];
       toolkitSlugs?: string[];
+      toolkitConnectionTiers?: Record<string, 'ORG_SHARED' | 'USER_PERSONAL'>;
     }) =>
       sendMessage(
         organizationUuid as string,
@@ -116,6 +119,7 @@ export function useSendMessage(organizationUuid?: string, conversationUuid?: str
         documentUuids,
         integrationUuids,
         toolkitSlugs,
+        toolkitConnectionTiers,
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['messages', organizationUuid, conversationUuid] });
@@ -158,6 +162,21 @@ export function useRejectExecution(organizationUuid?: string) {
     mutationFn: (executionUuid: string) => rejectExecution(organizationUuid as string, executionUuid),
     onError: (error: Error) => {
       toast({ title: 'Could not reject action', description: error.message, variant: 'error' });
+    },
+  });
+}
+
+export function useResolveConnectionTiers(organizationUuid?: string) {
+  return useMutation({
+    mutationFn: ({
+      executionUuid,
+      choices,
+    }: {
+      executionUuid: string;
+      choices: Record<string, 'ORG_SHARED' | 'USER_PERSONAL'>;
+    }) => resolveConnectionTiers(organizationUuid as string, executionUuid, choices),
+    onError: (error: Error) => {
+      toast({ title: 'Could not continue', description: error.message, variant: 'error' });
     },
   });
 }

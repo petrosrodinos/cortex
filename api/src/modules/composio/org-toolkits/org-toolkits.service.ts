@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { ComposioConnectionTier, Prisma } from 'generated/prisma';
+import { CountOrgToolkitsDto } from './dto/count-org-toolkits.dto';
 import { ListOrgToolkitToolsDto } from './dto/list-org-toolkit-tools.dto';
 import { ListOrgToolkitsDto } from './dto/list-org-toolkits.dto';
 import { UpdateOrgToolPermissionDto } from './dto/update-org-tool-permission.dto';
@@ -13,35 +14,16 @@ import { UpdateOrgToolPermissionDto } from './dto/update-org-tool-permission.dto
 export class OrgToolkitsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async countToolkits(organizationUuid: string, query: CountOrgToolkitsDto) {
+    const where = this.buildToolkitListWhere(organizationUuid, query);
+    const count = await this.prisma.composioToolkit.count({ where });
+    return { count };
+  }
+
   async listToolkits(organizationUuid: string, query: ListOrgToolkitsDto) {
     const page = this.toPositiveInt(query.page, 1);
     const limit = Math.min(this.toPositiveInt(query.limit, 25), 100);
-    const where: Prisma.ComposioToolkitWhereInput = { is_enabled: true };
-
-    if (query.search) {
-      where.OR = [
-        { slug: { contains: query.search, mode: 'insensitive' } },
-        { name: { contains: query.search, mode: 'insensitive' } },
-        { description: { contains: query.search, mode: 'insensitive' } },
-      ];
-    }
-
-    if (query.category) {
-      where.categories = { has: query.category };
-    }
-
-    if (query.tier) {
-      where.connection_tiers = { has: this.parseConnectionTier(query.tier) };
-    }
-
-    const connected = this.toOptionalBoolean(query.connected);
-    if (connected === true) {
-      where.connected_accounts = { some: { org_uuid: organizationUuid } };
-    }
-
-    if (connected === false) {
-      where.connected_accounts = { none: { org_uuid: organizationUuid } };
-    }
+    const where = this.buildToolkitListWhere(organizationUuid, query);
 
     const [total, toolkits] = await this.prisma.$transaction([
       this.prisma.composioToolkit.count({ where }),
@@ -78,6 +60,9 @@ export class OrgToolkitsService {
           label: account.account_label,
           status: account.status,
           user_uuid: account.user_uuid,
+          connection_tier: account.user_uuid
+            ? ComposioConnectionTier.USER_PERSONAL
+            : ComposioConnectionTier.ORG_SHARED,
         })),
         is_org_enabled: toolkit.enabled_orgs[0]?.is_enabled ?? false,
         tool_count: toolkit._count.tools,
@@ -124,6 +109,9 @@ export class OrgToolkitsService {
       connections: toolkit.connected_accounts.map((account) => ({
         ...account,
         account_id: account.composio_account_id,
+        connection_tier: account.user_uuid
+          ? ComposioConnectionTier.USER_PERSONAL
+          : ComposioConnectionTier.ORG_SHARED,
       })),
     };
   }
@@ -357,6 +345,40 @@ export class OrgToolkitsService {
           })),
       ),
     };
+  }
+
+  private buildToolkitListWhere(
+    organizationUuid: string,
+    query: Pick<ListOrgToolkitsDto, 'search' | 'category' | 'tier' | 'connected'>,
+  ): Prisma.ComposioToolkitWhereInput {
+    const where: Prisma.ComposioToolkitWhereInput = { is_enabled: true };
+
+    if (query.search) {
+      where.OR = [
+        { slug: { contains: query.search, mode: 'insensitive' } },
+        { name: { contains: query.search, mode: 'insensitive' } },
+        { description: { contains: query.search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (query.category) {
+      where.categories = { has: query.category };
+    }
+
+    if (query.tier) {
+      where.connection_tiers = { has: this.parseConnectionTier(query.tier) };
+    }
+
+    const connected = this.toOptionalBoolean(query.connected);
+    if (connected === true) {
+      where.connected_accounts = { some: { org_uuid: organizationUuid } };
+    }
+
+    if (connected === false) {
+      where.connected_accounts = { none: { org_uuid: organizationUuid } };
+    }
+
+    return where;
   }
 
   private async findEnabledToolkit(slug: string): Promise<{ uuid: string }> {

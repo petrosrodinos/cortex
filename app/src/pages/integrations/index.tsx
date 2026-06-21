@@ -18,7 +18,7 @@ import { isAiCatalogProvider } from '@/features/integrations/utils/integration.u
 import { useGetAiProviders } from '@/features/ai-providers/hooks/use-ai-providers';
 import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
 import { ToolkitCatalog } from './components/integration-apps/toolkit-catalog';
-import { useGetIntegrationAppsToolkits } from '@/features/integration-apps/hooks/use-integrationApps';
+import { useGetIntegrationAppsToolkitsCount } from '@/features/integration-apps/hooks/use-integrationApps';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
 import { cn } from '@/lib/utils';
@@ -63,13 +63,12 @@ export default function IntegrationsPage() {
   );
   const integrationsQuery = useGetIntegrations(currentOrganization?.uuid);
   const aiProvidersQuery = useGetAiProviders(currentOrganization?.uuid);
-  const connectedToolkitsQuery = useGetIntegrationAppsToolkits(currentOrganization?.uuid, {
+  const connectedToolkitsQuery = useGetIntegrationAppsToolkitsCount(currentOrganization?.uuid, {
     connected: true,
-    limit: 1,
   });
   const integrations = integrationsQuery.data ?? [];
   const aiProviders = aiProvidersQuery.data ?? [];
-  const connectedToolkitsCount = connectedToolkitsQuery.data?.pagination.total ?? 0;
+  const connectedToolkitsCount = connectedToolkitsQuery.data?.count ?? 0;
 
   const selectedIntegration = useMemo(
     () => integrations.find((integration) => integration.uuid === integrationUuid) ?? null,

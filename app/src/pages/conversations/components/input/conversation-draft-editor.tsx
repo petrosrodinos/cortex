@@ -13,7 +13,8 @@ import { getProviderBrandColor } from '@/features/integrations/constants/provide
 import { cn } from '@/lib/utils';
 import { ConversationSlashPicker } from './conversation-slash-picker';
 import { getIntegrationDisplayLabel } from './integration-tools-list';
-import type { ConversationToolItem } from './conversation-tool-items.utils';
+import type { IntegrationAppsConnectionTier } from '@/features/integration-apps/interfaces/integrationApps.interface';
+import { getConversationToolItemLabel, isConversationToolItemTierDisabled, type ConversationToolItem } from './conversation-tool-items.utils';
 
 const SLASH_QUERY_PATTERN = /\/([a-z0-9_-]*)$/i;
 const TOOLKIT_CHIP_BRAND = '#6366f1';
@@ -21,7 +22,12 @@ const TOOLKIT_CHIP_BRAND = '#6366f1';
 export type DraftPart =
   | { type: 'text'; value: string }
   | { type: 'integration'; uuid: string; label: string; provider: IntegrationProvider }
-  | { type: 'toolkit'; slug: string; label: string };
+  | {
+      type: 'toolkit';
+      slug: string;
+      label: string;
+      connectionTier: IntegrationAppsConnectionTier;
+    };
 
 export function createEmptyDraft(): DraftPart[] {
   return [{ type: 'text', value: '' }];
@@ -57,6 +63,18 @@ export function getDraftToolkitSlugs(parts: DraftPart[]): string[] {
   }
 
   return slugs;
+}
+
+export function getDraftToolkitBindings(parts: DraftPart[]) {
+  const bindings: Array<{ slug: string; connectionTier: IntegrationAppsConnectionTier }> = [];
+
+  for (const part of parts) {
+    if (part.type === 'toolkit') {
+      bindings.push({ slug: part.slug, connectionTier: part.connectionTier });
+    }
+  }
+
+  return bindings;
 }
 
 function mergeAdjacentTextParts(parts: DraftPart[]): DraftPart[] {
@@ -114,6 +132,7 @@ function serializeEditor(root: HTMLElement): DraftPart[] {
         type: 'toolkit',
         slug: node.dataset.toolkitSlug,
         label: node.dataset.toolkitLabel ?? '',
+        connectionTier: (node.dataset.toolkitConnectionTier ?? 'ORG_SHARED') as IntegrationAppsConnectionTier,
       });
       return;
     }
@@ -144,16 +163,33 @@ function createIntegrationChipElement(
   return chip;
 }
 
-function createToolkitChipElement(slug: string, label: string): HTMLSpanElement {
+function createToolkitChipElement(
+  slug: string,
+  label: string,
+  connectionTier: IntegrationAppsConnectionTier,
+): HTMLSpanElement {
   const chip = document.createElement('span');
   chip.dataset.toolkitSlug = slug;
   chip.dataset.toolkitLabel = label;
+  chip.dataset.toolkitConnectionTier = connectionTier;
   chip.contentEditable = 'false';
   chip.className =
     'integration-chip mx-0.5 inline-flex items-center rounded-full px-1.5 py-0.5 align-baseline text-[13px] font-medium leading-none';
   chip.style.setProperty('--chip-brand', TOOLKIT_CHIP_BRAND);
   chip.textContent = `/${label}`;
   return chip;
+}
+
+function removeToolkitChipsWithTier(root: HTMLElement, connectionTier: IntegrationAppsConnectionTier) {
+  root.querySelectorAll('[data-toolkit-connection-tier]').forEach((node) => {
+    if (!(node instanceof HTMLElement)) {
+      return;
+    }
+
+    if (node.dataset.toolkitConnectionTier === connectionTier) {
+      node.remove();
+    }
+  });
 }
 
 function removeSlashQueryAtCursor(root: HTMLElement): boolean {
@@ -261,7 +297,9 @@ function renderPartsToEditor(root: HTMLElement, parts: DraftPart[]) {
     }
 
     if (part.type === 'toolkit') {
-      root.appendChild(createToolkitChipElement(part.slug, part.label));
+      root.appendChild(
+        createToolkitChipElement(part.slug, part.label, part.connectionTier),
+      );
       continue;
     }
 
@@ -280,12 +318,31 @@ function getSlashQueryAtCursor(root: HTMLElement): string | null {
   }
 
   const range = selection.getRangeAt(0);
-  if (!root.contains(range.startContainer) || range.startContainer.nodeType !== Node.TEXT_NODE) {
+  if (!root.contains(range.startContainer)) {
     return null;
   }
 
-  const text = range.startContainer.textContent ?? '';
-  const before = text.slice(0, range.startOffset);
+  let textNode = range.startContainer;
+  let offset = range.startOffset;
+
+  if (textNode.nodeType === Node.ELEMENT_NODE) {
+    const element = textNode as HTMLElement;
+    const child = element.childNodes[offset - 1] ?? element.childNodes[offset];
+
+    if (child?.nodeType === Node.TEXT_NODE) {
+      textNode = child;
+      offset = (child.textContent ?? '').length;
+    } else {
+      return null;
+    }
+  }
+
+  if (textNode.nodeType !== Node.TEXT_NODE) {
+    return null;
+  }
+
+  const text = textNode.textContent ?? '';
+  const before = text.slice(0, offset);
   const match = before.match(SLASH_QUERY_PATTERN);
 
   if (!match) {
@@ -440,20 +497,25 @@ export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle,
     );
 
     const handleToolkitSelect = useCallback(
-      (slug: string) => {
+      (item: Extract<ConversationToolItem, { kind: 'toolkit' }>) => {
         const root = editorRef.current;
         if (!root) {
           return;
         }
 
-        const toolkit = toolkits.find((item) => item.slug === slug);
-        if (!toolkit) {
+        const existingBindings = getDraftToolkitBindings(serializeEditor(root));
+
+        if (isConversationToolItemTierDisabled(item, existingBindings)) {
           return;
         }
 
-        const existingSlugs = getDraftToolkitSlugs(serializeEditor(root));
+        const alreadySelected = existingBindings.some(
+          (binding) =>
+            binding.slug === item.toolkit.slug &&
+            binding.connectionTier === item.connectionTier,
+        );
 
-        if (existingSlugs.includes(slug)) {
+        if (alreadySelected) {
           removeSlashQueryAtCursor(root);
           const nextParts = serializeEditor(root);
           skipRenderRef.current = true;
@@ -462,7 +524,15 @@ export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle,
           return;
         }
 
-        const insertedChip = insertChipAtCursor(root, createToolkitChipElement(slug, toolkit.name));
+        const oppositeTier =
+          item.connectionTier === 'ORG_SHARED' ? 'USER_PERSONAL' : 'ORG_SHARED';
+        removeToolkitChipsWithTier(root, oppositeTier);
+
+        const label = getConversationToolItemLabel(item);
+        const insertedChip = insertChipAtCursor(
+          root,
+          createToolkitChipElement(item.toolkit.slug, label, item.connectionTier),
+        );
 
         if (!insertedChip) {
           return;
@@ -475,13 +545,13 @@ export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle,
         setSlashContext(null);
         placeCursorAfterNode(root, insertedChip);
       },
-      [onPartsChange, toolkits],
+      [onPartsChange],
     );
 
     const handleToolSelect = useCallback(
       (item: ConversationToolItem) => {
         if (item.kind === 'toolkit') {
-          handleToolkitSelect(item.toolkit.slug);
+          handleToolkitSelect(item);
           return;
         }
 
@@ -513,13 +583,16 @@ export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle,
     };
 
     const draftIntegrationUuids = getDraftIntegrationUuids(parts);
-    const draftToolkitSlugs = getDraftToolkitSlugs(parts);
+    const draftToolkitBindings = getDraftToolkitBindings(parts);
+    const draftToolkitItemIds = draftToolkitBindings.map(
+      (binding) => `${binding.slug}:${binding.connectionTier}`,
+    );
     const isEmpty =
       parts.length === 1 &&
       parts[0]?.type === 'text' &&
       parts[0].value.length === 0 &&
       draftIntegrationUuids.length === 0 &&
-      draftToolkitSlugs.length === 0;
+      draftToolkitItemIds.length === 0;
 
     return (
       <div className="relative min-w-0 flex-1">
@@ -528,8 +601,9 @@ export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle,
           toolkits={toolkits}
           query={slashContext?.query ?? ''}
           isOpen={Boolean(slashContext)}
+          selectedToolkitBindings={draftToolkitBindings}
           excludedIntegrationUuids={draftIntegrationUuids}
-          excludedToolkitSlugs={draftToolkitSlugs}
+          excludedToolkitItemIds={draftToolkitItemIds}
           onSelect={handleToolSelect}
           onClose={() => setSlashContext(null)}
         />

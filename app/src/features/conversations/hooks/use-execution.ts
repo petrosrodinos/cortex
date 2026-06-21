@@ -12,6 +12,7 @@ import {
   type AgentCompleteEvent,
   type AgentExecution,
   type ExecutionApprovalRequest,
+  type ExecutionConnectionTierRequest,
   type ExecutionToolCall,
 } from '../interfaces/conversation.interfaces';
 import {
@@ -39,6 +40,24 @@ function parseApprovalRequest(execution: AgentExecution): ExecutionApprovalReque
     approvalRequests,
     toolName: first?.toolName,
     input: first?.input,
+  };
+}
+
+function parseConnectionTierRequest(
+  execution: AgentExecution,
+): ExecutionConnectionTierRequest | null {
+  if (execution.status !== AgentExecutionStatuses.AWAITING_CONNECTION_TIER) {
+    return null;
+  }
+
+  const connectionTierChoices = execution.input?.connectionTierChoices ?? [];
+  if (connectionTierChoices.length === 0) {
+    return null;
+  }
+
+  return {
+    executionId: execution.uuid,
+    connectionTierChoices,
   };
 }
 
@@ -221,6 +240,14 @@ export function useExecution(
             if (request) {
               dispatch({ type: 'approval_required', request });
             }
+            return;
+          }
+
+          if (execution.status === AgentExecutionStatuses.AWAITING_CONNECTION_TIER) {
+            const request = parseConnectionTierRequest(execution);
+            if (request) {
+              dispatch({ type: 'connection_tier_required', request });
+            }
           }
         })
         .catch(() => {});
@@ -241,6 +268,7 @@ export function useExecution(
     isComplete: state.isComplete,
     error: state.error,
     approvalRequest: state.approvalRequest,
+    connectionTierRequest: state.connectionTierRequest,
     reset,
   };
 }

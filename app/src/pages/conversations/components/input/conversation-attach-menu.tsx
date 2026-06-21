@@ -7,22 +7,24 @@ import { cn } from '@/lib/utils';
 import { buildConversationToolItems } from './conversation-tool-items.utils';
 import { ConversationToolsMenu } from './conversation-tools-menu';
 
+import type { ToolkitBinding } from '../../utils/conversation-toolkit-bindings.utils';
+
 interface ConversationAttachMenuProps {
   integrations: Integration[];
   toolkits: IntegrationAppsToolkit[];
   selectedIntegrationUuids: string[];
-  selectedToolkitSlugs: string[];
+  selectedToolkitBindings: ToolkitBinding[];
   disabled?: boolean;
   onUpload: () => void;
   onIntegrationSelectionChange: (integrationUuids: string[]) => void;
-  onToolkitSelectionChange: (toolkitSlugs: string[]) => void;
+  onToolkitSelectionChange: (toolkitBindings: ToolkitBinding[]) => void;
 }
 
 export const ConversationAttachMenu: FC<ConversationAttachMenuProps> = ({
   integrations,
   toolkits,
   selectedIntegrationUuids,
-  selectedToolkitSlugs,
+  selectedToolkitBindings,
   disabled = false,
   onUpload,
   onIntegrationSelectionChange,
@@ -32,7 +34,7 @@ export const ConversationAttachMenu: FC<ConversationAttachMenuProps> = ({
     () => buildConversationToolItems(integrations, toolkits).length,
     [integrations, toolkits],
   );
-  const selectedToolCount = selectedIntegrationUuids.length + selectedToolkitSlugs.length;
+  const selectedToolCount = selectedIntegrationUuids.length + selectedToolkitBindings.length;
   const hasPartialToolSelection =
     totalToolCount > 0 && selectedToolCount < totalToolCount;
 
@@ -69,22 +71,33 @@ export const ConversationAttachMenu: FC<ConversationAttachMenuProps> = ({
 
           {totalToolCount > 0 ? (
             <Dropdown.SubmenuTrigger>
-              <Dropdown.Item id="tools" textValue="Tools" className="rounded-lg px-2 py-2">
+              <Dropdown.Item
+                id="tools"
+                textValue="Tools"
+                className={cn(
+                  'grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-x-2 rounded-lg px-2 py-2',
+                  hasPartialToolSelection && 'pr-1',
+                )}
+              >
                 <Settings2 className="h-4 w-4 shrink-0 text-muted" />
-                <Label className="flex-1 text-sm">Tools</Label>
+                <Label className="min-w-0 text-sm">Tools</Label>
                 {hasPartialToolSelection ? (
-                  <span className="text-[11px] text-muted">
-                    {selectedToolCount}/{totalToolCount}
+                  <span className="shrink-0 tabular-nums text-[11px] leading-none text-muted">
+                    <span>{selectedToolCount}</span>
+                    <span aria-hidden="true">/</span>
+                    <span>{totalToolCount}</span>
                   </span>
-                ) : null}
-                <Dropdown.SubmenuIndicator />
+                ) : (
+                  <span aria-hidden="true" className="w-0" />
+                )}
+                <Dropdown.SubmenuIndicator className="shrink-0" />
               </Dropdown.Item>
               <Dropdown.Popover className="z-50 overflow-hidden rounded-xl border border-border bg-surface p-0 shadow-lg">
                 <ConversationToolsMenu
                   integrations={integrations}
                   toolkits={toolkits}
                   selectedIntegrationUuids={selectedIntegrationUuids}
-                  selectedToolkitSlugs={selectedToolkitSlugs}
+                  selectedToolkitBindings={selectedToolkitBindings}
                   onIntegrationSelectionChange={onIntegrationSelectionChange}
                   onToolkitSelectionChange={onToolkitSelectionChange}
                 />

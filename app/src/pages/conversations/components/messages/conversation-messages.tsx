@@ -2,6 +2,7 @@ import { useEffect, useRef, type FC } from 'react';
 import { Card } from '@/components/ui/card';
 import type {
   ExecutionApprovalRequest,
+  ExecutionConnectionTierRequest,
   Message,
   MessageAttachment,
   ToolCallProgress,
@@ -13,6 +14,7 @@ import { ConversationMessagesSkeleton } from './conversation-messages-skeleton';
 import { ConversationNoMessagesState } from './conversation-no-messages-state';
 import { getMessageAttachments, MessageAttachments } from './message-attachments';
 import { ExecutionApprovalCard } from '../executions/execution-approval-card';
+import { ExecutionConnectionTierCard } from '../executions/execution-connection-tier-card';
 import { ExecutionProgress } from '../executions/execution-progress';
 import { MessageActionsMenu } from './message-actions-menu';
 import { MessageMarkdown } from '@/components/markdown/message-markdown';
@@ -35,11 +37,16 @@ interface ConversationMessagesProps {
   isRunning: boolean;
   toolCalls: ToolCallProgress[];
   approvalRequest: ExecutionApprovalRequest | null;
+  connectionTierRequest: ExecutionConnectionTierRequest | null;
   executionError: string | null;
   isApproving: boolean;
   isRejecting: boolean;
+  isResolvingConnectionTiers: boolean;
   onApprove: () => void;
   onReject: () => void;
+  onResolveConnectionTiers: (
+    choices: Record<string, 'ORG_SHARED' | 'USER_PERSONAL'>,
+  ) => void;
   isSendDisabled: boolean;
   onRetryMessage: (message: Message) => void;
   onReplyToMessage: (message: Message) => void;
@@ -61,11 +68,14 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
   isRunning,
   toolCalls,
   approvalRequest,
+  connectionTierRequest,
   executionError,
   isApproving,
   isRejecting,
+  isResolvingConnectionTiers,
   onApprove,
   onReject,
+  onResolveConnectionTiers,
   isSendDisabled,
   onRetryMessage,
   onReplyToMessage,
@@ -251,6 +261,14 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
           isRejecting={isRejecting}
           onApprove={onApprove}
           onReject={onReject}
+        />
+      )}
+
+      {connectionTierRequest && (
+        <ExecutionConnectionTierCard
+          request={connectionTierRequest}
+          isSubmitting={isResolvingConnectionTiers}
+          onSubmit={onResolveConnectionTiers}
         />
       )}
 

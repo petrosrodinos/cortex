@@ -1,6 +1,7 @@
 import type {
   AgentProgressState,
   ExecutionApprovalRequest,
+  ExecutionConnectionTierRequest,
   ToolCallProgress,
 } from '../interfaces/conversation.interfaces';
 
@@ -11,6 +12,7 @@ export const initialAgentProgressState: AgentProgressState = {
   isRunning: false,
   error: null,
   approvalRequest: null,
+  connectionTierRequest: null,
 };
 
 export type AgentProgressAction =
@@ -29,6 +31,7 @@ export type AgentProgressAction =
   | { type: 'complete'; content: string }
   | { type: 'error'; error: string }
   | { type: 'approval_required'; request: ExecutionApprovalRequest }
+  | { type: 'connection_tier_required'; request: ExecutionConnectionTierRequest }
   | { type: 'sync_tool_calls'; toolCalls: ToolCallProgress[] };
 
 function upsertToolCall(toolCalls: ToolCallProgress[], next: ToolCallProgress): ToolCallProgress[] {
@@ -96,6 +99,7 @@ export function agentProgressReducer(
         isComplete: true,
         isRunning: false,
         approvalRequest: null,
+        connectionTierRequest: null,
       };
 
     case 'error':
@@ -104,6 +108,7 @@ export function agentProgressReducer(
         error: action.error,
         isRunning: false,
         approvalRequest: null,
+        connectionTierRequest: null,
       };
 
     case 'approval_required':
@@ -111,6 +116,15 @@ export function agentProgressReducer(
         ...state,
         isRunning: false,
         approvalRequest: action.request,
+        connectionTierRequest: null,
+      };
+
+    case 'connection_tier_required':
+      return {
+        ...state,
+        isRunning: false,
+        connectionTierRequest: action.request,
+        approvalRequest: null,
       };
 
     case 'sync_tool_calls': {

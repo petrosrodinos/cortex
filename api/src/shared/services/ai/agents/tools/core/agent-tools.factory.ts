@@ -17,6 +17,7 @@ export class AgentToolsFactory {
       documentUuids?: string[];
       integrationUuids?: string[];
       toolkitSlugs?: string[];
+      toolkitConnectionTiers?: Record<string, string>;
       userMessage?: string;
       progress?: AgentProgressScope;
     },
@@ -30,6 +31,7 @@ export class AgentToolsFactory {
       documentUuids: options?.documentUuids ?? [],
       integrationUuids: options?.integrationUuids,
       toolkitSlugs: options?.toolkitSlugs,
+      toolkitConnectionTiers: options?.toolkitConnectionTiers,
       userMessage: options?.userMessage,
       progress: options?.progress,
     });

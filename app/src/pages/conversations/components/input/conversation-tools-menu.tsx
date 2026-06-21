@@ -1,23 +1,28 @@
 import { useMemo, type FC } from 'react';
 import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
-import { buildConversationToolItems } from './conversation-tool-items.utils';
+import {
+  buildConversationToolItems,
+  getToolkitBindingFromItem,
+} from './conversation-tool-items.utils';
 import { ConversationToolsList } from './conversation-tools-list';
+import type { ToolkitBinding } from '../../utils/conversation-toolkit-bindings.utils';
+import { toggleToolkitBindingWithTierScope } from '../../utils/conversation-toolkit-bindings.utils';
 
 interface ConversationToolsMenuProps {
   integrations: Integration[];
   toolkits: IntegrationAppsToolkit[];
   selectedIntegrationUuids: string[];
-  selectedToolkitSlugs: string[];
+  selectedToolkitBindings: ToolkitBinding[];
   onIntegrationSelectionChange: (integrationUuids: string[]) => void;
-  onToolkitSelectionChange: (toolkitSlugs: string[]) => void;
+  onToolkitSelectionChange: (toolkitBindings: ToolkitBinding[]) => void;
 }
 
 export const ConversationToolsMenu: FC<ConversationToolsMenuProps> = ({
   integrations,
   toolkits,
   selectedIntegrationUuids,
-  selectedToolkitSlugs,
+  selectedToolkitBindings,
   onIntegrationSelectionChange,
   onToolkitSelectionChange,
 }) => {
@@ -37,7 +42,7 @@ export const ConversationToolsMenu: FC<ConversationToolsMenuProps> = ({
         toolkits={toolkits}
         mode="multiple"
         selectedIntegrationUuids={selectedIntegrationUuids}
-        selectedToolkitSlugs={selectedToolkitSlugs}
+        selectedToolkitBindings={selectedToolkitBindings}
         className="max-h-none p-0"
         onSelect={(item) => {
           if (item.kind === 'integration') {
@@ -51,13 +56,12 @@ export const ConversationToolsMenu: FC<ConversationToolsMenuProps> = ({
             return;
           }
 
-          const slug = item.toolkit.slug;
-          const isSelected = selectedToolkitSlugs.includes(slug);
-          onToolkitSelectionChange(
-            isSelected
-              ? selectedToolkitSlugs.filter((value) => value !== slug)
-              : [...selectedToolkitSlugs, slug],
-          );
+          const binding = getToolkitBindingFromItem(item);
+          if (!binding) {
+            return;
+          }
+
+          onToolkitSelectionChange(toggleToolkitBindingWithTierScope(selectedToolkitBindings, binding));
         }}
       />
     </div>

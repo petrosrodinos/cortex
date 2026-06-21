@@ -22,6 +22,9 @@ export interface AttachedFile {
   mimetype?: string;
 }
 
+import type { IntegrationAppsConnectionTier } from '@/features/integration-apps/interfaces/integrationApps.interface';
+import type { ToolkitBinding } from '../../utils/conversation-toolkit-bindings.utils';
+
 interface ConversationInputProps {
   draftParts: DraftPart[];
   attachedFiles: AttachedFile[];
@@ -29,7 +32,7 @@ interface ConversationInputProps {
   integrations: Integration[];
   toolkits: IntegrationAppsToolkit[];
   selectedIntegrationUuids: string[];
-  selectedToolkitSlugs: string[];
+  selectedToolkitBindings: ToolkitBinding[];
   disabled: boolean;
   isUploading: boolean;
   draftEditorRef?: Ref<ConversationDraftEditorHandle>;
@@ -39,7 +42,7 @@ interface ConversationInputProps {
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onRemoveFile: (id: string) => void;
   onIntegrationSelectionChange: (integrationUuids: string[]) => void;
-  onToolkitSelectionChange: (toolkitSlugs: string[]) => void;
+  onToolkitSelectionChange: (toolkitBindings: ToolkitBinding[]) => void;
 }
 
 export const ConversationInput: FC<ConversationInputProps> = ({
@@ -49,7 +52,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   integrations,
   toolkits,
   selectedIntegrationUuids,
-  selectedToolkitSlugs,
+  selectedToolkitBindings,
   disabled,
   isUploading,
   draftEditorRef,
@@ -89,7 +92,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
       )}
 
       <form
-        className="overflow-hidden rounded-2xl border border-border bg-surface-secondary"
+        className="rounded-2xl border border-border bg-surface-secondary"
         onSubmit={(event) => {
           event.preventDefault();
           if (canSend) onSend();
@@ -105,7 +108,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
             integrations={integrations}
             toolkits={toolkits}
             selectedIntegrationUuids={selectedIntegrationUuids}
-            selectedToolkitSlugs={selectedToolkitSlugs}
+            selectedToolkitBindings={selectedToolkitBindings}
             disabled={disabled || isUploading}
             onUpload={() => fileInputRef.current?.click()}
             onIntegrationSelectionChange={onIntegrationSelectionChange}

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
-import type { IntegrationAppsConnectionTier, IntegrationAppsToolkitFilters, IntegrationAppsToolFilters } from '../interfaces/integrationApps.interface';
+import type { IntegrationAppsConnectionTier, IntegrationAppsToolkitCountFilters, IntegrationAppsToolkitFilters, IntegrationAppsToolFilters } from '../interfaces/integrationApps.interface';
 import {
   connectIntegrationAppsToolkit,
   createIntegrationAppsTrigger,
@@ -12,12 +12,14 @@ import {
   getIntegrationAppsToolkit,
   getIntegrationAppsToolkitTools,
   getIntegrationAppsToolkits,
+  getIntegrationAppsToolkitsCount,
   updateIntegrationAppsTrigger,
   updateIntegrationAppsToolPermission,
   verifyIntegrationAppsCallback,
 } from '../services/integrationApps.service';
 
 export const integrationAppsToolkitsQueryKey = ['integrationApps-toolkits'] as const;
+export const integrationAppsToolkitsCountQueryKey = ['integrationApps-toolkits-count'] as const;
 export const integrationAppsToolkitToolsQueryKey = ['integrationApps-toolkit-tools'] as const;
 export const integrationAppsTriggersQueryKey = ['integrationApps-triggers'] as const;
 
@@ -25,6 +27,17 @@ export function useGetIntegrationAppsToolkits(organizationUuid?: string, filters
   return useQuery({
     queryKey: [...integrationAppsToolkitsQueryKey, organizationUuid, filters],
     queryFn: () => getIntegrationAppsToolkits(organizationUuid as string, filters),
+    enabled: !!organizationUuid,
+  });
+}
+
+export function useGetIntegrationAppsToolkitsCount(
+  organizationUuid?: string,
+  filters?: IntegrationAppsToolkitCountFilters,
+) {
+  return useQuery({
+    queryKey: [...integrationAppsToolkitsCountQueryKey, organizationUuid, filters],
+    queryFn: () => getIntegrationAppsToolkitsCount(organizationUuid as string, filters),
     enabled: !!organizationUuid,
   });
 }
@@ -67,6 +80,7 @@ export function useConnectIntegrationAppsToolkit(organizationUuid?: string) {
       }
 
       queryClient.invalidateQueries({ queryKey: integrationAppsToolkitsQueryKey });
+      queryClient.invalidateQueries({ queryKey: integrationAppsToolkitsCountQueryKey });
       toast({ title: 'Connection synced', duration: 2000 });
     },
     onError: (error: Error) => {
@@ -115,6 +129,7 @@ export function useDisconnectIntegrationAppsAccount(organizationUuid?: string, t
       disconnectIntegrationAppsAccount(organizationUuid as string, connectedAccountId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: integrationAppsToolkitsQueryKey });
+      queryClient.invalidateQueries({ queryKey: integrationAppsToolkitsCountQueryKey });
       queryClient.invalidateQueries({ queryKey: [...integrationAppsToolkitsQueryKey, organizationUuid, toolkitSlug] });
       toast({ title: 'Connection removed', duration: 2000 });
     },
@@ -146,6 +161,7 @@ export function useVerifyIntegrationAppsCallback(organizationUuid?: string) {
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: integrationAppsToolkitsQueryKey });
+      queryClient.invalidateQueries({ queryKey: integrationAppsToolkitsCountQueryKey });
       toast({ title: 'Connection verified', duration: 2000 });
     },
     onError: (error: Error) => {

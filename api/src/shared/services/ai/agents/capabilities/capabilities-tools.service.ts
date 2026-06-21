@@ -3,6 +3,7 @@ import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { getEffectiveDatabaseActionKeys } from '@/modules/integrations/databases/database-integration.types';
 import {
   ComposioAccountStatus,
+  ComposioConnectionTier,
   IntegrationStatus,
 } from 'generated/prisma';
 import type { AgentToolScope } from '../tools/core/agent-tool-scope.utils';
@@ -10,11 +11,25 @@ import {
   buildAgentCapabilitiesPromptBlock,
   type AgentCapabilitiesSnapshot,
 } from './agent-capabilities-prompt.utils';
+import {
+  inferConnectionTierFromAccount,
+  normalizeToolkitConnectionTierMap,
+  resolveToolkitConnectionTiers,
+  type ToolkitConnectionTierChoice,
+  type ToolkitConnectionTierMap,
+} from './toolkit-connection-tiers.utils';
+import {
+  filterToolkitsForComposioUserId,
+  isToolkitConnectedForTier,
+  resolveComposioUserIdFromTierMap,
+} from '@/modules/composio/sessions/composio-session-scope.utils';
 
 export interface CapabilitiesToolsContext {
   organizationUuid: string;
+  userUuid?: string;
   integrationUuids?: string[];
   toolkitSlugs?: string[];
+  toolkitConnectionTiers?: ToolkitConnectionTierMap;
 }
 
 export interface EnabledAgentIntegration {
@@ -22,6 +37,11 @@ export interface EnabledAgentIntegration {
   name: string;
   provider: string;
   actions: string[];
+}
+
+export interface EnabledAgentConnectedAccount {
+  connection_tier: ComposioConnectionTier;
+  account_label: string | null;
 }
 
 export interface EnabledAgentToolkit {
@@ -32,6 +52,8 @@ export interface EnabledAgentToolkit {
   logo_url: string | null;
   tool_count: number;
   is_connected: boolean;
+  connection_tiers: ComposioConnectionTier[];
+  connected_accounts: EnabledAgentConnectedAccount[];
 }
 
 export interface EnabledAgentTools {
@@ -45,6 +67,7 @@ export class CapabilitiesToolsService {
 
   async listEnabledAgentTools(
     organizationUuid: string,
+    userUuid: string,
   ): Promise<EnabledAgentTools> {
     const [integrationsResult, enabledToolkits] = await Promise.all([
       this.listIntegrations({ organizationUuid }),
@@ -65,12 +88,17 @@ export class CapabilitiesToolsService {
               name: true,
               description: true,
               logo_url: true,
+              connection_tiers: true,
               connected_accounts: {
                 where: {
                   org_uuid: organizationUuid,
                   status: ComposioAccountStatus.ACTIVE,
+                  OR: [{ user_uuid: userUuid }, { user_uuid: null }],
                 },
-                take: 1,
+                select: {
+                  user_uuid: true,
+                  account_label: true,
+                },
               },
               _count: {
                 select: { tools: { where: { is_enabled: true } } },
@@ -99,16 +127,79 @@ export class CapabilitiesToolsService {
         logo_url: entry.toolkit.logo_url,
         tool_count: entry.toolkit._count.tools,
         is_connected: entry.toolkit.connected_accounts.length > 0,
+        connection_tiers: entry.toolkit.connection_tiers,
+        connected_accounts: entry.toolkit.connected_accounts.map((account) => ({
+          connection_tier: inferConnectionTierFromAccount(account),
+          account_label: account.account_label,
+        })),
       })),
     };
   }
 
+  async resolveToolkitConnectionAmbiguities(
+    organizationUuid: string,
+    userUuid: string,
+    toolkitSlugs: string[],
+    providedTiers?: ToolkitConnectionTierMap,
+  ): Promise<{
+    resolvedTierMap: Record<string, ComposioConnectionTier>;
+    ambiguousChoices: ToolkitConnectionTierChoice[];
+  }> {
+    if (toolkitSlugs.length === 0) {
+      return { resolvedTierMap: {}, ambiguousChoices: [] };
+    }
+
+    const toolkits = await this.prisma.composioToolkit.findMany({
+      where: {
+        slug: { in: toolkitSlugs },
+        is_enabled: true,
+      },
+      select: {
+        slug: true,
+        name: true,
+        connected_accounts: {
+          where: {
+            org_uuid: organizationUuid,
+            status: ComposioAccountStatus.ACTIVE,
+            OR: [{ user_uuid: userUuid }, { user_uuid: null }],
+          },
+          select: { user_uuid: true },
+        },
+      },
+    });
+
+    const connectedTiersBySlug = new Map<string, Set<ComposioConnectionTier>>();
+    const toolkitNamesBySlug = new Map<string, string>();
+
+    for (const toolkit of toolkits) {
+      toolkitNamesBySlug.set(toolkit.slug, toolkit.name);
+      const tiers = new Set<ComposioConnectionTier>();
+
+      for (const account of toolkit.connected_accounts) {
+        tiers.add(inferConnectionTierFromAccount(account));
+      }
+
+      if (tiers.size > 0) {
+        connectedTiersBySlug.set(toolkit.slug, tiers);
+      }
+    }
+
+    return resolveToolkitConnectionTiers(
+      toolkitSlugs,
+      connectedTiersBySlug,
+      toolkitNamesBySlug,
+      providedTiers ?? {},
+    );
+  }
+
   async resolveAgentToolScope(
     organizationUuid: string,
+    userUuid: string,
     integrationUuids?: string[],
     toolkitSlugs?: string[],
+    providedTiers?: ToolkitConnectionTierMap,
   ): Promise<AgentToolScope> {
-    const enabled = await this.listEnabledAgentTools(organizationUuid);
+    const enabled = await this.listEnabledAgentTools(organizationUuid, userUuid);
     const enabledIntegrationUuids = new Set(
       enabled.integrations.map((integration) => integration.uuid),
     );
@@ -126,10 +217,19 @@ export class CapabilitiesToolsService {
       [...enabledToolkitSlugs],
       enabledToolkitSlugs,
     );
+    const scopedSlugs = resolvedToolkitSlugs ?? [];
+    const { resolvedTierMap } = await this.resolveToolkitConnectionAmbiguities(
+      organizationUuid,
+      userUuid,
+      scopedSlugs,
+      providedTiers,
+    );
 
     return {
       integrationUuids: resolvedIntegrationUuids,
       toolkitSlugs: resolvedToolkitSlugs,
+      toolkitConnectionTiers:
+        Object.keys(resolvedTierMap).length > 0 ? resolvedTierMap : undefined,
     };
   }
 
@@ -182,12 +282,23 @@ export class CapabilitiesToolsService {
             slug: true,
             name: true,
             description: true,
+            connection_tiers: true,
             connected_accounts: {
               where: {
                 org_uuid: context.organizationUuid,
                 status: ComposioAccountStatus.ACTIVE,
+                ...(context.userUuid
+                  ? {
+                      OR: [
+                        { user_uuid: context.userUuid },
+                        { user_uuid: null },
+                      ],
+                    }
+                  : {}),
               },
-              take: 1,
+              select: {
+                user_uuid: true,
+              },
             },
           },
         },
@@ -195,12 +306,47 @@ export class CapabilitiesToolsService {
       orderBy: { toolkit: { name: 'asc' } },
     });
 
+    const tierMap = context.toolkitConnectionTiers ?? {};
+    const toolkitSlugs = enabled.map((entry) => entry.toolkit.slug);
+    const orgSharedOnly = enabled.every(
+      (entry) =>
+        entry.toolkit.connection_tiers.includes(
+          ComposioConnectionTier.ORG_SHARED,
+        ) &&
+        !entry.toolkit.connection_tiers.includes(
+          ComposioConnectionTier.USER_PERSONAL,
+        ),
+    );
+    const composioUserId = context.userUuid
+      ? resolveComposioUserIdFromTierMap(
+          context.organizationUuid,
+          context.userUuid,
+          toolkitSlugs,
+          tierMap,
+          orgSharedOnly,
+        )
+      : null;
+    const sessionToolkitSlugs =
+      composioUserId && toolkitSlugs.length > 0
+        ? filterToolkitsForComposioUserId(
+            toolkitSlugs,
+            tierMap,
+            composioUserId,
+          )
+        : toolkitSlugs;
+    const sessionToolkitSlugSet = new Set(sessionToolkitSlugs);
+
     return {
       toolkits: enabled.map((entry) => ({
         slug: entry.toolkit.slug,
         name: entry.toolkit.name,
         description: entry.toolkit.description,
-        is_connected: entry.toolkit.connected_accounts.length > 0,
+        is_connected:
+          sessionToolkitSlugSet.has(entry.toolkit.slug) &&
+          isToolkitConnectedForTier(
+            entry.toolkit.connected_accounts,
+            tierMap[entry.toolkit.slug],
+          ),
       })),
     };
   }

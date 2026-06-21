@@ -82,11 +82,12 @@ export const sendMessage = async (
   documentUuids?: string[],
   integrationUuids?: string[],
   toolkitSlugs?: string[],
+  toolkitConnectionTiers?: Record<string, 'ORG_SHARED' | 'USER_PERSONAL'>,
 ): Promise<SendMessageResponse> => {
   try {
     const response = await axiosInstance.post(
       ApiRoutes.organizations.conversationMessages(organizationUuid, conversationUuid),
-      { content, documentUuids, integrationUuids, toolkitSlugs },
+      { content, documentUuids, integrationUuids, toolkitSlugs, toolkitConnectionTiers },
     );
     return response.data;
   } catch (error: any) {
@@ -132,5 +133,21 @@ export const rejectExecution = async (organizationUuid: string, executionUuid: s
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.message || 'Failed to reject execution.');
+  }
+};
+
+export const resolveConnectionTiers = async (
+  organizationUuid: string,
+  executionUuid: string,
+  choices: Record<string, 'ORG_SHARED' | 'USER_PERSONAL'>,
+) => {
+  try {
+    const response = await axiosInstance.post(
+      ApiRoutes.organizations.executionConnectionTiers(organizationUuid, executionUuid),
+      { choices },
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to resolve connection tiers.');
   }
 };

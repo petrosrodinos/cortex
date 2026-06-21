@@ -203,6 +203,168 @@ describe('ComposioSessionService', () => {
     );
   });
 
+  it('creates an org-scoped session when tier map requests org tier for all scoped toolkits', async () => {
+    const { service, client, prisma } = createService();
+    prisma.organisationEnabledToolkit.findMany
+      .mockReset()
+      .mockResolvedValueOnce([{ toolkit: { slug: 'slack' } }])
+      .mockResolvedValueOnce([
+        {
+          toolkit: {
+            slug: 'slack',
+            tools: [{ slug: 'slack_send_message', permissions: [] }],
+          },
+        },
+      ]);
+    prisma.composioConnectedAccount.findMany.mockResolvedValue([
+      {
+        composio_account_id: 'slack-org-account',
+        composio_user_id: 'org:org-uuid',
+        user_uuid: null,
+        toolkit: { slug: 'slack' },
+      },
+      {
+        composio_account_id: 'slack-user-account',
+        composio_user_id: 'user:user-uuid',
+        user_uuid: 'user-uuid',
+        toolkit: { slug: 'slack' },
+      },
+    ]);
+
+    await service.resolveSession(
+      'conversation-uuid',
+      'org-uuid',
+      'user-uuid',
+      ['slack'],
+      { slack: ComposioConnectionTier.ORG_SHARED },
+    );
+
+    expect(client.create).toHaveBeenCalledWith(
+      'org:org-uuid',
+      expect.objectContaining({
+        connectedAccounts: {
+          slack: 'slack-org-account',
+        },
+      }),
+    );
+  });
+
+  it('does not bind org accounts to user-scoped sessions when tiers are mixed', async () => {
+    const { service, client, prisma } = createService();
+    prisma.organisationEnabledToolkit.findMany
+      .mockReset()
+      .mockResolvedValueOnce([
+        { toolkit: { slug: 'slack' } },
+        { toolkit: { slug: 'gmail' } },
+      ])
+      .mockResolvedValueOnce([
+        {
+          toolkit: {
+            slug: 'slack',
+            tools: [{ slug: 'slack_send_message', permissions: [] }],
+          },
+        },
+        {
+          toolkit: {
+            slug: 'gmail',
+            tools: [{ slug: 'gmail_send_email', permissions: [] }],
+          },
+        },
+      ]);
+    prisma.composioConnectedAccount.findMany.mockResolvedValue([
+      {
+        composio_account_id: 'slack-org-account',
+        composio_user_id: 'org:org-uuid',
+        user_uuid: null,
+        toolkit: { slug: 'slack' },
+      },
+      {
+        composio_account_id: 'gmail-account',
+        composio_user_id: 'user:user-uuid',
+        user_uuid: 'user-uuid',
+        toolkit: { slug: 'gmail' },
+      },
+    ]);
+
+    await service.resolveSession(
+      'conversation-uuid',
+      'org-uuid',
+      'user-uuid',
+      ['slack', 'gmail'],
+      {
+        slack: ComposioConnectionTier.ORG_SHARED,
+        gmail: ComposioConnectionTier.USER_PERSONAL,
+      },
+    );
+
+    expect(client.create).toHaveBeenCalledWith(
+      'user:user-uuid',
+      expect.objectContaining({
+        connectedAccounts: {
+          gmail: 'gmail-account',
+        },
+      }),
+    );
+  });
+
+  it('recreates the session when switching to org-scoped toolkits', async () => {
+    const { service, client, session, prisma } = createService({
+      composio_session_id: 'existing-user-session',
+    });
+    prisma.composioConnectedAccount.findMany.mockResolvedValue([
+      {
+        composio_account_id: 'resend-org-account',
+        composio_user_id: 'org:org-uuid',
+        user_uuid: null,
+        toolkit: { slug: 'resend' },
+      },
+    ]);
+    prisma.composioToolkit.findMany.mockResolvedValue([
+      {
+        uuid: 'resend-toolkit-uuid',
+        slug: 'resend',
+        connection_tiers: [
+          ComposioConnectionTier.ORG_SHARED,
+          ComposioConnectionTier.USER_PERSONAL,
+        ],
+      },
+    ]);
+    prisma.organisationEnabledToolkit.findMany
+      .mockReset()
+      .mockResolvedValueOnce([{ toolkit: { slug: 'resend' } }])
+      .mockResolvedValueOnce([
+        {
+          toolkit: {
+            slug: 'resend',
+            tools: [{ slug: 'resend_send_email', permissions: [] }],
+          },
+        },
+      ]);
+
+    await service.resolveSession(
+      'conversation-uuid',
+      'org-uuid',
+      'user-uuid',
+      ['resend'],
+      { resend: ComposioConnectionTier.ORG_SHARED },
+    );
+
+    expect(prisma.conversation.update).toHaveBeenCalledWith({
+      where: { uuid: 'conversation-uuid' },
+      data: { composio_session_id: null },
+    });
+    expect(client.use).not.toHaveBeenCalled();
+    expect(client.create).toHaveBeenCalledWith(
+      'org:org-uuid',
+      expect.objectContaining({
+        connectedAccounts: {
+          resend: 'resend-org-account',
+        },
+      }),
+    );
+    expect(session.update).not.toHaveBeenCalled();
+  });
+
   it('updates an existing session instead of creating a new one', async () => {
     const { service, client, session, prisma } = createService({
       composio_session_id: 'existing-session-id',

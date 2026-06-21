@@ -13,6 +13,13 @@ import { OrganizationsService } from '@/modules/organizations/organizations.serv
 import { AGENT_RUN_QUEUE } from '@/core/queues/queues.constants';
 import type { AgentRunJobData } from '@/core/queues/processors/agent.processor';
 import type { UsageQueryType } from './dto/usage-query.schema';
+import { ResolveConnectionTiersDto } from './dto/resolve-connection-tiers.dto';
+import { CapabilitiesToolsService } from '@/shared/services/ai/agents/capabilities/capabilities-tools.service';
+import {
+  normalizeToolkitConnectionTierMap,
+  type ToolkitConnectionTierChoice,
+} from '@/shared/services/ai/agents/capabilities/toolkit-connection-tiers.utils';
+import { ComposioConnectionTier } from 'generated/prisma';
 
 type UsageScope = {
   canViewOrgUsage: boolean;
@@ -26,6 +33,7 @@ export class ExecutionsService {
     private readonly organizations: OrganizationsService,
     @InjectQueue(AGENT_RUN_QUEUE)
     private readonly agentQueue: Queue<AgentRunJobData>,
+    private readonly capabilities: CapabilitiesToolsService,
   ) {}
 
   async findAll(userUuid: string, organizationUuid: string) {
@@ -69,6 +77,7 @@ export class ExecutionsService {
       documentUuids?: string[];
       integrationUuids?: string[];
       toolkitSlugs?: string[];
+      toolkitConnectionTiers?: Record<string, ComposioConnectionTier>;
     };
 
     await this.prisma.agentExecution.update({
@@ -87,6 +96,7 @@ export class ExecutionsService {
         documentUuids: input.documentUuids ?? [],
         integrationUuids: input.integrationUuids,
         toolkitSlugs: input.toolkitSlugs,
+        toolkitConnectionTiers: input.toolkitConnectionTiers,
         resumeApprovals: (input.approvalRequests ?? []).map((request) => ({
           approvalId: request.approvalId,
           approved: true,
@@ -130,6 +140,90 @@ export class ExecutionsService {
     });
 
     return { rejected: true, executionId: execution.uuid };
+  }
+
+  async resolveConnectionTiers(
+    userUuid: string,
+    organizationUuid: string,
+    executionUuid: string,
+    dto: ResolveConnectionTiersDto,
+  ) {
+    const execution = await this.getExecution(
+      userUuid,
+      organizationUuid,
+      executionUuid,
+    );
+
+    if (execution.status !== AgentExecutionStatus.AWAITING_CONNECTION_TIER) {
+      throw new BadRequestException('Execution is not awaiting connection tier selection');
+    }
+
+    const input = (execution.input ?? {}) as {
+      content?: string;
+      documentUuids?: string[];
+      integrationUuids?: string[];
+      toolkitSlugs?: string[];
+      toolkitConnectionTiers?: Record<string, ComposioConnectionTier>;
+      connectionTierChoices?: ToolkitConnectionTierChoice[];
+    };
+
+    const providedTiers = normalizeToolkitConnectionTierMap(dto.choices);
+    const scopedToolkitSlugs = input.toolkitSlugs ?? [];
+    const { ambiguousChoices, resolvedTierMap } =
+      await this.capabilities.resolveToolkitConnectionAmbiguities(
+        organizationUuid,
+        userUuid,
+        scopedToolkitSlugs,
+        {
+          ...(input.toolkitConnectionTiers ?? {}),
+          ...providedTiers,
+        },
+      );
+
+    if (ambiguousChoices.length > 0) {
+      throw new BadRequestException(
+        'Connection tier selection is incomplete for one or more toolkits',
+      );
+    }
+
+    const toolkitConnectionTiers =
+      Object.keys(resolvedTierMap).length > 0 ? resolvedTierMap : undefined;
+
+    await this.prisma.agentExecution.update({
+      where: { uuid: execution.uuid },
+      data: {
+        status: AgentExecutionStatus.PENDING,
+        input: {
+          ...input,
+          toolkitConnectionTiers,
+          connectionTierChoices: undefined,
+        } as object,
+      },
+    });
+
+    await this.agentQueue.add(
+      'run',
+      {
+        organizationUuid,
+        userUuid,
+        conversationId: execution.conversation_uuid,
+        userMessage: input.content ?? '',
+        executionUuid: execution.uuid,
+        documentUuids: input.documentUuids ?? [],
+        integrationUuids: input.integrationUuids,
+        toolkitSlugs: input.toolkitSlugs,
+        toolkitConnectionTiers,
+      },
+      {
+        jobId: `run-${execution.uuid}`,
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 2000 },
+        removeOnComplete: 100,
+        removeOnFail: 200,
+      },
+    );
+
+    return { resolved: true, executionId: execution.uuid };
   }
 
   async getUsage(

@@ -6,6 +6,18 @@ import {
   ComposioAccountStatus,
   ComposioConnectionTier,
 } from 'generated/prisma';
+import {
+  inferConnectionTierFromAccount,
+  normalizeToolkitConnectionTierMap,
+  resolveToolkitConnectionTiers,
+} from '@/shared/services/ai/agents/capabilities/toolkit-connection-tiers.utils';
+import {
+  allTieredToolkitsHaveConnectedAccounts,
+  filterToolkitsForComposioUserId,
+  isAccountTierCompatibleWithComposioUserId,
+  mergeConnectionTierMaps,
+  resolveComposioUserIdFromTierMap,
+} from './composio-session-scope.utils';
 
 @Injectable()
 export class ComposioSessionService {
@@ -20,7 +32,11 @@ export class ComposioSessionService {
     organizationUuid: string,
     userUuid: string,
     toolkitSlugs?: string[],
+    toolkitConnectionTiers?: Record<string, ComposioConnectionTier | string>,
   ) {
+    const normalizedToolkitConnectionTiers = normalizeToolkitConnectionTierMap(
+      toolkitConnectionTiers,
+    );
     const conversation = await this.prisma.conversation.findFirstOrThrow({
       where: {
         uuid: conversationUuid,
@@ -33,23 +49,58 @@ export class ComposioSessionService {
       organizationUuid,
       toolkitSlugs,
     );
-    const enabledTools = await this.getEnabledToolsByToolkit(
-      organizationUuid,
+    const autoResolvedTierMap = (
+      await this.resolveConnectionTierMap(
+        organizationUuid,
+        userUuid,
+        enabledToolkitSlugs,
+      )
+    ).resolvedTierMap;
+    const resolvedConnectionTiers = mergeConnectionTierMaps(
+      autoResolvedTierMap,
+      normalizedToolkitConnectionTiers,
+    );
+    const orgSharedOnly = await this.areToolkitsOrgSharedOnly(
       enabledToolkitSlugs,
     );
-    const composioUserId = await this.resolveComposioUserId(
+    const composioUserId = resolveComposioUserIdFromTierMap(
       organizationUuid,
       userUuid,
       enabledToolkitSlugs,
+      resolvedConnectionTiers,
+      orgSharedOnly,
     );
-    const sessionConfig = await this.buildSessionConfig(
+    const sessionToolkitSlugs = filterToolkitsForComposioUserId(
+      enabledToolkitSlugs,
+      resolvedConnectionTiers,
+      composioUserId,
+    );
+    const enabledTools = await this.getEnabledToolsByToolkit(
+      organizationUuid,
+      sessionToolkitSlugs,
+    );
+    const connectedAccounts = await this.getConnectedAccountConfig(
       organizationUuid,
       userUuid,
       composioUserId,
-      enabledToolkitSlugs,
+      sessionToolkitSlugs,
+      resolvedConnectionTiers,
+    );
+    const sessionConfig = this.buildSessionConfig(
+      sessionToolkitSlugs,
       enabledTools,
+      connectedAccounts,
+      allTieredToolkitsHaveConnectedAccounts(
+        sessionToolkitSlugs,
+        connectedAccounts,
+      ),
     );
     const client = this.composioClient.getClient() as any;
+
+    if (composioUserId.startsWith('org:') && conversation.composio_session_id) {
+      await this.clearConversationSession(conversation.uuid);
+      conversation.composio_session_id = null;
+    }
 
     if (conversation.composio_session_id) {
       const session = await client.use(conversation.composio_session_id);
@@ -61,10 +112,8 @@ export class ComposioSessionService {
           throw error;
         }
 
-        await this.prisma.conversation.update({
-          where: { uuid: conversation.uuid },
-          data: { composio_session_id: null },
-        });
+        await this.clearConversationSession(conversation.uuid);
+        conversation.composio_session_id = null;
       }
     }
 
@@ -100,52 +149,37 @@ export class ComposioSessionService {
     return enabledToolkits.map((enabledToolkit) => enabledToolkit.toolkit.slug);
   }
 
-  private async resolveComposioUserId(
-    organizationUuid: string,
-    userUuid: string,
-    toolkitSlugs: string[],
-  ): Promise<string> {
+  private areToolkitsOrgSharedOnly(toolkitSlugs: string[]): Promise<boolean> {
     if (toolkitSlugs.length === 0) {
-      return `user:${userUuid}`;
+      return Promise.resolve(false);
     }
 
-    const toolkits = await this.prisma.composioToolkit.findMany({
-      where: { slug: { in: toolkitSlugs }, is_enabled: true },
-      select: { connection_tiers: true },
-    });
-
-    if (toolkits.length === 0) {
-      return `user:${userUuid}`;
-    }
-
-    const orgSharedOnly = toolkits.every(
-      (toolkit) =>
-        toolkit.connection_tiers.includes(ComposioConnectionTier.ORG_SHARED) &&
-        !toolkit.connection_tiers.includes(
-          ComposioConnectionTier.USER_PERSONAL,
-        ),
-    );
-
-    if (orgSharedOnly) {
-      return `org:${organizationUuid}`;
-    }
-
-    return `user:${userUuid}`;
+    return this.prisma.composioToolkit
+      .findMany({
+        where: { slug: { in: toolkitSlugs }, is_enabled: true },
+        select: { connection_tiers: true },
+      })
+      .then(
+        (toolkits) =>
+          toolkits.length > 0 &&
+          toolkits.every(
+            (toolkit) =>
+              toolkit.connection_tiers.includes(
+                ComposioConnectionTier.ORG_SHARED,
+              ) &&
+              !toolkit.connection_tiers.includes(
+                ComposioConnectionTier.USER_PERSONAL,
+              ),
+          ),
+      );
   }
 
-  private async buildSessionConfig(
-    organizationUuid: string,
-    userUuid: string,
-    composioUserId: string,
+  private buildSessionConfig(
     toolkitSlugs: string[],
     enabledTools: Record<string, string[]>,
+    connectedAccounts: Record<string, string>,
+    allRequiredToolkitsConnected: boolean,
   ) {
-    const connectedAccounts = await this.getConnectedAccountConfig(
-      organizationUuid,
-      userUuid,
-      composioUserId,
-      toolkitSlugs,
-    );
     const callbackUrl = this.configService.get<string>('APP_URL')
       ? `${this.configService.get<string>('APP_URL')}/dashboard/integrations/callback`
       : undefined;
@@ -155,7 +189,7 @@ export class ComposioSessionService {
       tools: enabledTools,
       connectedAccounts,
       manageConnections: {
-        enable: true,
+        enable: !allRequiredToolkitsConnected,
         ...(callbackUrl ? { callbackUrl } : {}),
       },
     };
@@ -223,7 +257,8 @@ export class ComposioSessionService {
     userUuid: string,
     composioUserId: string,
     toolkitSlugs: string[],
-  ): Promise<Record<string, string | string[]>> {
+    toolkitConnectionTiers?: Record<string, ComposioConnectionTier>,
+  ): Promise<Record<string, string>> {
     if (toolkitSlugs.length === 0) {
       return {};
     }
@@ -247,30 +282,95 @@ export class ComposioSessionService {
       orderBy: { created_at: 'desc' },
     });
 
-    return accounts.reduce<Record<string, string | string[]>>(
-      (result, account) => {
-        if (account.composio_user_id !== composioUserId) {
-          return result;
+    const result: Record<string, string> = {};
+
+    for (const account of accounts) {
+      const toolkitSlug = account.toolkit.slug;
+      const preferredTier = toolkitConnectionTiers?.[toolkitSlug];
+
+      if (preferredTier) {
+        const accountTier = account.user_uuid
+          ? ComposioConnectionTier.USER_PERSONAL
+          : ComposioConnectionTier.ORG_SHARED;
+
+        if (accountTier !== preferredTier || result[toolkitSlug]) {
+          continue;
         }
+      }
 
-        if (account.user_uuid && account.user_uuid !== userUuid) {
-          return result;
-        }
+      if (
+        !isAccountTierCompatibleWithComposioUserId(account, composioUserId)
+      ) {
+        continue;
+      }
 
-        const toolkitSlug = account.toolkit.slug;
+      if (account.user_uuid && account.user_uuid !== userUuid) {
+        continue;
+      }
 
-        if (!result[toolkitSlug]) {
-          result[toolkitSlug] = account.composio_account_id;
-          return result;
-        }
+      if (!result[toolkitSlug]) {
+        result[toolkitSlug] = account.composio_account_id;
+      }
+    }
 
-        const current = result[toolkitSlug];
-        result[toolkitSlug] = Array.isArray(current)
-          ? [...current, account.composio_account_id]
-          : [current, account.composio_account_id];
+    return result;
+  }
 
-        return result;
+  private async clearConversationSession(conversationUuid: string) {
+    await this.prisma.conversation.update({
+      where: { uuid: conversationUuid },
+      data: { composio_session_id: null },
+    });
+  }
+
+  private async resolveConnectionTierMap(
+    organizationUuid: string,
+    userUuid: string,
+    toolkitSlugs: string[],
+  ) {
+    if (toolkitSlugs.length === 0) {
+      return { resolvedTierMap: {} as Record<string, ComposioConnectionTier> };
+    }
+
+    const toolkits = await this.prisma.composioToolkit.findMany({
+      where: {
+        slug: { in: toolkitSlugs },
+        is_enabled: true,
       },
+      select: {
+        slug: true,
+        name: true,
+        connected_accounts: {
+          where: {
+            org_uuid: organizationUuid,
+            status: ComposioAccountStatus.ACTIVE,
+            OR: [{ user_uuid: userUuid }, { user_uuid: null }],
+          },
+          select: { user_uuid: true },
+        },
+      },
+    });
+
+    const connectedTiersBySlug = new Map<string, Set<ComposioConnectionTier>>();
+    const toolkitNamesBySlug = new Map<string, string>();
+
+    for (const toolkit of toolkits) {
+      toolkitNamesBySlug.set(toolkit.slug, toolkit.name);
+      const tiers = new Set<ComposioConnectionTier>();
+
+      for (const account of toolkit.connected_accounts ?? []) {
+        tiers.add(inferConnectionTierFromAccount(account));
+      }
+
+      if (tiers.size > 0) {
+        connectedTiersBySlug.set(toolkit.slug, tiers);
+      }
+    }
+
+    return resolveToolkitConnectionTiers(
+      toolkitSlugs,
+      connectedTiersBySlug,
+      toolkitNamesBySlug,
       {},
     );
   }

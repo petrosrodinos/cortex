@@ -8,6 +8,7 @@ import { ZodValidationPipe } from '@/shared/pipes/zod.validation.pipe';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { UpdateConversationDto } from './dto/update-conversation.dto';
 import { SendMessageDto } from './dto/send-message.dto';
+import { ResolveConnectionTiersDto } from './dto/resolve-connection-tiers.dto';
 import { UsageQuerySchema, type UsageQueryType } from './dto/usage-query.schema';
 import { ConversationsService } from './conversations.service';
 import { MessagesService } from './messages.service';
@@ -30,8 +31,11 @@ export class ConversationsController {
   ) {}
 
   @Get('agent-tools')
-  listAgentTools(@Param('organization_uuid') organizationUuid: string) {
-    return this.capabilities.listEnabledAgentTools(organizationUuid);
+  listAgentTools(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+  ) {
+    return this.capabilities.listEnabledAgentTools(organizationUuid, userUuid);
   }
 
   @Get()
@@ -173,5 +177,20 @@ export class ExecutionsController {
     @Param('execution_uuid') executionUuid: string,
   ) {
     return this.executions.reject(userUuid, organizationUuid, executionUuid);
+  }
+
+  @Post(':execution_uuid/connection-tiers')
+  resolveConnectionTiers(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Param('execution_uuid') executionUuid: string,
+    @Body() dto: ResolveConnectionTiersDto,
+  ) {
+    return this.executions.resolveConnectionTiers(
+      userUuid,
+      organizationUuid,
+      executionUuid,
+      dto,
+    );
   }
 }

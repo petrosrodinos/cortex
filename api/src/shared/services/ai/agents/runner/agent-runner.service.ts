@@ -34,12 +34,14 @@ import { SandboxCodeService } from '../sandbox/sandbox-code.service';
 import { DocumentReaderService } from '../documents/document-reader.service';
 import { CapabilitiesToolsService } from '../capabilities/capabilities-tools.service';
 import type { AgentToolScope } from '../tools/core/agent-tool-scope.utils';
+import { normalizeToolkitConnectionTierMap } from '../capabilities/toolkit-connection-tiers.utils';
 
 interface SavedExecutionInput {
   content?: string;
   documentUuids?: string[];
   integrationUuids?: string[];
   toolkitSlugs?: string[];
+  toolkitConnectionTiers?: Record<string, string>;
   approvalRequests?: Array<{
     approvalId: string;
     toolName?: string;
@@ -85,6 +87,7 @@ export class AgentRunnerService {
       documentUuids?: string[];
       integrationUuids?: string[];
       toolkitSlugs?: string[];
+      toolkitConnectionTiers?: Record<string, string>;
     },
   ): Promise<AgentRunResult> {
     const existingExecution = await this.prisma.agentExecution.findUnique({
@@ -119,6 +122,14 @@ export class AgentRunnerService {
         outputType: 'TEXT',
         awaitingApproval: true,
         approvalRequests: savedInput.approvalRequests ?? [],
+      };
+    }
+
+    if (existingExecution?.status === AgentExecutionStatus.AWAITING_CONNECTION_TIER) {
+      return {
+        content: '',
+        files: [],
+        outputType: 'TEXT',
       };
     }
 
@@ -160,10 +171,15 @@ export class AgentRunnerService {
 
       const documentUuids =
         options?.documentUuids ?? savedInput.documentUuids ?? [];
+      const providedTiers = normalizeToolkitConnectionTierMap(
+        options?.toolkitConnectionTiers ?? savedInput.toolkitConnectionTiers,
+      );
       const toolScope = await this.capabilities.resolveAgentToolScope(
         organizationUuid,
+        userUuid,
         options?.integrationUuids ?? savedInput.integrationUuids,
         options?.toolkitSlugs ?? savedInput.toolkitSlugs,
+        providedTiers,
       );
       const attachedDocuments =
         documentUuids.length > 0
@@ -190,6 +206,7 @@ export class AgentRunnerService {
           documentUuids,
           integrationUuids: toolScope.integrationUuids,
           toolkitSlugs: toolScope.toolkitSlugs,
+          toolkitConnectionTiers: toolScope.toolkitConnectionTiers,
           userMessage,
           progress,
         },
@@ -243,6 +260,7 @@ export class AgentRunnerService {
               documentUuids,
               integrationUuids: toolScope.integrationUuids,
               toolkitSlugs: toolScope.toolkitSlugs,
+              toolkitConnectionTiers: toolScope.toolkitConnectionTiers,
             } as object,
             tokens_used: usage.tokensUsed,
             cost_usd: usage.costUsd,
@@ -494,8 +512,12 @@ export class AgentRunnerService {
       ),
       this.capabilities.buildAgentCapabilitiesPrompt({
         organizationUuid,
+        userUuid,
         integrationUuids: toolScope.integrationUuids,
         toolkitSlugs: toolScope.toolkitSlugs,
+        toolkitConnectionTiers: normalizeToolkitConnectionTierMap(
+          toolScope.toolkitConnectionTiers,
+        ),
       }),
     ]);
 

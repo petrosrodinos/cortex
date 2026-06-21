@@ -4,6 +4,8 @@ import type {
   IntegrationAppsCallbackResponse,
   IntegrationAppsTrigger,
   IntegrationAppsToolkitDetail,
+  IntegrationAppsToolkitCount,
+  IntegrationAppsToolkitCountFilters,
   IntegrationAppsToolkitFilters,
   IntegrationAppsToolFilters,
   IntegrationAppsTool,
@@ -22,6 +24,18 @@ function buildToolkitQuery(filters: IntegrationAppsToolkitFilters = {}) {
   if (filters.connected !== undefined) params.set('connected', String(filters.connected));
   if (filters.page) params.set('page', String(filters.page));
   if (filters.limit) params.set('limit', String(filters.limit));
+
+  const query = params.toString();
+  return query ? `?${query}` : '';
+}
+
+function buildToolkitCountQuery(filters: IntegrationAppsToolkitCountFilters = {}) {
+  const params = new URLSearchParams();
+
+  if (filters.search) params.set('search', filters.search);
+  if (filters.category) params.set('category', filters.category);
+  if (filters.tier) params.set('tier', filters.tier);
+  if (filters.connected !== undefined) params.set('connected', String(filters.connected));
 
   const query = params.toString();
   return query ? `?${query}` : '';
@@ -49,6 +63,20 @@ export const getIntegrationAppsToolkits = async (
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.message || 'Failed to load integrations.');
+  }
+};
+
+export const getIntegrationAppsToolkitsCount = async (
+  organizationUuid: string,
+  filters?: IntegrationAppsToolkitCountFilters,
+): Promise<IntegrationAppsToolkitCount> => {
+  try {
+    const response = await axiosInstance.get(
+      `${ApiRoutes.organizations.integrationAppsToolkitsCount(organizationUuid)}${buildToolkitCountQuery(filters)}`,
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to load integration count.');
   }
 };
 
