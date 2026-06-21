@@ -12,6 +12,7 @@ import { DATABASE_PROVIDERS } from '@/modules/integrations/databases/database-in
 import { toJsonValue } from '@/shared/utils/json-value.utils';
 import { ExecutionToolIdempotencyService } from './execution-tool-idempotency.service';
 import { EmailToolPreprocessorService } from './email-tool-preprocessor.service';
+import { enrichEmailSenderConfigError } from '../email-tool.utils';
 
 export interface ToolDispatchResult {
   success: boolean;
@@ -113,8 +114,10 @@ export class ToolDispatcherService {
       };
     } catch (error) {
       const durationMs = Date.now() - started;
-      const message =
-        error instanceof Error ? error.message : 'Tool execution failed';
+      const message = enrichEmailSenderConfigError(
+        toolName,
+        error instanceof Error ? error.message : 'Tool execution failed',
+      );
 
       await this.prisma.toolCall.create({
         data: {

@@ -1,3 +1,5 @@
+import { isEmailSendToolName } from '../tools/email-tool.utils';
+
 const EMAIL_SEND_REQUEST_PATTERN =
   /\b(send|email|mail)\b.*\b(to|my email|their email|inbox|address)\b|\bsend it to\b|\bemail it to\b|\bmail it to\b/i;
 
@@ -46,7 +48,7 @@ export function isEmailSendIntegrationToolName(toolName?: string): boolean {
     return false;
   }
 
-  return /__(send_email|send_message)$/.test(toolName);
+  return isEmailSendToolName(toolName);
 }
 
 export function hasSuccessfulEmailSend(toolResults: unknown[]): boolean {

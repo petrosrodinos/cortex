@@ -8,8 +8,14 @@ import type {
   AgentToolProvider,
   AgentToolProviderContext,
 } from '../core/tool-provider.interface';
+import {
+  appendEmailSendToolDescription,
+  enrichEmailSenderConfigError,
+  isEmailSendToolName,
+} from '../email-tool.utils';
 
 type ExecutableTool = {
+  description?: string;
   execute?: (input: unknown, options?: unknown) => Promise<unknown> | unknown;
   needsApproval?: boolean;
 };
@@ -97,8 +103,13 @@ export class ComposioToolProvider implements AgentToolProvider {
       requiredPermissionKey?: string;
     },
   ): ToolSet[string] {
+    const description = isEmailSendToolName(toolName)
+      ? appendEmailSendToolDescription(executable.description)
+      : executable.description;
+
     return {
       ...(executable as object),
+      ...(description !== undefined ? { description } : {}),
       needsApproval: permission.requiresApproval,
       execute: async (input: unknown, options?: unknown) => {
         if (
@@ -147,8 +158,10 @@ export class ComposioToolProvider implements AgentToolProvider {
           return result;
         } catch (error) {
           const durationMs = Date.now() - started;
-          const message =
-            error instanceof Error ? error.message : 'Composio tool failed';
+          const message = enrichEmailSenderConfigError(
+            toolName,
+            error instanceof Error ? error.message : 'Composio tool failed',
+          );
 
           await this.prisma.toolCall.create({
             data: {

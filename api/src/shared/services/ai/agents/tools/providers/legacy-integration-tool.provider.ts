@@ -10,6 +10,7 @@ import type {
   AgentToolProviderContext,
 } from '../core/tool-provider.interface';
 import { ToolDispatcherService } from '../dispatch/tool-dispatcher.service';
+import { appendEmailSendToolDescription } from '../email-tool.utils';
 
 const AGENT_HIDDEN_INTEGRATION_TOOL_KEYS = new Set([
   'send_html_email',
@@ -56,7 +57,9 @@ export class LegacyIntegrationToolProvider implements AgentToolProvider {
             });
       const description =
         actionKey && EMAIL_SEND_ACTION_KEYS.has(actionKey)
-          ? `${aiTool.function.description} Use the to field for any recipient email address. Optional attachment_document_uuids accepts document UUIDs from output__create_* tools; attachments are added automatically at send time.`
+          ? appendEmailSendToolDescription(
+              `${aiTool.function.description} Use the to field for any recipient email address. Optional attachment_document_uuids accepts document UUIDs from output__create_* tools; attachments are added automatically at send time.`,
+            )
           : aiTool.function.description;
 
       tools[name] = tool({
