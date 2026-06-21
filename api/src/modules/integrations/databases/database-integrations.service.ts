@@ -8,6 +8,7 @@ import { formatDatabaseSchema } from './database-schema.formatter';
 import {
   DATABASE_PROVIDERS,
   DEFAULT_DATABASE_ALLOWED_OPS,
+  isDatabaseActionEnabledForOps,
   providerToDatabaseType,
 } from './database-integration.types';
 import { CreateDatabaseIntegrationDto } from './dto/create-database-integration.dto';
@@ -65,7 +66,7 @@ export class DatabaseIntegrationsService {
               key: action.key,
               label: action.label,
               description: action.description,
-              enabled: action.key === 'get_schema' || allowedOps.includes(action.key.toUpperCase() as DatabaseOperation),
+              enabled: isDatabaseActionEnabledForOps(action.key, allowedOps),
               required_permission_key: action.required_permission_key,
             })),
             skipDuplicates: true,

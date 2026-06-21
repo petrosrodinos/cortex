@@ -9,6 +9,7 @@ import { DatabaseAdapterFactory } from './adapters/factory/database-adapter.fact
 import { MongoAdapter } from './adapters/mongo/mongo.adapter';
 import { assertSqlQueryAllowed } from './database-query-safety';
 import { formatDatabaseSchema } from './database-schema.formatter';
+import { isDatabaseActionEnabledForOps } from './database-integration.types';
 import { DatabaseSchema } from './adapters/interfaces/db-adapter.interface';
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
@@ -115,7 +116,7 @@ export class DatabaseIntegration extends BaseIntegration {
       tools.push(
         this.tool(
           'query',
-          `Execute a safe read query. Current schema:\n${schemaText}`,
+          `Execute a safe read query. JOIN related tables to resolve foreign-key UUIDs to human-readable names or titles for user-facing results unless the user asked for raw UUIDs. Current schema:\n${schemaText}`,
           queryParameters(),
         ),
       );
@@ -208,6 +209,38 @@ export class DatabaseIntegration extends BaseIntegration {
     }
 
     return super.resolveActionKey(toolName);
+  }
+
+  async validateAction(integration: Pick<Integration, 'uuid'>, toolName: string) {
+    const key = this.resolveActionKey(toolName);
+    const action = await this.prisma.integrationAction.findFirst({
+      where: {
+        integration_uuid: integration.uuid,
+        key,
+      },
+    });
+
+    if (!action) {
+      throw new ForbiddenException('Integration action is disabled or unavailable');
+    }
+
+    if (action.enabled) {
+      return action;
+    }
+
+    const database = await this.prisma.databaseIntegration.findUnique({
+      where: { integration_uuid: integration.uuid },
+      select: { allowed_ops: true },
+    });
+
+    if (
+      database &&
+      isDatabaseActionEnabledForOps(key, database.allowed_ops)
+    ) {
+      return action;
+    }
+
+    throw new ForbiddenException('Integration action is disabled or unavailable');
   }
 
   private async requireDatabaseIntegration(integrationUuid: string): Promise<DatabaseIntegrationRecord> {

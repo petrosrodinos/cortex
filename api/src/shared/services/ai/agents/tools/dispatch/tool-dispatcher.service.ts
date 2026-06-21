@@ -8,7 +8,7 @@ import {
 } from 'generated/prisma';
 import { calculateAiCost } from '@/integrations/ai/utils/ai-cost';
 import { AiProviders } from '@/integrations/ai/interfaces/ai.interface';
-import { DATABASE_PROVIDERS } from '@/modules/integrations/databases/database-integration.types';
+import { DATABASE_PROVIDERS, isDatabaseActionEnabledForOps } from '@/modules/integrations/databases/database-integration.types';
 import { toJsonValue } from '@/shared/utils/json-value.utils';
 import { ExecutionToolIdempotencyService } from './execution-tool-idempotency.service';
 import { EmailToolPreprocessorService } from './email-tool-preprocessor.service';
@@ -218,14 +218,31 @@ export class ToolDispatcherService {
       where: {
         integration_uuid: integration.uuid,
         key: actionKey,
-        enabled: true,
       },
       include: {
-        integration: true,
+        integration: {
+          include: {
+            database: {
+              select: { allowed_ops: true },
+            },
+          },
+        },
       },
     });
 
     if (!action) {
+      throw new ForbiddenException(`Tool ${toolName} is not enabled`);
+    }
+
+    const databaseAllowed =
+      toolName.startsWith('db__') &&
+      action.integration.database &&
+      isDatabaseActionEnabledForOps(
+        action.key,
+        action.integration.database.allowed_ops,
+      );
+
+    if (!action.enabled && !databaseAllowed) {
       throw new ForbiddenException(`Tool ${toolName} is not enabled`);
     }
 

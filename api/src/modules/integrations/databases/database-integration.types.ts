@@ -9,6 +9,35 @@ export const DATABASE_PROVIDERS = [
 
 export const DEFAULT_DATABASE_ALLOWED_OPS = [DatabaseOperation.READ];
 
+export function databaseActionKeyToOperation(
+  actionKey: string,
+): DatabaseOperation | null {
+  switch (actionKey) {
+    case 'query':
+      return DatabaseOperation.READ;
+    case 'insert':
+      return DatabaseOperation.INSERT;
+    case 'update':
+      return DatabaseOperation.UPDATE;
+    case 'delete':
+      return DatabaseOperation.DELETE;
+    default:
+      return null;
+  }
+}
+
+export function isDatabaseActionEnabledForOps(
+  actionKey: string,
+  allowedOps: DatabaseOperation[],
+): boolean {
+  if (actionKey === 'get_schema') {
+    return true;
+  }
+
+  const operation = databaseActionKeyToOperation(actionKey);
+  return operation !== null && allowedOps.includes(operation);
+}
+
 export interface DatabaseIntegrationConfig {
   connectionString: string;
   allowedOps: DatabaseOperation[];

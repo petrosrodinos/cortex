@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { IntegrationProvider, IntegrationStatus } from 'generated/prisma';
-import { DATABASE_PROVIDERS } from '../../databases/database-integration.types';
+import { DATABASE_PROVIDERS, isDatabaseActionEnabledForOps } from '../../databases/database-integration.types';
 import { AiTool } from '../interfaces/ai-tool.interface';
 import { IIntegration } from '../interfaces/integration.interface';
 
@@ -67,9 +67,7 @@ export class IntegrationRegistry {
         database: true,
         openapi: true,
         mcp: true,
-        actions: {
-          where: { enabled: true },
-        },
+        actions: true,
       },
     });
 
@@ -80,8 +78,19 @@ export class IntegrationRegistry {
         return [];
       }
 
+      const effectiveActions = DATABASE_PROVIDERS.includes(
+        integration.provider as (typeof DATABASE_PROVIDERS)[number],
+      )
+        ? integration.actions.filter((action) =>
+            isDatabaseActionEnabledForOps(
+              action.key,
+              integration.database?.allowed_ops ?? [],
+            ),
+          )
+        : integration.actions.filter((action) => action.enabled);
+
       const enabled_tool_names = new Set(
-        integration.actions.flatMap((action) => [
+        effectiveActions.flatMap((action) => [
           `${integration.provider.toLowerCase()}__${action.key}`,
           ...(DATABASE_PROVIDERS.includes(integration.provider as any)
             ? [`db__${action.key}`]
