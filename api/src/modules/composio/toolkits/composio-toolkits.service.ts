@@ -189,6 +189,8 @@ export class ComposioToolkitsService {
 
   async findTools(slug: string, query: ListComposioToolkitsDto) {
     const toolkit = await this.findToolkitUuid(slug);
+    const page = this.toPositiveInt(query.page, 1);
+    const limit = Math.min(this.toPositiveInt(query.limit, 25), 100);
     const where: Prisma.ComposioToolkitToolWhereInput = {
       toolkit_uuid: toolkit.uuid,
     };
@@ -206,10 +208,25 @@ export class ComposioToolkitsService {
       where.is_enabled = enabled;
     }
 
-    return this.prisma.composioToolkitTool.findMany({
-      where,
-      orderBy: [{ is_enabled: 'desc' }, { name: 'asc' }],
-    });
+    const [total, data] = await this.prisma.$transaction([
+      this.prisma.composioToolkitTool.count({ where }),
+      this.prisma.composioToolkitTool.findMany({
+        where,
+        orderBy: [{ is_enabled: 'desc' }, { name: 'asc' }],
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+    ]);
+
+    return {
+      data,
+      pagination: {
+        total,
+        page,
+        limit,
+        total_pages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async updateTool(toolkitSlug: string, toolSlug: string, isEnabled: boolean) {

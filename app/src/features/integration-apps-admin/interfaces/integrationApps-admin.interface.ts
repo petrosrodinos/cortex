@@ -67,3 +67,19 @@ export interface PaginatedAdminIntegrationAppsToolkits {
     total_pages: number;
   };
 }
+
+export interface PaginatedAdminIntegrationAppsTools {
+  data: AdminIntegrationAppsTool[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    total_pages: number;
+  };
+}
+
+export interface AdminIntegrationAppsToolFilters {
+  search?: string;
+  page?: number;
+  limit?: number;
+}

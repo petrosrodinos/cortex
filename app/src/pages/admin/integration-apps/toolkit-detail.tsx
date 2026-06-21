@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, RefreshCw } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   useAdminIntegrationAppsToolkit,
   useAdminIntegrationAppsToolkitStats,
+  useAdminIntegrationAppsToolkitTools,
   useRefreshAdminIntegrationAppsToolkit,
   useSyncAdminIntegrationAppsToolkitTools,
   useUpdateAdminIntegrationAppsTool,
@@ -17,14 +20,28 @@ import { MetricCard } from './components/metric-card';
 import { ToggleSwitch } from './components/toggle-switch';
 import { ToolkitOrgSections } from './components/toolkit-org-sections';
 
+const TOOLS_PAGE_SIZE = 25;
+
 export default function AdminIntegrationAppsToolkitDetailPage() {
   const { toolkitSlug } = useParams<{ toolkitSlug: string }>();
+  const [toolSearch, setToolSearch] = useState('');
+  const [toolsPage, setToolsPage] = useState(1);
   const toolkitQuery = useAdminIntegrationAppsToolkit(toolkitSlug);
   const statsQuery = useAdminIntegrationAppsToolkitStats(toolkitSlug);
+  const toolsQuery = useAdminIntegrationAppsToolkitTools(toolkitSlug, {
+    search: toolSearch.trim() || undefined,
+    page: toolsPage,
+    limit: TOOLS_PAGE_SIZE,
+  });
   const updateToolkit = useUpdateAdminIntegrationAppsToolkit(toolkitSlug);
   const refreshToolkit = useRefreshAdminIntegrationAppsToolkit(toolkitSlug);
   const syncTools = useSyncAdminIntegrationAppsToolkitTools(toolkitSlug);
   const toolkit = toolkitQuery.data;
+  const tools = toolsQuery.data?.data ?? [];
+  const toolsPagination = toolsQuery.data?.pagination;
+  const toolsTotalPages = toolsPagination?.total_pages ?? 1;
+  const toolsTotal = toolsPagination?.total ?? toolkit?.tool_count ?? 0;
+  const showToolsLoading = toolsQuery.isLoading || toolsQuery.isFetching;
 
   if (toolkitQuery.isLoading || !toolkit) {
     return <AdminToolkitDetailSkeleton />;
@@ -63,7 +80,7 @@ export default function AdminIntegrationAppsToolkitDetailPage() {
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <MetricCard label="Platform status" value={toolkit.is_enabled ? 'Enabled' : 'Disabled'} />
         <MetricCard label="Connection tiers" value={formatConnectionTiers(toolkit.connection_tiers)} />
-        <MetricCard label="Tools" value={String(toolkit.tools.length)} />
+        <MetricCard label="Tools" value={String(toolkit.tool_count)} />
         <MetricCard label="Connected accounts" value={String(statsQuery.data?.connected_accounts_count ?? 0)} />
         <MetricCard label="Active triggers" value={String(statsQuery.data?.active_triggers_count ?? 0)} />
       </div>
@@ -93,14 +110,70 @@ export default function AdminIntegrationAppsToolkitDetailPage() {
       </section>
 
       <section className="overflow-hidden rounded-lg border border-border bg-surface">
-        <div className="border-b border-border px-4 py-3">
-          <h3 className="text-sm font-semibold text-foreground">Tools</h3>
+        <div className="flex flex-col gap-3 border-b border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <h3 className="text-sm font-semibold text-foreground">Tools</h3>
+            <p className="mt-0.5 text-xs text-muted">
+              {toolSearch.trim()
+                ? `${toolsTotal} matching tool${toolsTotal === 1 ? '' : 's'}`
+                : `${toolsTotal} tool${toolsTotal === 1 ? '' : 's'}`}
+            </p>
+          </div>
+          <div className="relative w-full sm:max-w-xs">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+            <Input
+              value={toolSearch}
+              onChange={(event) => {
+                setToolSearch(event.target.value);
+                setToolsPage(1);
+              }}
+              className="pl-9"
+              placeholder="Search tools"
+            />
+          </div>
         </div>
         <div className="divide-y divide-border">
-          {toolkit.tools.map((tool) => (
-            <AdminToolRow key={tool.uuid} toolkitSlug={toolkit.slug} tool={tool} />
-          ))}
+          {showToolsLoading && tools.length === 0 ? (
+            <div className="space-y-0">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="h-16 animate-pulse border-b border-border bg-surface-secondary/40 last:border-b-0" />
+              ))}
+            </div>
+          ) : tools.length === 0 ? (
+            <div className="px-4 py-8 text-center text-sm text-muted">No tools found.</div>
+          ) : (
+            tools.map((tool) => (
+              <AdminToolRow key={tool.uuid} toolkitSlug={toolkit.slug} tool={tool} />
+            ))
+          )}
         </div>
+        {!showToolsLoading && toolsTotalPages > 1 ? (
+          <div className="flex items-center justify-between border-t border-border px-4 py-3">
+            <p className="text-xs text-muted">
+              Page {toolsPage} of {toolsTotalPages}
+            </p>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-8 px-3 text-xs"
+                onClick={() => setToolsPage((current) => Math.max(1, current - 1))}
+                disabled={toolsPage === 1 || showToolsLoading}
+              >
+                Previous
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-8 px-3 text-xs"
+                onClick={() => setToolsPage((current) => Math.min(toolsTotalPages, current + 1))}
+                disabled={toolsPage === toolsTotalPages || showToolsLoading}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        ) : null}
       </section>
     </div>
   );

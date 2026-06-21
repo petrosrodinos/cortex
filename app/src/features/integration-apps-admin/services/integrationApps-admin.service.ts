@@ -7,7 +7,9 @@ import type {
   AdminIntegrationAppsToolkitDetail,
   AdminIntegrationAppsToolkitStats,
   AdminIntegrationAppsTool,
+  AdminIntegrationAppsToolFilters,
   IntegrationAppsSyncType,
+  PaginatedAdminIntegrationAppsTools,
   PaginatedAdminIntegrationAppsToolkits,
 } from '../interfaces/integrationApps-admin.interface';
 
@@ -16,6 +18,15 @@ export interface AdminToolkitFilters {
   is_enabled?: boolean;
   page?: number;
   limit?: number;
+}
+
+function toolkitToolsQueryString(filters: AdminIntegrationAppsToolFilters = {}) {
+  const params = new URLSearchParams();
+  if (filters.search) params.set('search', filters.search);
+  if (filters.page) params.set('page', String(filters.page));
+  if (filters.limit) params.set('limit', String(filters.limit));
+  const value = params.toString();
+  return value ? `?${value}` : '';
 }
 
 function queryString(filters: AdminToolkitFilters = {}) {
@@ -74,6 +85,16 @@ export const getAdminIntegrationAppsToolkitStats = async (
   toolkitSlug: string,
 ): Promise<AdminIntegrationAppsToolkitStats> => {
   const response = await axiosInstance.get(ApiRoutes.admin.integrationAppsToolkitStats(toolkitSlug));
+  return response.data;
+};
+
+export const getAdminIntegrationAppsToolkitTools = async (
+  toolkitSlug: string,
+  filters?: AdminIntegrationAppsToolFilters,
+): Promise<PaginatedAdminIntegrationAppsTools> => {
+  const response = await axiosInstance.get(
+    `${ApiRoutes.admin.integrationAppsToolkitTools(toolkitSlug)}${toolkitToolsQueryString(filters)}`,
+  );
   return response.data;
 };
 
