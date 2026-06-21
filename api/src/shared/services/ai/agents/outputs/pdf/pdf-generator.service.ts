@@ -6,10 +6,19 @@ import type { GeneratedFileResult } from '../shared/generated-file.types';
 import type { DocxGenerateParams } from '../word/docx.types';
 
 const PDF_MIME = 'application/pdf';
-const PAGE_MARGIN = 48;
-const BODY_FONT_SIZE = 11;
-const BODY_LINE_GAP = 4;
-const TABLE_CELL_PADDING = 6;
+const PAGE_MARGIN = 56;
+const BODY_FONT_SIZE = 10.5;
+const BODY_LINE_GAP = 5;
+const TABLE_CELL_PADDING = 8;
+const ACCENT = '#1e3a5f';
+const TITLE_COLOR = '#0f172a';
+const BODY_COLOR = '#334155';
+const MUTED = '#64748b';
+const HEADER_BG = '#1e3a5f';
+const HEADER_TEXT = '#ffffff';
+const ROW_ALT = '#f1f5f9';
+const ROW_BORDER = '#cbd5e1';
+const BULLET_PATTERN = /^(?:•|\-|\*|\d+\.)\s+/;
 
 @Injectable()
 export class PdfGeneratorService {
@@ -45,7 +54,7 @@ export class PdfGeneratorService {
     const document = new PDFDocument({
       margin: PAGE_MARGIN,
       size: 'A4',
-      bufferPages: false,
+      bufferPages: true,
       info: {
         Title: title,
       },
@@ -59,6 +68,7 @@ export class PdfGeneratorService {
     });
 
     this.renderDocument(document, { ...params, title });
+    this.renderPageFooters(document);
     document.end();
 
     const buffer = await completed;
@@ -70,18 +80,54 @@ export class PdfGeneratorService {
   }
 
   private renderDocument(document: PDFKit.PDFDocument, params: DocxGenerateParams) {
-    document.fillColor('#111827').font('Helvetica-Bold').fontSize(20).text(params.title.trim(), {
+    const contentWidth = document.page.width - document.page.margins.left - document.page.margins.right;
+
+    document
+      .rect(document.page.margins.left, document.page.margins.top - 24, contentWidth, 4)
+      .fill(ACCENT);
+
+    document.y = document.page.margins.top;
+    document.fillColor(TITLE_COLOR).font('Helvetica-Bold').fontSize(26).text(params.title.trim(), {
       align: 'left',
     });
-    document.moveDown(1);
+
+    const subtitle = params.subtitle?.trim();
+    const dateLine = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+    document.moveDown(0.35);
+    document
+      .fillColor(MUTED)
+      .font('Helvetica')
+      .fontSize(11)
+      .text(subtitle ? `${subtitle} · ${dateLine}` : dateLine, { align: 'left' });
+
+    document.moveDown(0.6);
+    document
+      .strokeColor(ACCENT)
+      .lineWidth(1)
+      .moveTo(document.page.margins.left, document.y)
+      .lineTo(document.page.margins.left + contentWidth, document.y)
+      .stroke();
+    document.moveDown(1.2);
 
     for (const section of params.sections) {
       if (section.heading?.trim()) {
-        this.ensureSpace(document, 36);
-        document.fillColor('#111827').font('Helvetica-Bold').fontSize(14).text(section.heading.trim(), {
+        this.ensureSpace(document, 48);
+        document.fillColor(ACCENT).font('Helvetica-Bold').fontSize(15).text(section.heading.trim(), {
           align: 'left',
         });
-        document.moveDown(0.4);
+        document.moveDown(0.15);
+        document
+          .strokeColor(ACCENT)
+          .lineWidth(0.75)
+          .moveTo(document.page.margins.left, document.y)
+          .lineTo(document.page.margins.left + contentWidth * 0.35, document.y)
+          .stroke();
+        document.moveDown(0.55);
       }
 
       this.renderBody(document, section.body);
@@ -99,21 +145,27 @@ export class PdfGeneratorService {
 
   private renderBody(document: PDFKit.PDFDocument, body: string) {
     const paragraphs = body.split('\n').map((line) => line.trim());
+    const contentWidth = document.page.width - document.page.margins.left - document.page.margins.right;
 
-    document.fillColor('#111827').font('Helvetica').fontSize(BODY_FONT_SIZE);
+    document.fillColor(BODY_COLOR).font('Helvetica').fontSize(BODY_FONT_SIZE);
 
     for (const paragraph of paragraphs) {
       if (!paragraph) {
-        document.moveDown(0.4);
+        document.moveDown(0.35);
         continue;
       }
 
-      this.ensureSpace(document, BODY_FONT_SIZE * 2);
-      document.text(paragraph, {
+      const isBullet = BULLET_PATTERN.test(paragraph);
+      const text = isBullet ? paragraph.replace(BULLET_PATTERN, '') : paragraph;
+
+      this.ensureSpace(document, BODY_FONT_SIZE * 2.2);
+      document.text(isBullet ? `•  ${text}` : text, {
         align: 'left',
         lineGap: BODY_LINE_GAP,
+        width: contentWidth,
+        indent: isBullet ? 12 : 0,
       });
-      document.moveDown(0.5);
+      document.moveDown(0.45);
     }
   }
 
@@ -121,12 +173,12 @@ export class PdfGeneratorService {
     const usableWidth = document.page.width - document.page.margins.left - document.page.margins.right;
     const columnWidth = usableWidth / headers.length;
 
-    this.renderTableRow(document, headers, columnWidth, true);
+    this.renderTableRow(document, headers, columnWidth, true, 0);
 
-    for (const row of rows) {
-      const values = headers.map((_, index) => row[index] ?? '');
-      this.renderTableRow(document, values, columnWidth, false);
-    }
+    rows.forEach((row, index) => {
+      const values = headers.map((_, cellIndex) => row[cellIndex] ?? '');
+      this.renderTableRow(document, values, columnWidth, false, index);
+    });
 
     document.moveDown(0.6);
   }
@@ -136,6 +188,7 @@ export class PdfGeneratorService {
     values: Array<string | number>,
     columnWidth: number,
     isHeader: boolean,
+    rowIndex: number,
   ) {
     const x = document.page.margins.left;
     const rowHeight = this.getTableRowHeight(document, values, columnWidth, isHeader);
@@ -150,15 +203,19 @@ export class PdfGeneratorService {
       const text = String(value);
 
       if (isHeader) {
-        document.rect(cellX, rowY, columnWidth, rowHeight).fillAndStroke('#f3f4f6', '#d1d5db');
+        document.rect(cellX, rowY, columnWidth, rowHeight).fillAndStroke(HEADER_BG, HEADER_BG);
+        document.fillColor(HEADER_TEXT).text(text, cellX + TABLE_CELL_PADDING, rowY + TABLE_CELL_PADDING, {
+          width: columnWidth - TABLE_CELL_PADDING * 2,
+          lineGap: 2,
+        });
       } else {
-        document.rect(cellX, rowY, columnWidth, rowHeight).stroke('#d1d5db');
+        const fill = rowIndex % 2 === 1 ? ROW_ALT : '#ffffff';
+        document.rect(cellX, rowY, columnWidth, rowHeight).fillAndStroke(fill, ROW_BORDER);
+        document.fillColor(BODY_COLOR).text(text, cellX + TABLE_CELL_PADDING, rowY + TABLE_CELL_PADDING, {
+          width: columnWidth - TABLE_CELL_PADDING * 2,
+          lineGap: 2,
+        });
       }
-
-      document.fillColor('#111827').text(text, cellX + TABLE_CELL_PADDING, rowY + TABLE_CELL_PADDING, {
-        width: columnWidth - TABLE_CELL_PADDING * 2,
-        lineGap: 2,
-      });
     });
 
     document.y = rowY + rowHeight;
@@ -182,10 +239,40 @@ export class PdfGeneratorService {
     return Math.max(...heights, 14) + TABLE_CELL_PADDING * 2;
   }
 
+  private renderPageFooters(document: PDFKit.PDFDocument) {
+    const range = document.bufferedPageRange();
+    const totalPages = range.count;
+
+    for (let pageIndex = range.start; pageIndex < range.start + range.count; pageIndex++) {
+      document.switchToPage(pageIndex);
+
+      const footerY = document.page.height - document.page.margins.bottom + 14;
+      const footerWidth = document.page.width - document.page.margins.left - document.page.margins.right;
+
+      document
+        .strokeColor(ROW_BORDER)
+        .lineWidth(0.5)
+        .moveTo(document.page.margins.left, footerY - 8)
+        .lineTo(document.page.margins.left + footerWidth, footerY - 8)
+        .stroke();
+
+      document
+        .fillColor(MUTED)
+        .font('Helvetica')
+        .fontSize(8.5)
+        .text(`Page ${pageIndex + 1} of ${totalPages}`, document.page.margins.left, footerY, {
+          align: 'center',
+          width: footerWidth,
+          lineBreak: false,
+        });
+    }
+  }
+
   private ensureSpace(document: PDFKit.PDFDocument, height: number) {
-    const bottom = document.page.height - document.page.margins.bottom;
+    const bottom = document.page.height - document.page.margins.bottom - 24;
     if (document.y + height > bottom) {
       document.addPage();
+      document.y = document.page.margins.top;
     }
   }
 }
