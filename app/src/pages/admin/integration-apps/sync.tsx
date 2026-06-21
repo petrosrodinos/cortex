@@ -6,6 +6,7 @@ import {
   useStartAdminIntegrationAppsSync,
 } from '@/features/integration-apps-admin/hooks/use-integrationApps-admin';
 import type { AdminIntegrationAppsSyncRun, IntegrationAppsSyncType } from '@/features/integration-apps-admin/interfaces/integrationApps-admin.interface';
+import { AdminIntegrationAppsSyncRunsSkeleton } from './components/sync-runs-skeleton';
 
 export default function AdminIntegrationAppsSyncPage() {
   const [syncType, setSyncType] = useState<IntegrationAppsSyncType>('FULL');
@@ -59,7 +60,7 @@ export default function AdminIntegrationAppsSyncPage() {
           <h2 className="text-sm font-semibold text-foreground">Recent sync runs</h2>
         </div>
         {syncRunsQuery.isLoading ? (
-          <div className="p-4 text-sm text-muted">Loading sync history...</div>
+          <AdminIntegrationAppsSyncRunsSkeleton />
         ) : (syncRunsQuery.data?.data ?? []).length === 0 ? (
           <div className="p-4 text-sm text-muted">No sync runs found.</div>
         ) : (
