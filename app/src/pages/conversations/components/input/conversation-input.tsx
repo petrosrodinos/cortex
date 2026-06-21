@@ -1,4 +1,4 @@
-import { useRef, type FC } from 'react';
+import { useRef, type FC, type Ref } from 'react';
 import { ArrowUp, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ConversationAttachMenu } from './conversation-attach-menu';
@@ -7,12 +7,17 @@ import type { Integration } from '@/features/integrations/common/interfaces/inte
 import {
   ConversationDraftEditor,
   draftPartsToPlainText,
+  type ConversationDraftEditorHandle,
   type DraftPart,
 } from './conversation-draft-editor';
 
-interface AttachedFile {
-  file: File;
+export interface AttachedFile {
+  id: string;
+  file?: File;
   uuid?: string;
+  url?: string;
+  filename: string;
+  mimetype?: string;
 }
 
 interface ConversationInputProps {
@@ -24,10 +29,11 @@ interface ConversationInputProps {
   selectedToolkitSlugs: string[];
   disabled: boolean;
   isUploading: boolean;
+  draftEditorRef?: Ref<ConversationDraftEditorHandle>;
   onDraftPartsChange: (parts: DraftPart[]) => void;
   onSend: () => void;
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onRemoveFile: (file: File) => void;
+  onRemoveFile: (id: string) => void;
   onIntegrationSelectionChange: (integrationUuids: string[]) => void;
   onToolkitSelectionChange: (toolkitSlugs: string[]) => void;
 }
@@ -41,6 +47,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   selectedToolkitSlugs,
   disabled,
   isUploading,
+  draftEditorRef,
   onDraftPartsChange,
   onSend,
   onFileSelect,
@@ -55,15 +62,15 @@ export const ConversationInput: FC<ConversationInputProps> = ({
     <div className="shrink-0 min-w-0 border-t border-border p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:p-4">
       {attachedFiles.length > 0 && (
         <div className="mb-2 flex flex-wrap gap-2">
-          {attachedFiles.map((f) => (
+          {attachedFiles.map((attachment) => (
             <span
-              key={f.file.name + f.file.lastModified}
+              key={attachment.id}
               className="flex items-center gap-1 rounded-full border border-border bg-surface-secondary px-2.5 py-1 text-xs text-foreground"
             >
-              {f.uuid ? f.file.name : `${f.file.name} (uploading...)`}
+              {attachment.uuid ? attachment.filename : `${attachment.filename} (uploading...)`}
               <button
                 type="button"
-                onClick={() => onRemoveFile(f.file)}
+                onClick={() => onRemoveFile(attachment.id)}
                 className="ml-0.5 text-muted hover:text-foreground"
               >
                 <X className="h-3 w-3" />
@@ -93,6 +100,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
         />
 
         <ConversationDraftEditor
+          ref={draftEditorRef}
           parts={draftParts}
           integrations={integrations}
           toolkits={toolkits}

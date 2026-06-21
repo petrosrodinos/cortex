@@ -14,9 +14,7 @@ import { ConversationNoMessagesState } from './conversation-no-messages-state';
 import { getMessageAttachments, MessageAttachments } from './message-attachments';
 import { ExecutionApprovalCard } from '../executions/execution-approval-card';
 import { ExecutionProgress } from '../executions/execution-progress';
-import { MessageCopyButton } from './message-copy-button';
-import { MessageDeleteButton } from './message-delete-button';
-import { MessageRetryButton } from './message-retry-button';
+import { MessageActionsMenu } from './message-actions-menu';
 import { MessageMarkdown } from '@/components/markdown/message-markdown';
 import { prepareAssistantMarkdown, getFilePreviewUrl } from '@/lib/message-markdown.utils';
 import { ExpandableImage } from './expandable-image';
@@ -44,6 +42,7 @@ interface ConversationMessagesProps {
   onReject: () => void;
   isSendDisabled: boolean;
   onRetryMessage: (message: Message) => void;
+  onAddMessageToInput: (message: Message) => void;
   canDeleteMessages?: boolean;
   onDeleteMessage?: (message: Message) => void;
   isDeletingMessage?: boolean;
@@ -69,6 +68,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
   onReject,
   isSendDisabled,
   onRetryMessage,
+  onAddMessageToInput,
   canDeleteMessages = false,
   onDeleteMessage,
   isDeletingMessage = false,
@@ -147,20 +147,16 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
                 </>
               )}
             </div>
-            <div className="mt-0.5 flex shrink-0 items-start gap-0.5">
-              {message.role === MessageRoles.USER && (
-                <MessageRetryButton
-                  disabled={isSendDisabled}
-                  onRetry={() => onRetryMessage(message)}
-                />
-              )}
-              <MessageCopyButton content={message.content} />
-              {canDeleteMessages && onDeleteMessage && (
-                <MessageDeleteButton
-                  disabled={isDeletingMessage}
-                  onDelete={() => onDeleteMessage(message)}
-                />
-              )}
+            <div className="mt-0.5 flex shrink-0 items-start">
+              <MessageActionsMenu
+                message={message}
+                canRetry={message.role === MessageRoles.USER && !isSendDisabled}
+                canDelete={canDeleteMessages}
+                isDeleting={isDeletingMessage}
+                onAddToInput={onAddMessageToInput}
+                onRetry={onRetryMessage}
+                onDelete={onDeleteMessage}
+              />
             </div>
           </div>
 

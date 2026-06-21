@@ -300,6 +300,20 @@ function getSlashQueryAtCursor(root: HTMLElement): string | null {
   return match[1] ?? '';
 }
 
+function placeCursorAtEnd(root: HTMLElement) {
+  root.focus();
+  const selection = window.getSelection();
+  if (!selection) {
+    return;
+  }
+
+  const range = document.createRange();
+  range.selectNodeContents(root);
+  range.collapse(false);
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
+
 function placeCursorAfterNode(root: HTMLElement, node: Node) {
   root.focus();
   const selection = window.getSelection();
@@ -331,6 +345,7 @@ interface ConversationDraftEditorProps {
 
 export interface ConversationDraftEditorHandle {
   focus: () => void;
+  focusAtEnd: () => void;
 }
 
 export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle, ConversationDraftEditorProps>(
@@ -361,6 +376,13 @@ export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle,
     useImperativeHandle(ref, () => ({
       focus: () => {
         editorRef.current?.focus();
+      },
+      focusAtEnd: () => {
+        const root = editorRef.current;
+        if (!root) {
+          return;
+        }
+        placeCursorAtEnd(root);
       },
     }));
 

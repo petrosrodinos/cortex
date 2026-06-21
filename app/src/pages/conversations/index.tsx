@@ -32,29 +32,25 @@ import { ConversationEmptyState } from './components/shared/conversation-empty-s
 import { ConversationAiProviderRequired } from './components/shared/conversation-ai-provider-required';
 import { ConversationDocumentsModal } from './components/shared/conversation-documents-modal';
 import { ConversationHeader } from './components/shared/conversation-header';
-import { ConversationInput } from './components/input/conversation-input';
+import { ConversationInput, type AttachedFile } from './components/input/conversation-input';
 import { getToolEligibleIntegrations } from './components/input/integration-tools-list';
 import {
   createEmptyDraft,
   draftPartsToPlainText,
   getDraftIntegrationUuids,
   getDraftToolkitSlugs,
+  type ConversationDraftEditorHandle,
   type DraftPart,
 } from './components/input/conversation-draft-editor';
 import { ConversationMessages } from './components/messages/conversation-messages';
 import { getMessageAttachments } from './components/messages/message-attachments';
+import { stripMarkdownForPreview } from '@/lib/message-markdown.utils';
 import { ConversationSidebar } from './components/sidebar/conversation-sidebar';
 import { ConversationSidebarSkeleton } from './components/sidebar/conversation-sidebar-skeleton';
 import {
   CONVERSATIONS_SIDEBAR_STORAGE_KEY,
   getInitialConversationsSidebarCollapsed,
 } from './utils/conversations-sidebar.utils';
-
-interface AttachedFile {
-  file: File;
-  uuid?: string;
-  url?: string;
-}
 
 const ConversationsPage: FC = () => {
   const navigate = useNavigate();
@@ -75,6 +71,7 @@ const ConversationsPage: FC = () => {
   const [documentsOpen, setDocumentsOpen] = useState(false);
   const [chatsPanelCollapsed, setChatsPanelCollapsed] = useState(getInitialConversationsSidebarCollapsed);
   const autoCreateStarted = useRef(false);
+  const draftEditorRef = useRef<ConversationDraftEditorHandle>(null);
   const chatListDrawer = useOverlayState();
 
   const { data: conversations = [], isLoading: conversationsLoading } = useGetConversations(organizationUuid);
@@ -285,23 +282,36 @@ const ConversationsPage: FC = () => {
     const file = event.target.files?.[0];
     if (!file || !organizationUuid) return;
 
-    const placeholder: AttachedFile = { file };
+    const placeholder: AttachedFile = {
+      id: `${file.name}-${file.lastModified}-${crypto.randomUUID()}`,
+      file,
+      filename: file.name,
+      mimetype: file.type,
+    };
     setAttachedFiles((prev) => [...prev, placeholder]);
 
     try {
       const doc = await uploadDocument.mutateAsync(file);
       setAttachedFiles((prev) =>
-        prev.map((f) => (f.file === file ? { file, uuid: doc.uuid, url: doc.url } : f)),
+        prev.map((attachment) =>
+          attachment.file === file
+            ? {
+                ...attachment,
+                uuid: doc.uuid,
+                url: doc.url,
+              }
+            : attachment,
+        ),
       );
     } catch {
-      setAttachedFiles((prev) => prev.filter((f) => f.file !== file));
+      setAttachedFiles((prev) => prev.filter((attachment) => attachment.file !== file));
     }
 
     event.target.value = '';
   };
 
-  const removeAttachedFile = (file: File) => {
-    setAttachedFiles((prev) => prev.filter((f) => f.file !== file));
+  const removeAttachedFile = (id: string) => {
+    setAttachedFiles((prev) => prev.filter((attachment) => attachment.id !== id));
   };
 
   const handleSend = async () => {
@@ -317,14 +327,14 @@ const ConversationsPage: FC = () => {
     const toolkitSlugs = [
       ...new Set([...selectedToolkitSlugs, ...draftToolkitSlugs]),
     ];
-    const documentUuids = attachedFiles.filter((f) => f.uuid).map((f) => f.uuid as string);
+    const documentUuids = attachedFiles.filter((attachment) => attachment.uuid).map((attachment) => attachment.uuid as string);
     const sentAttachments: MessageAttachment[] = attachedFiles
-      .filter((f) => f.uuid)
-      .map((f) => ({
-        uuid: f.uuid as string,
-        filename: f.file.name,
-        mimetype: f.file.type,
-        url: f.url,
+      .filter((attachment) => attachment.uuid)
+      .map((attachment) => ({
+        uuid: attachment.uuid as string,
+        filename: attachment.filename,
+        mimetype: attachment.mimetype ?? attachment.file?.type,
+        url: attachment.url,
       }));
     const isFirstMessage = messages.length === 0;
     setDraftParts(createEmptyDraft());
@@ -391,6 +401,34 @@ const ConversationsPage: FC = () => {
       integrationUuids: selectedIntegrationUuids,
       toolkitSlugs: selectedToolkitSlugs,
       attachments,
+    });
+  };
+
+  const handleAddMessageToInput = (message: Message) => {
+    const content =
+      message.role === MessageRoles.ASSISTANT
+        ? stripMarkdownForPreview(message.content)
+        : message.content.trim();
+
+    setDraftParts(content ? [{ type: 'text', value: content }] : createEmptyDraft());
+
+    if (message.role === MessageRoles.USER) {
+      const attachments = getMessageAttachments(message.metadata);
+      setAttachedFiles(
+        attachments.map((attachment) => ({
+          id: attachment.uuid,
+          uuid: attachment.uuid,
+          filename: attachment.filename,
+          mimetype: attachment.mimetype,
+          url: attachment.url,
+        })),
+      );
+    }
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        draftEditorRef.current?.focusAtEnd();
+      });
     });
   };
 
@@ -590,6 +628,7 @@ const ConversationsPage: FC = () => {
               onReject={() => void handleReject()}
               isSendDisabled={isChatInputDisabled}
               onRetryMessage={handleRetryMessage}
+              onAddMessageToInput={handleAddMessageToInput}
               canDeleteMessages={isSuperAdmin}
               onDeleteMessage={handleDeleteMessageRequest}
               isDeletingMessage={deleteMessage.isPending}
@@ -607,6 +646,7 @@ const ConversationsPage: FC = () => {
                 selectedToolkitSlugs={selectedToolkitSlugs}
                 disabled={isChatInputDisabled}
                 isUploading={uploadDocument.isPending}
+                draftEditorRef={draftEditorRef}
                 onDraftPartsChange={setDraftParts}
                 onSend={() => void handleSend()}
                 onFileSelect={(event) => void handleFileSelect(event)}
