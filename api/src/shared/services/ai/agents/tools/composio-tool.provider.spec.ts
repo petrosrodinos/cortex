@@ -42,6 +42,10 @@ describe('ComposioToolProvider', () => {
     const session = {
       sessionId: 'session-uuid',
       tools: jest.fn().mockResolvedValue({
+        COMPOSIO_SEARCH_TOOLS: {
+          description: 'Search Composio tools',
+          execute: jest.fn().mockResolvedValue({ tools: [] }),
+        },
         slack_send_message: {
           description: 'Send a message',
           execute: jest.fn().mockResolvedValue({ ok: true }),
@@ -54,6 +58,7 @@ describe('ComposioToolProvider', () => {
     };
     const sessions = {
       resolveSession: jest.fn().mockResolvedValue(session),
+      getEnabledToolkitSlugs: jest.fn().mockResolvedValue(['slack']),
     };
     const progress = {
       toolStart: jest.fn().mockReturnValue('tool-call-uuid'),
@@ -91,7 +96,10 @@ describe('ComposioToolProvider', () => {
       'user-uuid',
       ['slack'],
     );
-    expect(Object.keys(tools)).toEqual(['slack_send_message']);
+    expect(Object.keys(tools)).toEqual([
+      'COMPOSIO_SEARCH_TOOLS',
+      'slack_send_message',
+    ]);
     expect((tools.slack_send_message as any).needsApproval).toBe(true);
   });
 
@@ -126,12 +134,14 @@ describe('ComposioToolProvider', () => {
     );
   });
 
-  it('does not expose tools when the user lacks the required permission', async () => {
+  it('does not expose toolkit tools when the user lacks the required permission', async () => {
     const { provider, context } = createProvider();
 
     await expect(
       provider.buildTools({ ...context, userPermissions: [] }),
-    ).resolves.toEqual({});
+    ).resolves.toEqual({
+      COMPOSIO_SEARCH_TOOLS: expect.any(Object),
+    });
   });
 
   it('rechecks permission during execution', async () => {

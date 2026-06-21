@@ -188,7 +188,6 @@ export class AgentRunnerService {
         organizationUuid,
         userUuid,
         attachedDocuments,
-        integrationUuids,
         userMessage,
         messagesForAgent,
       );
@@ -465,7 +464,6 @@ export class AgentRunnerService {
     attachedDocuments: Awaited<
       ReturnType<DocumentReaderService['getAttachedMetadata']>
     >,
-    integrationUuids: string[] | undefined,
     userMessage: string,
     messagesForAgent: ModelMessage[],
   ) {
@@ -473,7 +471,6 @@ export class AgentRunnerService {
       organizationUuid,
       userUuid,
       attachedDocuments,
-      integrationUuids,
     );
 
     const guidance: string[] = [];

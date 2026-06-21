@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import type { ToolSet } from 'ai';
+import { CapabilitiesToolProvider } from './capabilities-tool.provider';
 import { ComposioToolProvider } from './composio-tool.provider';
 import { DocumentToolProvider } from './document-tool.provider';
 import { LegacyIntegrationToolProvider } from './legacy-integration-tool.provider';
@@ -18,6 +19,7 @@ export class UnifiedToolRegistry {
   constructor(
     legacyIntegrations: LegacyIntegrationToolProvider,
     composio: ComposioToolProvider,
+    capabilities: CapabilitiesToolProvider,
     sandbox: SandboxToolProvider,
     documents: DocumentToolProvider,
     outputs: OutputToolProvider,
@@ -26,6 +28,7 @@ export class UnifiedToolRegistry {
     this.providers = [
       legacyIntegrations,
       composio,
+      capabilities,
       sandbox,
       documents,
       outputs,

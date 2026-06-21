@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ComposioClientService } from '@/integrations/composio/composio-client.service';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
-import { ComposioAccountStatus } from 'generated/prisma';
+import {
+  ComposioAccountStatus,
+  ComposioConnectionTier,
+} from 'generated/prisma';
 
 @Injectable()
 export class ComposioSessionService {
@@ -34,9 +37,15 @@ export class ComposioSessionService {
       organizationUuid,
       enabledToolkitSlugs,
     );
+    const composioUserId = await this.resolveComposioUserId(
+      organizationUuid,
+      userUuid,
+      enabledToolkitSlugs,
+    );
     const sessionConfig = await this.buildSessionConfig(
       organizationUuid,
       userUuid,
+      composioUserId,
       enabledToolkitSlugs,
       enabledTools,
     );
@@ -44,11 +53,22 @@ export class ComposioSessionService {
 
     if (conversation.composio_session_id) {
       const session = await client.use(conversation.composio_session_id);
-      await session.update(sessionConfig);
-      return session;
+      try {
+        await session.update(sessionConfig);
+        return session;
+      } catch (error) {
+        if (!this.isInvalidConnectedAccountError(error)) {
+          throw error;
+        }
+
+        await this.prisma.conversation.update({
+          where: { uuid: conversation.uuid },
+          data: { composio_session_id: null },
+        });
+      }
     }
 
-    const session = await client.create(`user:${userUuid}`, sessionConfig);
+    const session = await client.create(composioUserId, sessionConfig);
     const sessionId = session.sessionId ?? session.id;
 
     await this.prisma.conversation.update({
@@ -80,15 +100,50 @@ export class ComposioSessionService {
     return enabledToolkits.map((enabledToolkit) => enabledToolkit.toolkit.slug);
   }
 
+  private async resolveComposioUserId(
+    organizationUuid: string,
+    userUuid: string,
+    toolkitSlugs: string[],
+  ): Promise<string> {
+    if (toolkitSlugs.length === 0) {
+      return `user:${userUuid}`;
+    }
+
+    const toolkits = await this.prisma.composioToolkit.findMany({
+      where: { slug: { in: toolkitSlugs }, is_enabled: true },
+      select: { connection_tiers: true },
+    });
+
+    if (toolkits.length === 0) {
+      return `user:${userUuid}`;
+    }
+
+    const orgSharedOnly = toolkits.every(
+      (toolkit) =>
+        toolkit.connection_tiers.includes(ComposioConnectionTier.ORG_SHARED) &&
+        !toolkit.connection_tiers.includes(
+          ComposioConnectionTier.USER_PERSONAL,
+        ),
+    );
+
+    if (orgSharedOnly) {
+      return `org:${organizationUuid}`;
+    }
+
+    return `user:${userUuid}`;
+  }
+
   private async buildSessionConfig(
     organizationUuid: string,
     userUuid: string,
+    composioUserId: string,
     toolkitSlugs: string[],
     enabledTools: Record<string, string[]>,
   ) {
     const connectedAccounts = await this.getConnectedAccountConfig(
       organizationUuid,
       userUuid,
+      composioUserId,
       toolkitSlugs,
     );
     const callbackUrl = this.configService.get<string>('APP_URL')
@@ -155,9 +210,18 @@ export class ComposioSessionService {
     );
   }
 
+  private isInvalidConnectedAccountError(error: unknown): boolean {
+    const message = error instanceof Error ? error.message : String(error);
+    return (
+      message.includes('ToolRouterV2_InvalidConnectedAccountIds') ||
+      message.includes('Could not find connected account')
+    );
+  }
+
   private async getConnectedAccountConfig(
     organizationUuid: string,
     userUuid: string,
+    composioUserId: string,
     toolkitSlugs: string[],
   ): Promise<Record<string, string | string[]>> {
     if (toolkitSlugs.length === 0) {
@@ -185,6 +249,10 @@ export class ComposioSessionService {
 
     return accounts.reduce<Record<string, string | string[]>>(
       (result, account) => {
+        if (account.composio_user_id !== composioUserId) {
+          return result;
+        }
+
         if (account.user_uuid && account.user_uuid !== userUuid) {
           return result;
         }

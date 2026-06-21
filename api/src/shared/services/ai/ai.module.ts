@@ -14,6 +14,9 @@ import { AgentProgressEmitterService } from './agents/progress/agent-progress-em
 import { AgentRunnerService } from './agents/runner/agent-runner.service';
 import { ToolDispatcherService } from './agents/tools/tool-dispatcher.service';
 import { AgentToolsFactory } from './agents/tools/agent-tools.factory';
+import { CapabilitiesToolsFactory } from './agents/capabilities/capabilities-tools.factory';
+import { CapabilitiesToolsService } from './agents/capabilities/capabilities-tools.service';
+import { CapabilitiesToolProvider } from './agents/tools/capabilities-tool.provider';
 import { ComposioToolProvider } from './agents/tools/composio-tool.provider';
 import { DocumentToolProvider } from './agents/tools/document-tool.provider';
 import { LegacyIntegrationToolProvider } from './agents/tools/legacy-integration-tool.provider';
@@ -81,6 +84,9 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     DocumentToolsFactory,
     LegacyIntegrationToolProvider,
     ComposioToolProvider,
+    CapabilitiesToolsService,
+    CapabilitiesToolsFactory,
+    CapabilitiesToolProvider,
     SandboxToolProvider,
     DocumentToolProvider,
     OutputToolProvider,

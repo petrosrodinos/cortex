@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
-import { IntegrationStatus } from 'generated/prisma';
 import type { AttachedDocumentMeta } from '../documents/document-content.types';
 import { DocumentReaderService } from '../documents/document-reader.service';
-import { AgentActorService } from '../actor/agent-actor.service';
 import { ConversationPersonalizationService } from '@/modules/conversation-personalization/conversation-personalization.service';
 import { buildPersonalizationPromptBlock } from './personalization-prompt';
 
@@ -15,7 +13,6 @@ export class SystemPromptBuilder {
   constructor(
     private readonly prisma: PrismaService,
     private readonly documentReader: DocumentReaderService,
-    private readonly agentActor: AgentActorService,
     private readonly personalization: ConversationPersonalizationService,
   ) {}
 
@@ -34,38 +31,7 @@ export class SystemPromptBuilder {
     organizationUuid: string,
     userUuid: string,
     attachedDocuments: AttachedDocumentMeta[] = [],
-    integrationUuids?: string[],
   ): Promise<string> {
-    const [organization, actor, integrations] = await Promise.all([
-      this.prisma.organization.findUnique({
-        where: { uuid: organizationUuid },
-      }),
-      this.agentActor.resolve(userUuid, organizationUuid),
-      this.prisma.integration.findMany({
-        where: {
-          org_uuid: organizationUuid,
-          status: IntegrationStatus.ACTIVE,
-          ...(integrationUuids?.length
-            ? { uuid: { in: integrationUuids } }
-            : {}),
-        },
-        include: { database: true, actions: { where: { enabled: true } } },
-      }),
-    ]);
-
-    const integrationLines = integrations.map((integration) => {
-      const actions = integration.actions
-        .map((action) => action.key)
-        .join(', ');
-      return `- ${integration.name} (${integration.provider}, uuid: ${integration.uuid}): ${actions || 'no enabled actions'}`;
-    });
-
-    const schemaBlocks = integrations
-      .filter((integration) => integration.database?.schema_cache)
-      .map((integration) => {
-        return `### ${integration.name}\n${JSON.stringify(integration.database?.schema_cache, null, 2)}`;
-      });
-
     const today = new Date().toISOString().split('T')[0];
     const documentBlock =
       this.documentReader.formatMetadataForPrompt(attachedDocuments);
@@ -78,14 +44,13 @@ export class SystemPromptBuilder {
     );
 
     return [
-      `You are Cortex, an AI business operations copilot for ${organization?.name ?? 'the organization'}.`,
+      'You are Cortex, an AI business operations copilot.',
       `Today's date: ${today}.`,
-      'Authenticated user:',
-      `- member_uuid: ${actor.memberUuid}`,
-      `- email: ${actor.email}`,
-      `- role: ${actor.roleName}`,
       'Use available tools to retrieve data and take actions. For any question about counts, records, amounts, or data from connected systems, always query with the appropriate tool — never guess or estimate. Never invent credentials, integration secrets, or data values. If no tool can answer a question, say so explicitly.',
       'When destructive actions require approval, wait for explicit user approval before proceeding.',
+      'When the user asks what is connected, what toolkits are enabled, or what you can do, call capabilities__list_integrations and capabilities__list_toolkits before answering.',
+      'For organization profile or current user context, call organization__get_account.',
+      'For Composio SaaS actions, use COMPOSIO_SEARCH_TOOLS to discover tools within enabled toolkits, then execute via Composio meta tools.',
       'When the user attaches documents, call document__list first, then use the matching document__read_* tool to read each file before answering questions about it.',
       'Document read tools: document__read_pdf, document__read_word, document__read_excel, document__read_csv, document__read_text, document__read_image.',
       'Use code_interpreter only for Python data analysis, calculations, or chart generation on structured data already in the conversation.',
@@ -94,18 +59,12 @@ export class SystemPromptBuilder {
       'For follow-up export requests like "make it an excel", "make that a PDF", or "send the list above", use the most recent relevant data already present in the conversation. Do not ask the user to repeat data that is visible in the conversation history.',
       'When the user asks to create, draw, generate, or design an image, illustration, photo, portrait, or graphic, call output__create_image once with a detailed prompt. Do not say you cannot create images. Do not embed image URLs or markdown images in your reply — the UI renders the generated file automatically.',
       'Organization tools: organization__get_account for org profile, organization__list_members and organization__get_member for team directory lookups.',
+      'Capabilities tools: capabilities__list_integrations, capabilities__list_toolkits, capabilities__get_database_schema for discovery before querying connected systems.',
       'To send email, use an available Composio email tool from the connected toolkits.',
       'Use the recipient field required by the selected Composio email tool for any recipient email address. If multiple email toolkits are connected and the user did not specify one, choose the most appropriate available email tool.',
       'When emailing a generated file, use generatedDocuments metadata from the conversation or the file URL from the output tool result if the selected email tool supports attachments or links. Never claim an email was sent unless the email tool completed successfully.',
-      '',
-      'Connected integrations:',
-      integrationLines.length > 0 ? integrationLines.join('\n') : '- None',
-      '',
       documentBlock
         ? `Attached documents (use document__read_* tools to load content):\n${documentBlock}`
-        : '',
-      schemaBlocks.length > 0
-        ? 'Database schemas:\n' + schemaBlocks.join('\n\n')
         : '',
       personalizationBlock ?? '',
     ]

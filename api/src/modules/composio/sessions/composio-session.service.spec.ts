@@ -48,12 +48,15 @@ describe('ComposioSessionService', () => {
           {
             uuid: 'slack-toolkit-uuid',
             slug: 'slack',
-            connection_tier: ComposioConnectionTier.ORG_SHARED,
+            connection_tiers: [
+              ComposioConnectionTier.ORG_SHARED,
+              ComposioConnectionTier.USER_PERSONAL,
+            ],
           },
           {
             uuid: 'gmail-toolkit-uuid',
             slug: 'gmail',
-            connection_tier: ComposioConnectionTier.USER_PERSONAL,
+            connection_tiers: [ComposioConnectionTier.USER_PERSONAL],
           },
         ]),
       },
@@ -61,18 +64,18 @@ describe('ComposioSessionService', () => {
         findMany: jest.fn().mockResolvedValue([
           {
             composio_account_id: 'slack-account',
+            composio_user_id: 'org:org-uuid',
             user_uuid: null,
             toolkit: {
               slug: 'slack',
-              connection_tier: ComposioConnectionTier.ORG_SHARED,
             },
           },
           {
             composio_account_id: 'gmail-account',
+            composio_user_id: 'user:user-uuid',
             user_uuid: 'user-uuid',
             toolkit: {
               slug: 'gmail',
-              connection_tier: ComposioConnectionTier.USER_PERSONAL,
             },
           },
         ]),
@@ -142,7 +145,6 @@ describe('ComposioSessionService', () => {
           gmail: ['gmail_send_email'],
         },
         connectedAccounts: {
-          slack: 'slack-account',
           gmail: 'gmail-account',
         },
         manageConnections: {
@@ -156,6 +158,49 @@ describe('ComposioSessionService', () => {
       where: { uuid: 'conversation-uuid' },
       data: { composio_session_id: 'new-session-id' },
     });
+  });
+
+  it('creates an org-scoped session when only org-shared toolkits are enabled', async () => {
+    const { service, prisma, client } = createService();
+    prisma.composioToolkit.findMany.mockResolvedValue([
+      {
+        connection_tiers: [ComposioConnectionTier.ORG_SHARED],
+      },
+      {
+        connection_tiers: [ComposioConnectionTier.ORG_SHARED],
+      },
+    ]);
+    prisma.composioConnectedAccount.findMany.mockResolvedValue([
+      {
+        composio_account_id: 'ca_linear',
+        composio_user_id: 'org:org-uuid',
+        user_uuid: null,
+        toolkit: { slug: 'linear' },
+      },
+      {
+        composio_account_id: 'ca_resend',
+        composio_user_id: 'org:org-uuid',
+        user_uuid: null,
+        toolkit: { slug: 'resend' },
+      },
+    ]);
+
+    await service.resolveSession(
+      'conversation-uuid',
+      'org-uuid',
+      'user-uuid',
+      ['linear', 'resend'],
+    );
+
+    expect(client.create).toHaveBeenCalledWith(
+      'org:org-uuid',
+      expect.objectContaining({
+        connectedAccounts: {
+          linear: 'ca_linear',
+          resend: 'ca_resend',
+        },
+      }),
+    );
   });
 
   it('updates an existing session instead of creating a new one', async () => {
