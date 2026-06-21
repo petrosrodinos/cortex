@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { IntegrationProvider, IntegrationStatus } from 'generated/prisma';
-import { DATABASE_PROVIDERS, isDatabaseActionEnabledForOps } from '../../databases/database-integration.types';
+import { DATABASE_PROVIDERS, getEffectiveDatabaseActionKeys } from '../../databases/database-integration.types';
 import { AiTool } from '../interfaces/ai-tool.interface';
 import { IIntegration } from '../interfaces/integration.interface';
 
@@ -80,28 +80,27 @@ export class IntegrationRegistry {
         return [];
       }
 
-      const effectiveActions = DATABASE_PROVIDERS.includes(
+      const effectiveActionKeys = DATABASE_PROVIDERS.includes(
         integration.provider as (typeof DATABASE_PROVIDERS)[number],
       )
-        ? integration.actions.filter((action) =>
-            isDatabaseActionEnabledForOps(
-              action.key,
-              integration.database?.allowed_ops ?? [],
-            ),
+        ? getEffectiveDatabaseActionKeys(
+            integration.database?.allowed_ops ?? [],
           )
-        : integration.actions.filter((action) => action.enabled);
+        : integration.actions
+            .filter((action) => action.enabled)
+            .map((action) => action.key);
 
       const enabled_tool_names = new Set(
-        effectiveActions.flatMap((action) => [
-          `${integration.provider.toLowerCase()}__${action.key}`,
+        effectiveActionKeys.flatMap((actionKey) => [
+          `${integration.provider.toLowerCase()}__${actionKey}`,
           ...(DATABASE_PROVIDERS.includes(integration.provider as any)
-            ? [`db__${action.key}`]
+            ? [`db__${actionKey}`]
             : []),
           ...(integration.provider === IntegrationProvider.OPENAPI
-            ? [`openapi_${integration.uuid.slice(0, 8)}__${action.key}`]
+            ? [`openapi_${integration.uuid.slice(0, 8)}__${actionKey}`]
             : []),
           ...(integration.provider === IntegrationProvider.MCP
-            ? [`mcp_${integration.uuid.slice(0, 8)}__${action.key}`]
+            ? [`mcp_${integration.uuid.slice(0, 8)}__${actionKey}`]
             : []),
         ]),
       );

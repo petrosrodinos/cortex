@@ -213,6 +213,30 @@ export class DatabaseIntegration extends BaseIntegration {
 
   async validateAction(integration: Pick<Integration, 'uuid'>, toolName: string) {
     const key = this.resolveActionKey(toolName);
+    const database = await this.prisma.databaseIntegration.findUnique({
+      where: { integration_uuid: integration.uuid },
+      select: { allowed_ops: true },
+    });
+
+    if (database && isDatabaseActionEnabledForOps(key, database.allowed_ops)) {
+      const action = await this.prisma.integrationAction.findFirst({
+        where: {
+          integration_uuid: integration.uuid,
+          key,
+        },
+      });
+
+      if (action) {
+        return action;
+      }
+
+      return {
+        key,
+        enabled: true,
+        integration_uuid: integration.uuid,
+      } as Awaited<ReturnType<typeof this.prisma.integrationAction.findFirst>>;
+    }
+
     const action = await this.prisma.integrationAction.findFirst({
       where: {
         integration_uuid: integration.uuid,
@@ -225,18 +249,6 @@ export class DatabaseIntegration extends BaseIntegration {
     }
 
     if (action.enabled) {
-      return action;
-    }
-
-    const database = await this.prisma.databaseIntegration.findUnique({
-      where: { integration_uuid: integration.uuid },
-      select: { allowed_ops: true },
-    });
-
-    if (
-      database &&
-      isDatabaseActionEnabledForOps(key, database.allowed_ops)
-    ) {
       return action;
     }
 
@@ -391,7 +403,7 @@ export class MongoDatabaseIntegration extends DatabaseIntegration {
 function queryParameters() {
   return jsonSchema(
     {
-      integration_uuid: { type: 'string', description: 'Target database integration UUID. Required when multiple databases exist.' },
+      integration_uuid: { type: 'string', description: 'Integration UUID from capabilities__list_integrations. Required when multiple databases exist.' },
       query: { type: 'string', description: 'SQL query or MongoDB aggregation JSON with collection and pipeline.' },
       params: { type: 'array', items: {}, description: 'Parameterized SQL values.' },
     },
@@ -401,7 +413,7 @@ function queryParameters() {
 
 function getSchemaParameters() {
   return jsonSchema({
-    integration_uuid: { type: 'string', description: 'Target database integration UUID. Required when multiple databases exist.' },
+    integration_uuid: { type: 'string', description: 'Integration UUID from capabilities__list_integrations. Required when multiple databases exist.' },
   });
 }
 

@@ -28,6 +28,13 @@ interface LegacyToolContext {
   providerType?: string;
 }
 
+const INTEGRATION_UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isIntegrationUuid(value: string): boolean {
+  return INTEGRATION_UUID_PATTERN.test(value.trim());
+}
+
 @Injectable()
 export class ToolDispatcherService {
   private readonly logger = new Logger(ToolDispatcherService.name);
@@ -47,6 +54,7 @@ export class ToolDispatcherService {
     executionUuid: string,
     userPermissions: string[] = [],
     callId?: string,
+    scopedIntegrationUuids?: string[],
   ): Promise<ToolDispatchResult> {
     const started = Date.now();
 
@@ -61,12 +69,21 @@ export class ToolDispatcherService {
         prepared.toolName,
         prepared.input,
         userPermissions,
+        scopedIntegrationUuids,
       );
+
+      const executionInput =
+        prepared.toolName.startsWith('db__') && toolContext.integrationUuid
+          ? {
+              ...prepared.input,
+              integration_uuid: toolContext.integrationUuid,
+            }
+          : prepared.input;
 
       const cached = await this.idempotency.getCachedResult(
         executionUuid,
         prepared.toolName,
-        prepared.input,
+        executionInput,
       );
       if (cached) {
         const durationMs = Date.now() - started;
@@ -82,7 +99,7 @@ export class ToolDispatcherService {
       const result = await this.registry.executeTool(
         organizationUuid,
         prepared.toolName,
-        prepared.input,
+        executionInput,
       );
       const serializedResult = toJsonValue(result);
       const durationMs = Date.now() - started;
@@ -96,7 +113,7 @@ export class ToolDispatcherService {
           integration_uuid: toolContext.integrationUuid,
           provider_type: toolContext.providerType,
           tool_name: prepared.toolName,
-          input: prepared.input as object,
+          input: executionInput as object,
           output: serializedResult as object,
           status: ToolCallStatus.SUCCESS,
           tokens_used: tokensUsed,
@@ -196,6 +213,7 @@ export class ToolDispatcherService {
     toolName: string,
     input: Record<string, unknown>,
     userPermissions: string[],
+    scopedIntegrationUuids?: string[],
   ): Promise<LegacyToolContext> {
     const actionKey = this.extractActionKey(toolName);
     const providerType = this.resolveProviderType(toolName);
@@ -204,10 +222,22 @@ export class ToolDispatcherService {
       return { providerType };
     }
 
+    if (toolName.startsWith('db__')) {
+      return this.assertDatabaseToolAllowed(
+        organizationUuid,
+        toolName,
+        actionKey,
+        input,
+        userPermissions,
+        scopedIntegrationUuids,
+      );
+    }
+
     const integration = await this.resolveIntegrationForTool(
       organizationUuid,
       toolName,
       input,
+      scopedIntegrationUuids,
     );
 
     if (!integration) {
@@ -219,30 +249,9 @@ export class ToolDispatcherService {
         integration_uuid: integration.uuid,
         key: actionKey,
       },
-      include: {
-        integration: {
-          include: {
-            database: {
-              select: { allowed_ops: true },
-            },
-          },
-        },
-      },
     });
 
-    if (!action) {
-      throw new ForbiddenException(`Tool ${toolName} is not enabled`);
-    }
-
-    const databaseAllowed =
-      toolName.startsWith('db__') &&
-      action.integration.database &&
-      isDatabaseActionEnabledForOps(
-        action.key,
-        action.integration.database.allowed_ops,
-      );
-
-    if (!action.enabled && !databaseAllowed) {
+    if (!action?.enabled) {
       throw new ForbiddenException(`Tool ${toolName} is not enabled`);
     }
 
@@ -256,24 +265,107 @@ export class ToolDispatcherService {
     return { integrationUuid: integration.uuid, providerType };
   }
 
+  private async assertDatabaseToolAllowed(
+    organizationUuid: string,
+    toolName: string,
+    actionKey: string,
+    input: Record<string, unknown>,
+    userPermissions: string[],
+    scopedIntegrationUuids?: string[],
+  ): Promise<LegacyToolContext> {
+    const integration = await this.resolveIntegrationForTool(
+      organizationUuid,
+      toolName,
+      input,
+      scopedIntegrationUuids,
+    );
+
+    if (!integration) {
+      throw new ForbiddenException(`Tool ${toolName} is not enabled`);
+    }
+
+    const integrationRecord = await this.prisma.integration.findFirst({
+      where: {
+        uuid: integration.uuid,
+        org_uuid: organizationUuid,
+        status: IntegrationStatus.ACTIVE,
+        provider: { in: [...DATABASE_PROVIDERS] },
+      },
+      include: {
+        database: {
+          select: { allowed_ops: true },
+        },
+      },
+    });
+
+    if (
+      !integrationRecord?.database ||
+      !isDatabaseActionEnabledForOps(
+        actionKey,
+        integrationRecord.database.allowed_ops,
+      )
+    ) {
+      throw new ForbiddenException(`Tool ${toolName} is not enabled`);
+    }
+
+    const action = await this.prisma.integrationAction.findFirst({
+      where: {
+        integration_uuid: integration.uuid,
+        key: actionKey,
+      },
+    });
+
+    if (
+      action?.required_permission_key &&
+      !userPermissions.includes(action.required_permission_key)
+    ) {
+      throw new ForbiddenException(`Missing permission for tool ${toolName}`);
+    }
+
+    return { integrationUuid: integration.uuid, providerType: 'DATABASE' };
+  }
+
   private async resolveIntegrationForTool(
     organizationUuid: string,
     toolName: string,
     input: Record<string, unknown>,
+    scopedIntegrationUuids?: string[],
   ): Promise<{ uuid: string } | null> {
     if (toolName.startsWith('db__')) {
-      const integrationUuid = input.integration_uuid;
-      return this.prisma.integration.findFirst({
-        where: {
-          org_uuid: organizationUuid,
-          status: IntegrationStatus.ACTIVE,
-          provider: { in: [...DATABASE_PROVIDERS] },
-          ...(typeof integrationUuid === 'string'
-            ? { uuid: integrationUuid }
-            : {}),
-        },
-        select: { uuid: true },
-      });
+      const scopedDatabaseUuids = await this.resolveScopedDatabaseIntegrationUuids(
+        organizationUuid,
+        scopedIntegrationUuids,
+      );
+
+      if (scopedDatabaseUuids.length === 1) {
+        return { uuid: scopedDatabaseUuids[0] };
+      }
+
+      const rawReference = input.integration_uuid;
+      if (
+        typeof rawReference === 'string' &&
+        rawReference.trim().length > 0 &&
+        isIntegrationUuid(rawReference)
+      ) {
+        const byUuid = await this.findActiveDatabaseIntegration(
+          organizationUuid,
+          rawReference.trim(),
+          scopedDatabaseUuids,
+        );
+        if (byUuid) {
+          return byUuid;
+        }
+      }
+
+      if (scopedDatabaseUuids.length > 1) {
+        return null;
+      }
+
+      return this.findActiveDatabaseIntegration(
+        organizationUuid,
+        undefined,
+        scopedDatabaseUuids,
+      );
     }
 
     const openapiMatch = toolName.match(/^openapi_([^_]+)__/);
@@ -312,6 +404,55 @@ export class ToolDispatcherService {
         org_uuid: organizationUuid,
         provider,
         status: IntegrationStatus.ACTIVE,
+      },
+      select: { uuid: true },
+    });
+  }
+
+  private async resolveScopedDatabaseIntegrationUuids(
+    organizationUuid: string,
+    scopedIntegrationUuids?: string[],
+  ): Promise<string[]> {
+    if (!scopedIntegrationUuids?.length) {
+      return [];
+    }
+
+    const integrations = await this.prisma.integration.findMany({
+      where: {
+        org_uuid: organizationUuid,
+        status: IntegrationStatus.ACTIVE,
+        provider: { in: [...DATABASE_PROVIDERS] },
+        uuid: { in: scopedIntegrationUuids },
+      },
+      select: { uuid: true },
+    });
+
+    return integrations.map((integration) => integration.uuid);
+  }
+
+  private async findActiveDatabaseIntegration(
+    organizationUuid: string,
+    integrationUuid: string | undefined,
+    scopedDatabaseUuids: string[] = [],
+  ): Promise<{ uuid: string } | null> {
+    if (
+      integrationUuid &&
+      scopedDatabaseUuids.length > 0 &&
+      !scopedDatabaseUuids.includes(integrationUuid)
+    ) {
+      return null;
+    }
+
+    return this.prisma.integration.findFirst({
+      where: {
+        org_uuid: organizationUuid,
+        status: IntegrationStatus.ACTIVE,
+        provider: { in: [...DATABASE_PROVIDERS] },
+        ...(integrationUuid
+          ? { uuid: integrationUuid }
+          : scopedDatabaseUuids.length > 0
+            ? { uuid: { in: scopedDatabaseUuids } }
+            : {}),
       },
       select: { uuid: true },
     });

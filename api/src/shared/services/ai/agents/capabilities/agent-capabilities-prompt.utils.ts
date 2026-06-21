@@ -8,6 +8,7 @@ const EMAIL_TOOLKIT_SLUG_PATTERN =
   /gmail|googlemail|sendgrid|resend|outlook|smtp|mailgun|postmark|ses|brevo|sendinblue/i;
 
 type IntegrationSummary = {
+  uuid: string;
   name: string;
   provider: string;
   actions: string[];
@@ -35,9 +36,19 @@ export function buildAgentCapabilitiesPromptBlock(
     lines.push('- Custom integrations:');
     for (const integration of snapshot.integrations) {
       lines.push(
-        `  - ${integration.name} (${integration.provider}): ${integration.actions.join(', ') || 'no enabled actions'}`,
+        `  - ${integration.name} (${integration.provider}, uuid: ${integration.uuid}): ${integration.actions.join(', ') || 'no enabled actions'}`,
       );
     }
+  }
+
+  if (snapshot.integrations.some((integration) =>
+    integration.actions.some((action) =>
+      ['get_schema', 'query', 'insert', 'update', 'delete'].includes(action),
+    ),
+  )) {
+    lines.push(
+      '- Database tools: pass integration_uuid using the integration UUID from this list. Never use the display name.',
+    );
   }
 
   if (snapshot.toolkits.length === 0) {

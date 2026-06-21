@@ -2,6 +2,7 @@ import {
   ToolCallStatus,
   IntegrationProvider,
   IntegrationStatus,
+  DatabaseOperation,
 } from 'generated/prisma';
 import { ToolDispatcherService } from './tool-dispatcher.service';
 
@@ -11,10 +12,16 @@ describe('ToolDispatcherService', () => {
     registryResult?: unknown;
     prepared?: { toolName: string; input: Record<string, unknown> };
     integration?: { uuid: string };
+    integrationRecord?: {
+      uuid: string;
+      database?: { allowed_ops: DatabaseOperation[] } | null;
+    } | null;
     action?: {
+      enabled?: boolean;
       required_permission_key?: string | null;
       integration?: { provider: IntegrationProvider };
     } | null;
+    scopedDatabaseIntegrations?: Array<{ uuid: string }>;
   }) => {
     const prisma = {
       integration: {
@@ -23,6 +30,9 @@ describe('ToolDispatcherService', () => {
           .mockResolvedValue(
             overrides?.integration ?? { uuid: 'openapi-integration-uuid' },
           ),
+        findMany: jest
+          .fn()
+          .mockResolvedValue(overrides?.scopedDatabaseIntegrations ?? []),
       },
       integrationAction: {
         findFirst: jest
@@ -30,6 +40,7 @@ describe('ToolDispatcherService', () => {
           .mockResolvedValue(
             overrides?.action === undefined
               ? {
+                  enabled: true,
                   required_permission_key: null,
                   integration: { provider: IntegrationProvider.OPENAPI },
                 }
@@ -40,6 +51,14 @@ describe('ToolDispatcherService', () => {
         create: jest.fn(),
       },
     };
+
+    if (overrides?.integrationRecord !== undefined) {
+      prisma.integration.findFirst = jest
+        .fn()
+        .mockResolvedValueOnce(overrides.integration ?? { uuid: 'db-integration-uuid' })
+        .mockResolvedValue(overrides.integrationRecord);
+    }
+
     const registry = {
       executeTool: jest
         .fn()
@@ -119,6 +138,7 @@ describe('ToolDispatcherService', () => {
       },
       integration: { uuid: 'openapi-integration-uuid' },
       action: {
+        enabled: true,
         required_permission_key: null,
         integration: { provider: IntegrationProvider.OPENAPI },
       },
@@ -142,5 +162,129 @@ describe('ToolDispatcherService', () => {
     );
     expect(registry.executeTool).not.toHaveBeenCalled();
     expect(prisma.toolCall.create).not.toHaveBeenCalled();
+  });
+
+  it('allows db__query from scoped database integrations without action rows', async () => {
+    const dbUuid = 'e115bfd3-bc34-4510-b2ea-744e5c0f6d74';
+    const prisma = {
+      integration: {
+        findFirst: jest.fn().mockResolvedValue({
+          uuid: dbUuid,
+          database: { allowed_ops: [DatabaseOperation.READ] },
+        }),
+        findMany: jest.fn().mockResolvedValue([{ uuid: dbUuid }]),
+      },
+      integrationAction: {
+        findFirst: jest.fn().mockResolvedValue(null),
+      },
+      toolCall: {
+        create: jest.fn(),
+      },
+    };
+    const registry = {
+      executeTool: jest.fn().mockResolvedValue({ rows: [] }),
+    };
+    const service = new ToolDispatcherService(
+      prisma as any,
+      registry as any,
+      { getCachedResult: jest.fn().mockResolvedValue(undefined) } as any,
+      {
+        prepare: jest.fn().mockResolvedValue({
+          toolName: 'db__query',
+          input: { query: 'select * from expense_entries limit 1' },
+        }),
+      } as any,
+    );
+
+    await expect(
+      service.dispatch(
+        'org-uuid',
+        'user-uuid',
+        'db__query',
+        { query: 'select * from expense_entries limit 1' },
+        'execution-uuid',
+        [],
+        undefined,
+        [dbUuid],
+      ),
+    ).resolves.toMatchObject({ success: true, result: { rows: [] } });
+
+    expect(registry.executeTool).toHaveBeenCalledWith(
+      'org-uuid',
+      'db__query',
+      {
+        query: 'select * from expense_entries limit 1',
+        integration_uuid: dbUuid,
+      },
+    );
+    expect(prisma.toolCall.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        integration_uuid: dbUuid,
+        provider_type: 'DATABASE',
+        tool_name: 'db__query',
+        status: ToolCallStatus.SUCCESS,
+      }),
+    });
+  });
+
+  it('uses the scoped database uuid when the model passes a display name instead of a uuid', async () => {
+    const dbUuid = 'e115bfd3-bc34-4510-b2ea-744e5c0f6d74';
+    const prisma = {
+      integration: {
+        findFirst: jest.fn().mockResolvedValue({
+          uuid: dbUuid,
+          database: { allowed_ops: [DatabaseOperation.READ] },
+        }),
+        findMany: jest.fn().mockResolvedValue([{ uuid: dbUuid }]),
+      },
+      integrationAction: {
+        findFirst: jest.fn().mockResolvedValue(null),
+      },
+      toolCall: {
+        create: jest.fn(),
+      },
+    };
+    const registry = {
+      executeTool: jest.fn().mockResolvedValue({ rows: [] }),
+    };
+    const service = new ToolDispatcherService(
+      prisma as any,
+      registry as any,
+      { getCachedResult: jest.fn().mockResolvedValue(undefined) } as any,
+      {
+        prepare: jest.fn().mockResolvedValue({
+          toolName: 'db__query',
+          input: {
+            query: 'select * from expense_entries limit 1',
+            integration_uuid: 'sineverse',
+          },
+        }),
+      } as any,
+    );
+
+    await expect(
+      service.dispatch(
+        'org-uuid',
+        'user-uuid',
+        'db__query',
+        {
+          query: 'select * from expense_entries limit 1',
+          integration_uuid: 'sineverse',
+        },
+        'execution-uuid',
+        [],
+        undefined,
+        [dbUuid],
+      ),
+    ).resolves.toMatchObject({ success: true, result: { rows: [] } });
+
+    expect(registry.executeTool).toHaveBeenCalledWith(
+      'org-uuid',
+      'db__query',
+      {
+        query: 'select * from expense_entries limit 1',
+        integration_uuid: dbUuid,
+      },
+    );
   });
 });

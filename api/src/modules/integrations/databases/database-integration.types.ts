@@ -38,6 +38,22 @@ export function isDatabaseActionEnabledForOps(
   return operation !== null && allowedOps.includes(operation);
 }
 
+const DATABASE_ACTION_KEYS = [
+  'get_schema',
+  'query',
+  'insert',
+  'update',
+  'delete',
+] as const;
+
+export function getEffectiveDatabaseActionKeys(
+  allowedOps: DatabaseOperation[],
+): string[] {
+  return DATABASE_ACTION_KEYS.filter((key) =>
+    isDatabaseActionEnabledForOps(key, allowedOps),
+  );
+}
+
 export interface DatabaseIntegrationConfig {
   connectionString: string;
   allowedOps: DatabaseOperation[];

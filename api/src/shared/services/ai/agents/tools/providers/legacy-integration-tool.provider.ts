@@ -77,6 +77,7 @@ export class LegacyIntegrationToolProvider implements AgentToolProvider {
             context.executionUuid,
             context.userPermissions,
             callId,
+            context.integrationUuids,
           );
 
           if (callId) {

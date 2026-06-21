@@ -17,6 +17,7 @@ interface ConversationSlashPickerProps {
   query: string;
   isOpen: boolean;
   excludedIntegrationUuids?: string[];
+  excludedToolkitSlugs?: string[];
   className?: string;
   onSelect: (item: ConversationToolItem) => void;
   onClose: () => void;
@@ -28,19 +29,21 @@ export const ConversationSlashPicker: FC<ConversationSlashPickerProps> = ({
   query,
   isOpen,
   excludedIntegrationUuids = [],
+  excludedToolkitSlugs = [],
   className,
   onSelect,
   onClose,
 }) => {
   const filteredItems = useMemo(() => {
-    const excluded = new Set(excludedIntegrationUuids);
+    const excludedIntegrations = new Set(excludedIntegrationUuids);
+    const excludedToolkits = new Set(excludedToolkitSlugs);
     const items = buildConversationToolItems(
-      integrations.filter((integration) => !excluded.has(integration.uuid)),
-      toolkits,
+      integrations.filter((integration) => !excludedIntegrations.has(integration.uuid)),
+      toolkits.filter((toolkit) => !excludedToolkits.has(toolkit.slug)),
     );
 
     return sortConversationToolItems(filterConversationToolItems(items, query));
-  }, [integrations, toolkits, query, excludedIntegrationUuids]);
+  }, [integrations, toolkits, query, excludedIntegrationUuids, excludedToolkitSlugs]);
 
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
 
@@ -129,6 +132,7 @@ export const ConversationSlashPicker: FC<ConversationSlashPickerProps> = ({
         selectedIntegrationUuids={[]}
         selectedToolkitSlugs={[]}
         excludeIntegrationUuids={excludedIntegrationUuids}
+        excludeToolkitSlugs={excludedToolkitSlugs}
         highlightedItemId={highlightedItemId}
         filterQuery={query}
         className="max-h-[min(280px,45dvh)]"

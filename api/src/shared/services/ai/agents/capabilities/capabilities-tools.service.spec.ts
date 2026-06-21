@@ -64,7 +64,7 @@ describe('CapabilitiesToolsService', () => {
           uuid: 'integration-a',
           name: 'Warehouse DB',
           provider: 'DATABASE_PG',
-          actions: ['query'],
+          actions: ['get_schema', 'query'],
         },
       ],
       toolkits: [

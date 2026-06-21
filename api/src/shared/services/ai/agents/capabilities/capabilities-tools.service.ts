@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
-import { isDatabaseActionEnabledForOps } from '@/modules/integrations/databases/database-integration.types';
+import { getEffectiveDatabaseActionKeys } from '@/modules/integrations/databases/database-integration.types';
 import {
   ComposioAccountStatus,
   IntegrationStatus,
@@ -155,14 +155,7 @@ export class CapabilitiesToolsService {
         name: integration.name,
         provider: integration.provider,
         actions: integration.database
-          ? integration.actions
-              .filter((action) =>
-                isDatabaseActionEnabledForOps(
-                  action.key,
-                  integration.database!.allowed_ops,
-                ),
-              )
-              .map((action) => action.key)
+          ? getEffectiveDatabaseActionKeys(integration.database.allowed_ops)
           : integration.actions
               .filter((action) => action.enabled)
               .map((action) => action.key),
@@ -229,6 +222,7 @@ export class CapabilitiesToolsService {
 
     return {
       integrations: integrationsResult.integrations.map((integration) => ({
+        uuid: integration.uuid,
         name: integration.name,
         provider: integration.provider,
         actions: integration.actions,

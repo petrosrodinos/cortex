@@ -83,6 +83,7 @@ interface ConversationToolsListProps {
   selectedIntegrationUuids: string[];
   selectedToolkitSlugs: string[];
   excludeIntegrationUuids?: string[];
+  excludeToolkitSlugs?: string[];
   highlightedItemId?: string | null;
   filterQuery?: string;
   className?: string;
@@ -98,6 +99,7 @@ export const ConversationToolsList: FC<ConversationToolsListProps> = ({
   selectedIntegrationUuids,
   selectedToolkitSlugs,
   excludeIntegrationUuids = [],
+  excludeToolkitSlugs = [],
   highlightedItemId = null,
   filterQuery = '',
   className,
@@ -106,13 +108,15 @@ export const ConversationToolsList: FC<ConversationToolsListProps> = ({
   onHighlight,
 }) => {
   const items = useMemo(() => {
-    const excluded = new Set(excludeIntegrationUuids);
+    const excludedIntegrations = new Set(excludeIntegrationUuids);
+    const excludedToolkits = new Set(excludeToolkitSlugs);
     const visibleIntegrations = integrations.filter(
-      (integration) => !excluded.has(integration.uuid),
+      (integration) => !excludedIntegrations.has(integration.uuid),
     );
-    const allItems = buildConversationToolItems(visibleIntegrations, toolkits);
+    const visibleToolkits = toolkits.filter((toolkit) => !excludedToolkits.has(toolkit.slug));
+    const allItems = buildConversationToolItems(visibleIntegrations, visibleToolkits);
     return sortConversationToolItems(filterConversationToolItems(allItems, filterQuery));
-  }, [integrations, toolkits, filterQuery, excludeIntegrationUuids]);
+  }, [integrations, toolkits, filterQuery, excludeIntegrationUuids, excludeToolkitSlugs]);
 
   if (items.length === 0) {
     return (

@@ -7,7 +7,6 @@ import type { Integration } from '@/features/integrations/common/interfaces/inte
 import {
   ConversationDraftEditor,
   draftPartsToPlainText,
-  getDraftIntegrationUuids,
   type DraftPart,
 } from './conversation-draft-editor';
 
@@ -50,8 +49,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   onToolkitSelectionChange,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const canSend =
-    (draftPartsToPlainText(draftParts).length > 0 || getDraftIntegrationUuids(draftParts).length > 0) && !disabled;
+  const canSend = draftPartsToPlainText(draftParts).length > 0 && !disabled;
 
   return (
     <div className="shrink-0 min-w-0 border-t border-border p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:p-4">
@@ -98,11 +96,9 @@ export const ConversationInput: FC<ConversationInputProps> = ({
           parts={draftParts}
           integrations={integrations}
           toolkits={toolkits}
-          selectedToolkitSlugs={selectedToolkitSlugs}
           disabled={disabled}
           placeholder="Message Cortex..."
           onPartsChange={onDraftPartsChange}
-          onToolkitSelectionChange={onToolkitSelectionChange}
           onSend={() => {
             if (canSend) onSend();
           }}

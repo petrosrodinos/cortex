@@ -38,6 +38,7 @@ import {
   createEmptyDraft,
   draftPartsToPlainText,
   getDraftIntegrationUuids,
+  getDraftToolkitSlugs,
   type DraftPart,
 } from './components/input/conversation-draft-editor';
 import { ConversationMessages } from './components/messages/conversation-messages';
@@ -306,11 +307,16 @@ const ConversationsPage: FC = () => {
   const handleSend = async () => {
     const content = draftPartsToPlainText(draftParts);
     const draftIntegrationUuids = getDraftIntegrationUuids(draftParts);
-    if ((!content && draftIntegrationUuids.length === 0) || !conversationUuid || !hasAiProvider) {
+    const draftToolkitSlugs = getDraftToolkitSlugs(draftParts);
+    if (!content || !conversationUuid || !hasAiProvider) {
       return;
     }
-    const integrationUuids =
-      draftIntegrationUuids.length > 0 ? draftIntegrationUuids : selectedIntegrationUuids;
+    const integrationUuids = [
+      ...new Set([...selectedIntegrationUuids, ...draftIntegrationUuids]),
+    ];
+    const toolkitSlugs = [
+      ...new Set([...selectedToolkitSlugs, ...draftToolkitSlugs]),
+    ];
     const documentUuids = attachedFiles.filter((f) => f.uuid).map((f) => f.uuid as string);
     const sentAttachments: MessageAttachment[] = attachedFiles
       .filter((f) => f.uuid)
@@ -328,7 +334,7 @@ const ConversationsPage: FC = () => {
       content,
       documentUuids,
       integrationUuids,
-      toolkitSlugs: selectedToolkitSlugs,
+      toolkitSlugs,
       attachments: sentAttachments,
       isFirstMessage,
     });

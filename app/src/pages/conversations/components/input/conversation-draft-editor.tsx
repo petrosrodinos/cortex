@@ -15,9 +15,13 @@ import { ConversationSlashPicker } from './conversation-slash-picker';
 import { getIntegrationDisplayLabel } from './integration-tools-list';
 import type { ConversationToolItem } from './conversation-tool-items.utils';
 
+const SLASH_QUERY_PATTERN = /\/([a-z0-9_-]*)$/i;
+const TOOLKIT_CHIP_BRAND = '#6366f1';
+
 export type DraftPart =
   | { type: 'text'; value: string }
-  | { type: 'integration'; uuid: string; label: string; provider: IntegrationProvider };
+  | { type: 'integration'; uuid: string; label: string; provider: IntegrationProvider }
+  | { type: 'toolkit'; slug: string; label: string };
 
 export function createEmptyDraft(): DraftPart[] {
   return [{ type: 'text', value: '' }];
@@ -41,6 +45,18 @@ export function getDraftIntegrationUuids(parts: DraftPart[]): string[] {
   }
 
   return uuids;
+}
+
+export function getDraftToolkitSlugs(parts: DraftPart[]): string[] {
+  const slugs: string[] = [];
+
+  for (const part of parts) {
+    if (part.type === 'toolkit' && !slugs.includes(part.slug)) {
+      slugs.push(part.slug);
+    }
+  }
+
+  return slugs;
 }
 
 function mergeAdjacentTextParts(parts: DraftPart[]): DraftPart[] {
@@ -93,6 +109,15 @@ function serializeEditor(root: HTMLElement): DraftPart[] {
       return;
     }
 
+    if (node.dataset.toolkitSlug) {
+      parts.push({
+        type: 'toolkit',
+        slug: node.dataset.toolkitSlug,
+        label: node.dataset.toolkitLabel ?? '',
+      });
+      return;
+    }
+
     const value = node.textContent ?? '';
     if (value) {
       parts.push({ type: 'text', value });
@@ -102,7 +127,11 @@ function serializeEditor(root: HTMLElement): DraftPart[] {
   return mergeAdjacentTextParts(parts);
 }
 
-function createChipElement(uuid: string, label: string, provider: IntegrationProvider): HTMLSpanElement {
+function createIntegrationChipElement(
+  uuid: string,
+  label: string,
+  provider: IntegrationProvider,
+): HTMLSpanElement {
   const chip = document.createElement('span');
   chip.dataset.integrationUuid = uuid;
   chip.dataset.integrationLabel = label;
@@ -111,6 +140,18 @@ function createChipElement(uuid: string, label: string, provider: IntegrationPro
   chip.className =
     'integration-chip mx-0.5 inline-flex items-center rounded-full px-1.5 py-0.5 align-baseline text-[13px] font-medium leading-none';
   chip.style.setProperty('--chip-brand', getProviderBrandColor(provider));
+  chip.textContent = `/${label}`;
+  return chip;
+}
+
+function createToolkitChipElement(slug: string, label: string): HTMLSpanElement {
+  const chip = document.createElement('span');
+  chip.dataset.toolkitSlug = slug;
+  chip.dataset.toolkitLabel = label;
+  chip.contentEditable = 'false';
+  chip.className =
+    'integration-chip mx-0.5 inline-flex items-center rounded-full px-1.5 py-0.5 align-baseline text-[13px] font-medium leading-none';
+  chip.style.setProperty('--chip-brand', TOOLKIT_CHIP_BRAND);
   chip.textContent = `/${label}`;
   return chip;
 }
@@ -130,7 +171,7 @@ function removeSlashQueryAtCursor(root: HTMLElement): boolean {
   const offset = range.startOffset;
   const nodeText = textNode.textContent ?? '';
   const beforeInNode = nodeText.slice(0, offset);
-  const slashMatch = beforeInNode.match(/\/([a-z0-9-]*)$/i);
+  const slashMatch = beforeInNode.match(SLASH_QUERY_PATTERN);
 
   if (!slashMatch) {
     return false;
@@ -152,12 +193,7 @@ function removeSlashQueryAtCursor(root: HTMLElement): boolean {
   return true;
 }
 
-function insertIntegrationChipAtCursor(
-  root: HTMLElement,
-  uuid: string,
-  label: string,
-  provider: IntegrationProvider,
-): HTMLSpanElement | null {
+function insertChipAtCursor(root: HTMLElement, chip: HTMLSpanElement): HTMLSpanElement | null {
   const selection = window.getSelection();
   if (!selection || selection.rangeCount === 0) {
     return null;
@@ -169,7 +205,6 @@ function insertIntegrationChipAtCursor(
   }
 
   if (range.startContainer.nodeType !== Node.TEXT_NODE) {
-    const chip = createChipElement(uuid, label, provider);
     root.appendChild(chip);
     return chip;
   }
@@ -178,7 +213,7 @@ function insertIntegrationChipAtCursor(
   const offset = range.startOffset;
   const nodeText = textNode.textContent ?? '';
   const beforeInNode = nodeText.slice(0, offset);
-  const slashMatch = beforeInNode.match(/\/([a-z0-9-]*)$/i);
+  const slashMatch = beforeInNode.match(SLASH_QUERY_PATTERN);
 
   if (!slashMatch) {
     return null;
@@ -193,21 +228,20 @@ function insertIntegrationChipAtCursor(
     return null;
   }
 
-  const insertedChip = createChipElement(uuid, label, provider);
   const afterNode = document.createTextNode(afterCursor);
 
   if (beforeSlash) {
     textNode.textContent = beforeSlash;
-    parent.insertBefore(insertedChip, textNode.nextSibling);
+    parent.insertBefore(chip, textNode.nextSibling);
   } else {
-    parent.replaceChild(insertedChip, textNode);
+    parent.replaceChild(chip, textNode);
   }
 
   if (afterCursor) {
-    parent.insertBefore(afterNode, insertedChip.nextSibling);
+    parent.insertBefore(afterNode, chip.nextSibling);
   }
 
-  return insertedChip;
+  return chip;
 }
 
 function normalizeEditorNodes(root: HTMLElement) {
@@ -222,7 +256,12 @@ function renderPartsToEditor(root: HTMLElement, parts: DraftPart[]) {
 
   for (const part of parts) {
     if (part.type === 'integration') {
-      root.appendChild(createChipElement(part.uuid, part.label, part.provider));
+      root.appendChild(createIntegrationChipElement(part.uuid, part.label, part.provider));
+      continue;
+    }
+
+    if (part.type === 'toolkit') {
+      root.appendChild(createToolkitChipElement(part.slug, part.label));
       continue;
     }
 
@@ -247,7 +286,7 @@ function getSlashQueryAtCursor(root: HTMLElement): string | null {
 
   const text = range.startContainer.textContent ?? '';
   const before = text.slice(0, range.startOffset);
-  const match = before.match(/\/([a-z0-9-]*)$/i);
+  const match = before.match(SLASH_QUERY_PATTERN);
 
   if (!match) {
     return null;
@@ -283,12 +322,10 @@ interface ConversationDraftEditorProps {
   parts: DraftPart[];
   integrations: Integration[];
   toolkits: IntegrationAppsToolkit[];
-  selectedToolkitSlugs: string[];
   disabled?: boolean;
   placeholder?: string;
   className?: string;
   onPartsChange: (parts: DraftPart[]) => void;
-  onToolkitSelectionChange: (toolkitSlugs: string[]) => void;
   onSend?: () => void;
 }
 
@@ -297,7 +334,7 @@ export interface ConversationDraftEditorHandle {
 }
 
 export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle, ConversationDraftEditorProps>(
-  ({ parts, integrations, toolkits, selectedToolkitSlugs, disabled = false, placeholder, className, onPartsChange, onToolkitSelectionChange, onSend }, ref) => {
+  ({ parts, integrations, toolkits, disabled = false, placeholder, className, onPartsChange, onSend }, ref) => {
     const editorRef = useRef<HTMLDivElement>(null);
     const isComposingRef = useRef(false);
     const skipRenderRef = useRef(false);
@@ -361,11 +398,9 @@ export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle,
         }
 
         const label = getIntegrationDisplayLabel(integration);
-        const insertedChip = insertIntegrationChipAtCursor(
+        const insertedChip = insertChipAtCursor(
           root,
-          integration.uuid,
-          label,
-          integration.provider,
+          createIntegrationChipElement(integration.uuid, label, integration.provider),
         );
 
         if (!insertedChip) {
@@ -382,32 +417,55 @@ export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle,
       [integrations, onPartsChange],
     );
 
+    const handleToolkitSelect = useCallback(
+      (slug: string) => {
+        const root = editorRef.current;
+        if (!root) {
+          return;
+        }
+
+        const toolkit = toolkits.find((item) => item.slug === slug);
+        if (!toolkit) {
+          return;
+        }
+
+        const existingSlugs = getDraftToolkitSlugs(serializeEditor(root));
+
+        if (existingSlugs.includes(slug)) {
+          removeSlashQueryAtCursor(root);
+          const nextParts = serializeEditor(root);
+          skipRenderRef.current = true;
+          onPartsChange(nextParts);
+          setSlashContext(null);
+          return;
+        }
+
+        const insertedChip = insertChipAtCursor(root, createToolkitChipElement(slug, toolkit.name));
+
+        if (!insertedChip) {
+          return;
+        }
+
+        normalizeEditorNodes(root);
+        const nextParts = serializeEditor(root);
+        skipRenderRef.current = true;
+        onPartsChange(nextParts);
+        setSlashContext(null);
+        placeCursorAfterNode(root, insertedChip);
+      },
+      [onPartsChange, toolkits],
+    );
+
     const handleToolSelect = useCallback(
       (item: ConversationToolItem) => {
         if (item.kind === 'toolkit') {
-          const slug = item.toolkit.slug;
-          const isSelected = selectedToolkitSlugs.includes(slug);
-          onToolkitSelectionChange(
-            isSelected
-              ? selectedToolkitSlugs.filter((value) => value !== slug)
-              : [...selectedToolkitSlugs, slug],
-          );
-
-          const root = editorRef.current;
-          if (root) {
-            removeSlashQueryAtCursor(root);
-            const nextParts = serializeEditor(root);
-            skipRenderRef.current = true;
-            onPartsChange(nextParts);
-          }
-          setSlashContext(null);
-          root?.focus();
+          handleToolkitSelect(item.toolkit.slug);
           return;
         }
 
         handleIntegrationSelect(item.integration.uuid);
       },
-      [handleIntegrationSelect, onPartsChange, onToolkitSelectionChange, selectedToolkitSlugs],
+      [handleIntegrationSelect, handleToolkitSelect],
     );
 
     const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -426,15 +484,20 @@ export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle,
 
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
-        if (draftPartsToPlainText(parts) || getDraftIntegrationUuids(parts).length > 0) {
+        if (draftPartsToPlainText(parts)) {
           onSend?.();
         }
       }
     };
 
     const draftIntegrationUuids = getDraftIntegrationUuids(parts);
+    const draftToolkitSlugs = getDraftToolkitSlugs(parts);
     const isEmpty =
-      parts.length === 1 && parts[0]?.type === 'text' && parts[0].value.length === 0 && draftIntegrationUuids.length === 0;
+      parts.length === 1 &&
+      parts[0]?.type === 'text' &&
+      parts[0].value.length === 0 &&
+      draftIntegrationUuids.length === 0 &&
+      draftToolkitSlugs.length === 0;
 
     return (
       <div className="relative min-w-0 flex-1">
@@ -444,6 +507,7 @@ export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle,
           query={slashContext?.query ?? ''}
           isOpen={Boolean(slashContext)}
           excludedIntegrationUuids={draftIntegrationUuids}
+          excludedToolkitSlugs={draftToolkitSlugs}
           onSelect={handleToolSelect}
           onClose={() => setSlashContext(null)}
         />

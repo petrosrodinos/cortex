@@ -2,14 +2,15 @@ import { buildAgentCapabilitiesPromptBlock } from './agent-capabilities-prompt.u
 
 describe('buildAgentCapabilitiesPromptBlock', () => {
   it('lists available integrations and toolkits for the agent', () => {
-    const prompt = buildAgentCapabilitiesPromptBlock({
-      integrations: [
-        {
-          name: 'sineverse',
-          provider: 'DATABASE_PG',
-          actions: ['get_schema', 'query'],
-        },
-      ],
+    const prompt = buildAgentCapabilitiesPromptBlock(        {
+          integrations: [
+            {
+              uuid: 'integration-a',
+              name: 'sineverse',
+              provider: 'DATABASE_PG',
+              actions: ['get_schema', 'query'],
+            },
+          ],
       toolkits: [
         {
           slug: 'slack',
@@ -19,7 +20,12 @@ describe('buildAgentCapabilitiesPromptBlock', () => {
       ],
     });
 
-    expect(prompt).toContain('sineverse (DATABASE_PG)');
+    expect(prompt).toContain(
+      'sineverse (DATABASE_PG, uuid: integration-a)',
+    );
+    expect(prompt).toContain(
+      'pass integration_uuid using the integration UUID from this list',
+    );
     expect(prompt).toContain('Slack (slack), connected');
     expect(prompt).toContain('no email integration is available');
     expect(prompt).not.toMatch(/Email sending: use only these channels — .*Gmail/);
