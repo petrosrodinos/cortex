@@ -8,7 +8,7 @@ import {
 import type { ModelMessage } from 'ai';
 import { AiProviderFactoryService } from '../../providers/ai-provider-factory.service';
 import { ConversationMemoryService } from '../../memory/conversation-memory.service';
-import { AgentToolsFactory } from '../tools/agent-tools.factory';
+import { AgentToolsFactory } from '../tools/core/agent-tools.factory';
 import { SystemPromptBuilder } from '../prompt/system-prompt.builder';
 import { detectOutputType } from '../prompt/output-detector';
 import { isExportFollowUpRequest } from '../outputs/tools/output-tools.factory';
@@ -23,7 +23,7 @@ import {
   WIDGET_FOLLOW_UP_GUIDANCE,
 } from '../prompt/widget-request.utils';
 import { AgentProgressEmitterService } from '../progress/agent-progress-emitter.service';
-import { ToolDispatcherService } from '../tools/tool-dispatcher.service';
+import { ToolDispatcherService } from '../tools/dispatch/tool-dispatcher.service';
 import { SandboxCodeService } from '../sandbox/sandbox-code.service';
 import { DocumentReaderService } from '../documents/document-reader.service';
 

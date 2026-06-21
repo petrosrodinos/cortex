@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import type { ToolSet } from 'ai';
-import { OrganizationToolsFactory } from '../organization/organization-tools.factory';
+import { OrganizationToolsFactory } from '../../organization/organization-tools.factory';
 import type {
   AgentToolProvider,
   AgentToolProviderContext,
-} from './tool-provider.interface';
+} from '../core/tool-provider.interface';
 
 @Injectable()
 export class OrganizationToolProvider implements AgentToolProvider {

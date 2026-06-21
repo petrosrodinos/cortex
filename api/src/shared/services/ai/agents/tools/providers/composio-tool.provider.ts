@@ -7,7 +7,7 @@ import { toJsonValue } from '@/shared/utils/json-value.utils';
 import type {
   AgentToolProvider,
   AgentToolProviderContext,
-} from './tool-provider.interface';
+} from '../core/tool-provider.interface';
 
 type ExecutableTool = {
   execute?: (input: unknown, options?: unknown) => Promise<unknown> | unknown;

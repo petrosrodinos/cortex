@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import type { ToolSet } from 'ai';
-import { CapabilitiesToolProvider } from './capabilities-tool.provider';
-import { ComposioToolProvider } from './composio-tool.provider';
-import { DocumentToolProvider } from './document-tool.provider';
-import { LegacyIntegrationToolProvider } from './legacy-integration-tool.provider';
-import { OrganizationToolProvider } from './organization-tool.provider';
-import { OutputToolProvider } from './output-tool.provider';
-import { SandboxToolProvider } from './sandbox-tool.provider';
+import { CapabilitiesToolProvider } from '../providers/capabilities-tool.provider';
+import { ComposioToolProvider } from '../providers/composio-tool.provider';
+import { DocumentToolProvider } from '../providers/document-tool.provider';
+import { LegacyIntegrationToolProvider } from '../providers/legacy-integration-tool.provider';
+import { OrganizationToolProvider } from '../providers/organization-tool.provider';
+import { OutputToolProvider } from '../providers/output-tool.provider';
+import { SandboxToolProvider } from '../providers/sandbox-tool.provider';
 import type {
   AgentToolProvider,
   AgentToolProviderContext,

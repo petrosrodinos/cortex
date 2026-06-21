@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { ArrowLeft, Plug, ShieldCheck, ShieldQuestion, Unplug } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { ArrowLeft, Plug, Search, ShieldCheck, ShieldQuestion, Unplug } from 'lucide-react';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   useConnectIntegrationAppsToolkit,
   useDisableIntegrationAppsToolkit,
@@ -21,6 +22,7 @@ interface ToolkitDetailProps {
 
 export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: ToolkitDetailProps) {
   const [disconnectAccountId, setDisconnectAccountId] = useState<string | null>(null);
+  const [toolSearch, setToolSearch] = useState('');
   const detailQuery = useGetIntegrationAppsToolkit(organizationUuid, toolkitSlug);
   const connectToolkit = useConnectIntegrationAppsToolkit(organizationUuid);
   const enableToolkit = useEnableIntegrationAppsToolkit(organizationUuid);
@@ -31,6 +33,20 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
   const toolkit = detail?.toolkit;
   const connections = detail?.connections ?? [];
   const tools = detail?.tools ?? [];
+  const filteredTools = useMemo(() => {
+    const query = toolSearch.trim().toLowerCase();
+    if (!query) {
+      return tools;
+    }
+
+    return tools.filter((tool) => {
+      const haystack = [tool.name, tool.description, tool.slug]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+      return haystack.includes(query);
+    });
+  }, [toolSearch, tools]);
   const isConnected = connections.length > 0;
   const isTogglingOrgEnabled = enableToolkit.isPending || disableToolkit.isPending;
   const pendingDisconnect = connections.find((connection) => connection.account_id === disconnectAccountId);
@@ -167,26 +183,46 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
       ) : null}
 
       <section className="rounded-lg border border-border bg-surface">
-        <div className="border-b border-border px-4 py-3">
-          <h3 className="text-sm font-semibold text-foreground">Tools</h3>
+        <div className="flex flex-col gap-3 border-b border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <h3 className="text-sm font-semibold text-foreground">Tools</h3>
+            <p className="mt-0.5 text-xs text-muted">
+              {filteredTools.length === tools.length
+                ? `${tools.length} tools`
+                : `${filteredTools.length} of ${tools.length} tools`}
+            </p>
+          </div>
+          <div className="relative w-full sm:max-w-xs">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+            <Input
+              value={toolSearch}
+              onChange={(event) => setToolSearch(event.target.value)}
+              className="pl-9"
+              placeholder="Search tools"
+            />
+          </div>
         </div>
         <div className="divide-y divide-border">
-          {tools.map((tool) => (
-            <ToolPermissionRow
-              key={tool.uuid}
-              tool={tool}
-              disabled={!toolkit.is_org_enabled || updateToolPermission.isPending}
-              onToggleEnabled={(enabled) =>
-                updateToolPermission.mutate({ toolSlug: tool.slug, payload: { enabled } })
-              }
-              onToggleApproval={(requiresApproval) =>
-                updateToolPermission.mutate({
-                  toolSlug: tool.slug,
-                  payload: { requires_approval: requiresApproval },
-                })
-              }
-            />
-          ))}
+          {filteredTools.length === 0 ? (
+            <div className="px-4 py-8 text-center text-sm text-muted">No tools found.</div>
+          ) : (
+            filteredTools.map((tool) => (
+              <ToolPermissionRow
+                key={tool.uuid}
+                tool={tool}
+                disabled={!toolkit.is_org_enabled || updateToolPermission.isPending}
+                onToggleEnabled={(enabled) =>
+                  updateToolPermission.mutate({ toolSlug: tool.slug, payload: { enabled } })
+                }
+                onToggleApproval={(requiresApproval) =>
+                  updateToolPermission.mutate({
+                    toolSlug: tool.slug,
+                    payload: { requires_approval: requiresApproval },
+                  })
+                }
+              />
+            ))
+          )}
         </div>
       </section>
 

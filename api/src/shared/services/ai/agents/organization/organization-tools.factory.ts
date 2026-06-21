@@ -4,7 +4,7 @@ import { ToolCallStatus } from 'generated/prisma';
 import { jsonSchema, tool } from 'ai';
 import type { ToolSet } from 'ai';
 import type { AgentProgressScope } from '../progress/agent-progress-scope';
-import { ExecutionToolIdempotencyService } from '../tools/execution-tool-idempotency.service';
+import { ExecutionToolIdempotencyService } from '../tools/dispatch/execution-tool-idempotency.service';
 import { OrganizationToolsService } from './organization-tools.service';
 
 export interface OrganizationToolsFactoryContext {

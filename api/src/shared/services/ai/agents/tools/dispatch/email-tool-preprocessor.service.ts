@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { GcsService } from '@/integrations/storage/gcs/services/gcs.service';
-import { formatEmailBody } from '../organization/email-body-formatter';
+import { formatEmailBody } from '../../organization/email-body-formatter';
 
 const EMAIL_SEND_ACTION_KEYS = new Set(['send_email', 'send_message']);
 

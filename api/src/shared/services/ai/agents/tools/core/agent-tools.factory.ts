@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { ToolSet } from 'ai';
 import { UnifiedToolRegistry } from './unified-tool-registry.service';
-import type { AgentProgressScope } from '../progress/agent-progress-scope';
+import type { AgentProgressScope } from '../../progress/agent-progress-scope';
 
 @Injectable()
 export class AgentToolsFactory {

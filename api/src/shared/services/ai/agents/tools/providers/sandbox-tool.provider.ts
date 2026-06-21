@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { jsonSchema, tool } from 'ai';
 import type { ToolSet } from 'ai';
-import { CODE_INTERPRETER_DESCRIPTION } from '../sandbox/sandbox.config';
-import { SandboxCodeService } from '../sandbox/sandbox-code.service';
+import { CODE_INTERPRETER_DESCRIPTION } from '../../sandbox/sandbox.config';
+import { SandboxCodeService } from '../../sandbox/sandbox-code.service';
 import type {
   AgentToolProvider,
   AgentToolProviderContext,
-} from './tool-provider.interface';
+} from '../core/tool-provider.interface';
 
 @Injectable()
 export class SandboxToolProvider implements AgentToolProvider {

@@ -13,7 +13,7 @@ import type { DocxGenerateParams } from '../word/docx.types';
 import { WordGeneratorService } from '../word/word-generator.service';
 import { WidgetGeneratorService } from '../widget/widget-generator.service';
 import type { WidgetGenerateParams } from '../widget/widget.types';
-import { ExecutionToolIdempotencyService } from '../../tools/execution-tool-idempotency.service';
+import { ExecutionToolIdempotencyService } from '../../tools/dispatch/execution-tool-idempotency.service';
 import type { AgentProgressScope } from '../../progress/agent-progress-scope';
 
 export interface OutputToolsContext {

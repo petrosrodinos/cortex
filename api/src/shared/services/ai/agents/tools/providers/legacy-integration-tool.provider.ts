@@ -8,8 +8,8 @@ import { IntegrationProvider, IntegrationStatus } from 'generated/prisma';
 import type {
   AgentToolProvider,
   AgentToolProviderContext,
-} from './tool-provider.interface';
-import { ToolDispatcherService } from './tool-dispatcher.service';
+} from '../core/tool-provider.interface';
+import { ToolDispatcherService } from '../dispatch/tool-dispatcher.service';
 
 const AGENT_HIDDEN_INTEGRATION_TOOL_KEYS = new Set([
   'send_html_email',

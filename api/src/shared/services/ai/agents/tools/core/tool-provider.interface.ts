@@ -1,5 +1,5 @@
 import type { ToolSet } from 'ai';
-import type { AgentProgressScope } from '../progress/agent-progress-scope';
+import type { AgentProgressScope } from '../../progress/agent-progress-scope';
 
 export interface AgentToolProviderContext {
   organizationUuid: string;
