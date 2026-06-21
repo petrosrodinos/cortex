@@ -35,6 +35,8 @@ export function useGetIntegrationAppsToolkit(organizationUuid?: string, toolkitS
 }
 
 export function useConnectIntegrationAppsToolkit(organizationUuid?: string) {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({
       toolkitSlug,
@@ -44,7 +46,13 @@ export function useConnectIntegrationAppsToolkit(organizationUuid?: string) {
       connectionTier?: IntegrationAppsConnectionTier;
     }) => connectIntegrationAppsToolkit(organizationUuid as string, toolkitSlug, connectionTier),
     onSuccess: (response) => {
-      window.location.assign(response.redirect_url);
+      if (response.redirect_url) {
+        window.location.assign(response.redirect_url);
+        return;
+      }
+
+      queryClient.invalidateQueries({ queryKey: integrationAppsToolkitsQueryKey });
+      toast({ title: 'Connection synced', duration: 2000 });
     },
     onError: (error: Error) => {
       toast({ title: 'Could not connect toolkit', description: error.message, variant: 'error' });
@@ -89,10 +97,19 @@ export function useVerifyIntegrationAppsCallback(organizationUuid?: string) {
     mutationFn: ({
       toolkitSlug,
       connectionRequestId,
+      connectedAccountId,
     }: {
       toolkitSlug: string;
       connectionRequestId?: string;
-    }) => verifyIntegrationAppsCallback(organizationUuid as string, toolkitSlug, connectionRequestId),
+      connectedAccountId?: string;
+    }) =>
+      verifyIntegrationAppsCallback(
+        organizationUuid as string,
+        toolkitSlug,
+        connectionRequestId,
+        undefined,
+        connectedAccountId,
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: integrationAppsToolkitsQueryKey });
       toast({ title: 'Connection verified', duration: 2000 });

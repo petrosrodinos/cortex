@@ -18,7 +18,6 @@ import { isAiCatalogProvider } from '@/features/integrations/utils/integration.u
 import { useGetAiProviders } from '@/features/ai-providers/hooks/use-ai-providers';
 import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
 import { ToolkitCatalog } from '@/features/integrationApps/components/toolkit-catalog';
-import { ToolkitDetail } from '@/features/integrationApps/components/toolkit-detail';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
 import { cn } from '@/lib/utils';
@@ -35,8 +34,9 @@ export default function IntegrationsPage() {
   const navigate = useNavigate();
   const currentOrganization = useOrganizationStore((state) => state.current_organization);
   const [connectingProvider, setConnectingProvider] = useState<CatalogProvider | null>(null);
-  const [activeSection, setActiveSection] = useState<'integrationApps' | 'custom' | 'ai'>('integrationApps');
-  const [selectedToolkitSlug, setSelectedToolkitSlug] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState<
+    'integrationApps' | 'databases' | 'externalConnections' | 'ai'
+  >('integrationApps');
   const integrationsQuery = useGetIntegrations(currentOrganization?.uuid);
   const aiProvidersQuery = useGetAiProviders(currentOrganization?.uuid);
   const integrations = integrationsQuery.data ?? [];
@@ -69,8 +69,7 @@ export default function IntegrationsPage() {
 
   const isIntegrationDetail = !!(integrationUuid && selectedIntegration);
   const isAiProviderDetail = !!(aiProviderUuid && selectedAiProvider);
-  const isToolkitDetail = !!selectedToolkitSlug && !isIntegrationDetail && !isAiProviderDetail;
-  const isDetailView = isIntegrationDetail || isAiProviderDetail || isToolkitDetail;
+  const isDetailView = isIntegrationDetail || isAiProviderDetail;
 
   const detailIconMeta = isIntegrationDetail
     ? PROVIDER_ICON_META[selectedIntegration.provider]
@@ -115,10 +114,6 @@ export default function IntegrationsPage() {
             <p className="mt-1 max-w-2xl text-sm text-muted">{detailSubtitle}</p>
           </div>
         </header>
-      ) : selectedToolkitSlug ? (
-        <header className="sr-only">
-          <h1>Integration detail</h1>
-        </header>
       ) : (
         <header>
           <div className="flex flex-wrap items-center gap-2">
@@ -137,12 +132,6 @@ export default function IntegrationsPage() {
         <NoOrgPanel />
       ) : loading ? (
         <IntegrationsSkeleton />
-      ) : isToolkitDetail && selectedToolkitSlug ? (
-        <ToolkitDetail
-          organizationUuid={currentOrganization.uuid}
-          toolkitSlug={selectedToolkitSlug}
-          onBack={() => setSelectedToolkitSlug(null)}
-        />
       ) : isIntegrationDetail && selectedIntegration ? (
         <IntegrationDetail organizationUuid={currentOrganization.uuid} integration={selectedIntegration} />
       ) : isAiProviderDetail && selectedAiProvider ? (
@@ -153,7 +142,7 @@ export default function IntegrationsPage() {
           {activeSection === 'integrationApps' ? (
             <ToolkitCatalog
               organizationUuid={currentOrganization.uuid}
-              onSelectToolkit={(toolkitSlug) => setSelectedToolkitSlug(toolkitSlug)}
+              onSelectToolkit={(toolkitSlug) => navigate(Routes.dashboard.integrationApp(toolkitSlug))}
             />
           ) : (
             <ProviderCatalog
@@ -162,7 +151,7 @@ export default function IntegrationsPage() {
               onConnect={(provider) => setConnectingProvider(provider)}
               onManageIntegration={handleManageIntegration}
               onManageAiProvider={handleManageAiProvider}
-              mode={activeSection}
+              section={activeSection}
             />
           )}
         </div>
@@ -192,12 +181,13 @@ function IntegrationSectionTabs({
   activeSection,
   onSectionChange,
 }: {
-  activeSection: 'integrationApps' | 'custom' | 'ai';
-  onSectionChange: (section: 'integrationApps' | 'custom' | 'ai') => void;
+  activeSection: 'integrationApps' | 'databases' | 'externalConnections' | 'ai';
+  onSectionChange: (section: 'integrationApps' | 'databases' | 'externalConnections' | 'ai') => void;
 }) {
   const tabs = [
     { id: 'integrationApps', label: 'Integrations' },
-    { id: 'custom', label: 'Custom' },
+    { id: 'databases', label: 'Databases' },
+    { id: 'externalConnections', label: 'External connections' },
     { id: 'ai', label: 'AI providers' },
   ] as const;
 

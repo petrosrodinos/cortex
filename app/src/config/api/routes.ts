@@ -87,6 +87,7 @@ export const ApiRoutes = {
         integrationAppsToolkitRefresh: (toolkitSlug: string) => `/admin/integrations/apps/toolkits/${toolkitSlug}/refresh`,
         integrationAppsToolkitSyncTools: (toolkitSlug: string) => `/admin/integrations/apps/toolkits/${toolkitSlug}/sync-tools`,
         integrationAppsToolkitStats: (toolkitSlug: string) => `/admin/integrations/apps/toolkits/${toolkitSlug}/stats`,
+        integrationAppsOverviewStats: "/admin/integrations/apps/stats",
         integrationAppsSync: "/admin/integrations/apps/sync",
         integrationAppsSyncRun: (syncRunUuid: string) => `/admin/integrations/apps/sync/${syncRunUuid}`,
     },

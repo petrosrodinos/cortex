@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ComposioClientService } from '@/integrations/composio/composio-client.service';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import {
@@ -24,6 +25,7 @@ export class ComposioConnectionsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly composioClient: ComposioClientService,
+    private readonly configService: ConfigService,
   ) {}
 
   async connect(
@@ -43,9 +45,43 @@ export class ComposioConnectionsService {
       organizationUuid,
       user.uuid,
     );
-    const request = await (
-      this.composioClient.getClient() as any
-    ).toolkits.authorize(composioUserId, toolkit.slug);
+    const composio = this.composioClient.getClient() as any;
+    const authConfigId = await this.resolveAuthConfigId(toolkit);
+    const callbackUrl = this.buildConnectCallbackUrl(toolkit.slug);
+    const allowMultiple = this.supportsMultipleConnectionTiers(
+      toolkit.connection_tiers,
+    );
+
+    if (!allowMultiple) {
+      const existingAccount = await this.findActiveRemoteAccount(
+        composioUserId,
+        toolkit.slug,
+      );
+
+      if (existingAccount) {
+        const mirrored = await this.upsertConnectedAccount(
+          organizationUuid,
+          user.uuid,
+          toolkit,
+          existingAccount,
+          connectionTier,
+          composioUserId,
+        );
+
+        return {
+          toolkit_slug: toolkit.slug,
+          status: mirrored.status.toLowerCase(),
+          connected_account_id: mirrored.composio_account_id,
+        };
+      }
+    }
+
+    const request = await composio.connectedAccounts.link(
+      composioUserId,
+      authConfigId,
+      this.buildConnectLinkOptions(toolkit, callbackUrl),
+    );
+    const connectionRequestId = this.getConnectionRequestId(request);
     await this.audit(organizationUuid, user.uuid, {
       action: 'composio.connect_link_created',
       resourceType: 'composio_toolkit',
@@ -53,15 +89,14 @@ export class ComposioConnectionsService {
       metadata: {
         toolkit_slug: toolkit.slug,
         connection_tier: connectionTier,
-        connection_request_id:
-          request.id ?? request.nanoid ?? request.connectedAccountId ?? null,
+        auth_config_id: authConfigId,
+        connection_request_id: connectionRequestId,
       },
     });
 
     return {
       redirect_url: request.redirectUrl ?? request.redirect_url,
-      connection_request_id:
-        request.id ?? request.nanoid ?? request.connectedAccountId,
+      connection_request_id: connectionRequestId,
       toolkit_slug: toolkit.slug,
     };
   }
@@ -82,11 +117,43 @@ export class ComposioConnectionsService {
       user.uuid,
     );
 
+    const composio = this.composioClient.getClient() as any;
+
+    if (dto.connected_account_id) {
+      try {
+        const account = await composio.connectedAccounts.get(
+          dto.connected_account_id,
+        );
+        const mirrored = await this.upsertConnectedAccount(
+          organizationUuid,
+          user.uuid,
+          toolkit,
+          account,
+          connectionTier,
+          composioUserId,
+        );
+        await this.audit(organizationUuid, user.uuid, {
+          action: 'composio.account_connected',
+          resourceType: 'composio_account',
+          resourceId: mirrored.composio_account_id,
+          metadata: {
+            toolkit_slug: toolkit.slug,
+            status: mirrored.status,
+          },
+        });
+        return {
+          status: mirrored.status.toLowerCase(),
+          connected_account_id: mirrored.composio_account_id,
+          toolkit_slug: toolkit.slug,
+        };
+      } catch {
+        // Fall back to wait/list below.
+      }
+    }
+
     if (dto.connection_request_id) {
       try {
-        const account = await (
-          this.composioClient.getClient() as any
-        ).connectedAccounts.waitForConnection(
+        const account = await composio.connectedAccounts.waitForConnection(
           dto.connection_request_id,
           10_000,
         );
@@ -96,6 +163,7 @@ export class ComposioConnectionsService {
           toolkit,
           account,
           connectionTier,
+          composioUserId,
         );
         await this.audit(organizationUuid, user.uuid, {
           action: 'composio.account_connected',
@@ -127,6 +195,7 @@ export class ComposioConnectionsService {
           toolkit,
           account,
           connectionTier,
+          composioUserId,
         ),
       ),
     );
@@ -269,6 +338,236 @@ export class ComposioConnectionsService {
     return toolkit;
   }
 
+  private async resolveAuthConfigId(toolkit: {
+    slug: string;
+    auth_schemes: Prisma.JsonValue;
+  }): Promise<string> {
+    const composio = this.composioClient.getClient() as any;
+    const configs = this.getListItems(
+      await composio.authConfigs.list({ toolkit: toolkit.slug }),
+    );
+    const existing = this.pickAuthConfig(configs);
+
+    if (existing) {
+      return this.getAuthConfigId(existing)!;
+    }
+
+    try {
+      const created = await composio.authConfigs.create(toolkit.slug, {
+        type: 'use_composio_managed_auth',
+        name: `${toolkit.slug} Composio auth`,
+      });
+      const authConfigId = this.getAuthConfigId(created);
+
+      if (!authConfigId) {
+        throw new BadRequestException(
+          `Failed to resolve Composio auth config for toolkit "${toolkit.slug}"`,
+        );
+      }
+
+      return authConfigId;
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
+      if (this.isMissingManagedAuthConfigError(error)) {
+        return this.createCustomAuthConfig(toolkit);
+      }
+
+      throw error;
+    }
+  }
+
+  private async createCustomAuthConfig(toolkit: {
+    slug: string;
+    auth_schemes: Prisma.JsonValue;
+  }): Promise<string> {
+    const composio = this.composioClient.getClient() as any;
+    const authScheme = this.resolveCustomAuthScheme(toolkit);
+
+    if (!authScheme) {
+      throw new BadRequestException(
+        `Toolkit "${toolkit.slug}" does not support Composio-managed authentication and no supported custom auth scheme was found.`,
+      );
+    }
+
+    const created = await composio.authConfigs.create(toolkit.slug, {
+      type: 'use_custom_auth',
+      name: `${toolkit.slug} user credentials`,
+      authScheme,
+      credentials: {},
+    });
+    const authConfigId = this.getAuthConfigId(created);
+
+    if (!authConfigId) {
+      throw new BadRequestException(
+        `Failed to create custom auth config for toolkit "${toolkit.slug}"`,
+      );
+    }
+
+    return authConfigId;
+  }
+
+  private resolveCustomAuthScheme(toolkit: {
+    slug: string;
+    auth_schemes: Prisma.JsonValue;
+  }): string | undefined {
+    const schemes = this.normalizeAuthSchemes(toolkit.auth_schemes);
+
+    if (schemes.length > 0) {
+      const nonOAuthScheme = schemes.find(
+        (scheme) => !this.isOAuthAuthScheme(scheme),
+      );
+
+      if (nonOAuthScheme) {
+        return nonOAuthScheme;
+      }
+    }
+
+    return 'API_KEY';
+  }
+
+  private normalizeAuthSchemes(value: Prisma.JsonValue): string[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+
+    return value
+      .map((scheme) => {
+        if (typeof scheme === 'string') {
+          return scheme.toUpperCase();
+        }
+
+        if (scheme && typeof scheme === 'object') {
+          const authScheme =
+            (scheme as { authScheme?: string; auth_scheme?: string })
+              .authScheme ??
+            (scheme as { authScheme?: string; auth_scheme?: string })
+              .auth_scheme;
+
+          return typeof authScheme === 'string'
+            ? authScheme.toUpperCase()
+            : undefined;
+        }
+
+        return undefined;
+      })
+      .filter((scheme): scheme is string => Boolean(scheme));
+  }
+
+  private isOAuthAuthScheme(authScheme: string): boolean {
+    return authScheme.startsWith('OAUTH');
+  }
+
+  private pickAuthConfig(configs: any[]): any | undefined {
+    const withId = configs.filter((config) => this.getAuthConfigId(config));
+
+    if (withId.length === 0) {
+      return undefined;
+    }
+
+    return (
+      withId.find(
+        (config) =>
+          config.isComposioManaged === true ||
+          config.is_composio_managed === true,
+      ) ?? withId[0]
+    );
+  }
+
+  private isMissingManagedAuthConfigError(error: unknown): boolean {
+    const nestedError = (error as any)?.error?.error ?? (error as any)?.error;
+    const slug = nestedError?.slug;
+
+    if (slug === 'Auth_Config_DefaultAuthConfigNotFound') {
+      return true;
+    }
+
+    const message =
+      typeof nestedError?.message === 'string'
+        ? nestedError.message
+        : typeof (error as any)?.message === 'string'
+          ? (error as any).message
+          : '';
+
+    return message.includes('Default auth config not found');
+  }
+
+  private buildConnectLinkOptions(
+    toolkit: { connection_tiers: ComposioConnectionTier[] },
+    callbackUrl?: string,
+  ): Record<string, unknown> | undefined {
+    const options: Record<string, unknown> = {};
+
+    if (callbackUrl) {
+      options.callbackUrl = callbackUrl;
+    }
+
+    if (this.supportsMultipleConnectionTiers(toolkit.connection_tiers)) {
+      options.allowMultiple = true;
+    }
+
+    return Object.keys(options).length > 0 ? options : undefined;
+  }
+
+  private supportsMultipleConnectionTiers(
+    connectionTiers: ComposioConnectionTier[],
+  ): boolean {
+    return (
+      connectionTiers.includes(ComposioConnectionTier.ORG_SHARED) &&
+      connectionTiers.includes(ComposioConnectionTier.USER_PERSONAL)
+    );
+  }
+
+  private async findActiveRemoteAccount(
+    composioUserId: string,
+    toolkitSlug: string,
+  ): Promise<any | undefined> {
+    const accounts = await this.listRemoteAccounts(composioUserId, toolkitSlug);
+
+    return accounts.find(
+      (account) =>
+        this.mapStatus(account.status) === ComposioAccountStatus.ACTIVE,
+    );
+  }
+
+  private buildConnectCallbackUrl(toolkitSlug: string): string | undefined {
+    const appUrl = this.configService.get<string>('APP_URL');
+    if (!appUrl) {
+      return undefined;
+    }
+
+    const callback = new URL('/dashboard/integrations/callback', appUrl);
+    callback.searchParams.set('toolkit_slug', toolkitSlug);
+    return callback.toString();
+  }
+
+  private getConnectionRequestId(request: any): string | undefined {
+    return (
+      request?.id ??
+      request?.connectedAccountId ??
+      request?.connected_account_id ??
+      request?.nanoid
+    );
+  }
+
+  private getAuthConfigId(config: any): string | undefined {
+    const authConfigId = config?.id ?? config?.nanoid ?? config?.authConfigId;
+    return typeof authConfigId === 'string' && authConfigId.length > 0
+      ? authConfigId
+      : undefined;
+  }
+
+  private getListItems(page: any): any[] {
+    if (Array.isArray(page)) {
+      return page;
+    }
+
+    const items = page?.items ?? page?.data ?? [];
+    return Array.isArray(items) ? items : [];
+  }
+
   private async listRemoteAccounts(
     composioUserId: string,
     toolkitSlug: string,
@@ -293,10 +592,11 @@ export class ComposioConnectionsService {
     toolkit: { uuid: string; slug: string },
     account: any,
     connectionTier: ComposioConnectionTier,
+    fallbackComposioUserId: string,
   ) {
     const composioAccountId = account.id ?? account.nanoid ?? account.uuid;
     const composioUserId =
-      account.userId ?? account.user_id ?? account.clientUniqueUserId;
+      this.resolveComposioUserIdFromAccount(account) ?? fallbackComposioUserId;
 
     return this.prisma.composioConnectedAccount.upsert({
       where: { composio_account_id: composioAccountId },
@@ -326,6 +626,27 @@ export class ComposioConnectionsService {
         last_synced_at: new Date(),
       },
     });
+  }
+
+  private resolveComposioUserIdFromAccount(account: any): string | undefined {
+    const candidates = [
+      account?.userId,
+      account?.user_id,
+      account?.clientUniqueUserId,
+      account?.client_unique_user_id,
+      account?.entityId,
+      account?.entity_id,
+      account?.memberEntityId,
+      account?.member_entity_id,
+    ];
+
+    for (const candidate of candidates) {
+      if (typeof candidate === 'string' && candidate.length > 0) {
+        return candidate;
+      }
+    }
+
+    return undefined;
   }
 
   private resolveConnectionTier(

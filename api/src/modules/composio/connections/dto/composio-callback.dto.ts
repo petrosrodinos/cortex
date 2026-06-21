@@ -10,6 +10,10 @@ export class ComposioCallbackDto {
   connection_request_id?: string;
 
   @IsOptional()
+  @IsString()
+  connected_account_id?: string;
+
+  @IsOptional()
   @IsEnum(ComposioConnectionTier)
   connection_tier?: ComposioConnectionTier;
 }

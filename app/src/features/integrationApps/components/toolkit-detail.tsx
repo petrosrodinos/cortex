@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Check, Plug, ShieldCheck, ShieldQuestion, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plug, ShieldCheck, ShieldQuestion, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -14,7 +14,9 @@ import {
   useUpdateIntegrationAppsToolPermission,
 } from '@/features/integrationApps/hooks/use-integrationApps';
 import type { IntegrationAppsTool, IntegrationAppsTrigger } from '@/features/integrationApps/interfaces/integrationApps.interface';
+import { RoleTypes } from '@/features/user/interfaces/user.interface';
 import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/stores/auth';
 
 interface ToolkitDetailProps {
   organizationUuid: string;
@@ -27,6 +29,8 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
   const [selectedAccountId, setSelectedAccountId] = useState('');
   const [triggerConfig, setTriggerConfig] = useState('{}');
   const [triggerConfigError, setTriggerConfigError] = useState<string | null>(null);
+  const role = useAuthStore((state) => state.role);
+  const isSuperAdmin = role === RoleTypes.SUPER_ADMIN;
   const detailQuery = useGetIntegrationAppsToolkit(organizationUuid, toolkitSlug);
   const triggersQuery = useGetIntegrationAppsTriggers(organizationUuid);
   const connectToolkit = useConnectIntegrationAppsToolkit(organizationUuid);
@@ -41,6 +45,8 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
   const triggers = (triggersQuery.data?.data ?? []).filter((trigger) => trigger.toolkit.slug === toolkitSlug);
   const enabledTools = tools.filter((tool) => tool.enabled).length;
   const activeTriggers = triggers.filter((trigger) => trigger.is_enabled).length;
+  const isConnected = connections.length > 0;
+  const isTogglingOrgEnabled = enableToolkit.isPending || disableToolkit.isPending;
 
   if (detailQuery.isLoading || !toolkit) {
     return (
@@ -80,30 +86,24 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 sm:w-auto sm:flex-row">
-          {toolkit.is_org_enabled ? (
-            <Button
-              type="button"
-              variant="outline"
-              className="sm:w-auto"
-              loading={disableToolkit.isPending}
-              onClick={() => disableToolkit.mutate(toolkit.slug)}
-            >
-              Disable
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              variant="outline"
-              className="sm:w-auto"
-              loading={enableToolkit.isPending}
-              onClick={() => enableToolkit.mutate(toolkit.slug)}
-            >
-              <Check className="h-4 w-4" />
-              Enable
-            </Button>
-          )}
-          {toolkit.connection_tiers.length === 1 ? (
+        <div className="flex flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+          {isConnected ? (
+            <div className="flex h-9 items-center gap-2 rounded-md border border-border px-3">
+              <span className="text-xs text-foreground">{toolkit.is_org_enabled ? 'Enabled' : 'Disabled'}</span>
+              <EnabledSwitch
+                checked={toolkit.is_org_enabled}
+                disabled={isTogglingOrgEnabled}
+                onChange={(enabled) => {
+                  if (enabled) {
+                    enableToolkit.mutate(toolkit.slug);
+                    return;
+                  }
+
+                  disableToolkit.mutate(toolkit.slug);
+                }}
+              />
+            </div>
+          ) : toolkit.connection_tiers.length === 1 ? (
             <Button
               type="button"
               className="sm:w-auto"
@@ -140,13 +140,16 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
         </div>
       </header>
 
-      <div className="grid gap-3 sm:grid-cols-3">
-        <Metric label="Status" value={toolkit.is_org_enabled ? 'Enabled' : 'Disabled'} />
-        <Metric label="Connections" value={String(connections.length)} />
-        <Metric label="Tools" value={`${enabledTools}/${tools.length}`} />
-        <Metric label="Triggers" value={`${activeTriggers}/${triggers.length}`} />
-      </div>
+      {isSuperAdmin ? (
+        <div className="grid gap-3 sm:grid-cols-3">
+          <Metric label="Status" value={toolkit.is_org_enabled ? 'Enabled' : 'Disabled'} />
+          <Metric label="Connections" value={String(connections.length)} />
+          <Metric label="Tools" value={`${enabledTools}/${tools.length}`} />
+          <Metric label="Triggers" value={`${activeTriggers}/${triggers.length}`} />
+        </div>
+      ) : null}
 
+      {isSuperAdmin ? (
       <section className="rounded-lg border border-border bg-surface">
         <div className="border-b border-border px-4 py-3">
           <h3 className="text-sm font-semibold text-foreground">Connected accounts</h3>
@@ -171,7 +174,9 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
           </div>
         )}
       </section>
+      ) : null}
 
+      {isSuperAdmin ? (
       <section className="rounded-lg border border-border bg-surface">
         <div className="border-b border-border px-4 py-3">
           <h3 className="text-sm font-semibold text-foreground">Triggers</h3>
@@ -256,6 +261,7 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
           </div>
         )}
       </section>
+      ) : null}
 
       <section className="rounded-lg border border-border bg-surface">
         <div className="border-b border-border px-4 py-3">
@@ -377,31 +383,64 @@ interface SwitchProps {
 
 function Switch({ checked, disabled, label, icon: Icon, onChange }: SwitchProps) {
   return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      disabled={disabled}
-      className="flex w-full items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-xs text-foreground disabled:cursor-not-allowed disabled:opacity-50 sm:w-32"
-      onClick={() => onChange(!checked)}
-    >
+    <div className="flex w-full items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-xs text-foreground sm:w-40">
       <span className="flex min-w-0 items-center gap-1.5">
         {Icon ? <Icon className="h-3.5 w-3.5 shrink-0 text-muted" /> : null}
         <span className="truncate">{label}</span>
       </span>
-      <span
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        aria-label={label}
+        disabled={disabled}
+        onClick={() => onChange(!checked)}
         className={cn(
-          'relative h-5 w-9 shrink-0 rounded-full transition-colors',
-          checked ? 'bg-accent' : 'bg-surface-secondary',
+          'relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors',
+          checked ? 'bg-accent' : 'bg-border',
+          disabled && 'cursor-not-allowed opacity-60',
         )}
       >
         <span
           className={cn(
-            'absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform',
-            checked ? 'translate-x-4' : 'translate-x-0.5',
+            'pointer-events-none block h-4 w-4 translate-x-0.5 rounded-full bg-white shadow-sm transition-transform',
+            checked && 'translate-x-4',
           )}
         />
-      </span>
+      </button>
+    </div>
+  );
+}
+
+function EnabledSwitch({
+  checked,
+  disabled,
+  onChange,
+}: {
+  checked: boolean;
+  disabled?: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={checked ? 'Disable integration' : 'Enable integration'}
+      disabled={disabled}
+      onClick={() => onChange(!checked)}
+      className={cn(
+        'relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors',
+        checked ? 'bg-accent' : 'bg-border',
+        disabled && 'cursor-not-allowed opacity-60',
+      )}
+    >
+      <span
+        className={cn(
+          'pointer-events-none block h-4 w-4 translate-x-0.5 rounded-full bg-white shadow-sm transition-transform',
+          checked && 'translate-x-4',
+        )}
+      />
     </button>
   );
 }

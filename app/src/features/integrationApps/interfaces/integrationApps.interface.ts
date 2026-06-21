@@ -66,9 +66,11 @@ export interface IntegrationAppsToolkitFilters {
 }
 
 export interface ConnectIntegrationAppsResponse {
-  redirect_url: string;
+  redirect_url?: string;
   connection_request_id?: string;
   toolkit_slug: string;
+  status?: string;
+  connected_account_id?: string;
 }
 
 export interface IntegrationAppsCallbackResponse {

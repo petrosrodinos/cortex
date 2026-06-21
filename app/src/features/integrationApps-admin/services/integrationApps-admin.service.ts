@@ -1,6 +1,7 @@
 import axiosInstance from '@/config/api/axios';
 import { ApiRoutes } from '@/config/api/routes';
 import type {
+  AdminIntegrationAppsOverviewStats,
   AdminIntegrationAppsSyncRun,
   AdminIntegrationAppsToolkit,
   AdminIntegrationAppsToolkitDetail,
@@ -31,6 +32,11 @@ export const getAdminIntegrationAppsToolkits = async (
   filters?: AdminToolkitFilters,
 ): Promise<PaginatedAdminIntegrationAppsToolkits> => {
   const response = await axiosInstance.get(`${ApiRoutes.admin.integrationAppsToolkits}${queryString(filters)}`);
+  return response.data;
+};
+
+export const getAdminIntegrationAppsOverviewStats = async (): Promise<AdminIntegrationAppsOverviewStats> => {
+  const response = await axiosInstance.get(ApiRoutes.admin.integrationAppsOverviewStats);
   return response.data;
 };
 

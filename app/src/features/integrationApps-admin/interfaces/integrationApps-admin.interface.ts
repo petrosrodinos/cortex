@@ -52,6 +52,12 @@ export interface AdminIntegrationAppsToolkitStats {
   active_triggers_count: number;
 }
 
+export interface AdminIntegrationAppsOverviewStats {
+  synced_toolkits: number;
+  enabled_toolkits: number;
+  latest_sync: AdminIntegrationAppsSyncRun | null;
+}
+
 export interface PaginatedAdminIntegrationAppsToolkits {
   data: AdminIntegrationAppsToolkit[];
   pagination: {

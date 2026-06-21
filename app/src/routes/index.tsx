@@ -8,6 +8,7 @@ import DashboardLayout from "@/pages/dashboard/layout";
 import DashboardHome from "@/pages/dashboard";
 import OrganizationsPage from "@/pages/organizations";
 import IntegrationsPage from "@/pages/integrations";
+import IntegrationAppDetailPage from "@/pages/integrations/integration-app-detail";
 import IntegrationAppsCallbackPage from "@/pages/integrations/integrationApps-callback";
 import ConversationsPage from "@/pages/conversations";
 import SettingsLayout from "@/pages/settings";
@@ -53,6 +54,7 @@ export default function AppRoutes() {
         <Route path="organizations" element={<OrganizationsPage />} />
         <Route path="integrations" element={<IntegrationsPage />} />
         <Route path="integrations/callback" element={<IntegrationAppsCallbackPage />} />
+        <Route path="integrations/apps/:toolkitSlug" element={<IntegrationAppDetailPage />} />
         <Route path="integrations/ai/:aiProviderUuid" element={<IntegrationsPage />} />
         <Route path="integrations/:integrationUuid" element={<IntegrationsPage />} />
         <Route path="conversations" element={<ConversationsPage />} />

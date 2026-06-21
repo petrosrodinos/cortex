@@ -55,11 +55,19 @@ describe('ComposioSyncService', () => {
       },
     ];
     const client = {
+      client: {
+        toolkits: {
+          list: jest.fn().mockImplementation(() => toolkitPages.shift()),
+        },
+        tools: {
+          list: jest.fn().mockImplementation(() => toolPages.shift()),
+        },
+      },
       toolkits: {
-        get: jest.fn().mockImplementation(() => toolkitPages.shift()),
+        get: jest.fn(),
       },
       tools: {
-        getRawComposioTools: jest.fn().mockImplementation(() => toolPages.shift()),
+        getRawComposioTools: jest.fn(),
       },
     };
     const composioClient = {
@@ -95,10 +103,9 @@ describe('ComposioSyncService', () => {
         }),
       }),
     );
-    expect(client.tools.getRawComposioTools).toHaveBeenCalledWith({
-      toolkits: ['slack'],
-      limit: 500,
-      cursor: undefined,
+    expect(client.client.tools.list).toHaveBeenCalledWith({
+      toolkit_slug: 'slack',
+      limit: 1000,
     });
     expect(prisma.composioToolkitTool.upsert).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -123,15 +130,17 @@ describe('ComposioSyncService', () => {
   it('syncs toolkit arrays returned directly by the Composio SDK', async () => {
     const { service, prisma } = createService({
       toolkitPages: [
-        [
-          {
-            slug: 'github',
-            name: 'GitHub',
-            description: 'Code hosting',
-            meta: { toolsCount: 2 },
-            categories: ['developer-tools'],
-          },
-        ],
+        {
+          items: [
+            {
+              slug: 'github',
+              name: 'GitHub',
+              description: 'Code hosting',
+              meta: { tools_count: 2 },
+              categories: ['developer-tools'],
+            },
+          ],
+        },
       ],
     });
 
@@ -156,9 +165,42 @@ describe('ComposioSyncService', () => {
     });
   });
 
+  it('paginates through all toolkit pages from Composio', async () => {
+    const { service, prisma, client } = createService({
+      toolkitPages: [
+        {
+          items: [{ slug: 'slack', name: 'Slack', toolsCount: 1 }],
+          next_cursor: 'page-2',
+        },
+        {
+          items: [{ slug: 'github', name: 'GitHub', toolsCount: 1 }],
+        },
+      ],
+      toolPages: [{ items: [] }, { items: [] }],
+    });
+
+    await service.syncAll();
+
+    expect(client.client.toolkits.list).toHaveBeenCalledTimes(2);
+    expect(client.client.toolkits.list).toHaveBeenNthCalledWith(1, {
+      limit: 1000,
+    });
+    expect(client.client.toolkits.list).toHaveBeenNthCalledWith(2, {
+      limit: 1000,
+      cursor: 'page-2',
+    });
+    expect(prisma.composioSyncRun.update).toHaveBeenCalledWith({
+      where: { uuid: 'sync-run-uuid' },
+      data: expect.objectContaining({
+        status: ComposioSyncStatus.COMPLETED,
+        toolkits_upserted: 2,
+      }),
+    });
+  });
+
   it('records a failed sync run when Composio throws', async () => {
     const { service, prisma, client } = createService();
-    client.toolkits.get.mockRejectedValueOnce(new Error('bad api key'));
+    client.client.toolkits.list.mockRejectedValueOnce(new Error('bad api key'));
 
     await expect(service.syncAll()).rejects.toThrow('bad api key');
 

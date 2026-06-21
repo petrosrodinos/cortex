@@ -30,6 +30,11 @@ import { ComposioToolkitsService } from './composio-toolkits.service';
 export class ComposioToolkitsController {
   constructor(private readonly service: ComposioToolkitsService) {}
 
+  @Get('stats')
+  getOverviewStats() {
+    return this.service.getOverviewStats();
+  }
+
   @Get('toolkits')
   findAll(
     @Query(new ZodValidationPipe(ListComposioToolkitsSchema))

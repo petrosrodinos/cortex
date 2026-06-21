@@ -2,26 +2,31 @@ import { Link } from 'react-router-dom';
 import { RefreshCw, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
-  useAdminIntegrationAppsSyncRuns,
-  useAdminIntegrationAppsToolkits,
+  useAdminIntegrationAppsOverviewStats,
   useStartAdminIntegrationAppsSync,
 } from '@/features/integrationApps-admin/hooks/use-integrationApps-admin';
 import { Routes } from '@/routes/routes';
 
 export default function AdminIntegrationAppsDashboardPage() {
-  const toolkitsQuery = useAdminIntegrationAppsToolkits();
-  const syncRunsQuery = useAdminIntegrationAppsSyncRuns();
+  const overviewQuery = useAdminIntegrationAppsOverviewStats();
   const startSync = useStartAdminIntegrationAppsSync();
-  const toolkits = toolkitsQuery.data?.data ?? [];
-  const enabledCount = toolkits.filter((toolkit) => toolkit.is_enabled).length;
-  const latestRun = syncRunsQuery.data?.data[0];
+  const overview = overviewQuery.data;
 
   return (
     <div className="grid gap-4">
       <div className="grid gap-3 sm:grid-cols-3">
-        <Metric label="Synced toolkits" value={String(toolkitsQuery.data?.pagination.total ?? toolkits.length)} />
-        <Metric label="Enabled" value={String(enabledCount)} />
-        <Metric label="Latest sync" value={latestRun ? latestRun.status : 'None'} />
+        <Metric
+          label="Synced toolkits"
+          value={overviewQuery.isLoading ? '—' : String(overview?.synced_toolkits ?? 0)}
+        />
+        <Metric
+          label="Enabled"
+          value={overviewQuery.isLoading ? '—' : String(overview?.enabled_toolkits ?? 0)}
+        />
+        <Metric
+          label="Latest sync"
+          value={overviewQuery.isLoading ? '—' : overview?.latest_sync?.status ?? 'None'}
+        />
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">

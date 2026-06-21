@@ -10,21 +10,41 @@ import {
 } from '@/features/integrationApps-admin/hooks/use-integrationApps-admin';
 import type { AdminIntegrationAppsToolkit } from '@/features/integrationApps-admin/interfaces/integrationApps-admin.interface';
 import { Routes } from '@/routes/routes';
+import { AdminToolkitsListSkeleton } from './components/toolkits-list-skeleton';
 import { ToggleSwitch } from './components/toggle-switch';
+
+const PAGE_SIZE = 25;
 
 export default function AdminIntegrationAppsToolkitsPage() {
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
   const [newSlug, setNewSlug] = useState('');
-  const toolkitsQuery = useAdminIntegrationAppsToolkits({ search: search || undefined });
+  const toolkitsQuery = useAdminIntegrationAppsToolkits({
+    search: search || undefined,
+    page,
+    limit: PAGE_SIZE,
+  });
   const createToolkit = useCreateAdminIntegrationAppsToolkit();
   const toolkits = toolkitsQuery.data?.data ?? [];
+  const pagination = toolkitsQuery.data?.pagination;
+  const totalPages = pagination?.total_pages ?? 1;
+  const total = pagination?.total ?? 0;
+  const showListSkeleton = toolkitsQuery.isLoading || toolkitsQuery.isFetching;
 
   return (
     <div className="flex flex-col gap-4">
       <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(260px,360px)]">
         <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
-          <Input value={search} onChange={(event) => setSearch(event.target.value)} className="pl-9" placeholder="Search toolkits" />
+          <Input
+            value={search}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setPage(1);
+            }}
+            className="pl-9"
+            placeholder="Search toolkits"
+          />
         </div>
         <form
           className="flex gap-2"
@@ -44,8 +64,8 @@ export default function AdminIntegrationAppsToolkitsPage() {
       </div>
 
       <div className="overflow-hidden rounded-lg border border-border bg-surface">
-        {toolkitsQuery.isLoading ? (
-          <div className="p-4 text-sm text-muted">Loading toolkits...</div>
+        {showListSkeleton ? (
+          <AdminToolkitsListSkeleton />
         ) : toolkits.length === 0 ? (
           <div className="p-4 text-sm text-muted">No toolkits found.</div>
         ) : (
@@ -56,6 +76,34 @@ export default function AdminIntegrationAppsToolkitsPage() {
           </div>
         )}
       </div>
+
+      {!showListSkeleton && totalPages > 1 ? (
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-muted">
+            Page {page} of {totalPages} — {total} total
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="h-8 px-3 text-xs"
+              onClick={() => setPage((current) => Math.max(1, current - 1))}
+              disabled={page === 1 || toolkitsQuery.isFetching}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              className="h-8 px-3 text-xs"
+              onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+              disabled={page === totalPages || toolkitsQuery.isFetching}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      ) : !showListSkeleton && total > 0 ? (
+        <p className="text-xs text-muted">{total} toolkit{total === 1 ? '' : 's'}</p>
+      ) : null}
     </div>
   );
 }

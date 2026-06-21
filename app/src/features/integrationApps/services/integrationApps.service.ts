@@ -93,12 +93,14 @@ export const verifyIntegrationAppsCallback = async (
   toolkitSlug: string,
   connectionRequestId?: string,
   connectionTier?: IntegrationAppsConnectionTier,
+  connectedAccountId?: string,
 ): Promise<IntegrationAppsCallbackResponse> => {
   try {
     const storedTier = connectionTier ?? (sessionStorage.getItem(connectTierStorageKey(toolkitSlug)) as IntegrationAppsConnectionTier | null);
     const response = await axiosInstance.post(ApiRoutes.organizations.integrationAppsCallback(organizationUuid), {
       toolkit_slug: toolkitSlug,
       connection_request_id: connectionRequestId,
+      connected_account_id: connectedAccountId,
       ...(storedTier ? { connection_tier: storedTier } : {}),
     });
     sessionStorage.removeItem(connectTierStorageKey(toolkitSlug));

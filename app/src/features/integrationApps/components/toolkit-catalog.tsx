@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Check, Plug, Search, Settings2 } from 'lucide-react';
+import { Plug, Search, Settings2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   useConnectIntegrationAppsToolkit,
+  useDisableIntegrationAppsToolkit,
   useEnableIntegrationAppsToolkit,
   useGetIntegrationAppsToolkits,
 } from '@/features/integrationApps/hooks/use-integrationApps';
@@ -20,6 +21,7 @@ export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCat
   const toolkitsQuery = useGetIntegrationAppsToolkits(organizationUuid, { search, limit: 60 });
   const connectToolkit = useConnectIntegrationAppsToolkit(organizationUuid);
   const enableToolkit = useEnableIntegrationAppsToolkit(organizationUuid);
+  const disableToolkit = useDisableIntegrationAppsToolkit(organizationUuid);
   const toolkits = toolkitsQuery.data?.data ?? [];
 
   const connectedCount = useMemo(
@@ -62,7 +64,7 @@ export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCat
               key={toolkit.slug}
               toolkit={toolkit}
               isConnecting={connectToolkit.isPending}
-              isEnabling={enableToolkit.isPending}
+              isToggling={enableToolkit.isPending || disableToolkit.isPending}
               onConnect={() => {
                 if (toolkit.connection_tiers.length === 1) {
                   connectToolkit.mutate({
@@ -74,7 +76,14 @@ export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCat
 
                 onSelectToolkit(toolkit.slug);
               }}
-              onEnable={() => enableToolkit.mutate(toolkit.slug)}
+              onToggleEnabled={(enabled) => {
+                if (enabled) {
+                  enableToolkit.mutate(toolkit.slug);
+                  return;
+                }
+
+                disableToolkit.mutate(toolkit.slug);
+              }}
               onManage={() => onSelectToolkit(toolkit.slug)}
             />
           ))}
@@ -87,54 +96,123 @@ export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCat
 interface ToolkitCardProps {
   toolkit: IntegrationAppsToolkit;
   isConnecting: boolean;
-  isEnabling: boolean;
+  isToggling: boolean;
   onConnect: () => void;
-  onEnable: () => void;
+  onToggleEnabled: (enabled: boolean) => void;
   onManage: () => void;
 }
 
-function ToolkitCard({ toolkit, isConnecting, isEnabling, onConnect, onEnable, onManage }: ToolkitCardProps) {
-  return (
-    <div className="flex min-h-40 flex-col rounded-lg border border-border bg-surface transition-colors hover:bg-surface-secondary">
-      <button type="button" onClick={onManage} className="flex flex-1 flex-col p-4 text-left">
-        <div className="flex items-start justify-between gap-3">
-          <ToolkitLogo toolkit={toolkit} />
-          <span
-            className={cn(
-              'rounded-full px-2 py-0.5 text-xs font-medium',
-              toolkit.is_connected
-                ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
-                : toolkit.is_org_enabled
-                  ? 'bg-sky-500/10 text-sky-700 dark:text-sky-300'
-                  : 'bg-surface-secondary text-muted',
-            )}
-          >
-            {toolkit.is_connected ? 'Connected' : toolkit.is_org_enabled ? 'Enabled' : 'Available'}
-          </span>
-        </div>
-        <p className="mt-3 text-sm font-semibold text-foreground">{toolkit.name}</p>
-        <p className="mt-1 line-clamp-2 text-xs text-muted">{toolkit.description || toolkit.slug}</p>
-        <p className="mt-3 text-xs text-muted">{toolkit.tool_count} tools</p>
-      </button>
+function ToolkitCard({
+  toolkit,
+  isConnecting,
+  isToggling,
+  onConnect,
+  onToggleEnabled,
+  onManage,
+}: ToolkitCardProps) {
+  const description = toolkit.description || toolkit.slug;
 
-      <div className="grid grid-cols-2 gap-2 border-t border-border p-3">
-        {toolkit.is_org_enabled ? (
-          <Button type="button" variant="outline" className="h-9 px-3" onClick={onManage}>
-            <Settings2 className="h-4 w-4" />
-            Manage
-          </Button>
+  return (
+    <div className="flex flex-col rounded-lg border border-border bg-surface transition-colors hover:bg-surface-secondary">
+      <div className="flex flex-1 flex-col p-4">
+        <button type="button" onClick={onManage} className="text-left">
+          <div className="flex items-start justify-between gap-3">
+            <ToolkitLogo toolkit={toolkit} />
+            {toolkit.is_connected ? (
+              <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                Connected
+              </span>
+            ) : null}
+          </div>
+          <p className="mt-3 text-sm font-semibold text-foreground">{toolkit.name}</p>
+        </button>
+        <ToolkitDescription text={description} />
+        <button type="button" onClick={onManage} className="mt-3 text-left text-xs text-muted hover:text-foreground">
+          {toolkit.tool_count} tools
+        </button>
+      </div>
+
+      <div className="border-t border-border p-3">
+        {toolkit.is_connected ? (
+          <div className="grid grid-cols-2 gap-2">
+            <Button type="button" variant="outline" className="h-9 px-3" onClick={onManage}>
+              <Settings2 className="h-4 w-4" />
+              Manage
+            </Button>
+            <div className="flex h-9 items-center justify-between gap-2 rounded-md border border-border px-3">
+              <span className="text-xs text-foreground">{toolkit.is_org_enabled ? 'Enabled' : 'Disabled'}</span>
+              <EnabledSwitch
+                checked={toolkit.is_org_enabled}
+                disabled={isToggling}
+                onChange={onToggleEnabled}
+              />
+            </div>
+          </div>
         ) : (
-          <Button type="button" variant="outline" className="h-9 px-3" loading={isEnabling} onClick={onEnable}>
-            <Check className="h-4 w-4" />
-            Enable
+          <Button type="button" className="h-9 w-full px-3" loading={isConnecting} onClick={onConnect}>
+            <Plug className="h-4 w-4" />
+            Connect
           </Button>
         )}
-        <Button type="button" className="h-9 px-3" loading={isConnecting} onClick={onConnect}>
-          <Plug className="h-4 w-4" />
-          Connect
-        </Button>
       </div>
     </div>
+  );
+}
+
+const DESCRIPTION_PREVIEW_LENGTH = 120;
+
+function ToolkitDescription({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const isLong = text.length > DESCRIPTION_PREVIEW_LENGTH;
+
+  return (
+    <div className="mt-1">
+      <p className={cn('text-xs leading-relaxed text-muted', !expanded && isLong && 'line-clamp-2')}>
+        {text}
+      </p>
+      {isLong ? (
+        <button
+          type="button"
+          onClick={() => setExpanded((value) => !value)}
+          className="mt-1 text-xs font-medium text-accent hover:underline"
+        >
+          {expanded ? 'Read less' : 'Read more'}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+interface EnabledSwitchProps {
+  checked: boolean;
+  disabled?: boolean;
+  onChange: (checked: boolean) => void;
+  className?: string;
+}
+
+function EnabledSwitch({ checked, disabled, onChange, className }: EnabledSwitchProps) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={checked ? 'Disable integration' : 'Enable integration'}
+      disabled={disabled}
+      onClick={() => onChange(!checked)}
+      className={cn(
+        'relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors',
+        checked ? 'bg-accent' : 'bg-border',
+        disabled && 'cursor-not-allowed opacity-60',
+        className,
+      )}
+    >
+      <span
+        className={cn(
+          'pointer-events-none block h-4 w-4 translate-x-0.5 rounded-full bg-white shadow-sm transition-transform',
+          checked && 'translate-x-4',
+        )}
+      />
+    </button>
   );
 }
 

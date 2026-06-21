@@ -183,11 +183,14 @@ export class ComposioSyncService implements OnApplicationBootstrap {
   }
 
   private async *listToolkits(): AsyncGenerator<UnknownRecord> {
-    const client = this.composioClient.getClient() as any;
+    const composio = this.composioClient.getClient() as any;
     let cursor: string | undefined;
 
     do {
-      const page = await client.toolkits.get({ limit: 100, cursor });
+      const page = await composio.client.toolkits.list({
+        limit: 1000,
+        ...(cursor ? { cursor } : {}),
+      });
       const items = this.getItems(page);
 
       for (const item of items) {
@@ -199,14 +202,14 @@ export class ComposioSyncService implements OnApplicationBootstrap {
   }
 
   private async *listTools(toolkitSlug: string): AsyncGenerator<UnknownRecord> {
-    const client = this.composioClient.getClient() as any;
+    const composio = this.composioClient.getClient() as any;
     let cursor: string | undefined;
 
     do {
-      const page = await client.tools.getRawComposioTools({
-        toolkits: [toolkitSlug],
-        limit: 500,
-        cursor,
+      const page = await composio.client.tools.list({
+        toolkit_slug: toolkitSlug,
+        limit: 1000,
+        ...(cursor ? { cursor } : {}),
       });
       const items = this.getItems(page);
 
@@ -253,6 +256,7 @@ export class ComposioSyncService implements OnApplicationBootstrap {
             'toolsCount',
             'tool_count',
             'meta.toolsCount',
+            'meta.tools_count',
           ]) ?? 0,
         auth_schemes: this.toJson(
           toolkit.authSchemes ?? toolkit.auth_schemes ?? [],
@@ -282,6 +286,7 @@ export class ComposioSyncService implements OnApplicationBootstrap {
             'toolsCount',
             'tool_count',
             'meta.toolsCount',
+            'meta.tools_count',
           ]) ?? 0,
         auth_schemes: this.toJson(
           toolkit.authSchemes ?? toolkit.auth_schemes ?? [],
@@ -332,9 +337,18 @@ export class ComposioSyncService implements OnApplicationBootstrap {
   }
 
   private getNextCursor(page: any): string | undefined {
-    return (
-      page?.nextCursor ?? page?.next_cursor ?? page?.pagination?.nextCursor
-    );
+    if (Array.isArray(page)) {
+      return undefined;
+    }
+
+    const cursor =
+      page?.nextCursor ??
+      page?.next_cursor ??
+      page?.cursor ??
+      page?.pagination?.nextCursor ??
+      page?.pagination?.next_cursor;
+
+    return typeof cursor === 'string' && cursor.length > 0 ? cursor : undefined;
   }
 
   private getSlug(value: UnknownRecord): string {

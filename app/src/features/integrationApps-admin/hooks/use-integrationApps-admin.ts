@@ -4,6 +4,7 @@ import type { IntegrationAppsConnectionTier } from '@/features/integrationApps/i
 import type { IntegrationAppsSyncType } from '../interfaces/integrationApps-admin.interface';
 import {
   createAdminIntegrationAppsToolkit,
+  getAdminIntegrationAppsOverviewStats,
   getAdminIntegrationAppsSyncRuns,
   getAdminIntegrationAppsToolkit,
   getAdminIntegrationAppsToolkitStats,
@@ -17,6 +18,13 @@ import {
 } from '../services/integrationApps-admin.service';
 
 export const adminIntegrationAppsQueryKey = ['admin-integrationApps'] as const;
+
+export function useAdminIntegrationAppsOverviewStats() {
+  return useQuery({
+    queryKey: [...adminIntegrationAppsQueryKey, 'overview-stats'],
+    queryFn: () => getAdminIntegrationAppsOverviewStats(),
+  });
+}
 
 export function useAdminIntegrationAppsToolkits(filters?: AdminToolkitFilters) {
   return useQuery({

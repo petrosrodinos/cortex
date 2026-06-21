@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, Loader2, XCircle } from 'lucide-react';
 import { useVerifyIntegrationAppsCallback } from '@/features/integrationApps/hooks/use-integrationApps';
 import { Routes } from '@/routes/routes';
@@ -7,6 +7,7 @@ import { useOrganizationStore } from '@/stores/organization';
 
 export default function IntegrationAppsCallbackPage() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const organizationUuid = useOrganizationStore((state) => state.current_organization?.uuid);
   const verifyCallback = useVerifyIntegrationAppsCallback(organizationUuid);
 
@@ -21,8 +22,12 @@ export default function IntegrationAppsCallbackPage() {
       searchParams.get('connectionRequestId') ||
       searchParams.get('request_id') ||
       undefined;
+    const connectedAccountId =
+      searchParams.get('connected_account_id') ||
+      searchParams.get('connectedAccountId') ||
+      undefined;
 
-    return { toolkitSlug, connectionRequestId };
+    return { toolkitSlug, connectionRequestId, connectedAccountId };
   }, [searchParams]);
 
   useEffect(() => {
@@ -32,6 +37,14 @@ export default function IntegrationAppsCallbackPage() {
 
     verifyCallback.mutate(callbackParams);
   }, [callbackParams, organizationUuid, verifyCallback]);
+
+  useEffect(() => {
+    if (!verifyCallback.isSuccess) {
+      return;
+    }
+
+    navigate(Routes.dashboard.integrations, { replace: true });
+  }, [navigate, verifyCallback.isSuccess]);
 
   const missingToolkit = !callbackParams.toolkitSlug;
 
@@ -59,12 +72,14 @@ export default function IntegrationAppsCallbackPage() {
         </div>
       </div>
 
-      <Link
-        to={Routes.dashboard.integrations}
-        className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition-colors hover:opacity-90"
-      >
-        Back to integrations
-      </Link>
+      {!verifyCallback.isSuccess ? (
+        <Link
+          to={Routes.dashboard.integrations}
+          className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition-colors hover:opacity-90"
+        >
+          Back to integrations
+        </Link>
+      ) : null}
     </div>
   );
 }

@@ -1,7 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import type { AiProviderType } from '@/features/integrations/constants/ai-provider-types';
-import { INTEGRATION_CATALOG_TABS } from '@/features/integrations/constants/provider-categories';
+import {
+  CATALOG_PROVIDERS_BY_SECTION,
+  type ProviderCatalogSection,
+} from '@/features/integrations/constants/provider-categories';
 import type { CatalogProvider } from '@/features/integrations/constants/catalog-provider';
 import {
   CATALOG_PROVIDER_ICON_META,
@@ -10,12 +13,11 @@ import {
 } from '@/features/integrations/constants/provider-metadata';
 import { isAiCatalogProvider } from '@/features/integrations/utils/integration.utils';
 import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
-import { cn } from '@/lib/utils';
 
 interface ProviderCatalogProps {
   integrations: Integration[];
   aiProviders: AiProvider[];
-  mode?: 'custom' | 'ai';
+  section: ProviderCatalogSection;
   onConnect: (provider: CatalogProvider) => void;
   onManageIntegration: (integration: Integration) => void;
   onManageAiProvider: (provider: AiProvider) => void;
@@ -24,23 +26,12 @@ interface ProviderCatalogProps {
 export function ProviderCatalog({
   integrations,
   aiProviders,
-  mode = 'custom',
+  section,
   onConnect,
   onManageIntegration,
   onManageAiProvider,
 }: ProviderCatalogProps) {
-  const visibleTabs = useMemo(
-    () =>
-      INTEGRATION_CATALOG_TABS.filter((tab) =>
-        mode === 'ai' ? tab.id === 'ai' : tab.id !== 'ai',
-      ),
-    [mode],
-  );
-  const [activeTabId, setActiveTabId] = useState(visibleTabs[0]?.id ?? 'custom');
-
-  useEffect(() => {
-    setActiveTabId(visibleTabs[0]?.id ?? 'custom');
-  }, [visibleTabs]);
+  const providers = CATALOG_PROVIDERS_BY_SECTION[section];
 
   const connectedByProvider = useMemo(() => {
     const map = new Map<CatalogProvider, Integration[]>();
@@ -63,41 +54,15 @@ export function ProviderCatalog({
     return map;
   }, [aiProviders]);
 
-  const activeTab = visibleTabs.find((tab) => tab.id === activeTabId) ?? visibleTabs[0];
-
   return (
-    <div className="flex flex-col gap-5">
-      <div className="-mx-1 overflow-x-auto px-1">
-        <div className="flex w-max gap-1 rounded-lg border border-border bg-surface p-1">
-          {visibleTabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTabId(tab.id)}
-              className={cn(
-                'shrink-0 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-                activeTabId === tab.id
-                  ? 'bg-surface-secondary text-foreground'
-                  : 'text-muted hover:text-foreground',
-              )}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {activeTab ? (
-        <ProviderGrid
-          providers={activeTab.providers}
-          connectedByProvider={connectedByProvider}
-          connectedAiByType={connectedAiByType}
-          onConnect={onConnect}
-          onManageIntegration={onManageIntegration}
-          onManageAiProvider={onManageAiProvider}
-        />
-      ) : null}
-    </div>
+    <ProviderGrid
+      providers={providers}
+      connectedByProvider={connectedByProvider}
+      connectedAiByType={connectedAiByType}
+      onConnect={onConnect}
+      onManageIntegration={onManageIntegration}
+      onManageAiProvider={onManageAiProvider}
+    />
   );
 }
 

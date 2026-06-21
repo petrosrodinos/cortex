@@ -157,6 +157,23 @@ export class ComposioToolkitsService {
     };
   }
 
+  async getOverviewStats() {
+    const [syncedToolkits, enabledToolkits, latestSync] =
+      await Promise.all([
+        this.prisma.composioToolkit.count(),
+        this.prisma.composioToolkit.count({ where: { is_enabled: true } }),
+        this.prisma.composioSyncRun.findFirst({
+          orderBy: { started_at: 'desc' },
+        }),
+      ]);
+
+    return {
+      synced_toolkits: syncedToolkits,
+      enabled_toolkits: enabledToolkits,
+      latest_sync: latestSync,
+    };
+  }
+
   async refreshToolkit(slug: string) {
     await this.syncService.syncToolkit(slug);
     return this.findOne(slug);

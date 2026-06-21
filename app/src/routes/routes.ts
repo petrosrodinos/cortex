@@ -8,6 +8,7 @@ export const Routes = {
         organizations: "/dashboard/organizations",
         integrations: "/dashboard/integrations",
         integrationsCallback: "/dashboard/integrations/callback",
+        integrationApp: (toolkitSlug: string) => `/dashboard/integrations/apps/${toolkitSlug}`,
         conversations: "/dashboard/conversations",
         conversation: (conversationUuid: string) => `/dashboard/conversations/${conversationUuid}`,
         integration: (integrationUuid: string) => `/dashboard/integrations/${integrationUuid}`,

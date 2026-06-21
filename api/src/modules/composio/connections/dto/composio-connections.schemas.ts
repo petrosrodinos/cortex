@@ -8,6 +8,7 @@ export const ConnectComposioSchema = z.object({
 export const ComposioCallbackSchema = z.object({
   toolkit_slug: z.string().trim().min(1),
   connection_request_id: z.string().trim().min(1).optional(),
+  connected_account_id: z.string().trim().min(1).optional(),
 });
 
 export type ConnectComposioType = z.infer<typeof ConnectComposioSchema>;
