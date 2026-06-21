@@ -6,27 +6,23 @@ import {
   useStartAdminIntegrationAppsSync,
 } from '@/features/integration-apps-admin/hooks/use-integrationApps-admin';
 import { Routes } from '@/routes/routes';
+import { AdminIntegrationAppsOverviewSkeleton } from './components/overview-skeleton';
 
 export default function AdminIntegrationAppsDashboardPage() {
   const overviewQuery = useAdminIntegrationAppsOverviewStats();
   const startSync = useStartAdminIntegrationAppsSync();
   const overview = overviewQuery.data;
 
+  if (overviewQuery.isLoading) {
+    return <AdminIntegrationAppsOverviewSkeleton />;
+  }
+
   return (
     <div className="grid gap-4">
       <div className="grid gap-3 sm:grid-cols-3">
-        <Metric
-          label="Synced toolkits"
-          value={overviewQuery.isLoading ? '—' : String(overview?.synced_toolkits ?? 0)}
-        />
-        <Metric
-          label="Enabled"
-          value={overviewQuery.isLoading ? '—' : String(overview?.enabled_toolkits ?? 0)}
-        />
-        <Metric
-          label="Latest sync"
-          value={overviewQuery.isLoading ? '—' : overview?.latest_sync?.status ?? 'None'}
-        />
+        <Metric label="Synced toolkits" value={String(overview?.synced_toolkits ?? 0)} />
+        <Metric label="Enabled" value={String(overview?.enabled_toolkits ?? 0)} />
+        <Metric label="Latest sync" value={overview?.latest_sync?.status ?? 'None'} />
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">

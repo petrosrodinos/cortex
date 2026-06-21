@@ -4,7 +4,6 @@ import {
 } from '@/features/integration-apps/hooks/use-integrationApps';
 import { useOrganizationStore } from '@/stores/organization';
 import { ToolkitConnectedAccounts } from './toolkit-connected-accounts';
-import { ToolkitOrgMetrics } from './toolkit-org-metrics';
 import { ToolkitTriggers } from './toolkit-triggers';
 
 interface ToolkitOrgSectionsProps {
@@ -30,11 +29,6 @@ export function ToolkitOrgSections({ toolkitSlug, toolkitName }: ToolkitOrgSecti
   if (detailQuery.isLoading || triggersQuery.isLoading || !detail) {
     return (
       <div className="space-y-3">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="h-16 animate-pulse rounded-lg border border-border bg-surface" />
-          ))}
-        </div>
         <div className="h-40 animate-pulse rounded-lg border border-border bg-surface" />
         <div className="h-56 animate-pulse rounded-lg border border-border bg-surface" />
       </div>
@@ -43,7 +37,6 @@ export function ToolkitOrgSections({ toolkitSlug, toolkitName }: ToolkitOrgSecti
 
   return (
     <div className="flex flex-col gap-4">
-      <ToolkitOrgMetrics detail={detail} triggers={triggers} />
       <ToolkitConnectedAccounts
         organizationUuid={organizationUuid}
         toolkitSlug={toolkitSlug}

@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { ToolkitDetail } from './components/toolkit-detail';
+import { ToolkitDetail } from './components/integration-apps/toolkit-detail';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
-import { NoOrgPanel } from './components/no-org-panel';
+import { NoOrgPanel } from './components/shared/no-org-panel';
 
 export default function IntegrationAppDetailPage() {
   const { toolkitSlug } = useParams();

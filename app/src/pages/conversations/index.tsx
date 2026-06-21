@@ -23,21 +23,21 @@ import { useExecution } from '@/features/conversations/hooks/use-execution';
 import { MessageRoles, type Message, type MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { useUploadDocument } from '@/features/files/hooks/use-files';
 import { cn } from '@/lib/utils';
-import { ConversationEmptyState } from './components/conversation-empty-state';
-import { ConversationDocumentsModal } from './components/conversation-documents-modal';
-import { ConversationHeader } from './components/conversation-header';
-import { ConversationInput } from './components/conversation-input';
-import { getToolEligibleIntegrations, getToolEligibleToolkits } from './components/conversation-tools-menu';
+import { ConversationEmptyState } from './components/shared/conversation-empty-state';
+import { ConversationDocumentsModal } from './components/shared/conversation-documents-modal';
+import { ConversationHeader } from './components/shared/conversation-header';
+import { ConversationInput } from './components/input/conversation-input';
+import { getToolEligibleIntegrations, getToolEligibleToolkits } from './components/input/conversation-tools-menu';
 import {
   createEmptyDraft,
   draftPartsToPlainText,
   getDraftIntegrationUuids,
   type DraftPart,
-} from './components/conversation-draft-editor';
-import { ConversationMessages } from './components/conversation-messages';
-import { getMessageAttachments } from './components/message-attachments';
-import { ConversationSidebar } from './components/conversation-sidebar';
-import { ConversationSidebarSkeleton } from './components/conversation-sidebar-skeleton';
+} from './components/input/conversation-draft-editor';
+import { ConversationMessages } from './components/messages/conversation-messages';
+import { getMessageAttachments } from './components/messages/message-attachments';
+import { ConversationSidebar } from './components/sidebar/conversation-sidebar';
+import { ConversationSidebarSkeleton } from './components/sidebar/conversation-sidebar-skeleton';
 import {
   CONVERSATIONS_SIDEBAR_STORAGE_KEY,
   getInitialConversationsSidebarCollapsed,

@@ -17,18 +17,18 @@ import {
 import { isAiCatalogProvider } from '@/features/integrations/utils/integration.utils';
 import { useGetAiProviders } from '@/features/ai-providers/hooks/use-ai-providers';
 import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
-import { ToolkitCatalog } from './components/toolkit-catalog';
+import { ToolkitCatalog } from './components/integration-apps/toolkit-catalog';
 import { useGetIntegrationAppsToolkits } from '@/features/integration-apps/hooks/use-integrationApps';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
 import { cn } from '@/lib/utils';
-import { AiProviderDetail } from './components/ai-provider-detail';
-import { IntegrationDetail } from './components/integration-detail';
-import { IntegrationsSkeleton } from './components/integrations-skeleton';
-import { NoOrgPanel } from './components/no-org-panel';
-import { ProviderCatalog } from './components/provider-catalog';
-import { AddIntegrationModal } from './components/add-integration-modal';
-import { AddAiProviderModal } from './components/add-ai-provider-modal';
+import { AiProviderDetail } from './components/ai-providers/ai-provider-detail';
+import { IntegrationDetail } from './components/connections/integration-detail';
+import { IntegrationsSkeleton } from './components/shared/integrations-skeleton';
+import { NoOrgPanel } from './components/shared/no-org-panel';
+import { ProviderCatalog } from './components/shared/provider-catalog';
+import { AddIntegrationModal } from './components/connections/add-integration-modal';
+import { AddAiProviderModal } from './components/ai-providers/add-ai-provider-modal';
 
 export default function IntegrationsPage() {
   const { integrationUuid, aiProviderUuid } = useParams();

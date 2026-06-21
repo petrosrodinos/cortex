@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { File, FileText, Image, X } from 'lucide-react';
 import type { Message, MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
-import { getConversationDocuments } from '../utils/conversation-documents';
+import { getConversationDocuments } from '../../utils/conversation-documents';
 
 interface ConversationDocumentsModalProps {
   open: boolean;

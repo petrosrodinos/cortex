@@ -1,6 +1,6 @@
 import type { Message, MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
-import { getMessageAttachments } from '../components/message-attachments';
+import { getMessageAttachments } from '../components/messages/message-attachments';
 
 export interface ConversationDocument {
   id: string;
