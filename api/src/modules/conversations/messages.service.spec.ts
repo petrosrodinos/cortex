@@ -83,7 +83,7 @@ describe('MessagesService', () => {
         input: {
           content: 'Use Gmail only',
           documentUuids: [],
-          integrationUuids: [],
+          integrationUuids: undefined,
           toolkitSlugs: ['gmail', 'slack'],
         },
       },
@@ -97,7 +97,7 @@ describe('MessagesService', () => {
         userMessage: 'Use Gmail only',
         executionUuid: 'execution-uuid',
         documentUuids: [],
-        integrationUuids: [],
+        integrationUuids: undefined,
         toolkitSlugs: ['gmail', 'slack'],
       }),
       expect.objectContaining({ jobId: 'run-execution-uuid' }),

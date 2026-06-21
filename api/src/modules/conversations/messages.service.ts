@@ -11,6 +11,7 @@ import { GcsService } from '@/integrations/storage/gcs/services/gcs.service';
 import { AGENT_RUN_QUEUE } from '@/core/queues/queues.constants';
 import type { AgentRunJobData } from '@/core/queues/processors/agent.processor';
 import { SendMessageDto } from './dto/send-message.dto';
+import { normalizeAgentToolScope } from '@/shared/services/ai/agents/tools/core/agent-tool-scope.utils';
 
 const DEFAULT_CONVERSATION_TITLE = 'New conversation';
 
@@ -120,6 +121,7 @@ export class MessagesService {
       dto.documentUuids ?? [],
     );
     const toolkitSlugs = this.resolveToolkitSlugs(dto);
+    const toolScope = normalizeAgentToolScope(dto.integrationUuids, toolkitSlugs);
 
     const userMessage = await this.prisma.message.create({
       data: {
@@ -143,8 +145,8 @@ export class MessagesService {
         input: {
           content: dto.content,
           documentUuids: dto.documentUuids ?? [],
-          integrationUuids: dto.integrationUuids ?? [],
-          toolkitSlugs,
+          integrationUuids: toolScope.integrationUuids,
+          toolkitSlugs: toolScope.toolkitSlugs,
         },
       },
     });
@@ -158,8 +160,8 @@ export class MessagesService {
         userMessage: dto.content,
         executionUuid: execution.uuid,
         documentUuids: dto.documentUuids ?? [],
-        integrationUuids: dto.integrationUuids ?? [],
-        toolkitSlugs,
+        integrationUuids: toolScope.integrationUuids,
+        toolkitSlugs: toolScope.toolkitSlugs,
       },
       {
         jobId: `run-${execution.uuid}`,

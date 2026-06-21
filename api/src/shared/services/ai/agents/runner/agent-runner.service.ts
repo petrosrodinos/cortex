@@ -32,6 +32,8 @@ import { AgentProgressEmitterService } from '../progress/agent-progress-emitter.
 import { ToolDispatcherService } from '../tools/dispatch/tool-dispatcher.service';
 import { SandboxCodeService } from '../sandbox/sandbox-code.service';
 import { DocumentReaderService } from '../documents/document-reader.service';
+import { CapabilitiesToolsService } from '../capabilities/capabilities-tools.service';
+import { normalizeAgentToolScope } from '../tools/core/agent-tool-scope.utils';
 
 interface SavedExecutionInput {
   content?: string;
@@ -69,6 +71,7 @@ export class AgentRunnerService {
     private readonly toolDispatcher: ToolDispatcherService,
     private readonly sandboxCode: SandboxCodeService,
     private readonly documentReader: DocumentReaderService,
+    private readonly capabilities: CapabilitiesToolsService,
   ) {}
 
   async run(
@@ -157,9 +160,10 @@ export class AgentRunnerService {
 
       const documentUuids =
         options?.documentUuids ?? savedInput.documentUuids ?? [];
-      const integrationUuids =
-        options?.integrationUuids ?? savedInput.integrationUuids;
-      const toolkitSlugs = options?.toolkitSlugs ?? savedInput.toolkitSlugs;
+      const toolScope = normalizeAgentToolScope(
+        options?.integrationUuids ?? savedInput.integrationUuids,
+        options?.toolkitSlugs ?? savedInput.toolkitSlugs,
+      );
       const attachedDocuments =
         documentUuids.length > 0
           ? await this.documentReader.getAttachedMetadata(documentUuids)
@@ -183,8 +187,8 @@ export class AgentRunnerService {
         permissions,
         {
           documentUuids,
-          integrationUuids,
-          toolkitSlugs,
+          integrationUuids: toolScope.integrationUuids,
+          toolkitSlugs: toolScope.toolkitSlugs,
           userMessage,
           progress,
         },
@@ -198,6 +202,7 @@ export class AgentRunnerService {
         messagesForAgent,
         conversationId,
         executionUuid,
+        toolScope,
       );
       const agent = this.providerFactory.createAgent(
         resolved,
@@ -235,8 +240,8 @@ export class AgentRunnerService {
               agentMessages,
               responseMessages: result.response.messages,
               documentUuids,
-              integrationUuids,
-              toolkitSlugs,
+              integrationUuids: toolScope.integrationUuids,
+              toolkitSlugs: toolScope.toolkitSlugs,
             } as object,
             tokens_used: usage.tokensUsed,
             cost_usd: usage.costUsd,
@@ -478,14 +483,22 @@ export class AgentRunnerService {
     messagesForAgent: ModelMessage[],
     conversationId: string,
     executionUuid: string,
+    toolScope: ReturnType<typeof normalizeAgentToolScope>,
   ) {
-    const instructions = await this.systemPromptBuilder.build(
-      organizationUuid,
-      userUuid,
-      attachedDocuments,
-    );
+    const [instructions, capabilitiesPrompt] = await Promise.all([
+      this.systemPromptBuilder.build(
+        organizationUuid,
+        userUuid,
+        attachedDocuments,
+      ),
+      this.capabilities.buildAgentCapabilitiesPrompt({
+        organizationUuid,
+        integrationUuids: toolScope.integrationUuids,
+        toolkitSlugs: toolScope.toolkitSlugs,
+      }),
+    ]);
 
-    const guidance: string[] = [];
+    const guidance: string[] = [capabilitiesPrompt];
 
     if (!messagesIncludeRecentToolContext(messagesForAgent)) {
       const recentToolContext = await this.loadRecentConversationToolContext(
@@ -521,6 +534,7 @@ export class AgentRunnerService {
         'Use the data already present in this conversation — including any "Tool results from this turn" sections in earlier assistant messages — to compose the email body or attachments.',
         'If the prior assistant reply only summarized results, use the stored tool results or re-run the same organization, database, or integration tools instead of asking the user to provide the data again.',
         'Use generated file URLs or generatedDocuments metadata from earlier output tool results when the selected email tool supports attachments or links.',
+        'Use only the email channels listed in "Available tools for this message". If none are listed, tell the user to connect an email app in Integrations instead of claiming a specific provider is blocked.',
         'Do not claim an email was sent until the email tool completes successfully.',
       );
     }
@@ -536,8 +550,8 @@ export class AgentRunnerService {
       }
     }
 
-    if (guidance.length === 0) {
-      return instructions;
+    if (guidance.length === 1) {
+      return [instructions, capabilitiesPrompt].join('\n');
     }
 
     return [instructions, ...guidance].join('\n');

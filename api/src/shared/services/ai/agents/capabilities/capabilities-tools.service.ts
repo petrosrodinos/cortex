@@ -5,6 +5,10 @@ import {
   ComposioAccountStatus,
   IntegrationStatus,
 } from 'generated/prisma';
+import {
+  buildAgentCapabilitiesPromptBlock,
+  type AgentCapabilitiesSnapshot,
+} from './agent-capabilities-prompt.utils';
 
 export interface CapabilitiesToolsContext {
   organizationUuid: string;
@@ -91,6 +95,35 @@ export class CapabilitiesToolsService {
         name: entry.toolkit.name,
         description: entry.toolkit.description,
         is_connected: entry.toolkit.connected_accounts.length > 0,
+      })),
+    };
+  }
+
+  async buildAgentCapabilitiesPrompt(
+    context: CapabilitiesToolsContext,
+  ): Promise<string> {
+    const snapshot = await this.buildAgentCapabilitiesSnapshot(context);
+    return buildAgentCapabilitiesPromptBlock(snapshot);
+  }
+
+  async buildAgentCapabilitiesSnapshot(
+    context: CapabilitiesToolsContext,
+  ): Promise<AgentCapabilitiesSnapshot> {
+    const [integrationsResult, toolkitsResult] = await Promise.all([
+      this.listIntegrations(context),
+      this.listToolkits(context),
+    ]);
+
+    return {
+      integrations: integrationsResult.integrations.map((integration) => ({
+        name: integration.name,
+        provider: integration.provider,
+        actions: integration.actions,
+      })),
+      toolkits: toolkitsResult.toolkits.map((toolkit) => ({
+        slug: toolkit.slug,
+        name: toolkit.name,
+        is_connected: toolkit.is_connected,
       })),
     };
   }
