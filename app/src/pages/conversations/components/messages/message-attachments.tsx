@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import { File } from 'lucide-react';
 import type { MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { cn } from '@/lib/utils';
+import { ExpandableImage } from './expandable-image';
 
 interface MessageAttachmentsProps {
   attachments: MessageAttachment[];
@@ -20,19 +21,11 @@ export const MessageAttachments: FC<MessageAttachmentsProps> = ({ attachments, c
 
         if (isImage && attachment.url) {
           return (
-            <a
+            <ExpandableImage
               key={attachment.uuid}
-              href={attachment.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block overflow-hidden rounded-lg border border-border"
-            >
-              <img
-                src={attachment.url}
-                alt={attachment.filename}
-                className="max-h-48 max-w-full object-contain"
-              />
-            </a>
+              src={attachment.url}
+              alt={attachment.filename}
+            />
           );
         }
 

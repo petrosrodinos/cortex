@@ -18,6 +18,7 @@ import { MessageCopyButton } from './message-copy-button';
 import { MessageRetryButton } from './message-retry-button';
 import { MessageMarkdown } from '@/components/markdown/message-markdown';
 import { prepareAssistantMarkdown, getFilePreviewUrl } from '@/lib/message-markdown.utils';
+import { ExpandableImage } from './expandable-image';
 import { WidgetPreview } from './widget-preview';
 
 const messageBubbleClassName = 'min-w-0 max-w-[min(92%,100%)] rounded-2xl px-3 py-2.5 text-sm sm:max-w-[85%] sm:px-4 sm:py-3';
@@ -190,13 +191,12 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
 
             if (outputType === 'CHART' && files.length > 0) {
               return (
-                <div className="mt-3">
-                  <img
-                    src={files[0]}
-                    alt="Generated visual"
-                    className="max-h-64 w-full max-w-full rounded-lg object-contain sm:max-w-[240px] sm:w-auto"
-                  />
-                </div>
+                <ExpandableImage
+                  src={files[0]}
+                  alt="Generated visual"
+                  className="max-h-64"
+                  containerClassName="mt-3"
+                />
               );
             }
 
