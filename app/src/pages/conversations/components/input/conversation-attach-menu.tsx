@@ -4,11 +4,8 @@ import { Paperclip, Plus, Settings2 } from 'lucide-react';
 import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import { cn } from '@/lib/utils';
-import {
-  ConversationToolsMenu,
-  getToolEligibleIntegrations,
-  getToolEligibleToolkits,
-} from './conversation-tools-menu';
+import { buildConversationToolItems } from './conversation-tool-items.utils';
+import { ConversationToolsMenu } from './conversation-tools-menu';
 
 interface ConversationAttachMenuProps {
   integrations: Integration[];
@@ -31,9 +28,10 @@ export const ConversationAttachMenu: FC<ConversationAttachMenuProps> = ({
   onIntegrationSelectionChange,
   onToolkitSelectionChange,
 }) => {
-  const toolIntegrations = useMemo(() => getToolEligibleIntegrations(integrations), [integrations]);
-  const toolToolkits = useMemo(() => getToolEligibleToolkits(toolkits), [toolkits]);
-  const totalToolCount = toolIntegrations.length + toolToolkits.length;
+  const totalToolCount = useMemo(
+    () => buildConversationToolItems(integrations, toolkits).length,
+    [integrations, toolkits],
+  );
   const selectedToolCount = selectedIntegrationUuids.length + selectedToolkitSlugs.length;
   const hasPartialToolSelection =
     totalToolCount > 0 && selectedToolCount < totalToolCount;

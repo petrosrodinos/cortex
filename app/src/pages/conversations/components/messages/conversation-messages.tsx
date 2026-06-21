@@ -15,6 +15,7 @@ import { getMessageAttachments, MessageAttachments } from './message-attachments
 import { ExecutionApprovalCard } from '../executions/execution-approval-card';
 import { ExecutionProgress } from '../executions/execution-progress';
 import { MessageCopyButton } from './message-copy-button';
+import { MessageDeleteButton } from './message-delete-button';
 import { MessageRetryButton } from './message-retry-button';
 import { MessageMarkdown } from '@/components/markdown/message-markdown';
 import { prepareAssistantMarkdown, getFilePreviewUrl } from '@/lib/message-markdown.utils';
@@ -43,6 +44,9 @@ interface ConversationMessagesProps {
   onReject: () => void;
   isSendDisabled: boolean;
   onRetryMessage: (message: Message) => void;
+  canDeleteMessages?: boolean;
+  onDeleteMessage?: (message: Message) => void;
+  isDeletingMessage?: boolean;
 }
 
 export const ConversationMessages: FC<ConversationMessagesProps> = ({
@@ -65,6 +69,9 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
   onReject,
   isSendDisabled,
   onRetryMessage,
+  canDeleteMessages = false,
+  onDeleteMessage,
+  isDeletingMessage = false,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -148,6 +155,12 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
                 />
               )}
               <MessageCopyButton content={message.content} />
+              {canDeleteMessages && onDeleteMessage && (
+                <MessageDeleteButton
+                  disabled={isDeletingMessage}
+                  onDelete={() => onDeleteMessage(message)}
+                />
+              )}
             </div>
           </div>
 

@@ -38,6 +38,12 @@ describe('MessagesService', () => {
     const agentQueue = {
       add: jest.fn().mockResolvedValue({}),
     };
+    const capabilities = {
+      resolveAgentToolScope: jest.fn().mockResolvedValue({
+        integrationUuids: undefined,
+        toolkitSlugs: ['gmail', 'slack'],
+      }),
+    };
 
     return {
       service: new MessagesService(
@@ -47,14 +53,16 @@ describe('MessagesService', () => {
         providerFactory as any,
         gcs as any,
         agentQueue as any,
+        capabilities as any,
       ),
       prisma,
       agentQueue,
+      capabilities,
     };
   };
 
   it('normalizes toolkit_slugs into execution input and agent queue payload', async () => {
-    const { service, prisma, agentQueue } = createService();
+    const { service, prisma, agentQueue, capabilities } = createService();
 
     await expect(
       service.sendMessage('user-uuid', 'org-uuid', 'conversation-uuid', {
@@ -65,6 +73,12 @@ describe('MessagesService', () => {
       executionId: 'execution-uuid',
       messageId: 'message-uuid',
     });
+
+    expect(capabilities.resolveAgentToolScope).toHaveBeenCalledWith(
+      'org-uuid',
+      undefined,
+      ['gmail', 'slack'],
+    );
 
     expect(prisma.message.create).toHaveBeenCalledWith({
       data: {

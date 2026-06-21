@@ -90,7 +90,7 @@ export class ComposioSessionService {
           is_enabled: true,
           toolkit: {
             is_enabled: true,
-            ...(toolkitSlugs?.length ? { slug: { in: toolkitSlugs } } : {}),
+            ...(toolkitSlugs !== undefined ? { slug: { in: toolkitSlugs } } : {}),
           },
         },
         select: { toolkit: { select: { slug: true } } },

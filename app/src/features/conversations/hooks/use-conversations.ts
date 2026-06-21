@@ -4,9 +4,11 @@ import {
   approveExecution,
   createConversation,
   deleteConversation,
+  deleteMessage,
   getConversation,
   getConversations,
   getMessages,
+  getConversationAgentTools,
   rejectExecution,
   sendMessage,
   updateConversation,
@@ -35,6 +37,14 @@ export function useGetMessages(organizationUuid?: string, conversationUuid?: str
     queryKey: ['messages', organizationUuid, conversationUuid],
     queryFn: () => getMessages(organizationUuid as string, conversationUuid as string),
     enabled: !!organizationUuid && !!conversationUuid,
+  });
+}
+
+export function useGetConversationAgentTools(organizationUuid?: string) {
+  return useQuery({
+    queryKey: ['conversation-agent-tools', organizationUuid],
+    queryFn: () => getConversationAgentTools(organizationUuid as string),
+    enabled: !!organizationUuid,
   });
 }
 
@@ -113,6 +123,23 @@ export function useSendMessage(organizationUuid?: string, conversationUuid?: str
     },
     onError: (error: Error) => {
       toast({ title: 'Could not send message', description: error.message, variant: 'error' });
+    },
+  });
+}
+
+export function useDeleteMessage(organizationUuid?: string, conversationUuid?: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (messageUuid: string) =>
+      deleteMessage(organizationUuid as string, conversationUuid as string, messageUuid),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['messages', organizationUuid, conversationUuid] });
+      queryClient.invalidateQueries({ queryKey: conversationsQueryKey });
+      toast({ title: 'Message deleted', duration: 2000 });
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Could not delete message', description: error.message, variant: 'error' });
     },
   });
 }

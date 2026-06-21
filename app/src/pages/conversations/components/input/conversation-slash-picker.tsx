@@ -1,53 +1,58 @@
 import { useEffect, useMemo, useState, type FC } from 'react';
+import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import { cn } from '@/lib/utils';
 import {
-  filterToolIntegrations,
-  IntegrationToolsList,
-  sortToolIntegrations,
-} from './integration-tools-list';
+  buildConversationToolItems,
+  filterConversationToolItems,
+  getConversationToolItemId,
+  sortConversationToolItems,
+  type ConversationToolItem,
+} from './conversation-tool-items.utils';
+import { ConversationToolsList } from './conversation-tools-list';
 
 interface ConversationSlashPickerProps {
   integrations: Integration[];
+  toolkits: IntegrationAppsToolkit[];
   query: string;
   isOpen: boolean;
-  excludedUuids?: string[];
+  excludedIntegrationUuids?: string[];
   className?: string;
-  onSelect: (uuid: string) => void;
+  onSelect: (item: ConversationToolItem) => void;
   onClose: () => void;
-  onHighlightChange?: (uuid: string | null) => void;
 }
 
 export const ConversationSlashPicker: FC<ConversationSlashPickerProps> = ({
   integrations,
+  toolkits,
   query,
   isOpen,
-  excludedUuids = [],
+  excludedIntegrationUuids = [],
   className,
   onSelect,
   onClose,
-  onHighlightChange,
 }) => {
-  const filteredIntegrations = useMemo(() => {
-    const excluded = new Set(excludedUuids);
-    return sortToolIntegrations(
-      filterToolIntegrations(integrations, query).filter((integration) => !excluded.has(integration.uuid)),
+  const filteredItems = useMemo(() => {
+    const excluded = new Set(excludedIntegrationUuids);
+    const items = buildConversationToolItems(
+      integrations.filter((integration) => !excluded.has(integration.uuid)),
+      toolkits,
     );
-  }, [integrations, query, excludedUuids]);
 
-  const [highlightedUuid, setHighlightedUuid] = useState<string | null>(null);
+    return sortConversationToolItems(filterConversationToolItems(items, query));
+  }, [integrations, toolkits, query, excludedIntegrationUuids]);
+
+  const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
-      setHighlightedUuid(null);
-      onHighlightChange?.(null);
+      setHighlightedItemId(null);
       return;
     }
 
-    const nextHighlighted = filteredIntegrations[0]?.uuid ?? null;
-    setHighlightedUuid(nextHighlighted);
-    onHighlightChange?.(nextHighlighted);
-  }, [isOpen, query, filteredIntegrations, onHighlightChange]);
+    const nextHighlighted = filteredItems[0];
+    setHighlightedItemId(nextHighlighted ? getConversationToolItemId(nextHighlighted) : null);
+  }, [isOpen, query, filteredItems]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -61,43 +66,50 @@ export const ConversationSlashPicker: FC<ConversationSlashPickerProps> = ({
         return;
       }
 
-      if (filteredIntegrations.length === 0) {
+      if (filteredItems.length === 0) {
         return;
       }
 
       if (event.key === 'ArrowDown') {
         event.preventDefault();
-        setHighlightedUuid((current) => {
-          const currentIndex = filteredIntegrations.findIndex((integration) => integration.uuid === current);
-          const nextIndex = currentIndex < filteredIntegrations.length - 1 ? currentIndex + 1 : 0;
-          const nextUuid = filteredIntegrations[nextIndex]?.uuid ?? null;
-          onHighlightChange?.(nextUuid);
-          return nextUuid;
+        setHighlightedItemId((current) => {
+          const currentIndex = filteredItems.findIndex(
+            (item) => getConversationToolItemId(item) === current,
+          );
+          const nextIndex = currentIndex < filteredItems.length - 1 ? currentIndex + 1 : 0;
+          const nextItem = filteredItems[nextIndex];
+          return nextItem ? getConversationToolItemId(nextItem) : null;
         });
         return;
       }
 
       if (event.key === 'ArrowUp') {
         event.preventDefault();
-        setHighlightedUuid((current) => {
-          const currentIndex = filteredIntegrations.findIndex((integration) => integration.uuid === current);
-          const nextIndex = currentIndex > 0 ? currentIndex - 1 : filteredIntegrations.length - 1;
-          const nextUuid = filteredIntegrations[nextIndex]?.uuid ?? null;
-          onHighlightChange?.(nextUuid);
-          return nextUuid;
+        setHighlightedItemId((current) => {
+          const currentIndex = filteredItems.findIndex(
+            (item) => getConversationToolItemId(item) === current,
+          );
+          const nextIndex = currentIndex > 0 ? currentIndex - 1 : filteredItems.length - 1;
+          const nextItem = filteredItems[nextIndex];
+          return nextItem ? getConversationToolItemId(nextItem) : null;
         });
         return;
       }
 
-      if (event.key === 'Enter' && highlightedUuid) {
+      if (event.key === 'Enter' && highlightedItemId) {
         event.preventDefault();
-        onSelect(highlightedUuid);
+        const item = filteredItems.find(
+          (entry) => getConversationToolItemId(entry) === highlightedItemId,
+        );
+        if (item) {
+          onSelect(item);
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [filteredIntegrations, highlightedUuid, isOpen, onClose, onSelect, onHighlightChange]);
+  }, [filteredItems, highlightedItemId, isOpen, onClose, onSelect]);
 
   if (!isOpen) {
     return null;
@@ -110,15 +122,18 @@ export const ConversationSlashPicker: FC<ConversationSlashPickerProps> = ({
         className,
       )}
     >
-      <IntegrationToolsList
+      <ConversationToolsList
         integrations={integrations}
+        toolkits={toolkits}
         mode="single"
-        selectedUuids={[]}
-        highlightedUuid={highlightedUuid}
+        selectedIntegrationUuids={[]}
+        selectedToolkitSlugs={[]}
+        excludeIntegrationUuids={excludedIntegrationUuids}
+        highlightedItemId={highlightedItemId}
         filterQuery={query}
         className="max-h-[min(280px,45dvh)]"
         onSelect={onSelect}
-        onHighlight={setHighlightedUuid}
+        onHighlight={setHighlightedItemId}
       />
     </div>
   );

@@ -48,6 +48,28 @@ export interface SendMessageResponse {
   messageId: string;
 }
 
+export interface ConversationAgentIntegration {
+  uuid: string;
+  name: string;
+  provider: string;
+  actions: string[];
+}
+
+export interface ConversationAgentToolkit {
+  uuid: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  logo_url: string | null;
+  tool_count: number;
+  is_connected: boolean;
+}
+
+export interface ConversationAgentTools {
+  integrations: ConversationAgentIntegration[];
+  toolkits: ConversationAgentToolkit[];
+}
+
 export interface AgentExecution {
   uuid: string;
   status: AgentExecutionStatus;

@@ -11,7 +11,8 @@ import { GcsService } from '@/integrations/storage/gcs/services/gcs.service';
 import { AGENT_RUN_QUEUE } from '@/core/queues/queues.constants';
 import type { AgentRunJobData } from '@/core/queues/processors/agent.processor';
 import { SendMessageDto } from './dto/send-message.dto';
-import { normalizeAgentToolScope } from '@/shared/services/ai/agents/tools/core/agent-tool-scope.utils';
+import { CapabilitiesToolsService } from '@/shared/services/ai/agents/capabilities/capabilities-tools.service';
+import { collectDocumentUuids } from './utils/conversation-document.utils';
 
 const DEFAULT_CONVERSATION_TITLE = 'New conversation';
 
@@ -25,6 +26,7 @@ export class MessagesService {
     private readonly gcs: GcsService,
     @InjectQueue(AGENT_RUN_QUEUE)
     private readonly agentQueue: Queue<AgentRunJobData>,
+    private readonly capabilities: CapabilitiesToolsService,
   ) {}
 
   async findAll(
@@ -121,7 +123,11 @@ export class MessagesService {
       dto.documentUuids ?? [],
     );
     const toolkitSlugs = this.resolveToolkitSlugs(dto);
-    const toolScope = normalizeAgentToolScope(dto.integrationUuids, toolkitSlugs);
+    const toolScope = await this.capabilities.resolveAgentToolScope(
+      organizationUuid,
+      dto.integrationUuids,
+      toolkitSlugs,
+    );
 
     const userMessage = await this.prisma.message.create({
       data: {
@@ -301,5 +307,156 @@ export class MessagesService {
     }
 
     return conversation;
+  }
+
+  async deleteAsSuperAdmin(
+    organizationUuid: string,
+    conversationUuid: string,
+    messageUuid: string,
+  ) {
+    const conversation = await this.prisma.conversation.findFirst({
+      where: {
+        uuid: conversationUuid,
+        org_uuid: organizationUuid,
+      },
+    });
+
+    if (!conversation) {
+      throw new NotFoundException('Conversation not found');
+    }
+
+    const message = await this.prisma.message.findFirst({
+      where: {
+        uuid: messageUuid,
+        conversation_uuid: conversationUuid,
+      },
+    });
+
+    if (!message) {
+      throw new NotFoundException('Message not found');
+    }
+
+    const messageDocumentUuids = await this.collectMessageDocumentUuids(
+      conversationUuid,
+      messageUuid,
+    );
+
+    await this.prisma.message.delete({ where: { uuid: messageUuid } });
+
+    await this.deleteOrphanedDocuments(
+      conversationUuid,
+      conversation.user_uuid,
+      messageDocumentUuids,
+    );
+
+    await this.memory.invalidate(organizationUuid, conversationUuid);
+    this.memory.scheduleHydrateCacheFromDb(organizationUuid, conversationUuid);
+
+    return { deleted: true };
+  }
+
+  private async collectMessageDocumentUuids(
+    conversationUuid: string,
+    messageUuid: string,
+  ) {
+    const documentUuids = new Set<string>();
+    const [message, executions] = await Promise.all([
+      this.prisma.message.findUnique({
+        where: { uuid: messageUuid },
+        select: { metadata: true },
+      }),
+      this.prisma.agentExecution.findMany({
+        where: { conversation_uuid: conversationUuid, message_uuid: messageUuid },
+        select: {
+          input: true,
+          tool_calls: {
+            select: { output: true },
+          },
+        },
+      }),
+    ]);
+
+    collectDocumentUuids(message?.metadata, documentUuids);
+
+    for (const execution of executions) {
+      collectDocumentUuids(execution.input, documentUuids);
+      for (const toolCall of execution.tool_calls) {
+        collectDocumentUuids(toolCall.output, documentUuids);
+      }
+    }
+
+    return documentUuids;
+  }
+
+  private async collectConversationDocumentUuids(conversationUuid: string) {
+    const documentUuids = new Set<string>();
+    const [messages, executions] = await Promise.all([
+      this.prisma.message.findMany({
+        where: { conversation_uuid: conversationUuid },
+        select: { metadata: true },
+      }),
+      this.prisma.agentExecution.findMany({
+        where: { conversation_uuid: conversationUuid },
+        select: {
+          input: true,
+          tool_calls: {
+            select: { output: true },
+          },
+        },
+      }),
+    ]);
+
+    for (const item of messages) {
+      collectDocumentUuids(item.metadata, documentUuids);
+    }
+
+    for (const execution of executions) {
+      collectDocumentUuids(execution.input, documentUuids);
+      for (const toolCall of execution.tool_calls) {
+        collectDocumentUuids(toolCall.output, documentUuids);
+      }
+    }
+
+    return documentUuids;
+  }
+
+  private async deleteOrphanedDocuments(
+    conversationUuid: string,
+    userUuid: string,
+    candidateDocumentUuids: Set<string>,
+  ) {
+    if (candidateDocumentUuids.size === 0) {
+      return;
+    }
+
+    const stillReferenced = await this.collectConversationDocumentUuids(conversationUuid);
+    const orphanedUuids = [...candidateDocumentUuids].filter(
+      (documentUuid) => !stillReferenced.has(documentUuid),
+    );
+
+    if (orphanedUuids.length === 0) {
+      return;
+    }
+
+    const documents = await this.prisma.document.findMany({
+      where: {
+        uuid: { in: orphanedUuids },
+        user_uuid: userUuid,
+      },
+      select: { uuid: true, path: true },
+    });
+
+    if (documents.length === 0) {
+      return;
+    }
+
+    await Promise.all(
+      documents.map((document) =>
+        this.gcs.deleteImage({ filename: document.path }),
+      ),
+    );
+    await this.prisma.document.deleteMany({
+      where: { uuid: { in: documents.map((document) => document.uuid) } },
+    });
   }
 }

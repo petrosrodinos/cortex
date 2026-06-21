@@ -5,6 +5,7 @@ import { ConversationMemoryService } from '@/shared/services/ai/memory/conversat
 import { GcsService } from '@/integrations/storage/gcs/services/gcs.service';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { UpdateConversationDto } from './dto/update-conversation.dto';
+import { collectDocumentUuids } from './utils/conversation-document.utils';
 
 @Injectable()
 export class ConversationsService {
@@ -97,13 +98,13 @@ export class ConversationsService {
     const documentUuids = new Set<string>();
 
     for (const message of messages) {
-      this.collectDocumentUuids(message.metadata, documentUuids);
+      collectDocumentUuids(message.metadata, documentUuids);
     }
 
     for (const execution of executions) {
-      this.collectDocumentUuids(execution.input, documentUuids);
+      collectDocumentUuids(execution.input, documentUuids);
       for (const toolCall of execution.tool_calls) {
-        this.collectDocumentUuids(toolCall.output, documentUuids);
+        collectDocumentUuids(toolCall.output, documentUuids);
       }
     }
 
@@ -118,54 +119,6 @@ export class ConversationsService {
       },
       select: { uuid: true, path: true },
     });
-  }
-
-  private collectDocumentUuids(value: unknown, documentUuids: Set<string>) {
-    if (!value || typeof value !== 'object') {
-      return;
-    }
-
-    if (Array.isArray(value)) {
-      for (const item of value) {
-        this.collectDocumentUuids(item, documentUuids);
-      }
-      return;
-    }
-
-    const record = value as Record<string, unknown>;
-    this.collectAttachmentUuid(record, documentUuids);
-    this.collectUuidValue(record.document_uuid, documentUuids);
-    this.collectUuidArray(record.documentUuids, documentUuids);
-    this.collectUuidArray(record.attachment_document_uuids, documentUuids);
-
-    for (const nested of Object.values(record)) {
-      this.collectDocumentUuids(nested, documentUuids);
-    }
-  }
-
-  private collectAttachmentUuid(record: Record<string, unknown>, documentUuids: Set<string>) {
-    const hasAttachmentShape =
-      typeof record.filename === 'string' || typeof record.mimetype === 'string' || typeof record.path === 'string';
-
-    if (hasAttachmentShape) {
-      this.collectUuidValue(record.uuid, documentUuids);
-    }
-  }
-
-  private collectUuidValue(value: unknown, documentUuids: Set<string>) {
-    if (typeof value === 'string') {
-      documentUuids.add(value);
-    }
-  }
-
-  private collectUuidArray(value: unknown, documentUuids: Set<string>) {
-    if (!Array.isArray(value)) {
-      return;
-    }
-
-    for (const item of value) {
-      this.collectUuidValue(item, documentUuids);
-    }
   }
 
   private async getConversation(userUuid: string, organizationUuid: string, conversationUuid: string) {

@@ -61,7 +61,9 @@ export class IntegrationRegistry {
       where: {
         org_uuid: organizationUuid,
         status: IntegrationStatus.ACTIVE,
-        ...(integrationUuids?.length ? { uuid: { in: integrationUuids } } : {}),
+        ...(integrationUuids !== undefined
+          ? { uuid: { in: integrationUuids } }
+          : {}),
       },
       include: {
         database: true,

@@ -97,9 +97,12 @@ export const ConversationInput: FC<ConversationInputProps> = ({
         <ConversationDraftEditor
           parts={draftParts}
           integrations={integrations}
+          toolkits={toolkits}
+          selectedToolkitSlugs={selectedToolkitSlugs}
           disabled={disabled}
           placeholder="Message Cortex..."
           onPartsChange={onDraftPartsChange}
+          onToolkitSelectionChange={onToolkitSelectionChange}
           onSend={() => {
             if (canSend) onSend();
           }}
@@ -121,7 +124,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
       </form>
 
       <p className="mt-2 px-1 text-[11px] leading-relaxed text-muted">
-        Type <span className="font-medium text-foreground/70">/</span> to add integrations to this message. Repeat to add more.
+        Type <span className="font-medium text-foreground/70">/</span> to add tools to this message. Repeat to add more.
         Open <span className="font-medium text-foreground/70">+</span> → Tools to set defaults when no badges are added.
       </p>
     </div>

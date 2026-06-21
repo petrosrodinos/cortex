@@ -33,7 +33,7 @@ import { ToolDispatcherService } from '../tools/dispatch/tool-dispatcher.service
 import { SandboxCodeService } from '../sandbox/sandbox-code.service';
 import { DocumentReaderService } from '../documents/document-reader.service';
 import { CapabilitiesToolsService } from '../capabilities/capabilities-tools.service';
-import { normalizeAgentToolScope } from '../tools/core/agent-tool-scope.utils';
+import type { AgentToolScope } from '../tools/core/agent-tool-scope.utils';
 
 interface SavedExecutionInput {
   content?: string;
@@ -160,7 +160,8 @@ export class AgentRunnerService {
 
       const documentUuids =
         options?.documentUuids ?? savedInput.documentUuids ?? [];
-      const toolScope = normalizeAgentToolScope(
+      const toolScope = await this.capabilities.resolveAgentToolScope(
+        organizationUuid,
         options?.integrationUuids ?? savedInput.integrationUuids,
         options?.toolkitSlugs ?? savedInput.toolkitSlugs,
       );
@@ -483,7 +484,7 @@ export class AgentRunnerService {
     messagesForAgent: ModelMessage[],
     conversationId: string,
     executionUuid: string,
-    toolScope: ReturnType<typeof normalizeAgentToolScope>,
+    toolScope: AgentToolScope,
   ) {
     const [instructions, capabilitiesPrompt] = await Promise.all([
       this.systemPromptBuilder.build(

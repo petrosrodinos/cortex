@@ -12,6 +12,8 @@ import { UsageQuerySchema, type UsageQueryType } from './dto/usage-query.schema'
 import { ConversationsService } from './conversations.service';
 import { MessagesService } from './messages.service';
 import { ExecutionsService } from './executions.service';
+import { SuperAdminGuard } from '@/shared/guards/super-admin.guard';
+import { CapabilitiesToolsService } from '@/shared/services/ai/agents/capabilities/capabilities-tools.service';
 
 @Controller('organizations/:organization_uuid/conversations')
 @UseGuards(
@@ -24,7 +26,13 @@ export class ConversationsController {
   constructor(
     private readonly conversations: ConversationsService,
     private readonly messages: MessagesService,
+    private readonly capabilities: CapabilitiesToolsService,
   ) {}
+
+  @Get('agent-tools')
+  listAgentTools(@Param('organization_uuid') organizationUuid: string) {
+    return this.capabilities.listEnabledAgentTools(organizationUuid);
+  }
 
   @Get()
   findAll(@CurrentUser('uuid') userUuid: string, @Param('organization_uuid') organizationUuid: string) {
@@ -85,6 +93,25 @@ export class ConversationsController {
     @Body() dto: SendMessageDto,
   ) {
     return this.messages.sendMessage(userUuid, organizationUuid, conversationUuid, dto);
+  }
+}
+
+@Controller('organizations/:organization_uuid/conversations')
+@UseGuards(JwtGuard, SuperAdminGuard)
+export class ConversationSuperAdminController {
+  constructor(private readonly messages: MessagesService) {}
+
+  @Delete(':conversation_uuid/messages/:message_uuid')
+  deleteMessage(
+    @Param('organization_uuid') organizationUuid: string,
+    @Param('conversation_uuid') conversationUuid: string,
+    @Param('message_uuid') messageUuid: string,
+  ) {
+    return this.messages.deleteAsSuperAdmin(
+      organizationUuid,
+      conversationUuid,
+      messageUuid,
+    );
   }
 }
 

@@ -5,14 +5,18 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Drawer, useOverlayState } from '@heroui/react';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { useOrganizationStore } from '@/stores/organization';
+import { useAuthStore } from '@/stores/auth';
 import { Routes } from '@/routes/routes';
+import { RoleTypes } from '@/features/user/interfaces/user.interface';
 import { useGetIntegrations } from '@/features/integrations/common/hooks/use-integrations';
 import { useGetAiProviders } from '@/features/ai-providers/hooks/use-ai-providers';
-import { useGetIntegrationAppsToolkits } from '@/features/integration-apps/hooks/use-integrationApps';
+import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import {
   useApproveExecution,
   useCreateConversation,
   useDeleteConversation,
+  useDeleteMessage,
+  useGetConversationAgentTools,
   useGetConversations,
   useGetMessages,
   useRejectExecution,
@@ -29,7 +33,7 @@ import { ConversationAiProviderRequired } from './components/shared/conversation
 import { ConversationDocumentsModal } from './components/shared/conversation-documents-modal';
 import { ConversationHeader } from './components/shared/conversation-header';
 import { ConversationInput } from './components/input/conversation-input';
-import { getToolEligibleIntegrations, getToolEligibleToolkits } from './components/input/conversation-tools-menu';
+import { getToolEligibleIntegrations } from './components/input/integration-tools-list';
 import {
   createEmptyDraft,
   draftPartsToPlainText,
@@ -56,6 +60,8 @@ const ConversationsPage: FC = () => {
   const queryClient = useQueryClient();
   const { conversationUuid } = useParams<{ conversationUuid?: string }>();
   const organizationUuid = useOrganizationStore((state) => state.current_organization?.uuid);
+  const role = useAuthStore((state) => state.role);
+  const isSuperAdmin = role === RoleTypes.SUPER_ADMIN;
   const [draftParts, setDraftParts] = useState<DraftPart[]>(() => createEmptyDraft());
   const [activeExecutionId, setActiveExecutionId] = useState<string | null>(null);
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
@@ -64,6 +70,7 @@ const ConversationsPage: FC = () => {
   const [pendingUserMessage, setPendingUserMessage] = useState<string | null>(null);
   const [pendingUserAttachments, setPendingUserAttachments] = useState<MessageAttachment[]>([]);
   const [deleteTargetUuid, setDeleteTargetUuid] = useState<string | null>(null);
+  const [deleteMessageTarget, setDeleteMessageTarget] = useState<Message | null>(null);
   const [documentsOpen, setDocumentsOpen] = useState(false);
   const [chatsPanelCollapsed, setChatsPanelCollapsed] = useState(getInitialConversationsSidebarCollapsed);
   const autoCreateStarted = useRef(false);
@@ -71,12 +78,29 @@ const ConversationsPage: FC = () => {
 
   const { data: conversations = [], isLoading: conversationsLoading } = useGetConversations(organizationUuid);
   const { data: integrations = [] } = useGetIntegrations(organizationUuid);
+  const { data: agentTools } = useGetConversationAgentTools(organizationUuid);
   const { data: aiProviders = [], isLoading: aiProvidersLoading } = useGetAiProviders(organizationUuid);
-  const { data: integrationAppsToolkitsResponse } = useGetIntegrationAppsToolkits(organizationUuid, { limit: 100 });
-  const integrationAppsToolkits = integrationAppsToolkitsResponse?.data ?? [];
+  const conversationToolkits = useMemo<IntegrationAppsToolkit[]>(
+    () =>
+      (agentTools?.toolkits ?? []).map((toolkit) => ({
+        uuid: toolkit.uuid,
+        slug: toolkit.slug,
+        name: toolkit.name,
+        description: toolkit.description,
+        logo_url: toolkit.logo_url,
+        categories: [],
+        connection_tiers: [],
+        is_connected: toolkit.is_connected,
+        connected_accounts: [],
+        is_org_enabled: true,
+        tool_count: toolkit.tool_count,
+      })),
+    [agentTools?.toolkits],
+  );
   const { data: messages = [], isLoading: messagesLoading } = useGetMessages(organizationUuid, conversationUuid);
   const createConversation = useCreateConversation(organizationUuid);
   const deleteConversation = useDeleteConversation(organizationUuid);
+  const deleteMessage = useDeleteMessage(organizationUuid, conversationUuid);
   const updateConversation = useUpdateConversation(organizationUuid);
   const sendMessage = useSendMessage(organizationUuid, conversationUuid);
   const approveExecution = useApproveExecution(organizationUuid);
@@ -96,15 +120,24 @@ const ConversationsPage: FC = () => {
     [conversations],
   );
 
-  const toolEligibleIntegrations = useMemo(() => getToolEligibleIntegrations(integrations), [integrations]);
+  const enabledIntegrationUuids = useMemo(
+    () => new Set((agentTools?.integrations ?? []).map((integration) => integration.uuid)),
+    [agentTools?.integrations],
+  );
+  const toolEligibleIntegrations = useMemo(
+    () =>
+      getToolEligibleIntegrations(integrations).filter((integration) =>
+        enabledIntegrationUuids.has(integration.uuid),
+      ),
+    [integrations, enabledIntegrationUuids],
+  );
   const toolEligibleIntegrationUuids = useMemo(
     () => toolEligibleIntegrations.map((integration) => integration.uuid),
     [toolEligibleIntegrations],
   );
-  const toolEligibleToolkits = useMemo(() => getToolEligibleToolkits(integrationAppsToolkits), [integrationAppsToolkits]);
   const toolEligibleToolkitSlugs = useMemo(
-    () => toolEligibleToolkits.map((toolkit) => toolkit.slug),
-    [toolEligibleToolkits],
+    () => conversationToolkits.map((toolkit) => toolkit.slug),
+    [conversationToolkits],
   );
 
   const toolEligibleIntegrationUuidsRef = useRef<string[]>([]);
@@ -402,6 +435,19 @@ const ConversationsPage: FC = () => {
     setDeleteTargetUuid(null);
   };
 
+  const handleDeleteMessageRequest = (message: Message) => {
+    setDeleteMessageTarget(message);
+  };
+
+  const handleDeleteMessageConfirm = async () => {
+    if (!deleteMessageTarget) {
+      return;
+    }
+
+    await deleteMessage.mutateAsync(deleteMessageTarget.uuid);
+    setDeleteMessageTarget(null);
+  };
+
   if (!organizationUuid) {
     return (
       <div className="text-muted">
@@ -538,6 +584,9 @@ const ConversationsPage: FC = () => {
               onReject={() => void handleReject()}
               isSendDisabled={isChatInputDisabled}
               onRetryMessage={handleRetryMessage}
+              canDeleteMessages={isSuperAdmin}
+              onDeleteMessage={handleDeleteMessageRequest}
+              isDeletingMessage={deleteMessage.isPending}
             />
 
             {!aiProvidersLoading && !hasAiProvider ? (
@@ -546,8 +595,8 @@ const ConversationsPage: FC = () => {
               <ConversationInput
                 draftParts={draftParts}
                 attachedFiles={attachedFiles}
-                integrations={integrations}
-                toolkits={integrationAppsToolkits}
+                integrations={toolEligibleIntegrations}
+                toolkits={conversationToolkits}
                 selectedIntegrationUuids={selectedIntegrationUuids}
                 selectedToolkitSlugs={selectedToolkitSlugs}
                 disabled={isChatInputDisabled}
@@ -573,6 +622,18 @@ const ConversationsPage: FC = () => {
         onConfirm={() => void handleDeleteConfirm()}
         onOpenChange={(open) => {
           if (!open) setDeleteTargetUuid(null);
+        }}
+      />
+
+      <ConfirmationDialog
+        open={deleteMessageTarget != null}
+        title="Delete message?"
+        description="This will permanently delete the message and any attached files that are not used elsewhere in the conversation."
+        confirmLabel="Delete"
+        loading={deleteMessage.isPending}
+        onConfirm={() => void handleDeleteMessageConfirm()}
+        onOpenChange={(open) => {
+          if (!open) setDeleteMessageTarget(null);
         }}
       />
     </div>

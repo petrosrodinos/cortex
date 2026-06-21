@@ -8,10 +8,12 @@ import {
   type KeyboardEvent,
 } from 'react';
 import type { Integration, IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
+import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import { getProviderBrandColor } from '@/features/integrations/constants/provider-metadata';
 import { cn } from '@/lib/utils';
 import { ConversationSlashPicker } from './conversation-slash-picker';
 import { getIntegrationDisplayLabel } from './integration-tools-list';
+import type { ConversationToolItem } from './conversation-tool-items.utils';
 
 export type DraftPart =
   | { type: 'text'; value: string }
@@ -280,10 +282,13 @@ interface SlashContext {
 interface ConversationDraftEditorProps {
   parts: DraftPart[];
   integrations: Integration[];
+  toolkits: IntegrationAppsToolkit[];
+  selectedToolkitSlugs: string[];
   disabled?: boolean;
   placeholder?: string;
   className?: string;
   onPartsChange: (parts: DraftPart[]) => void;
+  onToolkitSelectionChange: (toolkitSlugs: string[]) => void;
   onSend?: () => void;
 }
 
@@ -292,7 +297,7 @@ export interface ConversationDraftEditorHandle {
 }
 
 export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle, ConversationDraftEditorProps>(
-  ({ parts, integrations, disabled = false, placeholder, className, onPartsChange, onSend }, ref) => {
+  ({ parts, integrations, toolkits, selectedToolkitSlugs, disabled = false, placeholder, className, onPartsChange, onToolkitSelectionChange, onSend }, ref) => {
     const editorRef = useRef<HTMLDivElement>(null);
     const isComposingRef = useRef(false);
     const skipRenderRef = useRef(false);
@@ -377,6 +382,34 @@ export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle,
       [integrations, onPartsChange],
     );
 
+    const handleToolSelect = useCallback(
+      (item: ConversationToolItem) => {
+        if (item.kind === 'toolkit') {
+          const slug = item.toolkit.slug;
+          const isSelected = selectedToolkitSlugs.includes(slug);
+          onToolkitSelectionChange(
+            isSelected
+              ? selectedToolkitSlugs.filter((value) => value !== slug)
+              : [...selectedToolkitSlugs, slug],
+          );
+
+          const root = editorRef.current;
+          if (root) {
+            removeSlashQueryAtCursor(root);
+            const nextParts = serializeEditor(root);
+            skipRenderRef.current = true;
+            onPartsChange(nextParts);
+          }
+          setSlashContext(null);
+          root?.focus();
+          return;
+        }
+
+        handleIntegrationSelect(item.integration.uuid);
+      },
+      [handleIntegrationSelect, onPartsChange, onToolkitSelectionChange, selectedToolkitSlugs],
+    );
+
     const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
       if (slashContext) {
         if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Enter') {
@@ -407,10 +440,11 @@ export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle,
       <div className="relative min-w-0 flex-1">
         <ConversationSlashPicker
           integrations={integrations}
+          toolkits={toolkits}
           query={slashContext?.query ?? ''}
           isOpen={Boolean(slashContext)}
-          excludedUuids={draftIntegrationUuids}
-          onSelect={handleIntegrationSelect}
+          excludedIntegrationUuids={draftIntegrationUuids}
+          onSelect={handleToolSelect}
           onClose={() => setSlashContext(null)}
         />
 

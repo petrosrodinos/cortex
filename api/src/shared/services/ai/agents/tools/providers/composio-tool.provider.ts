@@ -201,7 +201,7 @@ export class ComposioToolProvider implements AgentToolProvider {
           org_uuid: context.organizationUuid,
           is_enabled: true,
           toolkit: { is_enabled: true },
-          ...(context.toolkitSlugs?.length
+          ...(context.toolkitSlugs !== undefined
             ? {
                 toolkit: {
                   is_enabled: true,

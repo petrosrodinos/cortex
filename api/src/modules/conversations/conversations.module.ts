@@ -5,7 +5,7 @@ import { OrganizationsModule } from '@/modules/organizations/organizations.modul
 import { AiModule } from '@/shared/services/ai/ai.module';
 import { GcsIntegrationModule } from '@/integrations/storage/gcs/gcs.module';
 import { AGENT_RUN_QUEUE } from '@/core/queues/queues.constants';
-import { ConversationsController, ExecutionsController } from './conversations.controller';
+import { ConversationsController, ConversationSuperAdminController, ExecutionsController } from './conversations.controller';
 import { ConversationsService } from './conversations.service';
 import { MessagesService } from './messages.service';
 import { ExecutionsService } from './executions.service';
@@ -18,7 +18,7 @@ import { ExecutionsService } from './executions.service';
     GcsIntegrationModule,
     BullModule.registerQueue({ name: AGENT_RUN_QUEUE }),
   ],
-  controllers: [ConversationsController, ExecutionsController],
+  controllers: [ConversationsController, ConversationSuperAdminController, ExecutionsController],
   providers: [ConversationsService, MessagesService, ExecutionsService],
   exports: [ConversationsService, MessagesService, ExecutionsService],
 })

@@ -113,6 +113,7 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     AgentRunnerService,
     ConversationMemoryService,
     AiProviderFactoryService,
+    CapabilitiesToolsService,
   ],
 })
 export class AiModule {}

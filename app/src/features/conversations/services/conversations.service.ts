@@ -1,6 +1,6 @@
 import axiosInstance from '@/config/api/axios';
 import { ApiRoutes } from '@/config/api/routes';
-import type { Conversation, Message, SendMessageResponse, AgentExecution } from '../interfaces/conversation.interfaces';
+import type { Conversation, Message, SendMessageResponse, AgentExecution, ConversationAgentTools } from '../interfaces/conversation.interfaces';
 
 export const getConversations = async (organizationUuid: string): Promise<Conversation[]> => {
   try {
@@ -62,6 +62,19 @@ export const getMessages = async (organizationUuid: string, conversationUuid: st
   }
 };
 
+export const getConversationAgentTools = async (
+  organizationUuid: string,
+): Promise<ConversationAgentTools> => {
+  try {
+    const response = await axiosInstance.get(
+      ApiRoutes.organizations.conversationAgentTools(organizationUuid),
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to load conversation tools.');
+  }
+};
+
 export const sendMessage = async (
   organizationUuid: string,
   conversationUuid: string,
@@ -78,6 +91,20 @@ export const sendMessage = async (
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.message || 'Failed to send message.');
+  }
+};
+
+export const deleteMessage = async (
+  organizationUuid: string,
+  conversationUuid: string,
+  messageUuid: string,
+): Promise<void> => {
+  try {
+    await axiosInstance.delete(
+      ApiRoutes.organizations.conversationMessage(organizationUuid, conversationUuid, messageUuid),
+    );
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to delete message.');
   }
 };
 
