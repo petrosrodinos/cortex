@@ -4,6 +4,7 @@ import {
   AgentExecutionStatus,
   MessageRole,
   OrganizationMemberStatus,
+  ToolCallStatus,
 } from 'generated/prisma';
 import type { ModelMessage } from 'ai';
 import { AiProviderFactoryService } from '../../providers/ai-provider-factory.service';
@@ -16,6 +17,11 @@ import {
   extractGeneratedDocuments,
   isEmailSendRequest,
 } from '../prompt/email-send.utils';
+import {
+  buildToolContextFromDbRecords,
+  buildToolContextFromStepResults,
+  messagesIncludeRecentToolContext,
+} from '../prompt/conversation-tool-context.utils';
 import {
   isWidgetFollowUpRequest,
   isWidgetRequest,
@@ -190,6 +196,8 @@ export class AgentRunnerService {
         attachedDocuments,
         userMessage,
         messagesForAgent,
+        conversationId,
+        executionUuid,
       );
       const agent = this.providerFactory.createAgent(
         resolved,
@@ -255,6 +263,7 @@ export class AgentRunnerService {
         (step: any) => step.toolResults ?? [],
       );
       const generatedDocuments = extractGeneratedDocuments(toolResults);
+      const toolContext = buildToolContextFromStepResults(toolResults);
       const content = this.sanitizeAssistantContent(
         result.text ?? '',
         toolResults,
@@ -306,6 +315,7 @@ export class AgentRunnerService {
             outputType: detection.outputType,
             ...(detection.files.length > 0 ? { files: detection.files } : {}),
             ...(generatedDocuments.length > 0 ? { generatedDocuments } : {}),
+            ...(toolContext ? { toolContext } : {}),
           },
         },
       ]);
@@ -466,6 +476,8 @@ export class AgentRunnerService {
     >,
     userMessage: string,
     messagesForAgent: ModelMessage[],
+    conversationId: string,
+    executionUuid: string,
   ) {
     const instructions = await this.systemPromptBuilder.build(
       organizationUuid,
@@ -474,6 +486,20 @@ export class AgentRunnerService {
     );
 
     const guidance: string[] = [];
+
+    if (!messagesIncludeRecentToolContext(messagesForAgent)) {
+      const recentToolContext = await this.loadRecentConversationToolContext(
+        conversationId,
+        executionUuid,
+      );
+
+      if (recentToolContext) {
+        guidance.push(
+          'Earlier tool results from this conversation are included below. Use them for follow-up requests such as email, export, or summarization without re-querying unless the user asks for fresh data.',
+          recentToolContext,
+        );
+      }
+    }
 
     if (
       isExportFollowUpRequest(userMessage) &&
@@ -492,7 +518,8 @@ export class AgentRunnerService {
     ) {
       guidance.push(
         'The latest user message asks to send content by email.',
-        'First gather the needed organization or output data with the appropriate tools, then send email with an available Composio email tool from the connected toolkits.',
+        'Use the data already present in this conversation — including any "Tool results from this turn" sections in earlier assistant messages — to compose the email body or attachments.',
+        'If the prior assistant reply only summarized results, use the stored tool results or re-run the same organization, database, or integration tools instead of asking the user to provide the data again.',
         'Use generated file URLs or generatedDocuments metadata from earlier output tool results when the selected email tool supports attachments or links.',
         'Do not claim an email was sent until the email tool completes successfully.',
       );
@@ -656,5 +683,37 @@ export class AgentRunnerService {
     }
 
     return sanitized.replace(/\n{3,}/g, '\n\n').trim();
+  }
+
+  private async loadRecentConversationToolContext(
+    conversationId: string,
+    currentExecutionUuid: string,
+  ): Promise<string | null> {
+    const executions = await this.prisma.agentExecution.findMany({
+      where: {
+        conversation_uuid: conversationId,
+        status: AgentExecutionStatus.COMPLETED,
+        uuid: { not: currentExecutionUuid },
+      },
+      orderBy: { completed_at: 'desc' },
+      take: 3,
+      select: {
+        tool_calls: {
+          where: { status: ToolCallStatus.SUCCESS },
+          orderBy: { created_at: 'asc' },
+          select: {
+            tool_name: true,
+            output: true,
+            status: true,
+          },
+        },
+      },
+    });
+
+    const records = executions
+      .flatMap((execution) => execution.tool_calls)
+      .reverse();
+
+    return buildToolContextFromDbRecords(records);
   }
 }

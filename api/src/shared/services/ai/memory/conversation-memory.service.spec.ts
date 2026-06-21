@@ -80,4 +80,31 @@ describe('ConversationMemoryService', () => {
       { role: 'user', content: 'make it an excel' },
     ]);
   });
+
+  it('includes stored tool context when loading assistant messages', async () => {
+    const { service } = createService({
+      dbRows: [
+        {
+          role: MessageRole.USER,
+          content: 'fetch users',
+          metadata: null,
+        },
+        {
+          role: MessageRole.ASSISTANT,
+          content: 'Here are the users.',
+          metadata: {
+            toolContext: '[database__query]\n{"rows":[{"email":"a@test.com"}]}',
+          },
+        },
+      ] as any,
+    });
+
+    const messages = await service.getMessages('org-uuid', 'conversation-uuid');
+
+    expect(messages[1]).toEqual({
+      role: 'assistant',
+      content:
+        'Here are the users.\n\nTool results from this turn:\n[database__query]\n{"rows":[{"email":"a@test.com"}]}',
+    });
+  });
 });

@@ -4,6 +4,7 @@ import { CacheService } from '@/shared/services/cache/cache.service';
 import { MessageRole } from 'generated/prisma';
 import type { ModelMessage } from 'ai';
 import type { ConversationMemory } from './conversation-memory.interface';
+import { TOOL_CONTEXT_SECTION_HEADER } from '../agents/prompt/conversation-tool-context.utils';
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const MESSAGE_LIMIT = 100;
@@ -122,13 +123,20 @@ export class ConversationMemoryService implements ConversationMemory {
     const meta = metadata as {
       generatedDocuments?: Array<{ document_uuid: string; filename?: string }>;
       files?: string[];
+      toolContext?: string;
     } | null;
 
-    const lines: string[] = [];
+    const sections: string[] = [];
+
+    if (meta?.toolContext?.trim()) {
+      sections.push(`${TOOL_CONTEXT_SECTION_HEADER}\n${meta.toolContext.trim()}`);
+    }
+
+    const generatedFileLines: string[] = [];
 
     if (meta?.generatedDocuments?.length) {
       for (const document of meta.generatedDocuments) {
-        lines.push(
+        generatedFileLines.push(
           `- ${document.filename ?? 'Generated file'} (document_uuid: ${document.document_uuid})`,
         );
       }
@@ -141,16 +149,20 @@ export class ConversationMemoryService implements ConversationMemory {
       for (const fileUrl of meta.files) {
         const document = documents.find((entry) => entry.url === fileUrl);
         if (document) {
-          lines.push(`- ${document.filename} (document_uuid: ${document.uuid})`);
+          generatedFileLines.push(`- ${document.filename} (document_uuid: ${document.uuid})`);
         }
       }
     }
 
-    if (lines.length === 0) {
+    if (generatedFileLines.length > 0) {
+      sections.push(`Generated files:\n${generatedFileLines.join('\n')}`);
+    }
+
+    if (sections.length === 0) {
       return content;
     }
 
-    return `${content}\n\nGenerated files:\n${lines.join('\n')}`;
+    return `${content}\n\n${sections.join('\n\n')}`;
   }
 
   private fromModelRole(role: ModelMessage['role']): MessageRole {
