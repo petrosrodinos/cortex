@@ -39,6 +39,8 @@ import { ImageGeneratorService } from './agents/outputs/image/image-generator.se
 import { DocxGeneratorService } from './agents/outputs/word/docx-generator.service';
 import { DocumentOutputService } from './agents/outputs/shared/document-output.service';
 import { WordGeneratorService } from './agents/outputs/word/word-generator.service';
+import { PdfCodeDebugService } from './agents/outputs/pdf/pdf-code-debug.service';
+import { PdfCodeRunnerService } from './agents/outputs/pdf/pdf-code-runner.service';
 import { PdfGeneratorService } from './agents/outputs/pdf/pdf-generator.service';
 import { ExcelGeneratorService } from './agents/outputs/excel/excel-generator.service';
 import { WidgetGeneratorService } from './agents/outputs/widget/widget-generator.service';
@@ -97,6 +99,8 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     DocxGeneratorService,
     DocumentOutputService,
     WordGeneratorService,
+    PdfCodeRunnerService,
+    PdfCodeDebugService,
     PdfGeneratorService,
     ExcelGeneratorService,
     WidgetGeneratorService,

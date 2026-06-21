@@ -8,6 +8,8 @@ import type { ExcelGenerateParams } from '../excel/excel.types';
 import { ImageGeneratorService } from '../image/image-generator.service';
 import type { GeneratedImageResult } from '../image/image.types';
 import { PdfGeneratorService } from '../pdf/pdf-generator.service';
+import { PDF_CREATION_GUIDANCE, PDF_TOOL_DESCRIPTION_PREFIX } from '../pdf/prompts/pdf-creation.prompt';
+import type { PdfGenerateParams } from '../pdf/pdf.types';
 import type { GeneratedFileResult } from '../shared/generated-file.types';
 import type { DocxGenerateParams } from '../word/docx.types';
 import { WordGeneratorService } from '../word/word-generator.service';
@@ -183,66 +185,21 @@ export function isExportFollowUpRequest(userMessage?: string): boolean {
 const EXPORT_FROM_CONVERSATION_GUIDANCE =
   'When the user asks to export or convert content already shown in this conversation, extract the relevant rows or sections from the most recent assistant reply or tool results and call this tool immediately. Re-run the same lookup tools if needed. Never ask the user to re-enter data that is already visible in the chat history.';
 
-const PDF_CREATION_GUIDANCE =
-  'Deliver polished, business-ready PDF reports by default — never bare black-and-white dumps with minimal structure unless the user explicitly asks for plain, minimal, or unstyled output. Structure every PDF like a professional deliverable: (1) a clear, descriptive title and optional subtitle (date range, audience, or document type); (2) an opening Executive Summary or Overview section when the document has multiple sections or presents analysis; (3) sections with specific, informative headings — not generic labels like "Section 1" or "Data"; (4) concise body copy using short paragraphs and scannable bullet lists (prefix lines with "• "); (5) tables for any tabular data with human-readable headers, formatted numbers, and sorted rows — never embed tables as plain text in section bodies; (6) a Key Takeaways or Next Steps section when the document includes recommendations or action items. Use a confident, professional tone and match depth to the request.';
-
 const PDF_DOCUMENT_TOOL_SCHEMA = jsonSchema({
   type: 'object',
   properties: {
     title: {
       type: 'string',
       description:
-        'Primary document title shown prominently on the cover (e.g. "Q1 Sales Performance Report", "Organization Member Directory")',
+        'Document title for PDF metadata and the cover page (passed to h.drawCover)',
     },
-    subtitle: {
+    code: {
       type: 'string',
       description:
-        'Optional subtitle under the title — date range, prepared-for audience, department, or document classification (e.g. "Prepared for Leadership · March 2026")',
-    },
-    sections: {
-      type: 'array',
-      description:
-        'Document body sections in reading order. Start with Executive Summary or Overview when appropriate. Use specific section headings and well-written body text with bullet lists where they improve scannability.',
-      items: {
-        type: 'object',
-        properties: {
-          heading: {
-            type: 'string',
-            description: 'Section heading — specific and descriptive, not generic',
-          },
-          body: {
-            type: 'string',
-            description:
-              'Section content as paragraphs separated by blank lines. Use "• " prefix for bullet items. Keep prose professional and concise.',
-          },
-        },
-        required: ['body'],
-      },
-    },
-    tables: {
-      type: 'array',
-      description:
-        'Data tables with styled headers — use for lists, metrics, comparisons, or any tabular content instead of embedding rows in section body text',
-      items: {
-        type: 'object',
-        properties: {
-          headers: {
-            type: 'array',
-            items: { type: 'string' },
-          },
-          rows: {
-            type: 'array',
-            items: {
-              type: 'array',
-              items: { type: 'string' },
-            },
-          },
-        },
-        required: ['headers', 'rows'],
-      },
+        'PDFKit JavaScript code body executed as (doc, h) => { ... }. Use h.drawCover, h.drawSectionHeading, h.drawBody, h.drawTable. Embed all data inline. Do not call doc.end().',
     },
   },
-  required: ['title', 'sections'],
+  required: ['title', 'code'],
 });
 
 const WIDGET_CREATION_GUIDANCE =
@@ -326,9 +283,9 @@ export class OutputToolsFactory {
 
       output__create_pdf: tool({
         description:
-          `Create a professionally styled PDF document from structured content. Use when the user asks to create, export, or generate a PDF file or report. ${PDF_CREATION_GUIDANCE} ${EXPORT_FROM_CONVERSATION_GUIDANCE}`,
+          `${PDF_TOOL_DESCRIPTION_PREFIX} ${PDF_CREATION_GUIDANCE} ${EXPORT_FROM_CONVERSATION_GUIDANCE}`,
         inputSchema: PDF_DOCUMENT_TOOL_SCHEMA,
-        execute: async (input: DocxGenerateParams) => {
+        execute: async (input: PdfGenerateParams) => {
           return this.executeSideEffectTool({
             toolName: 'output__create_pdf',
             input,

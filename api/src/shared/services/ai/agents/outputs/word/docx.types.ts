@@ -10,7 +10,6 @@ export interface DocxTableInput {
 
 export interface DocxGenerateParams {
   title: string;
-  subtitle?: string;
   sections: DocxSectionInput[];
   tables?: DocxTableInput[];
 }
