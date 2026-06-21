@@ -1,4 +1,4 @@
-import { isEmailSendToolName } from '../tools/email-tool.utils';
+import { isEmailSendToolName } from '../../tools/email-tool.utils';
 
 const EMAIL_SEND_REQUEST_PATTERN =
   /\b(send|email|mail)\b.*\b(to|my email|their email|inbox|address)\b|\bsend it to\b|\bemail it to\b|\bmail it to\b/i;

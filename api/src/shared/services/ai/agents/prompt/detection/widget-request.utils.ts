@@ -1,4 +1,4 @@
-import { getRequestedOutputToolNames } from '../outputs/tools/output-tools.factory';
+import { getRequestedOutputToolNames } from '../../outputs/tools/output-tools.factory';
 
 export function isWidgetRequest(userMessage?: string): boolean {
   const requested = getRequestedOutputToolNames(userMessage);

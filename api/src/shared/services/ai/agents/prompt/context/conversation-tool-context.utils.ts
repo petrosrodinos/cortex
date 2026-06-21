@@ -1,7 +1,7 @@
 import {
   extractToolResultPayload,
   getToolResultName,
-} from './email-send.utils';
+} from '../detection/email-send.utils';
 
 export const TOOL_CONTEXT_SECTION_HEADER = 'Tool results from this turn:';
 

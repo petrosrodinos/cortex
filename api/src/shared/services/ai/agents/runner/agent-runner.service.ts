@@ -11,23 +11,23 @@ import { AiProviderFactoryService } from '../../providers/ai-provider-factory.se
 import { ConversationMemoryService } from '../../memory/conversation-memory.service';
 import { AgentToolsFactory } from '../tools/core/agent-tools.factory';
 import { SystemPromptBuilder } from '../prompt/system-prompt.builder';
-import { detectOutputType } from '../prompt/output-detector';
+import { detectOutputType } from '../prompt/detection/output-detector';
 import { isExportFollowUpRequest } from '../outputs/tools/output-tools.factory';
 import {
   extractGeneratedDocuments,
   isEmailSendRequest,
-} from '../prompt/email-send.utils';
+} from '../prompt/detection/email-send.utils';
 import {
   buildToolContextFromDbRecords,
   buildToolContextFromStepResults,
   messagesIncludeRecentToolContext,
-} from '../prompt/conversation-tool-context.utils';
+} from '../prompt/context/conversation-tool-context.utils';
 import {
   isWidgetFollowUpRequest,
   isWidgetRequest,
   WIDGET_AGENT_GUIDANCE,
   WIDGET_FOLLOW_UP_GUIDANCE,
-} from '../prompt/widget-request.utils';
+} from '../prompt/detection/widget-request.utils';
 import { AgentProgressEmitterService } from '../progress/agent-progress-emitter.service';
 import { ToolDispatcherService } from '../tools/dispatch/tool-dispatcher.service';
 import { SandboxCodeService } from '../sandbox/sandbox-code.service';

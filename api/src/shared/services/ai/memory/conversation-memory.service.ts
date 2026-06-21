@@ -4,7 +4,7 @@ import { CacheService } from '@/shared/services/cache/cache.service';
 import { MessageRole } from 'generated/prisma';
 import type { ModelMessage } from 'ai';
 import type { ConversationMemory } from './conversation-memory.interface';
-import { TOOL_CONTEXT_SECTION_HEADER } from '../agents/prompt/conversation-tool-context.utils';
+import { TOOL_CONTEXT_SECTION_HEADER } from '../agents/prompt/context/conversation-tool-context.utils';
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const MESSAGE_LIMIT = 100;

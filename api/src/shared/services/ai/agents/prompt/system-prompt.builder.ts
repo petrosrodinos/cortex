@@ -3,8 +3,8 @@ import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import type { AttachedDocumentMeta } from '../documents/document-content.types';
 import { DocumentReaderService } from '../documents/document-reader.service';
 import { ConversationPersonalizationService } from '@/modules/conversation-personalization/conversation-personalization.service';
-import { buildPersonalizationPromptBlock } from './personalization-prompt';
-import { buildUserContextPromptBlock } from './user-context-prompt';
+import { buildPersonalizationPromptBlock } from './blocks/personalization-prompt';
+import { buildUserContextPromptBlock } from './blocks/user-context-prompt';
 
 const NO_AI_CONNECTOR_MESSAGE =
   'Cortex needs an AI provider before it can respond. Go to Integrations in your dashboard and connect OpenAI, Claude, or Grok.';
