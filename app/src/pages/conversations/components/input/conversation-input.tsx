@@ -2,6 +2,8 @@ import { useRef, type FC, type Ref } from 'react';
 import { ArrowUp, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ConversationAttachMenu } from './conversation-attach-menu';
+import { ConversationReplyPreview } from './conversation-reply-preview';
+import type { ConversationReplyTarget } from '../../utils/conversation-reply.utils';
 import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import {
@@ -23,6 +25,7 @@ export interface AttachedFile {
 interface ConversationInputProps {
   draftParts: DraftPart[];
   attachedFiles: AttachedFile[];
+  replyTarget: ConversationReplyTarget | null;
   integrations: Integration[];
   toolkits: IntegrationAppsToolkit[];
   selectedIntegrationUuids: string[];
@@ -31,6 +34,7 @@ interface ConversationInputProps {
   isUploading: boolean;
   draftEditorRef?: Ref<ConversationDraftEditorHandle>;
   onDraftPartsChange: (parts: DraftPart[]) => void;
+  onDismissReply: () => void;
   onSend: () => void;
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onRemoveFile: (id: string) => void;
@@ -41,6 +45,7 @@ interface ConversationInputProps {
 export const ConversationInput: FC<ConversationInputProps> = ({
   draftParts,
   attachedFiles,
+  replyTarget,
   integrations,
   toolkits,
   selectedIntegrationUuids,
@@ -49,6 +54,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   isUploading,
   draftEditorRef,
   onDraftPartsChange,
+  onDismissReply,
   onSend,
   onFileSelect,
   onRemoveFile,
@@ -56,7 +62,9 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   onToolkitSelectionChange,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const canSend = draftPartsToPlainText(draftParts).length > 0 && !disabled;
+  const draftText = draftPartsToPlainText(draftParts);
+  const hasReplyQuote = Boolean(replyTarget?.quotedText.trim());
+  const canSend = (draftText.length > 0 || hasReplyQuote) && !disabled;
 
   return (
     <div className="shrink-0 min-w-0 border-t border-border p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:p-4">
@@ -81,50 +89,56 @@ export const ConversationInput: FC<ConversationInputProps> = ({
       )}
 
       <form
-        className="flex items-end gap-2 rounded-2xl border border-border bg-surface-secondary px-3 py-2"
+        className="overflow-hidden rounded-2xl border border-border bg-surface-secondary"
         onSubmit={(event) => {
           event.preventDefault();
           if (canSend) onSend();
         }}
       >
-        <input ref={fileInputRef} type="file" className="hidden" onChange={onFileSelect} />
-        <ConversationAttachMenu
-          integrations={integrations}
-          toolkits={toolkits}
-          selectedIntegrationUuids={selectedIntegrationUuids}
-          selectedToolkitSlugs={selectedToolkitSlugs}
-          disabled={disabled || isUploading}
-          onUpload={() => fileInputRef.current?.click()}
-          onIntegrationSelectionChange={onIntegrationSelectionChange}
-          onToolkitSelectionChange={onToolkitSelectionChange}
-        />
+        {replyTarget ? (
+          <ConversationReplyPreview reply={replyTarget} onDismiss={onDismissReply} embedded />
+        ) : null}
 
-        <ConversationDraftEditor
-          ref={draftEditorRef}
-          parts={draftParts}
-          integrations={integrations}
-          toolkits={toolkits}
-          disabled={disabled}
-          placeholder="Message Cortex..."
-          onPartsChange={onDraftPartsChange}
-          onSend={() => {
-            if (canSend) onSend();
-          }}
-        />
+        <div className="flex items-end gap-2 px-3 py-2">
+          <input ref={fileInputRef} type="file" className="hidden" onChange={onFileSelect} />
+          <ConversationAttachMenu
+            integrations={integrations}
+            toolkits={toolkits}
+            selectedIntegrationUuids={selectedIntegrationUuids}
+            selectedToolkitSlugs={selectedToolkitSlugs}
+            disabled={disabled || isUploading}
+            onUpload={() => fileInputRef.current?.click()}
+            onIntegrationSelectionChange={onIntegrationSelectionChange}
+            onToolkitSelectionChange={onToolkitSelectionChange}
+          />
 
-        <button
-          type="submit"
-          disabled={!canSend}
-          className={cn(
-            'mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors',
-            canSend
-              ? 'bg-foreground text-background hover:opacity-90'
-              : 'bg-surface text-muted cursor-not-allowed',
-          )}
-          aria-label="Send message"
-        >
-          <ArrowUp className="h-4 w-4" />
-        </button>
+          <ConversationDraftEditor
+            ref={draftEditorRef}
+            parts={draftParts}
+            integrations={integrations}
+            toolkits={toolkits}
+            disabled={disabled}
+            placeholder={replyTarget ? 'Write a reply...' : 'Message Cortex...'}
+            onPartsChange={onDraftPartsChange}
+            onSend={() => {
+              if (canSend) onSend();
+            }}
+          />
+
+          <button
+            type="submit"
+            disabled={!canSend}
+            className={cn(
+              'mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors',
+              canSend
+                ? 'bg-foreground text-background hover:opacity-90'
+                : 'bg-surface text-muted cursor-not-allowed',
+            )}
+            aria-label="Send message"
+          >
+            <ArrowUp className="h-4 w-4" />
+          </button>
+        </div>
       </form>
 
       <p className="mt-2 px-1 text-[11px] leading-relaxed text-muted">

@@ -1,6 +1,6 @@
 import type { FC, Key } from 'react';
 import { Button, Dropdown, Label } from '@heroui/react';
-import { Copy, MoreHorizontal, PencilLine, RotateCcw, Trash2 } from 'lucide-react';
+import { Copy, CornerDownRight, MoreHorizontal, RotateCcw, Trash2 } from 'lucide-react';
 import type { Message } from '@/features/conversations/interfaces/conversation.interfaces';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
 import { toast } from '@/hooks/use-toast';
@@ -11,7 +11,7 @@ interface MessageActionsMenuProps {
   canDelete?: boolean;
   canRetry?: boolean;
   isDeleting?: boolean;
-  onAddToInput: (message: Message) => void;
+  onReply: (message: Message) => void;
   onRetry?: (message: Message) => void;
   onDelete?: (message: Message) => void;
   className?: string;
@@ -22,7 +22,7 @@ export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
   canDelete = false,
   canRetry = false,
   isDeleting = false,
-  onAddToInput,
+  onReply,
   onRetry,
   onDelete,
   className,
@@ -42,8 +42,8 @@ export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
       return;
     }
 
-    if (key === 'add-to-input') {
-      onAddToInput(message);
+    if (key === 'reply') {
+      onReply(message);
       return;
     }
 
@@ -81,9 +81,9 @@ export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
             <Copy className="h-4 w-4 shrink-0 text-muted" />
             <Label className="text-sm">Copy</Label>
           </Dropdown.Item>
-          <Dropdown.Item id="add-to-input" textValue="Add to input" className="rounded-lg px-2 py-2">
-            <PencilLine className="h-4 w-4 shrink-0 text-muted" />
-            <Label className="text-sm">Add to input</Label>
+          <Dropdown.Item id="reply" textValue="Reply" className="rounded-lg px-2 py-2">
+            <CornerDownRight className="h-4 w-4 shrink-0 text-muted" />
+            <Label className="text-sm">Reply</Label>
           </Dropdown.Item>
           {message.role === MessageRoles.USER && canRetry && onRetry ? (
             <Dropdown.Item id="retry" textValue="Retry" className="rounded-lg px-2 py-2">

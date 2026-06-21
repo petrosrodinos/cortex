@@ -44,13 +44,17 @@ import {
 } from './components/input/conversation-draft-editor';
 import { ConversationMessages } from './components/messages/conversation-messages';
 import { getMessageAttachments } from './components/messages/message-attachments';
-import { stripMarkdownForPreview } from '@/lib/message-markdown.utils';
 import { ConversationSidebar } from './components/sidebar/conversation-sidebar';
 import { ConversationSidebarSkeleton } from './components/sidebar/conversation-sidebar-skeleton';
 import {
   CONVERSATIONS_SIDEBAR_STORAGE_KEY,
   getInitialConversationsSidebarCollapsed,
 } from './utils/conversations-sidebar.utils';
+import {
+  buildMessageWithReply,
+  createReplyTargetFromMessage,
+  type ConversationReplyTarget,
+} from './utils/conversation-reply.utils';
 
 const ConversationsPage: FC = () => {
   const navigate = useNavigate();
@@ -60,6 +64,7 @@ const ConversationsPage: FC = () => {
   const role = useAuthStore((state) => state.role);
   const isSuperAdmin = role === RoleTypes.SUPER_ADMIN;
   const [draftParts, setDraftParts] = useState<DraftPart[]>(() => createEmptyDraft());
+  const [replyTarget, setReplyTarget] = useState<ConversationReplyTarget | null>(null);
   const [activeExecutionId, setActiveExecutionId] = useState<string | null>(null);
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
   const [selectedIntegrationUuids, setSelectedIntegrationUuids] = useState<string[]>([]);
@@ -140,6 +145,12 @@ const ConversationsPage: FC = () => {
 
   const toolEligibleIntegrationUuidsRef = useRef<string[]>([]);
   const toolEligibleToolkitSlugsRef = useRef<string[]>([]);
+
+  useEffect(() => {
+    setReplyTarget(null);
+    setDraftParts(createEmptyDraft());
+    setAttachedFiles([]);
+  }, [conversationUuid]);
 
   useEffect(() => {
     const previousEligible = new Set(toolEligibleIntegrationUuidsRef.current);
@@ -315,7 +326,8 @@ const ConversationsPage: FC = () => {
   };
 
   const handleSend = async () => {
-    const content = draftPartsToPlainText(draftParts);
+    const userContent = draftPartsToPlainText(draftParts);
+    const content = buildMessageWithReply(userContent, replyTarget);
     const draftIntegrationUuids = getDraftIntegrationUuids(draftParts);
     const draftToolkitSlugs = getDraftToolkitSlugs(draftParts);
     if (!content || !conversationUuid || !hasAiProvider) {
@@ -339,6 +351,7 @@ const ConversationsPage: FC = () => {
     const isFirstMessage = messages.length === 0;
     setDraftParts(createEmptyDraft());
     setAttachedFiles([]);
+    setReplyTarget(null);
 
     await submitMessage({
       content,
@@ -404,31 +417,11 @@ const ConversationsPage: FC = () => {
     });
   };
 
-  const handleAddMessageToInput = (message: Message) => {
-    const content =
-      message.role === MessageRoles.ASSISTANT
-        ? stripMarkdownForPreview(message.content)
-        : message.content.trim();
-
-    setDraftParts(content ? [{ type: 'text', value: content }] : createEmptyDraft());
-
-    if (message.role === MessageRoles.USER) {
-      const attachments = getMessageAttachments(message.metadata);
-      setAttachedFiles(
-        attachments.map((attachment) => ({
-          id: attachment.uuid,
-          uuid: attachment.uuid,
-          filename: attachment.filename,
-          mimetype: attachment.mimetype,
-          url: attachment.url,
-        })),
-      );
-    }
+  const handleReplyToMessage = (message: Message) => {
+    setReplyTarget(createReplyTargetFromMessage(message));
 
     window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
-        draftEditorRef.current?.focusAtEnd();
-      });
+      draftEditorRef.current?.focus();
     });
   };
 
@@ -628,7 +621,7 @@ const ConversationsPage: FC = () => {
               onReject={() => void handleReject()}
               isSendDisabled={isChatInputDisabled}
               onRetryMessage={handleRetryMessage}
-              onAddMessageToInput={handleAddMessageToInput}
+              onReplyToMessage={handleReplyToMessage}
               canDeleteMessages={isSuperAdmin}
               onDeleteMessage={handleDeleteMessageRequest}
               isDeletingMessage={deleteMessage.isPending}
@@ -640,6 +633,7 @@ const ConversationsPage: FC = () => {
               <ConversationInput
                 draftParts={draftParts}
                 attachedFiles={attachedFiles}
+                replyTarget={replyTarget}
                 integrations={toolEligibleIntegrations}
                 toolkits={conversationToolkits}
                 selectedIntegrationUuids={selectedIntegrationUuids}
@@ -648,6 +642,7 @@ const ConversationsPage: FC = () => {
                 isUploading={uploadDocument.isPending}
                 draftEditorRef={draftEditorRef}
                 onDraftPartsChange={setDraftParts}
+                onDismissReply={() => setReplyTarget(null)}
                 onSend={() => void handleSend()}
                 onFileSelect={(event) => void handleFileSelect(event)}
                 onRemoveFile={removeAttachedFile}

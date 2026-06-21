@@ -42,7 +42,7 @@ interface ConversationMessagesProps {
   onReject: () => void;
   isSendDisabled: boolean;
   onRetryMessage: (message: Message) => void;
-  onAddMessageToInput: (message: Message) => void;
+  onReplyToMessage: (message: Message) => void;
   canDeleteMessages?: boolean;
   onDeleteMessage?: (message: Message) => void;
   isDeletingMessage?: boolean;
@@ -68,7 +68,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
   onReject,
   isSendDisabled,
   onRetryMessage,
-  onAddMessageToInput,
+  onReplyToMessage,
   canDeleteMessages = false,
   onDeleteMessage,
   isDeletingMessage = false,
@@ -153,7 +153,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
                 canRetry={message.role === MessageRoles.USER && !isSendDisabled}
                 canDelete={canDeleteMessages}
                 isDeleting={isDeletingMessage}
-                onAddToInput={onAddMessageToInput}
+                onReply={onReplyToMessage}
                 onRetry={onRetryMessage}
                 onDelete={onDeleteMessage}
               />
