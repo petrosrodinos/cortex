@@ -17,8 +17,8 @@ import {
 import { isAiCatalogProvider } from '@/features/integrations/utils/integration.utils';
 import { useGetAiProviders } from '@/features/ai-providers/hooks/use-ai-providers';
 import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
-import { ToolkitCatalog } from '@/features/integrationApps/components/toolkit-catalog';
-import { useGetIntegrationAppsToolkits } from '@/features/integrationApps/hooks/use-integrationApps';
+import { ToolkitCatalog } from './components/toolkit-catalog';
+import { useGetIntegrationAppsToolkits } from '@/features/integration-apps/hooks/use-integrationApps';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
 import { cn } from '@/lib/utils';

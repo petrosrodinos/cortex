@@ -8,8 +8,8 @@ import {
   useSyncAdminIntegrationAppsToolkitTools,
   useUpdateAdminIntegrationAppsTool,
   useUpdateAdminIntegrationAppsToolkit,
-} from '@/features/integrationApps-admin/hooks/use-integrationApps-admin';
-import type { AdminIntegrationAppsTool } from '@/features/integrationApps-admin/interfaces/integrationApps-admin.interface';
+} from '@/features/integration-apps-admin/hooks/use-integrationApps-admin';
+import type { AdminIntegrationAppsTool } from '@/features/integration-apps-admin/interfaces/integrationApps-admin.interface';
 import { Routes } from '@/routes/routes';
 import { AdminToolkitDetailSkeleton } from './components/toolkit-detail-skeleton';
 import { ConnectionTierToggles, formatConnectionTiers } from './components/connection-tier-toggles';

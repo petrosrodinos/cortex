@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Unplug } from 'lucide-react';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { Button } from '@/components/ui/button';
-import { useDisconnectIntegrationAppsAccount } from '@/features/integrationApps/hooks/use-integrationApps';
-import type { IntegrationAppsToolkitDetail } from '@/features/integrationApps/interfaces/integrationApps.interface';
+import { useDisconnectIntegrationAppsAccount } from '@/features/integration-apps/hooks/use-integrationApps';
+import type { IntegrationAppsToolkitDetail } from '@/features/integration-apps/interfaces/integrationApps.interface';
 
 interface ToolkitConnectedAccountsProps {
   organizationUuid: string;

@@ -1,4 +1,5 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ComposioClientService } from '@/integrations/composio/composio-client.service';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import {
@@ -17,9 +18,15 @@ export class ComposioSyncService implements OnApplicationBootstrap {
   constructor(
     private readonly prisma: PrismaService,
     private readonly composioClient: ComposioClientService,
+    private readonly configService: ConfigService,
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
+    if (this.configService.get<string>('NODE_ENV') === 'staging') {
+      this.logger.log('Skipping Composio startup sync in staging');
+      return;
+    }
+
     void this.syncAll().catch((error) => {
       this.logger.error('Composio startup sync failed', error?.stack ?? error);
     });

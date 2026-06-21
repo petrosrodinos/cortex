@@ -1,7 +1,7 @@
 import type {
   IntegrationAppsToolkitDetail,
   IntegrationAppsTrigger,
-} from '@/features/integrationApps/interfaces/integrationApps.interface';
+} from '@/features/integration-apps/interfaces/integrationApps.interface';
 import { MetricCard } from './metric-card';
 
 interface ToolkitOrgMetricsProps {

@@ -1,7 +1,7 @@
 import {
   useGetIntegrationAppsToolkit,
   useGetIntegrationAppsTriggers,
-} from '@/features/integrationApps/hooks/use-integrationApps';
+} from '@/features/integration-apps/hooks/use-integrationApps';
 import { useOrganizationStore } from '@/stores/organization';
 import { ToolkitConnectedAccounts } from './toolkit-connected-accounts';
 import { ToolkitOrgMetrics } from './toolkit-org-metrics';

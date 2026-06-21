@@ -4,8 +4,8 @@ import { Input } from '@/components/ui/input';
 import {
   useAdminIntegrationAppsSyncRuns,
   useStartAdminIntegrationAppsSync,
-} from '@/features/integrationApps-admin/hooks/use-integrationApps-admin';
-import type { AdminIntegrationAppsSyncRun, IntegrationAppsSyncType } from '@/features/integrationApps-admin/interfaces/integrationApps-admin.interface';
+} from '@/features/integration-apps-admin/hooks/use-integrationApps-admin';
+import type { AdminIntegrationAppsSyncRun, IntegrationAppsSyncType } from '@/features/integration-apps-admin/interfaces/integrationApps-admin.interface';
 
 export default function AdminIntegrationAppsSyncPage() {
   const [syncType, setSyncType] = useState<IntegrationAppsSyncType>('FULL');

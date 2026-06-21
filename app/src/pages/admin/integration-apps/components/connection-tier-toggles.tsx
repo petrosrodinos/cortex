@@ -1,4 +1,4 @@
-import type { IntegrationAppsConnectionTier } from '@/features/integrationApps/interfaces/integrationApps.interface';
+import type { IntegrationAppsConnectionTier } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import { ToggleSwitch } from './toggle-switch';
 
 const CONNECTION_TIER_OPTIONS: Array<{

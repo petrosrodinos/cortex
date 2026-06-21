@@ -7,7 +7,7 @@ import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { useOrganizationStore } from '@/stores/organization';
 import { Routes } from '@/routes/routes';
 import { useGetIntegrations } from '@/features/integrations/common/hooks/use-integrations';
-import { useGetIntegrationAppsToolkits } from '@/features/integrationApps/hooks/use-integrationApps';
+import { useGetIntegrationAppsToolkits } from '@/features/integration-apps/hooks/use-integrationApps';
 import {
   useApproveExecution,
   useCreateConversation,

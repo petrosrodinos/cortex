@@ -7,8 +7,8 @@ import {
   useDisableIntegrationAppsToolkit,
   useEnableIntegrationAppsToolkit,
   useGetIntegrationAppsToolkits,
-} from '@/features/integrationApps/hooks/use-integrationApps';
-import type { IntegrationAppsToolkit } from '@/features/integrationApps/interfaces/integrationApps.interface';
+} from '@/features/integration-apps/hooks/use-integrationApps';
+import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import { cn } from '@/lib/utils';
 
 interface ToolkitCatalogProps {

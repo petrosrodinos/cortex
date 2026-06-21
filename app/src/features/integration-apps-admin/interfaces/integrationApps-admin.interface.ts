@@ -1,4 +1,4 @@
-import type { IntegrationAppsConnectionTier } from '@/features/integrationApps/interfaces/integrationApps.interface';
+import type { IntegrationAppsConnectionTier } from '@/features/integration-apps/interfaces/integrationApps.interface';
 
 export type IntegrationAppsSyncType = 'FULL' | 'TOOLKIT' | 'TOOLS';
 export type IntegrationAppsSyncStatus = 'RUNNING' | 'COMPLETED' | 'FAILED';

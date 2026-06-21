@@ -10,6 +10,7 @@ describe('ComposioSyncService', () => {
     toolkitPages?: any[];
     toolPages?: any[];
     existingToolkit?: any;
+    nodeEnv?: string;
   }) => {
     const prisma: any = {
       composioSyncRun: {
@@ -73,9 +74,16 @@ describe('ComposioSyncService', () => {
     const composioClient = {
       getClient: jest.fn().mockReturnValue(client),
     };
+    const configService = {
+      get: jest.fn().mockReturnValue(overrides?.nodeEnv ?? 'local'),
+    };
 
     return {
-      service: new ComposioSyncService(prisma, composioClient as any),
+      service: new ComposioSyncService(
+        prisma,
+        composioClient as any,
+        configService as any,
+      ),
       prisma,
       client,
     };
@@ -211,5 +219,15 @@ describe('ComposioSyncService', () => {
         error: 'bad api key',
       }),
     });
+  });
+
+  it('skips startup sync in staging', async () => {
+    const { service, prisma } = createService({ nodeEnv: 'staging' });
+    const syncAllSpy = jest.spyOn(service, 'syncAll').mockResolvedValue({} as any);
+
+    await service.onApplicationBootstrap();
+
+    expect(syncAllSpy).not.toHaveBeenCalled();
+    expect(prisma.composioSyncRun.create).not.toHaveBeenCalled();
   });
 });

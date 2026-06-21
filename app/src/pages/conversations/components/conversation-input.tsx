@@ -2,7 +2,7 @@ import { useRef, type FC } from 'react';
 import { ArrowUp, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ConversationAttachMenu } from './conversation-attach-menu';
-import type { IntegrationAppsToolkit } from '@/features/integrationApps/interfaces/integrationApps.interface';
+import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import {
   ConversationDraftEditor,

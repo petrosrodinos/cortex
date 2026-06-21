@@ -17,11 +17,11 @@ import PersonalizationPage from "@/pages/settings/personalization";
 import UsagePage from "@/pages/settings/usage";
 import AuditLogsPage from "@/pages/settings/audit-logs";
 import ExecutionDetailPage from "@/pages/executions";
-import AdminIntegrationAppsLayout from "@/pages/admin/integrationApps/layout";
-import AdminIntegrationAppsDashboardPage from "@/pages/admin/integrationApps";
-import AdminIntegrationAppsToolkitsPage from "@/pages/admin/integrationApps/toolkits";
-import AdminIntegrationAppsToolkitDetailPage from "@/pages/admin/integrationApps/toolkit-detail";
-import AdminIntegrationAppsSyncPage from "@/pages/admin/integrationApps/sync";
+import AdminIntegrationAppsLayout from "@/pages/admin/integration-apps/layout";
+import AdminIntegrationAppsDashboardPage from "@/pages/admin/integration-apps";
+import AdminIntegrationAppsToolkitsPage from "@/pages/admin/integration-apps/toolkits";
+import AdminIntegrationAppsToolkitDetailPage from "@/pages/admin/integration-apps/toolkit-detail";
+import AdminIntegrationAppsSyncPage from "@/pages/admin/integration-apps/sync";
 import { RoleTypes } from "@/features/user/interfaces/user.interface";
 
 export default function AppRoutes() {

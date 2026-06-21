@@ -7,8 +7,8 @@ import {
   useAdminIntegrationAppsToolkits,
   useCreateAdminIntegrationAppsToolkit,
   useUpdateAdminIntegrationAppsToolkit,
-} from '@/features/integrationApps-admin/hooks/use-integrationApps-admin';
-import type { AdminIntegrationAppsToolkit } from '@/features/integrationApps-admin/interfaces/integrationApps-admin.interface';
+} from '@/features/integration-apps-admin/hooks/use-integrationApps-admin';
+import type { AdminIntegrationAppsToolkit } from '@/features/integration-apps-admin/interfaces/integrationApps-admin.interface';
 import { Routes } from '@/routes/routes';
 import { AdminToolkitsListSkeleton } from './components/toolkits-list-skeleton';
 import { ToggleSwitch } from './components/toggle-switch';

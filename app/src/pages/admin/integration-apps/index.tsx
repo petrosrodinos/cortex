@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import {
   useAdminIntegrationAppsOverviewStats,
   useStartAdminIntegrationAppsSync,
-} from '@/features/integrationApps-admin/hooks/use-integrationApps-admin';
+} from '@/features/integration-apps-admin/hooks/use-integrationApps-admin';
 import { Routes } from '@/routes/routes';
 
 export default function AdminIntegrationAppsDashboardPage() {

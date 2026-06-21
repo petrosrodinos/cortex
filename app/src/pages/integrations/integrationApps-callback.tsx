@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, Loader2, XCircle } from 'lucide-react';
-import { useVerifyIntegrationAppsCallback } from '@/features/integrationApps/hooks/use-integrationApps';
+import { useVerifyIntegrationAppsCallback } from '@/features/integration-apps/hooks/use-integrationApps';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
 
