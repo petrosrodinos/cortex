@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Storage } from '@google-cloud/storage';
 import { GcsConfig as GcsConfigInterface } from '../interfaces/gcs.interfaces';
+import { NativeFetchTransporter } from './native-fetch.transporter';
 
 @Injectable()
 export class GcsConfig {
@@ -38,7 +39,10 @@ export class GcsConfig {
             };
 
             const storageOptions: Record<string, unknown> = {
-                projectId: this.config.project_id
+                projectId: this.config.project_id,
+                clientOptions: {
+                    transporter: new NativeFetchTransporter(),
+                },
             };
 
             if (this.config.credentials_path) {

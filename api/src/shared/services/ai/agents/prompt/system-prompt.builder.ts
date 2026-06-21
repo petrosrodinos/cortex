@@ -4,6 +4,7 @@ import type { AttachedDocumentMeta } from '../documents/document-content.types';
 import { DocumentReaderService } from '../documents/document-reader.service';
 import { ConversationPersonalizationService } from '@/modules/conversation-personalization/conversation-personalization.service';
 import { buildPersonalizationPromptBlock } from './personalization-prompt';
+import { buildUserContextPromptBlock } from './user-context-prompt';
 
 const NO_AI_CONNECTOR_MESSAGE =
   'Cortex needs an AI provider before it can respond. Go to Integrations in your dashboard and connect OpenAI, Claude, or Grok.';
@@ -35,22 +36,29 @@ export class SystemPromptBuilder {
     const today = new Date().toISOString().split('T')[0];
     const documentBlock =
       this.documentReader.formatMetadataForPrompt(attachedDocuments);
-    const personalizationSettings = await this.personalization.getForPrompt(
-      userUuid,
-      organizationUuid,
-    );
+    const [personalizationSettings, user] = await Promise.all([
+      this.personalization.getForPrompt(userUuid, organizationUuid),
+      this.prisma.user.findUnique({
+        where: { uuid: userUuid },
+        select: { email: true, first_name: true, last_name: true },
+      }),
+    ]);
     const personalizationBlock = buildPersonalizationPromptBlock(
       personalizationSettings,
+    );
+    const userContextBlock = buildUserContextPromptBlock(
+      user ?? { email: null, first_name: null, last_name: null },
     );
 
     return [
       'You are Cortex, an AI business operations copilot.',
       `Today's date: ${today}.`,
+      userContextBlock ?? '',
       'Use available tools to retrieve data and take actions. For any question about counts, records, amounts, or data from connected systems, always query with the appropriate tool — never guess or estimate. Never invent credentials, integration secrets, data values, or entity IDs. If no tool can answer a question, say so explicitly.',
       'When answering with data from tools, include the key records or values the user may reference in follow-up messages such as email, export, or "send that". Assistant messages may also include a "Tool results from this turn" section with the raw fetched data — reuse that section for follow-ups instead of re-querying unless the user asks for fresh data.',
       'When destructive actions require approval, wait for explicit user approval before proceeding.',
       'When the user asks what is connected, what toolkits are enabled, or what you can do, call capabilities__list_integrations and capabilities__list_toolkits before answering.',
-      'For organization profile or current user context, call organization__get_account.',
+      'For organization profile details not listed above, call organization__get_account.',
       'For Composio SaaS actions, use COMPOSIO_SEARCH_TOOLS to discover tools within enabled toolkits, then execute via Composio meta tools.',
       'When the user attaches documents, call document__list first, then use the matching document__read_* tool to read each file before answering questions about it.',
       'Document read tools: document__read_pdf, document__read_word, document__read_excel, document__read_csv, document__read_text, document__read_image.',
@@ -62,7 +70,7 @@ export class SystemPromptBuilder {
       'Organization tools: organization__get_account for org profile, organization__list_members and organization__get_member for team directory lookups.',
       'Capabilities tools: capabilities__list_integrations, capabilities__list_toolkits, capabilities__get_database_schema for discovery before querying connected systems.',
       'To send email, use an available Composio email tool from the connected toolkits.',
-      'Use the recipient field required by the selected Composio email tool for any recipient email address. If multiple email toolkits are connected and the user did not specify one, choose the most appropriate available email tool.',
+      'Use the recipient field required by the selected Composio email tool for any recipient email address. When the user asks to send to themselves without naming an address, use the current authenticated user email from the session context above. If multiple email toolkits are connected and the user did not specify one, choose the most appropriate available email tool.',
       'When emailing a generated file, use generatedDocuments metadata from the conversation or the file URL from the output tool result if the selected email tool supports attachments or links. Never claim an email was sent unless the email tool completed successfully.',
       documentBlock
         ? `Attached documents (use document__read_* tools to load content):\n${documentBlock}`
