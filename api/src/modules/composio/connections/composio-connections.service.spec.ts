@@ -59,16 +59,21 @@ describe('ComposioConnectionsService', () => {
     const configService = {
       get: jest.fn().mockReturnValue('http://localhost:3001'),
     };
+    const orgToolkitsService = {
+      enableToolkit: jest.fn().mockResolvedValue({}),
+    };
 
     return {
       service: new ComposioConnectionsService(
         prisma,
         composioClient as any,
         configService as any,
+        orgToolkitsService as any,
       ),
       prisma,
       client,
       configService,
+      orgToolkitsService,
     };
   };
 
@@ -122,7 +127,7 @@ describe('ComposioConnectionsService', () => {
   });
 
   it('mirrors a completed callback from connected_account_id and writes an account-connected audit event', async () => {
-    const { service, prisma, client } = createService({
+    const { service, prisma, client, orgToolkitsService } = createService({
       uuid: 'toolkit-uuid',
       slug: 'gmail',
       is_enabled: true,
@@ -163,6 +168,10 @@ describe('ComposioConnectionsService', () => {
         resource_id: 'account-uuid',
       }),
     });
+    expect(orgToolkitsService.enableToolkit).toHaveBeenCalledWith(
+      'org-uuid',
+      'gmail',
+    );
   });
 
   it('falls back to the derived composio user id when the remote account omits it', async () => {
@@ -204,7 +213,7 @@ describe('ComposioConnectionsService', () => {
   });
 
   it('mirrors a completed callback and writes an account-connected audit event', async () => {
-    const { service, prisma, client } = createService({
+    const { service, prisma, client, orgToolkitsService } = createService({
       uuid: 'toolkit-uuid',
       slug: 'gmail',
       is_enabled: true,
@@ -219,6 +228,7 @@ describe('ComposioConnectionsService', () => {
     ).resolves.toEqual({
       status: 'active',
       connected_account_id: 'account-uuid',
+      toolkit_slug: 'gmail',
     });
 
     expect(client.connectedAccounts.waitForConnection).toHaveBeenCalledWith(
@@ -241,6 +251,10 @@ describe('ComposioConnectionsService', () => {
         resource_id: 'account-uuid',
       }),
     });
+    expect(orgToolkitsService.enableToolkit).toHaveBeenCalledWith(
+      'org-uuid',
+      'gmail',
+    );
   });
 
   it('uses an existing custom auth config without creating a managed config', async () => {

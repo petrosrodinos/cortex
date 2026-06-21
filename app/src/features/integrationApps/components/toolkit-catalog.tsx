@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Plug, Search, Settings2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,15 +19,15 @@ interface ToolkitCatalogProps {
 export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCatalogProps) {
   const [search, setSearch] = useState('');
   const toolkitsQuery = useGetIntegrationAppsToolkits(organizationUuid, { search, limit: 60 });
+  const connectedToolkitsQuery = useGetIntegrationAppsToolkits(organizationUuid, {
+    connected: true,
+    limit: 1,
+  });
   const connectToolkit = useConnectIntegrationAppsToolkit(organizationUuid);
   const enableToolkit = useEnableIntegrationAppsToolkit(organizationUuid);
   const disableToolkit = useDisableIntegrationAppsToolkit(organizationUuid);
   const toolkits = toolkitsQuery.data?.data ?? [];
-
-  const connectedCount = useMemo(
-    () => toolkits.filter((toolkit) => toolkit.is_connected).length,
-    [toolkits],
-  );
+  const connectedCount = connectedToolkitsQuery.data?.pagination.total ?? 0;
 
   return (
     <div className="flex flex-col gap-4">

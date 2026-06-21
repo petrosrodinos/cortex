@@ -43,8 +43,16 @@ export default function IntegrationAppsCallbackPage() {
       return;
     }
 
-    navigate(Routes.dashboard.integrations, { replace: true });
-  }, [navigate, verifyCallback.isSuccess]);
+    const toolkitSlug =
+      verifyCallback.data?.toolkit_slug || callbackParams.toolkitSlug;
+
+    navigate(
+      toolkitSlug
+        ? Routes.dashboard.integrationApp(toolkitSlug)
+        : Routes.dashboard.integrations,
+      { replace: true },
+    );
+  }, [callbackParams.toolkitSlug, navigate, verifyCallback.data, verifyCallback.isSuccess]);
 
   const missingToolkit = !callbackParams.toolkitSlug;
 

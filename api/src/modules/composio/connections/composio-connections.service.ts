@@ -14,6 +14,7 @@ import {
 } from 'generated/prisma';
 import { ComposioCallbackDto } from './dto/composio-callback.dto';
 import { ConnectComposioDto } from './dto/connect-composio.dto';
+import { OrgToolkitsService } from '../org-toolkits/org-toolkits.service';
 
 type AuthUser = {
   uuid: string;
@@ -26,6 +27,7 @@ export class ComposioConnectionsService {
     private readonly prisma: PrismaService,
     private readonly composioClient: ComposioClientService,
     private readonly configService: ConfigService,
+    private readonly orgToolkitsService: OrgToolkitsService,
   ) {}
 
   async connect(
@@ -67,6 +69,7 @@ export class ComposioConnectionsService {
           connectionTier,
           composioUserId,
         );
+        await this.ensureOrgToolkitEnabled(organizationUuid, toolkit.slug);
 
         return {
           toolkit_slug: toolkit.slug,
@@ -132,6 +135,7 @@ export class ComposioConnectionsService {
           connectionTier,
           composioUserId,
         );
+        await this.ensureOrgToolkitEnabled(organizationUuid, toolkit.slug);
         await this.audit(organizationUuid, user.uuid, {
           action: 'composio.account_connected',
           resourceType: 'composio_account',
@@ -165,6 +169,7 @@ export class ComposioConnectionsService {
           connectionTier,
           composioUserId,
         );
+        await this.ensureOrgToolkitEnabled(organizationUuid, toolkit.slug);
         await this.audit(organizationUuid, user.uuid, {
           action: 'composio.account_connected',
           resourceType: 'composio_account',
@@ -177,6 +182,7 @@ export class ComposioConnectionsService {
         return {
           status: mirrored.status.toLowerCase(),
           connected_account_id: mirrored.composio_account_id,
+          toolkit_slug: toolkit.slug,
         };
       } catch {
         // Fall back to listing below; OAuth providers sometimes complete before the request id is reusable.
@@ -205,6 +211,7 @@ export class ComposioConnectionsService {
     const mirroredAccount = active ?? mirrored[0];
 
     if (mirroredAccount) {
+      await this.ensureOrgToolkitEnabled(organizationUuid, toolkit.slug);
       await this.audit(organizationUuid, user.uuid, {
         action: 'composio.account_connected',
         resourceType: 'composio_account',
@@ -324,6 +331,13 @@ export class ComposioConnectionsService {
         ? ComposioConnectionTier.USER_PERSONAL
         : ComposioConnectionTier.ORG_SHARED,
     });
+  }
+
+  private async ensureOrgToolkitEnabled(
+    organizationUuid: string,
+    toolkitSlug: string,
+  ): Promise<void> {
+    await this.orgToolkitsService.enableToolkit(organizationUuid, toolkitSlug);
   }
 
   private async getEnabledToolkit(toolkitSlug: string) {

@@ -18,6 +18,7 @@ import { isAiCatalogProvider } from '@/features/integrations/utils/integration.u
 import { useGetAiProviders } from '@/features/ai-providers/hooks/use-ai-providers';
 import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
 import { ToolkitCatalog } from '@/features/integrationApps/components/toolkit-catalog';
+import { useGetIntegrationAppsToolkits } from '@/features/integrationApps/hooks/use-integrationApps';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
 import { cn } from '@/lib/utils';
@@ -39,8 +40,13 @@ export default function IntegrationsPage() {
   >('integrationApps');
   const integrationsQuery = useGetIntegrations(currentOrganization?.uuid);
   const aiProvidersQuery = useGetAiProviders(currentOrganization?.uuid);
+  const connectedToolkitsQuery = useGetIntegrationAppsToolkits(currentOrganization?.uuid, {
+    connected: true,
+    limit: 1,
+  });
   const integrations = integrationsQuery.data ?? [];
   const aiProviders = aiProvidersQuery.data ?? [];
+  const connectedToolkitsCount = connectedToolkitsQuery.data?.pagination.total ?? 0;
 
   const selectedIntegration = useMemo(
     () => integrations.find((integration) => integration.uuid === integrationUuid) ?? null,
@@ -56,8 +62,8 @@ export default function IntegrationsPage() {
     const activeIntegrations = integrations.filter(
       (integration) => integration.status === IntegrationStatuses.ACTIVE,
     ).length;
-    return activeIntegrations + aiProviders.length;
-  }, [integrations, aiProviders]);
+    return activeIntegrations + aiProviders.length + connectedToolkitsCount;
+  }, [integrations, aiProviders, connectedToolkitsCount]);
 
   function handleManageIntegration(integration: Integration) {
     navigate(Routes.dashboard.integration(integration.uuid));
@@ -91,6 +97,7 @@ export default function IntegrationsPage() {
       : '';
 
   const loading = integrationsQuery.isLoading || aiProvidersQuery.isLoading;
+  const countsLoading = loading || connectedToolkitsQuery.isLoading;
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-5">
@@ -118,7 +125,7 @@ export default function IntegrationsPage() {
         <header>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-xl font-semibold text-foreground">Integrations</h1>
-            {!loading ? (
+            {!countsLoading ? (
               <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">
                 {activeIntegrationsCount} active
               </span>

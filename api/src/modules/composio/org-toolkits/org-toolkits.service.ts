@@ -150,7 +150,7 @@ export class OrgToolkitsService {
   async enableToolkit(organizationUuid: string, slug: string) {
     const toolkit = await this.findEnabledToolkit(slug);
 
-    return this.prisma.organisationEnabledToolkit.upsert({
+    const enabledToolkit = await this.prisma.organisationEnabledToolkit.upsert({
       where: {
         org_uuid_toolkit_uuid: {
           org_uuid: organizationUuid,
@@ -165,6 +165,44 @@ export class OrgToolkitsService {
       update: { is_enabled: true },
       include: { toolkit: true },
     });
+
+    await this.enableAllToolkitTools(organizationUuid, slug);
+
+    return enabledToolkit;
+  }
+
+  async enableAllToolkitTools(organizationUuid: string, slug: string) {
+    const toolkit = await this.findEnabledToolkit(slug);
+    const tools = await this.prisma.composioToolkitTool.findMany({
+      where: { toolkit_uuid: toolkit.uuid, is_enabled: true },
+      select: { uuid: true },
+    });
+
+    if (tools.length === 0) {
+      return;
+    }
+
+    await this.prisma.$transaction(
+      tools.map((tool) =>
+        this.prisma.organisationToolPermission.upsert({
+          where: {
+            org_uuid_tool_uuid: {
+              org_uuid: organizationUuid,
+              tool_uuid: tool.uuid,
+            },
+          },
+          create: {
+            org_uuid: organizationUuid,
+            tool_uuid: tool.uuid,
+            enabled: true,
+            requires_approval: false,
+          },
+          update: {
+            enabled: true,
+          },
+        }),
+      ),
+    );
   }
 
   async disableToolkit(organizationUuid: string, slug: string) {

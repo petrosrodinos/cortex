@@ -13,7 +13,9 @@ import type { AdminIntegrationAppsTool } from '@/features/integrationApps-admin/
 import { Routes } from '@/routes/routes';
 import { AdminToolkitDetailSkeleton } from './components/toolkit-detail-skeleton';
 import { ConnectionTierToggles, formatConnectionTiers } from './components/connection-tier-toggles';
+import { MetricCard } from './components/metric-card';
 import { ToggleSwitch } from './components/toggle-switch';
+import { ToolkitOrgSections } from './components/toolkit-org-sections';
 
 export default function AdminIntegrationAppsToolkitDetailPage() {
   const { toolkitSlug } = useParams<{ toolkitSlug: string }>();
@@ -59,12 +61,14 @@ export default function AdminIntegrationAppsToolkitDetailPage() {
       </header>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        <Metric label="Platform status" value={toolkit.is_enabled ? 'Enabled' : 'Disabled'} />
-        <Metric label="Connection tiers" value={formatConnectionTiers(toolkit.connection_tiers)} />
-        <Metric label="Tools" value={String(toolkit.tools.length)} />
-        <Metric label="Connected accounts" value={String(statsQuery.data?.connected_accounts_count ?? 0)} />
-        <Metric label="Active triggers" value={String(statsQuery.data?.active_triggers_count ?? 0)} />
+        <MetricCard label="Platform status" value={toolkit.is_enabled ? 'Enabled' : 'Disabled'} />
+        <MetricCard label="Connection tiers" value={formatConnectionTiers(toolkit.connection_tiers)} />
+        <MetricCard label="Tools" value={String(toolkit.tools.length)} />
+        <MetricCard label="Connected accounts" value={String(statsQuery.data?.connected_accounts_count ?? 0)} />
+        <MetricCard label="Active triggers" value={String(statsQuery.data?.active_triggers_count ?? 0)} />
       </div>
+
+      <ToolkitOrgSections toolkitSlug={toolkit.slug} toolkitName={toolkit.name} />
 
       <section className="rounded-lg border border-border bg-surface p-4">
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
@@ -98,15 +102,6 @@ export default function AdminIntegrationAppsToolkitDetailPage() {
           ))}
         </div>
       </section>
-    </div>
-  );
-}
-
-function Metric({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-border bg-surface px-4 py-3">
-      <p className="text-xs text-muted">{label}</p>
-      <p className="mt-1 text-sm font-semibold text-foreground">{value}</p>
     </div>
   );
 }
