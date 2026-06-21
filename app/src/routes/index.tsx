@@ -66,7 +66,7 @@ export default function AppRoutes() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="personalization" element={<PersonalizationPage />} />
           <Route path="password" element={<Navigate to={Routes.dashboard.settingsProfile} replace />} />
-          <Route path="ai-providers" element={<Navigate to={Routes.dashboard.integrations} replace />} />
+          <Route path="ai-providers" element={<Navigate to={Routes.dashboard.integrationsSection('ai')} replace />} />
           <Route path="usage" element={<UsagePage />} />
           <Route path="audit-logs" element={<AuditLogsPage />} />
         </Route>

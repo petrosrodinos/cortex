@@ -7,6 +7,7 @@ import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { useOrganizationStore } from '@/stores/organization';
 import { Routes } from '@/routes/routes';
 import { useGetIntegrations } from '@/features/integrations/common/hooks/use-integrations';
+import { useGetAiProviders } from '@/features/ai-providers/hooks/use-ai-providers';
 import { useGetIntegrationAppsToolkits } from '@/features/integration-apps/hooks/use-integrationApps';
 import {
   useApproveExecution,
@@ -24,6 +25,7 @@ import { MessageRoles, type Message, type MessageAttachment } from '@/features/c
 import { useUploadDocument } from '@/features/files/hooks/use-files';
 import { cn } from '@/lib/utils';
 import { ConversationEmptyState } from './components/shared/conversation-empty-state';
+import { ConversationAiProviderRequired } from './components/shared/conversation-ai-provider-required';
 import { ConversationDocumentsModal } from './components/shared/conversation-documents-modal';
 import { ConversationHeader } from './components/shared/conversation-header';
 import { ConversationInput } from './components/input/conversation-input';
@@ -69,6 +71,7 @@ const ConversationsPage: FC = () => {
 
   const { data: conversations = [], isLoading: conversationsLoading } = useGetConversations(organizationUuid);
   const { data: integrations = [] } = useGetIntegrations(organizationUuid);
+  const { data: aiProviders = [], isLoading: aiProvidersLoading } = useGetAiProviders(organizationUuid);
   const { data: integrationAppsToolkitsResponse } = useGetIntegrationAppsToolkits(organizationUuid, { limit: 100 });
   const integrationAppsToolkits = integrationAppsToolkitsResponse?.data ?? [];
   const { data: messages = [], isLoading: messagesLoading } = useGetMessages(organizationUuid, conversationUuid);
@@ -218,6 +221,9 @@ const ConversationsPage: FC = () => {
     (sendMessage.isPending || isRunning || approvalRequest != null) &&
     pendingAssistantContent == null;
 
+  const hasAiProvider = aiProviders.length > 0;
+  const isChatInputDisabled = sendMessage.isPending || isRunning || !hasAiProvider;
+
   useEffect(() => {
     if (!pendingUserMessage) {
       return;
@@ -267,7 +273,7 @@ const ConversationsPage: FC = () => {
   const handleSend = async () => {
     const content = draftPartsToPlainText(draftParts);
     const draftIntegrationUuids = getDraftIntegrationUuids(draftParts);
-    if ((!content && draftIntegrationUuids.length === 0) || !conversationUuid) {
+    if ((!content && draftIntegrationUuids.length === 0) || !conversationUuid || !hasAiProvider) {
       return;
     }
     const integrationUuids =
@@ -530,26 +536,30 @@ const ConversationsPage: FC = () => {
               isRejecting={rejectExecution.isPending}
               onApprove={() => void handleApprove()}
               onReject={() => void handleReject()}
-              isSendDisabled={sendMessage.isPending || isRunning}
+              isSendDisabled={isChatInputDisabled}
               onRetryMessage={handleRetryMessage}
             />
 
-            <ConversationInput
-              draftParts={draftParts}
-              attachedFiles={attachedFiles}
-              integrations={integrations}
-              toolkits={integrationAppsToolkits}
-              selectedIntegrationUuids={selectedIntegrationUuids}
-              selectedToolkitSlugs={selectedToolkitSlugs}
-              disabled={sendMessage.isPending || isRunning}
-              isUploading={uploadDocument.isPending}
-              onDraftPartsChange={setDraftParts}
-              onSend={() => void handleSend()}
-              onFileSelect={(event) => void handleFileSelect(event)}
-              onRemoveFile={removeAttachedFile}
-              onIntegrationSelectionChange={setSelectedIntegrationUuids}
-              onToolkitSelectionChange={setSelectedToolkitSlugs}
-            />
+            {!aiProvidersLoading && !hasAiProvider ? (
+              <ConversationAiProviderRequired />
+            ) : (
+              <ConversationInput
+                draftParts={draftParts}
+                attachedFiles={attachedFiles}
+                integrations={integrations}
+                toolkits={integrationAppsToolkits}
+                selectedIntegrationUuids={selectedIntegrationUuids}
+                selectedToolkitSlugs={selectedToolkitSlugs}
+                disabled={isChatInputDisabled}
+                isUploading={uploadDocument.isPending}
+                onDraftPartsChange={setDraftParts}
+                onSend={() => void handleSend()}
+                onFileSelect={(event) => void handleFileSelect(event)}
+                onRemoveFile={removeAttachedFile}
+                onIntegrationSelectionChange={setSelectedIntegrationUuids}
+                onToolkitSelectionChange={setSelectedToolkitSlugs}
+              />
+            )}
           </div>
         )}
       </section>

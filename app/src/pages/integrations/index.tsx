@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useMemo, useState, useCallback } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useGetIntegrations } from '@/features/integrations/common/hooks/use-integrations';
 import {
@@ -30,14 +30,37 @@ import { ProviderCatalog } from './components/shared/provider-catalog';
 import { AddIntegrationModal } from './components/connections/add-integration-modal';
 import { AddAiProviderModal } from './components/ai-providers/add-ai-provider-modal';
 
+type IntegrationSection = 'integrationApps' | 'databases' | 'externalConnections' | 'ai';
+
+const INTEGRATION_SECTIONS = new Set<IntegrationSection>([
+  'integrationApps',
+  'databases',
+  'externalConnections',
+  'ai',
+]);
+
+function resolveIntegrationSection(value: string | null): IntegrationSection {
+  if (value && INTEGRATION_SECTIONS.has(value as IntegrationSection)) {
+    return value as IntegrationSection;
+  }
+
+  return 'integrationApps';
+}
+
 export default function IntegrationsPage() {
   const { integrationUuid, aiProviderUuid } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const currentOrganization = useOrganizationStore((state) => state.current_organization);
   const [connectingProvider, setConnectingProvider] = useState<CatalogProvider | null>(null);
-  const [activeSection, setActiveSection] = useState<
-    'integrationApps' | 'databases' | 'externalConnections' | 'ai'
-  >('integrationApps');
+  const activeSection = resolveIntegrationSection(searchParams.get('section'));
+
+  const handleSectionChange = useCallback(
+    (section: IntegrationSection) => {
+      navigate(Routes.dashboard.integrationsSection(section));
+    },
+    [navigate],
+  );
   const integrationsQuery = useGetIntegrations(currentOrganization?.uuid);
   const aiProvidersQuery = useGetAiProviders(currentOrganization?.uuid);
   const connectedToolkitsQuery = useGetIntegrationAppsToolkits(currentOrganization?.uuid, {
@@ -145,7 +168,7 @@ export default function IntegrationsPage() {
         <AiProviderDetail organizationUuid={currentOrganization.uuid} provider={selectedAiProvider} />
       ) : (
         <div className="flex flex-col gap-5">
-          <IntegrationSectionTabs activeSection={activeSection} onSectionChange={setActiveSection} />
+          <IntegrationSectionTabs activeSection={activeSection} onSectionChange={handleSectionChange} />
           {activeSection === 'integrationApps' ? (
             <ToolkitCatalog
               organizationUuid={currentOrganization.uuid}
@@ -188,8 +211,8 @@ function IntegrationSectionTabs({
   activeSection,
   onSectionChange,
 }: {
-  activeSection: 'integrationApps' | 'databases' | 'externalConnections' | 'ai';
-  onSectionChange: (section: 'integrationApps' | 'databases' | 'externalConnections' | 'ai') => void;
+  activeSection: IntegrationSection;
+  onSectionChange: (section: IntegrationSection) => void;
 }) {
   const tabs = [
     { id: 'integrationApps', label: 'Integrations' },

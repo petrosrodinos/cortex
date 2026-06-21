@@ -7,6 +7,9 @@ export const Routes = {
         root: "/dashboard",
         organizations: "/dashboard/organizations",
         integrations: "/dashboard/integrations",
+        integrationsSection: (
+            section: 'integrationApps' | 'databases' | 'externalConnections' | 'ai',
+        ) => `/dashboard/integrations?section=${section}`,
         integrationsCallback: "/dashboard/integrations/callback",
         integrationApp: (toolkitSlug: string) => `/dashboard/integrations/apps/${toolkitSlug}`,
         conversations: "/dashboard/conversations",
@@ -16,7 +19,7 @@ export const Routes = {
         settings: '/dashboard/settings',
         settingsProfile: '/dashboard/settings/profile',
         settingsPersonalization: '/dashboard/settings/personalization',
-        settingsAiProviders: '/dashboard/integrations',
+        settingsAiProviders: '/dashboard/integrations?section=ai',
         settingsUsage: '/dashboard/settings/usage',
         settingsAuditLogs: '/dashboard/settings/audit-logs',
         execution: (executionUuid: string) => `/dashboard/executions/${executionUuid}`,

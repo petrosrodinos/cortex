@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Plug, Search, Settings2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Plug, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import {
   useConnectIntegrationAppsToolkit,
@@ -10,6 +9,13 @@ import {
 } from '@/features/integration-apps/hooks/use-integrationApps';
 import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import { cn } from '@/lib/utils';
+import {
+  IntegrationCatalogCard,
+  IntegrationCatalogCardAction,
+  IntegrationCatalogCardSkeleton,
+  IntegrationCatalogConnectedBadge,
+  integrationCatalogGridClassName,
+} from '../shared/integration-catalog-card';
 
 interface ToolkitCatalogProps {
   organizationUuid: string;
@@ -48,17 +54,13 @@ export function ToolkitCatalog({ organizationUuid, onSelectToolkit }: ToolkitCat
       </div>
 
       {toolkitsQuery.isLoading ? (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="h-40 animate-pulse rounded-lg border border-border bg-surface" />
-          ))}
-        </div>
+        <IntegrationCatalogCardSkeleton count={6} />
       ) : toolkits.length === 0 ? (
         <div className="rounded-lg border border-border bg-surface px-4 py-8 text-center text-sm text-muted">
           No integrations found.
         </div>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={integrationCatalogGridClassName}>
           {toolkits.map((toolkit) => (
             <ToolkitCard
               key={toolkit.slug}
@@ -113,33 +115,24 @@ function ToolkitCard({
   const description = toolkit.description || toolkit.slug;
 
   return (
-    <div className="flex flex-col rounded-lg border border-border bg-surface transition-colors hover:bg-surface-secondary">
-      <div className="flex flex-1 flex-col p-4">
-        <button type="button" onClick={onManage} className="text-left">
-          <div className="flex items-start justify-between gap-3">
-            <ToolkitLogo toolkit={toolkit} />
-            {toolkit.is_connected ? (
-              <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">
-                Connected
-              </span>
-            ) : null}
-          </div>
-          <p className="mt-3 text-sm font-semibold text-foreground">{toolkit.name}</p>
-        </button>
-        <ToolkitDescription text={description} />
-        <button type="button" onClick={onManage} className="mt-3 text-left text-xs text-muted hover:text-foreground">
+    <IntegrationCatalogCard
+      icon={<ToolkitLogo toolkit={toolkit} />}
+      title={toolkit.name}
+      description={<ToolkitDescription text={description} />}
+      meta={
+        <button type="button" onClick={onManage} className="text-left text-xs text-muted hover:text-foreground">
           {toolkit.tool_count} tools
         </button>
-      </div>
-
-      <div className="border-t border-border p-3">
-        {toolkit.is_connected ? (
+      }
+      badge={toolkit.is_connected ? <IntegrationCatalogConnectedBadge /> : undefined}
+      onHeaderClick={onManage}
+      footer={
+        toolkit.is_connected ? (
           <div className="grid grid-cols-2 gap-2">
-            <Button type="button" variant="outline" className="h-9 px-3" onClick={onManage}>
-              <Settings2 className="h-4 w-4" />
+            <IntegrationCatalogCardAction variant="secondary" onClick={onManage}>
               Manage
-            </Button>
-            <div className="flex h-9 items-center justify-between gap-2 rounded-md border border-border px-3">
+            </IntegrationCatalogCardAction>
+            <div className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-1.5">
               <span className="text-xs text-foreground">{toolkit.is_org_enabled ? 'Enabled' : 'Disabled'}</span>
               <EnabledSwitch
                 checked={toolkit.is_org_enabled}
@@ -149,13 +142,15 @@ function ToolkitCard({
             </div>
           </div>
         ) : (
-          <Button type="button" className="h-9 w-full px-3" loading={isConnecting} onClick={onConnect}>
-            <Plug className="h-4 w-4" />
-            Connect
-          </Button>
-        )}
-      </div>
-    </div>
+          <IntegrationCatalogCardAction onClick={onConnect} disabled={isConnecting}>
+            <span className="inline-flex items-center justify-center gap-1.5">
+              <Plug className="h-3.5 w-3.5" />
+              {isConnecting ? 'Connecting...' : 'Connect'}
+            </span>
+          </IntegrationCatalogCardAction>
+        )
+      }
+    />
   );
 }
 
@@ -166,7 +161,7 @@ function ToolkitDescription({ text }: { text: string }) {
   const isLong = text.length > DESCRIPTION_PREVIEW_LENGTH;
 
   return (
-    <div className="mt-1">
+    <div>
       <p className={cn('text-xs leading-relaxed text-muted', !expanded && isLong && 'line-clamp-2')}>
         {text}
       </p>
@@ -222,13 +217,13 @@ function ToolkitLogo({ toolkit }: { toolkit: IntegrationAppsToolkit }) {
       <img
         src={toolkit.logo_url}
         alt=""
-        className="h-10 w-10 rounded-lg border border-border bg-background object-contain p-1"
+        className="h-11 w-11 rounded-xl border border-border bg-background object-contain p-1"
       />
     );
   }
 
   return (
-    <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-sm font-semibold text-accent-foreground">
+    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-sm font-semibold text-accent-foreground">
       {toolkit.name.slice(0, 1).toUpperCase()}
     </span>
   );

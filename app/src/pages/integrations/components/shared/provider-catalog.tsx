@@ -13,6 +13,12 @@ import {
 } from '@/features/integrations/constants/provider-metadata';
 import { isAiCatalogProvider } from '@/features/integrations/utils/integration.utils';
 import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
+import {
+  IntegrationCatalogCard,
+  IntegrationCatalogCardAction,
+  IntegrationCatalogConnectedBadge,
+  integrationCatalogGridClassName,
+} from './integration-catalog-card';
 
 interface ProviderCatalogProps {
   integrations: Integration[];
@@ -84,7 +90,7 @@ function ProviderGrid({
   onManageAiProvider,
 }: ProviderGridProps) {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className={integrationCatalogGridClassName}>
       {providers.map((provider) => {
         if (isAiCatalogProvider(provider)) {
           const connected = connectedAiByType.get(provider) ?? [];
@@ -127,43 +133,35 @@ function ProviderCatalogCard({ provider, connectedCount, onConnect, onManage }: 
   const isConnected = connectedCount > 0;
 
   return (
-    <div className="flex flex-col rounded-lg border border-border bg-surface transition-colors hover:bg-surface-secondary">
-      <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-start justify-between gap-2">
-          <div
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
-            style={{ backgroundColor: meta.bg }}
-          >
-            <Icon size={20} className="text-white" />
-          </div>
-          {isConnected ? (
-            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-300">
-              {connectedCount === 1 ? 'Connected' : `${connectedCount}`}
-            </span>
-          ) : null}
+    <IntegrationCatalogCard
+      icon={
+        <div
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+          style={{ backgroundColor: meta.bg }}
+        >
+          <Icon size={20} className="text-white" />
         </div>
-        <p className="mt-3 text-sm font-semibold text-foreground">{catalogProviderLabels[provider]}</p>
-        <p className="mt-1 line-clamp-2 text-xs text-muted">{catalogProviderDescriptions[provider]}</p>
-      </div>
-      <div className="border-t border-border px-5 py-3">
-        {isConnected ? (
-          <button
-            type="button"
-            onClick={onManage}
-            className="w-full rounded-md bg-surface-secondary px-3 py-1.5 text-xs font-medium text-foreground hover:bg-surface-tertiary"
-          >
+      }
+      title={catalogProviderLabels[provider]}
+      description={
+        <p className="line-clamp-2 text-xs text-muted">{catalogProviderDescriptions[provider]}</p>
+      }
+      badge={
+        isConnected ? (
+          <IntegrationCatalogConnectedBadge
+            label={connectedCount === 1 ? 'Connected' : `${connectedCount}`}
+          />
+        ) : undefined
+      }
+      footer={
+        isConnected ? (
+          <IntegrationCatalogCardAction variant="secondary" onClick={onManage}>
             Manage
-          </button>
+          </IntegrationCatalogCardAction>
         ) : (
-          <button
-            type="button"
-            onClick={onConnect}
-            className="w-full rounded-md bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground hover:opacity-90"
-          >
-            Connect
-          </button>
-        )}
-      </div>
-    </div>
+          <IntegrationCatalogCardAction onClick={onConnect}>Connect</IntegrationCatalogCardAction>
+        )
+      }
+    />
   );
 }
