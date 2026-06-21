@@ -24,6 +24,7 @@ export interface CreateOrganizationDto {
 
 export interface UpdateOrganizationDto {
   name?: string;
+  slug?: string;
   logo_url?: string | null;
 }
 

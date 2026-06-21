@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ArrowLeft, Plug, ShieldCheck, ShieldQuestion, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plug, ShieldCheck, ShieldQuestion, Trash2, Unplug } from 'lucide-react';
+import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -7,6 +8,7 @@ import {
   useCreateIntegrationAppsTrigger,
   useDeleteIntegrationAppsTrigger,
   useDisableIntegrationAppsToolkit,
+  useDisconnectIntegrationAppsAccount,
   useEnableIntegrationAppsToolkit,
   useGetIntegrationAppsTriggers,
   useGetIntegrationAppsToolkit,
@@ -29,6 +31,7 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
   const [selectedAccountId, setSelectedAccountId] = useState('');
   const [triggerConfig, setTriggerConfig] = useState('{}');
   const [triggerConfigError, setTriggerConfigError] = useState<string | null>(null);
+  const [disconnectAccountId, setDisconnectAccountId] = useState<string | null>(null);
   const role = useAuthStore((state) => state.role);
   const isSuperAdmin = role === RoleTypes.SUPER_ADMIN;
   const detailQuery = useGetIntegrationAppsToolkit(organizationUuid, toolkitSlug);
@@ -36,6 +39,7 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
   const connectToolkit = useConnectIntegrationAppsToolkit(organizationUuid);
   const enableToolkit = useEnableIntegrationAppsToolkit(organizationUuid);
   const disableToolkit = useDisableIntegrationAppsToolkit(organizationUuid);
+  const disconnectAccount = useDisconnectIntegrationAppsAccount(organizationUuid, toolkitSlug);
   const updateToolPermission = useUpdateIntegrationAppsToolPermission(organizationUuid, toolkitSlug);
   const createTrigger = useCreateIntegrationAppsTrigger(organizationUuid);
   const detail = detailQuery.data;
@@ -47,6 +51,7 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
   const activeTriggers = triggers.filter((trigger) => trigger.is_enabled).length;
   const isConnected = connections.length > 0;
   const isTogglingOrgEnabled = enableToolkit.isPending || disableToolkit.isPending;
+  const pendingDisconnect = connections.find((connection) => connection.account_id === disconnectAccountId);
 
   if (detailQuery.isLoading || !toolkit) {
     return (
@@ -88,21 +93,34 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
 
         <div className="flex flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
           {isConnected ? (
-            <div className="flex h-9 items-center gap-2 rounded-md border border-border px-3">
-              <span className="text-xs text-foreground">{toolkit.is_org_enabled ? 'Enabled' : 'Disabled'}</span>
-              <EnabledSwitch
-                checked={toolkit.is_org_enabled}
-                disabled={isTogglingOrgEnabled}
-                onChange={(enabled) => {
-                  if (enabled) {
-                    enableToolkit.mutate(toolkit.slug);
-                    return;
-                  }
+            <>
+              <div className="flex h-9 items-center gap-2 rounded-md border border-border px-3">
+                <span className="text-xs text-foreground">{toolkit.is_org_enabled ? 'Enabled' : 'Disabled'}</span>
+                <EnabledSwitch
+                  checked={toolkit.is_org_enabled}
+                  disabled={isTogglingOrgEnabled}
+                  onChange={(enabled) => {
+                    if (enabled) {
+                      enableToolkit.mutate(toolkit.slug);
+                      return;
+                    }
 
-                  disableToolkit.mutate(toolkit.slug);
-                }}
-              />
-            </div>
+                    disableToolkit.mutate(toolkit.slug);
+                  }}
+                />
+              </div>
+              {connections.length === 1 ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="sm:w-auto"
+                  onClick={() => setDisconnectAccountId(connections[0].account_id)}
+                >
+                  <Unplug className="h-4 w-4" />
+                  Remove connection
+                </Button>
+              ) : null}
+            </>
           ) : toolkit.connection_tiers.length === 1 ? (
             <Button
               type="button"
@@ -149,6 +167,32 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
         </div>
       ) : null}
 
+      {isConnected && !isSuperAdmin && connections.length > 1 ? (
+        <section className="rounded-lg border border-border bg-surface">
+          <div className="border-b border-border px-4 py-3">
+            <h3 className="text-sm font-semibold text-foreground">Connections</h3>
+          </div>
+          <div className="divide-y divide-border">
+            {connections.map((connection) => (
+              <div key={connection.account_id} className="flex items-center justify-between gap-3 px-4 py-3">
+                <p className="truncate text-sm font-medium text-foreground">
+                  {connection.account_label || connection.account_id}
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-9 shrink-0"
+                  onClick={() => setDisconnectAccountId(connection.account_id)}
+                >
+                  <Unplug className="h-4 w-4" />
+                  Remove
+                </Button>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       {isSuperAdmin ? (
       <section className="rounded-lg border border-border bg-surface">
         <div className="border-b border-border px-4 py-3">
@@ -166,9 +210,20 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
                   </p>
                   <p className="text-xs text-muted">{connection.account_id}</p>
                 </div>
-                <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">
-                  {connection.status}
-                </span>
+                <div className="flex shrink-0 items-center gap-2">
+                  <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                    {connection.status}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-9"
+                    onClick={() => setDisconnectAccountId(connection.account_id)}
+                  >
+                    <Unplug className="h-4 w-4" />
+                    Remove
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
@@ -286,6 +341,34 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
           ))}
         </div>
       </section>
+
+      <ConfirmationDialog
+        open={!!disconnectAccountId}
+        title="Remove connection?"
+        description={
+          pendingDisconnect
+            ? `This will disconnect ${pendingDisconnect.account_label || pendingDisconnect.account_id} from ${toolkit.name}. The agent will no longer be able to use this integration until you connect again.`
+            : 'This will remove the connected account. The agent will no longer be able to use this integration until you connect again.'
+        }
+        confirmLabel="Remove connection"
+        loading={disconnectAccount.isPending}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDisconnectAccountId(null);
+          }
+        }}
+        onConfirm={() => {
+          if (!disconnectAccountId) {
+            return;
+          }
+
+          disconnectAccount.mutate(disconnectAccountId, {
+            onSuccess: () => {
+              setDisconnectAccountId(null);
+            },
+          });
+        }}
+      />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import {
   createIntegrationAppsTrigger,
   deleteIntegrationAppsTrigger,
   disableIntegrationAppsToolkit,
+  disconnectIntegrationAppsAccount,
   enableIntegrationAppsToolkit,
   getIntegrationAppsTriggers,
   getIntegrationAppsToolkit,
@@ -86,6 +87,23 @@ export function useDisableIntegrationAppsToolkit(organizationUuid?: string) {
     },
     onError: (error: Error) => {
       toast({ title: 'Could not disable toolkit', description: error.message, variant: 'error' });
+    },
+  });
+}
+
+export function useDisconnectIntegrationAppsAccount(organizationUuid?: string, toolkitSlug?: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (connectedAccountId: string) =>
+      disconnectIntegrationAppsAccount(organizationUuid as string, connectedAccountId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: integrationAppsToolkitsQueryKey });
+      queryClient.invalidateQueries({ queryKey: [...integrationAppsToolkitsQueryKey, organizationUuid, toolkitSlug] });
+      toast({ title: 'Connection removed', duration: 2000 });
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Could not remove connection', description: error.message, variant: 'error' });
     },
   });
 }

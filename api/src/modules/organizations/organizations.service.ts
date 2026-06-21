@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
@@ -105,9 +105,32 @@ export class OrganizationsService {
       const membership = await this.requireActiveMember(user_uuid, organization_uuid);
       this.requirePermissionOrOwner(membership, 'org:update');
 
+      const data: UpdateOrganizationDto = { ...dto };
+
+      if (dto.slug !== undefined) {
+        const slug = this.normalizeSlug(dto.slug);
+
+        if (slug.length < 2) {
+          throw new BadRequestException('Slug must be at least 2 characters');
+        }
+
+        const existing = await this.prisma.organization.findFirst({
+          where: {
+            slug,
+            NOT: { uuid: organization_uuid },
+          },
+        });
+
+        if (existing) {
+          throw new ConflictException('Organization slug is already taken');
+        }
+
+        data.slug = slug;
+      }
+
       return await this.prisma.organization.update({
         where: { uuid: organization_uuid },
-        data: dto,
+        data,
       });
     } catch (error) {
       this.handleError(error);
@@ -190,14 +213,18 @@ export class OrganizationsService {
     }
   }
 
+  private normalizeSlug(value: string) {
+    return value
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 48) || 'organization';
+  }
+
   private async createUniqueSlug(name: string, tx: any) {
     try {
-      const base_slug = name
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '')
-        .slice(0, 48) || 'organization';
+      const base_slug = this.normalizeSlug(name);
 
       for (let attempt = 0; attempt < 10; attempt += 1) {
         const slug = attempt === 0 ? base_slug : `${base_slug}-${Math.random().toString(36).slice(2, 8)}`;

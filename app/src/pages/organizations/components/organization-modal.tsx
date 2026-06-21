@@ -11,6 +11,17 @@ import {
 import type { Organization } from '@/features/organizations/interfaces/organization.interfaces';
 import { OrganizationLogo } from './organization-logo';
 
+const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+function normalizeOrganizationSlug(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 48);
+}
+
 type OrganizationModalProps = {
   mode: 'create' | 'edit';
   organization?: Organization;
@@ -22,6 +33,7 @@ export function OrganizationModal({ mode, organization, onClose, onSuccess }: Or
   const isEdit = mode === 'edit';
   const nameInputRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState(organization?.name ?? '');
+  const [slug, setSlug] = useState(organization?.slug ?? '');
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(organization?.logo_url ?? null);
   const [removeExistingLogo, setRemoveExistingLogo] = useState(false);
@@ -39,11 +51,15 @@ export function OrganizationModal({ mode, organization, onClose, onSuccess }: Or
     removeOrganizationLogoMutation.isPending;
 
   const trimmedName = name.trim();
+  const normalizedSlug = normalizeOrganizationSlug(slug);
   const nameChanged = isEdit && organization ? trimmedName !== organization.name : false;
+  const slugChanged = isEdit && organization ? normalizedSlug !== organization.slug : false;
+  const isSlugValid = !isEdit || (normalizedSlug.length >= 2 && slugPattern.test(normalizedSlug));
   const hasLogoChanges = Boolean(logoFile) || (isEdit && removeExistingLogo && organization?.logo_url);
   const canSubmit =
     trimmedName.length >= 2 &&
-    (!isEdit || nameChanged || hasLogoChanges);
+    isSlugValid &&
+    (!isEdit || nameChanged || slugChanged || hasLogoChanges);
 
   useEffect(() => {
     nameInputRef.current?.focus();
@@ -101,10 +117,13 @@ export function OrganizationModal({ mode, organization, onClose, onSuccess }: Or
     try {
       if (isEdit && organization) {
         let updated = organization;
-        if (nameChanged) {
+        if (nameChanged || slugChanged) {
           updated = await updateOrganizationMutation.mutateAsync({
             organization_uuid: organization.uuid,
-            payload: { name: trimmedName },
+            payload: {
+              ...(nameChanged ? { name: trimmedName } : {}),
+              ...(slugChanged ? { slug: normalizedSlug } : {}),
+            },
           });
         }
         updated = await applyLogoChanges(updated);
@@ -147,7 +166,7 @@ export function OrganizationModal({ mode, organization, onClose, onSuccess }: Or
               {isEdit ? 'Edit workspace' : 'Create workspace'}
             </h2>
             <p className="text-xs text-muted">
-              {isEdit ? 'Update the workspace name and logo.' : 'Add a new workspace for your team.'}
+              {isEdit ? 'Update the workspace name, slug, and logo.' : 'Add a new workspace for your team.'}
             </p>
           </div>
           <button
@@ -194,6 +213,24 @@ export function OrganizationModal({ mode, organization, onClose, onSuccess }: Or
               autoComplete="off"
             />
           </label>
+
+          {isEdit ? (
+            <label className="grid gap-1 text-sm">
+              <span className="font-medium text-foreground">Slug</span>
+              <Input
+                value={slug}
+                onChange={(event) => setSlug(normalizeOrganizationSlug(event.target.value))}
+                placeholder="acme-inc"
+                autoComplete="off"
+                spellCheck={false}
+              />
+              {!isSlugValid && normalizedSlug.length > 0 ? (
+                <span className="text-xs text-red-400">Use lowercase letters, numbers, and hyphens.</span>
+              ) : (
+                <span className="text-xs text-muted">Used in URLs and internal references.</span>
+              )}
+            </label>
+          ) : null}
 
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <Button type="button" variant="outline" onClick={onClose} disabled={loading} className="sm:w-auto">

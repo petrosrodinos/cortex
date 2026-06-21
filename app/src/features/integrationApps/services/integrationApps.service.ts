@@ -88,6 +88,19 @@ export const disableIntegrationAppsToolkit = async (organizationUuid: string, to
   }
 };
 
+export const disconnectIntegrationAppsAccount = async (
+  organizationUuid: string,
+  connectedAccountId: string,
+): Promise<void> => {
+  try {
+    await axiosInstance.delete(
+      ApiRoutes.organizations.integrationAppsAccount(organizationUuid, connectedAccountId),
+    );
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to remove connection.');
+  }
+};
+
 export const verifyIntegrationAppsCallback = async (
   organizationUuid: string,
   toolkitSlug: string,

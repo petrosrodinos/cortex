@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Building2, Check, ChevronsUpDown, Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Building2, Check, ChevronsUpDown, Plus, Settings2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Routes } from '@/routes/routes';
 import { useAuthStore } from '@/stores/auth';
 import { useOrganizationStore } from '@/stores/organization';
 import { useCreateOrganization, useGetOrganizations, useSwitchOrganization } from '@/features/organizations/hooks/use-organizations';
@@ -58,6 +60,11 @@ export default function OrganizationSwitcher({ collapsed = false }: Organization
   }, [currentOrganization?.name]);
 
   async function switchOrganization(organizationUuid: string) {
+    if (organizationUuid === currentOrganization?.uuid) {
+      setOpen(false);
+      return;
+    }
+
     const organization = organizations.find((item) => item.uuid === organizationUuid);
     if (!organization) return;
 
@@ -123,9 +130,9 @@ export default function OrganizationSwitcher({ collapsed = false }: Organization
               <span className="block truncate text-[13px] font-medium leading-tight text-foreground">
                 {currentOrganization?.name ?? 'No organization'}
               </span>
-              <span className="block truncate text-[11px] leading-tight text-muted">
-                {currentOrganization ? 'Organization context' : 'Select an organization'}
-              </span>
+              {currentOrganization?.slug ? (
+                <span className="block truncate text-[11px] leading-tight text-muted">{currentOrganization.slug}</span>
+              ) : null}
             </span>
             <ChevronsUpDown className="h-4 w-4 shrink-0 text-muted" />
           </>
@@ -159,7 +166,10 @@ export default function OrganizationSwitcher({ collapsed = false }: Organization
                       organization.name.slice(0, 2).toUpperCase()
                     )}
                   </span>
-                  <span className="min-w-0 flex-1 truncate">{organization.name}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate">{organization.name}</span>
+                    <span className="block truncate text-xs text-muted">{organization.slug}</span>
+                  </span>
                   {organization.uuid === currentOrganization?.uuid && <Check className="h-4 w-4 text-accent" />}
                 </button>
               ))
@@ -200,14 +210,24 @@ export default function OrganizationSwitcher({ collapsed = false }: Organization
                 </div>
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={() => setShowCreate(true)}
-                className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm text-muted hover:bg-surface-secondary hover:text-foreground"
-              >
-                <Plus className="h-4 w-4" />
-                Create organization
-              </button>
+              <>
+                <Link
+                  to={Routes.dashboard.organizations}
+                  onClick={() => setOpen(false)}
+                  className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm text-muted hover:bg-surface-secondary hover:text-foreground"
+                >
+                  <Settings2 className="h-4 w-4" />
+                  Manage
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setShowCreate(true)}
+                  className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm text-muted hover:bg-surface-secondary hover:text-foreground"
+                >
+                  <Plus className="h-4 w-4" />
+                  Create organization
+                </button>
+              </>
             )}
           </div>
 
