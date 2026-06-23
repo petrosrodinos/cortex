@@ -2,6 +2,7 @@ import type {
   IntegrationAppsConnectionTier,
   IntegrationAppsToolkit,
 } from '@/features/integration-apps/interfaces/integrationApps.interface';
+import type { ConversationAgentToolkit } from '@/features/conversations/interfaces/conversation.interfaces';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import {
   getConnectionTierFromAccount,
@@ -25,6 +26,30 @@ export type ConversationToolItem =
       toolkit: IntegrationAppsToolkit;
       connectionTier: IntegrationAppsConnectionTier;
     };
+
+export function mapConversationAgentToolkitToIntegrationAppsToolkit(
+  toolkit: ConversationAgentToolkit,
+): IntegrationAppsToolkit {
+  return {
+    uuid: toolkit.uuid,
+    slug: toolkit.slug,
+    name: toolkit.name,
+    description: toolkit.description,
+    logo_url: toolkit.logo_url,
+    categories: [],
+    connection_tiers: toolkit.connection_tiers,
+    is_connected: toolkit.is_connected,
+    connected_accounts: toolkit.connected_accounts.map((account, index) => ({
+      id: `${toolkit.slug}:${account.connection_tier}:${index}`,
+      account_id: `${toolkit.slug}:${index}`,
+      label: account.account_label,
+      status: 'ACTIVE',
+      connection_tier: account.connection_tier,
+    })),
+    is_org_enabled: true,
+    tool_count: toolkit.tool_count,
+  };
+}
 
 function getToolkitConnectedTiers(
   toolkit: IntegrationAppsToolkit,

@@ -49,7 +49,7 @@ import {
   type ConversationDraftEditorHandle,
   type DraftPart,
 } from './components/input/conversation-draft-editor';
-import { getAutoSelectableToolkitBindings } from './components/input/conversation-tool-items.utils';
+import { getAutoSelectableToolkitBindings, mapConversationAgentToolkitToIntegrationAppsToolkit } from './components/input/conversation-tool-items.utils';
 import {
   bindingsToTierMap,
   type ToolkitBinding,
@@ -96,20 +96,7 @@ const ConversationsPage: FC = () => {
   const { data: agentTools } = useGetConversationAgentTools(organizationUuid);
   const { data: aiProviders = [], isLoading: aiProvidersLoading } = useGetAiProviders(organizationUuid);
   const conversationToolkits = useMemo<IntegrationAppsToolkit[]>(
-    () =>
-      (agentTools?.toolkits ?? []).map((toolkit) => ({
-        uuid: toolkit.uuid,
-        slug: toolkit.slug,
-        name: toolkit.name,
-        description: toolkit.description,
-        logo_url: toolkit.logo_url,
-        categories: [],
-        connection_tiers: toolkit.connection_tiers,
-        is_connected: toolkit.is_connected,
-        connected_accounts: toolkit.connected_accounts,
-        is_org_enabled: true,
-        tool_count: toolkit.tool_count,
-      })),
+    () => (agentTools?.toolkits ?? []).map(mapConversationAgentToolkitToIntegrationAppsToolkit),
     [agentTools?.toolkits],
   );
   const { data: messages = [], isLoading: messagesLoading } = useGetMessages(organizationUuid, conversationUuid);
@@ -687,7 +674,8 @@ const ConversationsPage: FC = () => {
         ) : (
           <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
             <ConversationHeader
-              title={activeConversation?.title || 'Untitled chat'}
+              title={activeConversation?.title ?? ''}
+              isTitleLoading={conversationsLoading && !!conversationUuid && !activeConversation}
               onRename={(title) => handleRename(conversationUuid, title)}
               onDelete={() => handleDeleteRequest(conversationUuid)}
               onOpenDocuments={() => setDocumentsOpen(true)}

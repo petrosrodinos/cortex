@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState, type FC, type KeyboardEvent } from 'react';
+import { Skeleton } from '@heroui/react';
 import { FileText, Menu, MoreHorizontal, PanelLeftOpen, Pencil, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ConversationHeaderProps {
   title: string;
+  isTitleLoading?: boolean;
   onRename: (title: string) => void;
   onDelete: () => void;
   onOpenDocuments: () => void;
@@ -14,6 +16,7 @@ interface ConversationHeaderProps {
 
 export const ConversationHeader: FC<ConversationHeaderProps> = ({
   title,
+  isTitleLoading = false,
   onRename,
   onDelete,
   onOpenDocuments,
@@ -108,6 +111,8 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({
           onKeyDown={handleKeyDown}
           className="my-0.5 min-w-0 flex-1 rounded-md border border-accent/50 bg-surface-secondary px-2 py-1.5 text-sm font-medium text-foreground outline-none"
         />
+      ) : isTitleLoading ? (
+        <Skeleton className="h-5 w-40 min-w-0 flex-1 rounded" aria-hidden="true" />
       ) : (
         <h1 className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">{title || 'Untitled chat'}</h1>
       )}

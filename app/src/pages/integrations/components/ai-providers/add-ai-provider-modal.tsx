@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ArrowLeft, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import type { AiProviderType } from '@/features/integrations/constants/ai-provider-types';
 import {
   CATALOG_PROVIDER_ICON_META,
@@ -9,7 +8,12 @@ import {
   catalogProviderLabels,
 } from '@/features/integrations/constants/provider-metadata';
 import { useCreateAiProvider } from '@/features/ai-providers/hooks/use-ai-providers';
-import { AiProviderModelSelect, DefaultAiProviderToggle } from './ai-provider-form-controls';
+import {
+  AiProviderApiKeyField,
+  AiProviderModelSelect,
+  AiProviderUsageLimitsFields,
+  DefaultAiProviderToggle,
+} from './ai-provider-form-controls';
 
 interface AddAiProviderModalProps {
   organizationUuid: string;
@@ -82,37 +86,15 @@ export function AddAiProviderModal({
         <form onSubmit={submit} className="grid gap-4 p-4">
           <AiProviderModelSelect provider={provider} value={defaultModel} onChange={setDefaultModel} />
 
-          <label className="grid gap-1 text-sm">
-            <span className="font-medium text-foreground">API key</span>
-            <Input
-              type="password"
-              value={apiKey}
-              onChange={(event) => setApiKey(event.target.value)}
-              placeholder="sk-..."
-              autoComplete="off"
-            />
-          </label>
+          <AiProviderApiKeyField value={apiKey} onChange={setApiKey} />
 
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className="grid gap-1 text-sm">
-              <span className="font-medium text-foreground">Token limit (optional)</span>
-              <Input
-                type="number"
-                value={usageLimitTokens}
-                onChange={(event) => setUsageLimitTokens(event.target.value)}
-                placeholder="1000000"
-              />
-            </label>
-            <label className="grid gap-1 text-sm">
-              <span className="font-medium text-foreground">Cost limit USD (optional)</span>
-              <Input
-                type="number"
-                value={usageLimitCostUsd}
-                onChange={(event) => setUsageLimitCostUsd(event.target.value)}
-                placeholder="50"
-              />
-            </label>
-          </div>
+          <AiProviderUsageLimitsFields
+            usageLimitTokens={usageLimitTokens}
+            usageLimitCostUsd={usageLimitCostUsd}
+            onUsageLimitTokensChange={setUsageLimitTokens}
+            onUsageLimitCostUsdChange={setUsageLimitCostUsd}
+            optional
+          />
 
           <DefaultAiProviderToggle
             checked={isDefault}

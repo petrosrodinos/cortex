@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import type { AiProviderType } from '@/features/integrations/constants/ai-provider-types';
 import type { CatalogProvider } from '@/features/integrations/constants/catalog-provider';
 import {
@@ -25,7 +24,11 @@ import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers
 import { useDeleteAiProvider, useUpdateAiProvider } from '@/features/ai-providers/hooks/use-ai-providers';
 import { Routes } from '@/routes/routes';
 import { cn } from '@/lib/utils';
-import { AiProviderModelSelect } from './ai-provider-form-controls';
+import {
+  AiProviderApiKeyField,
+  AiProviderModelSelect,
+  AiProviderUsageLimitsFields,
+} from './ai-provider-form-controls';
 
 interface AiProviderDetailProps {
   organizationUuid: string;
@@ -328,37 +331,18 @@ export function AiProviderDetail({ organizationUuid, provider }: AiProviderDetai
                 value={defaultModel}
                 onChange={setDefaultModel}
               />
-              <label className="grid gap-1.5 text-sm">
-                <span className="font-medium text-foreground">New API key</span>
-                <span className="text-xs text-muted">Leave blank to keep the current key</span>
-                <Input
-                  type="password"
-                  value={apiKey}
-                  onChange={(event) => setApiKey(event.target.value)}
-                  placeholder="sk-..."
-                  autoComplete="off"
-                />
-              </label>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <label className="grid gap-1.5 text-sm">
-                  <span className="font-medium text-foreground">Token limit</span>
-                  <Input
-                    type="number"
-                    value={usageLimitTokens}
-                    onChange={(event) => setUsageLimitTokens(event.target.value)}
-                    placeholder="1000000"
-                  />
-                </label>
-                <label className="grid gap-1.5 text-sm">
-                  <span className="font-medium text-foreground">Cost limit (USD)</span>
-                  <Input
-                    type="number"
-                    value={usageLimitCostUsd}
-                    onChange={(event) => setUsageLimitCostUsd(event.target.value)}
-                    placeholder="50"
-                  />
-                </label>
-              </div>
+              <AiProviderApiKeyField
+                value={apiKey}
+                onChange={setApiKey}
+                label="New API key"
+                description="Leave blank to keep the current key"
+              />
+              <AiProviderUsageLimitsFields
+                usageLimitTokens={usageLimitTokens}
+                usageLimitCostUsd={usageLimitCostUsd}
+                onUsageLimitTokensChange={setUsageLimitTokens}
+                onUsageLimitCostUsdChange={setUsageLimitCostUsd}
+              />
             </div>
 
             <div className="flex flex-col-reverse gap-2 border-t border-border px-5 py-4 sm:flex-row sm:justify-end">

@@ -44,7 +44,7 @@ export const ConversationModelMenu: FC<ConversationModelMenuProps> = ({
   );
 
   return (
-    <div className="w-[240px] p-1">
+    <div className="max-h-[min(220px,38dvh)] w-[240px] overflow-y-auto overscroll-y-contain p-1">
       <Dropdown.Menu
         aria-label="Select model"
         onAction={(key) => {
@@ -93,8 +93,9 @@ export const ConversationModelMenu: FC<ConversationModelMenuProps> = ({
                 <Label className="min-w-0 flex-1 truncate text-sm">{label}</Label>
                 <Dropdown.SubmenuIndicator className="h-4 w-4 shrink-0 text-muted" />
               </Dropdown.Item>
-              <Dropdown.Popover className="z-50 min-w-[200px] overflow-hidden rounded-xl border border-border bg-surface p-1 shadow-lg">
-                <Dropdown.Menu
+              <Dropdown.Popover className="z-50 min-w-[200px] overflow-hidden rounded-xl border border-border bg-surface shadow-lg">
+                <div className="max-h-[min(200px,32dvh)] overflow-y-auto overscroll-y-contain p-1">
+                  <Dropdown.Menu
                   aria-label={`${label} models`}
                   selectionMode="single"
                   selectedKeys={modelSelectedKeys}
@@ -121,6 +122,7 @@ export const ConversationModelMenu: FC<ConversationModelMenuProps> = ({
                     );
                   })}
                 </Dropdown.Menu>
+                </div>
               </Dropdown.Popover>
             </Dropdown.SubmenuTrigger>
           );
