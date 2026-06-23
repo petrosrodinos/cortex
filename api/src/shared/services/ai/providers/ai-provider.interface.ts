@@ -1,6 +1,4 @@
-import type { LanguageModel } from 'ai';
-import type { ToolLoopAgent } from 'ai';
-import type { ToolSet } from 'ai';
+import type { LanguageModel, StopCondition, ToolLoopAgent, ToolSet } from 'ai';
 
 export interface AiProviderAdapter {
   createModel(apiKey: string, modelId: string): LanguageModel;
@@ -9,7 +7,7 @@ export interface AiProviderAdapter {
     model: LanguageModel,
     instructions: string,
     options?: {
-      stopWhen?: (options: { steps: unknown[] }) => boolean;
+      stopWhen?: StopCondition<T>;
       onStepFinish?: (step: unknown) => Promise<void> | void;
     },
   ): ToolLoopAgent<never, T>;

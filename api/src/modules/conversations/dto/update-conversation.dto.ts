@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
-import { AiProviderType } from 'generated/prisma';
+import { AiProviderType, AiResearchMode } from 'generated/prisma';
 
 export class UpdateConversationDto {
   @ApiPropertyOptional()
@@ -19,4 +19,9 @@ export class UpdateConversationDto {
   @IsString()
   @MinLength(1)
   ai_model?: string;
+
+  @ApiPropertyOptional({ enum: AiResearchMode })
+  @IsOptional()
+  @IsEnum(AiResearchMode)
+  ai_research_mode?: AiResearchMode;
 }

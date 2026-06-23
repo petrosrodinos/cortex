@@ -115,6 +115,12 @@ enum AiProviderType {
   GROK
 }
 
+enum AiResearchMode {
+  DEFAULT
+  SEARCH
+  DEEP_RESEARCH
+}
+
 enum MessageRole {
   USER
   ASSISTANT
@@ -609,6 +615,7 @@ model Conversation {
   title      String?
   ai_provider AiProviderType?
   ai_model    String?
+  ai_research_mode AiResearchMode @default(DEFAULT)
   composio_session_id String?  @unique
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma } from 'generated/prisma';
+import { AiResearchMode, Prisma } from 'generated/prisma';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { OrganizationsService } from '@/modules/organizations/organizations.service';
 import { ConversationMemoryService } from '@/shared/services/ai/memory/conversation-memory.service';
@@ -7,6 +7,10 @@ import { GcsService } from '@/integrations/storage/gcs/services/gcs.service';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { UpdateConversationDto } from './dto/update-conversation.dto';
 import { collectDocumentUuids } from './utils/conversation-document.utils';
+import {
+  normalizeResearchModeForModel,
+  supportsResearchMode,
+} from '@/shared/services/ai/providers/model-capabilities';
 
 @Injectable()
 export class ConversationsService {
@@ -62,6 +66,7 @@ export class ConversationsService {
     if (dto.title !== undefined) {
       data.title = dto.title.trim();
     }
+
     if (dto.ai_provider !== undefined) {
       const connected = await this.prisma.aiProvider.findFirst({
         where: { org_uuid: organizationUuid, provider: dto.ai_provider },
@@ -73,6 +78,37 @@ export class ConversationsService {
       }
       data.ai_provider = dto.ai_provider;
       data.ai_model = dto.ai_model ?? connected.default_model;
+    } else if (dto.ai_model !== undefined) {
+      if (!conversation.ai_provider) {
+        throw new BadRequestException('Select a provider before choosing a model.');
+      }
+      data.ai_model = dto.ai_model;
+    }
+
+    if (dto.ai_research_mode !== undefined) {
+      const providerForMode = (data.ai_provider as typeof conversation.ai_provider) ?? conversation.ai_provider;
+      const modelForMode = (data.ai_model as string | undefined) ?? conversation.ai_model;
+      if (
+        dto.ai_research_mode !== AiResearchMode.DEFAULT &&
+        !supportsResearchMode(providerForMode, modelForMode, dto.ai_research_mode)
+      ) {
+        throw new BadRequestException(
+          'The selected model does not support this research mode.',
+        );
+      }
+      data.ai_research_mode = dto.ai_research_mode;
+    }
+
+    const resolvedProvider = (data.ai_provider as typeof conversation.ai_provider) ?? conversation.ai_provider;
+    const resolvedModel = (data.ai_model as string | undefined) ?? conversation.ai_model;
+    if (resolvedProvider && resolvedModel) {
+      data.ai_research_mode = normalizeResearchModeForModel(
+        resolvedProvider,
+        resolvedModel,
+        (data.ai_research_mode as AiResearchMode | undefined) ??
+          dto.ai_research_mode ??
+          conversation.ai_research_mode,
+      );
     }
 
     return this.prisma.conversation.update({

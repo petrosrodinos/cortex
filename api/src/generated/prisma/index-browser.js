@@ -394,6 +394,7 @@ exports.Prisma.ConversationScalarFieldEnum = {
   title: 'title',
   ai_provider: 'ai_provider',
   ai_model: 'ai_model',
+  ai_research_mode: 'ai_research_mode',
   composio_session_id: 'composio_session_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -590,6 +591,12 @@ exports.AiProviderType = exports.$Enums.AiProviderType = {
   OPENAI: 'OPENAI',
   CLAUDE: 'CLAUDE',
   GROK: 'GROK'
+};
+
+exports.AiResearchMode = exports.$Enums.AiResearchMode = {
+  DEFAULT: 'DEFAULT',
+  SEARCH: 'SEARCH',
+  DEEP_RESEARCH: 'DEEP_RESEARCH'
 };
 
 exports.MessageRole = exports.$Enums.MessageRole = {

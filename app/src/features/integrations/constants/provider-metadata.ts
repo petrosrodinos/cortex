@@ -79,26 +79,73 @@ export const CATALOG_PROVIDER_ICON_META: Record<CatalogProvider, ProviderVisualM
 
 export const aiProviderModelOptions: Record<
   (typeof AiProviderTypes)[keyof typeof AiProviderTypes],
-  { value: string; label: string }[]
+  { value: string; label: string; search?: boolean; deepResearch?: boolean }[]
 > = {
   [AiProviderTypes.OPENAI]: [
-    { value: 'gpt-4o', label: 'GPT-4o' },
-    { value: 'gpt-4o-mini', label: 'GPT-4o Mini' },
-    { value: 'gpt-4-turbo', label: 'GPT-4 Turbo' },
-    { value: 'gpt-4', label: 'GPT-4' },
+    { value: 'gpt-4o', label: 'GPT-4o', search: true, deepResearch: true },
+    { value: 'gpt-4o-mini', label: 'GPT-4o Mini', search: true },
+    { value: 'gpt-4-turbo', label: 'GPT-4 Turbo', search: true, deepResearch: true },
+    { value: 'gpt-4', label: 'GPT-4', search: true },
     { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
   ],
   [AiProviderTypes.CLAUDE]: [
-    { value: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4' },
-    { value: 'claude-3-5-sonnet-latest', label: 'Claude 3.5 Sonnet' },
-    { value: 'claude-3-5-haiku-latest', label: 'Claude 3.5 Haiku' },
-    { value: 'claude-3-opus-latest', label: 'Claude 3 Opus' },
+    { value: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4', search: true, deepResearch: true },
+    { value: 'claude-3-5-sonnet-latest', label: 'Claude 3.5 Sonnet', search: true, deepResearch: true },
+    { value: 'claude-3-5-haiku-latest', label: 'Claude 3.5 Haiku', search: true },
+    { value: 'claude-3-opus-latest', label: 'Claude 3 Opus', search: true, deepResearch: true },
   ],
   [AiProviderTypes.GROK]: [
-    { value: 'grok-beta', label: 'Grok Beta' },
-    { value: 'grok-pro', label: 'Grok Pro' },
+    { value: 'grok-beta', label: 'Grok Beta', search: true },
+    { value: 'grok-pro', label: 'Grok Pro', search: true, deepResearch: true },
   ],
 };
+
+export const AiResearchModes = {
+  DEFAULT: 'DEFAULT',
+  SEARCH: 'SEARCH',
+  DEEP_RESEARCH: 'DEEP_RESEARCH',
+} as const;
+
+export type AiResearchMode = (typeof AiResearchModes)[keyof typeof AiResearchModes];
+
+export type ModelCapabilities = {
+  search: boolean;
+  deepResearch: boolean;
+};
+
+export function getModelCapabilities(
+  provider?: string | null,
+  model?: string | null,
+): ModelCapabilities {
+  if (!provider || !model) {
+    return { search: false, deepResearch: false };
+  }
+
+  const options = aiProviderModelOptions[provider as keyof typeof aiProviderModelOptions];
+  const matched = options?.find((option) => option.value === model);
+
+  return {
+    search: matched?.search ?? false,
+    deepResearch: matched?.deepResearch ?? false,
+  };
+}
+
+export function supportsResearchMode(
+  provider: string | null | undefined,
+  model: string | null | undefined,
+  mode: AiResearchMode,
+): boolean {
+  if (mode === AiResearchModes.DEFAULT) {
+    return true;
+  }
+
+  const capabilities = getModelCapabilities(provider, model);
+  if (mode === AiResearchModes.SEARCH) {
+    return capabilities.search;
+  }
+
+  return capabilities.deepResearch;
+}
 
 export const aiProviderDefaultModels: Record<(typeof AiProviderTypes)[keyof typeof AiProviderTypes], string> = {
   [AiProviderTypes.OPENAI]: aiProviderModelOptions[AiProviderTypes.OPENAI][0].value,

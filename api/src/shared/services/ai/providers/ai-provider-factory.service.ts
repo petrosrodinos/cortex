@@ -2,18 +2,21 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { EncryptionService } from '@/shared/utils/encryption.service';
-import { AiProviderType } from 'generated/prisma';
+import { AiProviderType, AiResearchMode } from 'generated/prisma';
 import type { LanguageModel, ToolLoopAgent, ToolSet } from 'ai';
+import { stepCountIs } from 'ai';
 import type { AiProviderAdapter } from './ai-provider.interface';
 import { OpenAiProviderAdapter } from './openai-provider';
 import { ClaudeProviderAdapter } from './claude-provider';
 import { GrokProviderAdapter } from './grok-provider';
+import { buildProviderResearchTools } from './provider-research-tools';
 
 export interface ResolvedAiProvider {
   provider: AiProviderType;
   modelId: string;
   model: LanguageModel;
   adapter: AiProviderAdapter;
+  apiKey: string;
 }
 
 @Injectable()
@@ -46,6 +49,7 @@ export class AiProviderFactoryService {
           modelId,
           model: adapter.createModel(apiKey, modelId),
           adapter,
+          apiKey,
         };
       }
       // Requested provider is not connected — fall back to org default below.
@@ -64,6 +68,7 @@ export class AiProviderFactoryService {
         modelId: record.default_model,
         model: adapter.createModel(apiKey, record.default_model),
         adapter,
+        apiKey,
       };
     }
 
@@ -77,6 +82,7 @@ export class AiProviderFactoryService {
       modelId: 'gpt-4o-mini',
       model: this.openai.createModel(fallbackKey, 'gpt-4o-mini'),
       adapter: this.openai,
+      apiKey: fallbackKey,
     };
   }
 
@@ -85,10 +91,25 @@ export class AiProviderFactoryService {
     tools: T,
     instructions: string,
     options?: {
+      researchMode?: AiResearchMode;
       onStepFinish?: (step: unknown) => Promise<void> | void;
     },
   ): ToolLoopAgent<never, T> {
-    return resolved.adapter.createAgent(tools, resolved.model, instructions, options);
+    const researchMode = options?.researchMode ?? AiResearchMode.DEFAULT;
+    const researchTools = buildProviderResearchTools(
+      resolved.provider,
+      resolved.apiKey,
+      researchMode,
+      resolved.modelId,
+    );
+    const mergedTools = { ...tools, ...researchTools } as T;
+    const stopWhen =
+      researchMode === AiResearchMode.DEEP_RESEARCH ? stepCountIs(40) : stepCountIs(20);
+
+    return resolved.adapter.createAgent(mergedTools, resolved.model, instructions, {
+      stopWhen,
+      onStepFinish: options?.onStepFinish,
+    });
   }
 
   async resolveOpenAiApiKey(organizationUuid: string): Promise<string | null> {

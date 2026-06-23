@@ -178,6 +178,7 @@ export class MessagesService {
           toolkitConnectionTiers: toolkitConnectionTiers ?? undefined,
           aiProvider: conversation.ai_provider ?? undefined,
           aiModel: conversation.ai_model ?? undefined,
+          aiResearchMode: conversation.ai_research_mode ?? undefined,
           connectionTierChoices: awaitingConnectionTier ? ambiguousChoices : undefined,
         } as object,
       },
@@ -198,6 +199,7 @@ export class MessagesService {
           toolkitConnectionTiers,
           aiProvider: conversation.ai_provider,
           aiModel: conversation.ai_model,
+          aiResearchMode: conversation.ai_research_mode,
         },
         {
           jobId: `run-${execution.uuid}`,

@@ -10,7 +10,11 @@ import { Routes } from '@/routes/routes';
 import { RoleTypes } from '@/features/user/interfaces/user.interface';
 import { useGetIntegrations } from '@/features/integrations/common/hooks/use-integrations';
 import { useGetAiProviders } from '@/features/ai-providers/hooks/use-ai-providers';
-import { aiProviderDefaultModels } from '@/features/integrations/constants/provider-metadata';
+import {
+  aiProviderDefaultModels,
+  AiResearchModes,
+  type AiResearchMode,
+} from '@/features/integrations/constants/provider-metadata';
 import type { AiProviderType } from '@/features/integrations/constants/ai-provider-types';
 import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import {
@@ -149,6 +153,9 @@ const ConversationsPage: FC = () => {
       ? defaultConnectedProvider.default_model ||
         aiProviderDefaultModels[defaultConnectedProvider.provider as AiProviderType]
       : null);
+  const selectedResearchMode =
+    (activeConversation?.ai_research_mode as AiResearchMode | null | undefined) ??
+    AiResearchModes.DEFAULT;
 
   const handleModelSelect = (provider: AiProviderType, model: string) => {
     if (!conversationUuid) {
@@ -158,6 +165,16 @@ const ConversationsPage: FC = () => {
       conversationUuid,
       ai_provider: provider,
       ai_model: model,
+    });
+  };
+
+  const handleResearchModeChange = (mode: AiResearchMode) => {
+    if (!conversationUuid) {
+      return;
+    }
+    void updateConversation.mutateAsync({
+      conversationUuid,
+      ai_research_mode: mode,
     });
   };
 
@@ -729,6 +746,7 @@ const ConversationsPage: FC = () => {
                 aiProviders={aiProviders}
                 selectedProvider={selectedProvider}
                 selectedModel={selectedModel}
+                selectedResearchMode={selectedResearchMode}
                 disabled={isChatInputDisabled}
                 isUploading={uploadDocument.isPending}
                 draftEditorRef={draftEditorRef}
@@ -740,6 +758,7 @@ const ConversationsPage: FC = () => {
                 onIntegrationSelectionChange={setSelectedIntegrationUuids}
                 onToolkitSelectionChange={setSelectedToolkitBindings}
                 onModelSelect={handleModelSelect}
+                onResearchModeChange={handleResearchModeChange}
               />
             )}
           </div>

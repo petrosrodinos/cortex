@@ -8,7 +8,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { Prisma } from 'generated/prisma';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
-import { AgentExecutionStatus, AiProviderType } from 'generated/prisma';
+import { AgentExecutionStatus, AiProviderType, AiResearchMode } from 'generated/prisma';
 import { OrganizationsService } from '@/modules/organizations/organizations.service';
 import { AGENT_RUN_QUEUE } from '@/core/queues/queues.constants';
 import type { AgentRunJobData } from '@/core/queues/processors/agent.processor';
@@ -80,6 +80,7 @@ export class ExecutionsService {
       toolkitConnectionTiers?: Record<string, ComposioConnectionTier>;
       aiProvider?: AiProviderType | null;
       aiModel?: string | null;
+      aiResearchMode?: AiResearchMode | null;
     };
 
     await this.prisma.agentExecution.update({
@@ -101,6 +102,7 @@ export class ExecutionsService {
         toolkitConnectionTiers: input.toolkitConnectionTiers,
         aiProvider: input.aiProvider,
         aiModel: input.aiModel,
+        aiResearchMode: input.aiResearchMode,
         resumeApprovals: (input.approvalRequests ?? []).map((request) => ({
           approvalId: request.approvalId,
           approved: true,
@@ -171,6 +173,7 @@ export class ExecutionsService {
       connectionTierChoices?: ToolkitConnectionTierChoice[];
       aiProvider?: AiProviderType | null;
       aiModel?: string | null;
+      aiResearchMode?: AiResearchMode | null;
     };
 
     const providedTiers = normalizeToolkitConnectionTierMap(dto.choices);
@@ -221,6 +224,7 @@ export class ExecutionsService {
         toolkitConnectionTiers,
         aiProvider: input.aiProvider,
         aiModel: input.aiModel,
+        aiResearchMode: input.aiResearchMode,
       },
       {
         jobId: `run-${execution.uuid}`,

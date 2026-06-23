@@ -3,6 +3,7 @@ import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import {
   AgentExecutionStatus,
   AiProviderType,
+  AiResearchMode,
   MessageRole,
   OrganizationMemberStatus,
   ToolCallStatus,
@@ -36,6 +37,7 @@ import { DocumentReaderService } from '../documents/document-reader.service';
 import { CapabilitiesToolsService } from '../capabilities/capabilities-tools.service';
 import type { AgentToolScope } from '../tools/core/agent-tool-scope.utils';
 import { normalizeToolkitConnectionTierMap } from '../capabilities/toolkit-connection-tiers.utils';
+import { getResearchModeInstructions } from '../../providers/provider-research-tools';
 
 interface SavedExecutionInput {
   content?: string;
@@ -45,6 +47,7 @@ interface SavedExecutionInput {
   toolkitConnectionTiers?: Record<string, string>;
   aiProvider?: AiProviderType | null;
   aiModel?: string | null;
+  aiResearchMode?: AiResearchMode | null;
   approvalRequests?: Array<{
     approvalId: string;
     toolName?: string;
@@ -93,6 +96,7 @@ export class AgentRunnerService {
       toolkitConnectionTiers?: Record<string, string>;
       aiProvider?: AiProviderType | null;
       aiModel?: string | null;
+      aiResearchMode?: AiResearchMode | null;
     },
   ): Promise<AgentRunResult> {
     const existingExecution = await this.prisma.agentExecution.findUnique({
@@ -222,6 +226,10 @@ export class AgentRunnerService {
         },
       );
 
+      const researchMode =
+        options?.aiResearchMode ??
+        savedInput.aiResearchMode ??
+        AiResearchMode.DEFAULT;
       const instructions = await this.buildInstructions(
         organizationUuid,
         userUuid,
@@ -231,11 +239,13 @@ export class AgentRunnerService {
         conversationId,
         executionUuid,
         toolScope,
+        researchMode,
       );
       const agent = this.providerFactory.createAgent(
         resolved,
         tools,
         instructions,
+        { researchMode },
       );
 
       const result = await agent.generate({
@@ -271,6 +281,9 @@ export class AgentRunnerService {
               integrationUuids: toolScope.integrationUuids,
               toolkitSlugs: toolScope.toolkitSlugs,
               toolkitConnectionTiers: toolScope.toolkitConnectionTiers,
+              aiProvider: savedInput.aiProvider ?? options?.aiProvider,
+              aiModel: savedInput.aiModel ?? options?.aiModel,
+              aiResearchMode: researchMode,
             } as object,
             tokens_used: usage.tokensUsed,
             cost_usd: usage.costUsd,
@@ -513,6 +526,7 @@ export class AgentRunnerService {
     conversationId: string,
     executionUuid: string,
     toolScope: AgentToolScope,
+    researchMode: AiResearchMode = AiResearchMode.DEFAULT,
   ) {
     const [instructions, capabilitiesPrompt] = await Promise.all([
       this.systemPromptBuilder.build(
@@ -532,6 +546,10 @@ export class AgentRunnerService {
     ]);
 
     const guidance: string[] = [capabilitiesPrompt];
+    const researchInstructions = getResearchModeInstructions(researchMode);
+    if (researchInstructions) {
+      guidance.push(researchInstructions);
+    }
 
     if (!messagesIncludeRecentToolContext(messagesForAgent)) {
       const recentToolContext = await this.loadRecentConversationToolContext(

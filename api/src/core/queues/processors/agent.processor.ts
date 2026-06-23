@@ -1,7 +1,7 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { AgentRunnerService } from '@/shared/services/ai/agents/runner/agent-runner.service';
-import { AiProviderType } from 'generated/prisma';
+import { AiProviderType, AiResearchMode } from 'generated/prisma';
 import { AGENT_RUN_QUEUE } from '../queues.constants';
 
 export interface AgentRunJobData {
@@ -16,6 +16,7 @@ export interface AgentRunJobData {
   toolkitConnectionTiers?: Record<string, string>;
   aiProvider?: AiProviderType | null;
   aiModel?: string | null;
+  aiResearchMode?: AiResearchMode | null;
   resumeApprovals?: Array<{ approvalId: string; approved: boolean }>;
 }
 
@@ -40,6 +41,7 @@ export class AgentProcessor extends WorkerHost {
         toolkitConnectionTiers: job.data.toolkitConnectionTiers,
         aiProvider: job.data.aiProvider,
         aiModel: job.data.aiModel,
+        aiResearchMode: job.data.aiResearchMode,
       },
     );
   }

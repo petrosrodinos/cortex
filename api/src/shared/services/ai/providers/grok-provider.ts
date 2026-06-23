@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { createOpenAI } from '@ai-sdk/openai';
 import { ToolLoopAgent, stepCountIs } from 'ai';
-import type { LanguageModel, ToolSet } from 'ai';
+import type { LanguageModel, StopCondition, ToolSet } from 'ai';
 import type { AiProviderAdapter } from './ai-provider.interface';
 
 const XAI_BASE_URL = 'https://api.x.ai/v1';
@@ -18,7 +18,7 @@ export class GrokProviderAdapter implements AiProviderAdapter {
     model: LanguageModel,
     instructions: string,
     options?: {
-      stopWhen?: (opts: { steps: unknown[] }) => boolean;
+      stopWhen?: StopCondition<T>;
       onStepFinish?: (step: unknown) => Promise<void> | void;
     },
   ) {

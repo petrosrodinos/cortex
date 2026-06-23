@@ -25,6 +25,7 @@ export interface Conversation {
   title: string | null;
   ai_provider?: string | null;
   ai_model?: string | null;
+  ai_research_mode?: string | null;
   created_at: string;
   updated_at: string;
   messages?: Message[];
@@ -34,6 +35,7 @@ export interface UpdateConversationPayload {
   title?: string;
   ai_provider?: string;
   ai_model?: string;
+  ai_research_mode?: string;
 }
 
 export interface MessageAttachment {

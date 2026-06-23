@@ -8,6 +8,7 @@ import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfa
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
 import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
 import type { AiProviderType } from '@/features/integrations/constants/ai-provider-types';
+import type { AiResearchMode } from '@/features/integrations/constants/provider-metadata';
 import {
   ConversationDraftEditor,
   draftPartsToPlainText,
@@ -23,8 +24,6 @@ export interface AttachedFile {
   filename: string;
   mimetype?: string;
 }
-
-import type { IntegrationAppsConnectionTier } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import type { ToolkitBinding } from '../../utils/conversation-toolkit-bindings.utils';
 
 interface ConversationInputProps {
@@ -38,6 +37,7 @@ interface ConversationInputProps {
   aiProviders: AiProvider[];
   selectedProvider?: string | null;
   selectedModel?: string | null;
+  selectedResearchMode?: AiResearchMode | null;
   disabled: boolean;
   isUploading: boolean;
   draftEditorRef?: Ref<ConversationDraftEditorHandle>;
@@ -49,6 +49,7 @@ interface ConversationInputProps {
   onIntegrationSelectionChange: (integrationUuids: string[]) => void;
   onToolkitSelectionChange: (toolkitBindings: ToolkitBinding[]) => void;
   onModelSelect: (provider: AiProviderType, model: string) => void;
+  onResearchModeChange: (mode: AiResearchMode) => void;
 }
 
 export const ConversationInput: FC<ConversationInputProps> = ({
@@ -62,6 +63,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   aiProviders,
   selectedProvider,
   selectedModel,
+  selectedResearchMode,
   disabled,
   isUploading,
   draftEditorRef,
@@ -73,6 +75,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   onIntegrationSelectionChange,
   onToolkitSelectionChange,
   onModelSelect,
+  onResearchModeChange,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const draftText = draftPartsToPlainText(draftParts);
@@ -122,11 +125,13 @@ export const ConversationInput: FC<ConversationInputProps> = ({
             aiProviders={aiProviders}
             selectedProvider={selectedProvider}
             selectedModel={selectedModel}
+            selectedResearchMode={selectedResearchMode}
             disabled={disabled || isUploading}
             onUpload={() => fileInputRef.current?.click()}
             onIntegrationSelectionChange={onIntegrationSelectionChange}
             onToolkitSelectionChange={onToolkitSelectionChange}
             onModelSelect={onModelSelect}
+            onResearchModeChange={onResearchModeChange}
           />
 
           <ConversationDraftEditor
