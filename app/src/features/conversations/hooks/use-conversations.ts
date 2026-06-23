@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
+import type { UpdateConversationPayload } from '../interfaces/conversation.interfaces';
 import {
   approveExecution,
   createConversation,
@@ -83,8 +84,11 @@ export function useUpdateConversation(organizationUuid?: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ conversationUuid, title }: { conversationUuid: string; title: string }) =>
-      updateConversation(organizationUuid as string, conversationUuid, title),
+    mutationFn: ({
+      conversationUuid,
+      ...payload
+    }: { conversationUuid: string } & UpdateConversationPayload) =>
+      updateConversation(organizationUuid as string, conversationUuid, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: conversationsQueryKey });
       toast({ title: 'Conversation updated', duration: 2000 });

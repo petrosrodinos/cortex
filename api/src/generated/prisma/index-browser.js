@@ -392,6 +392,8 @@ exports.Prisma.ConversationScalarFieldEnum = {
   org_uuid: 'org_uuid',
   user_uuid: 'user_uuid',
   title: 'title',
+  ai_provider: 'ai_provider',
+  ai_model: 'ai_model',
   composio_session_id: 'composio_session_id',
   created_at: 'created_at',
   updated_at: 'updated_at'

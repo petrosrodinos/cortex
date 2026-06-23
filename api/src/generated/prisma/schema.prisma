@@ -602,14 +602,16 @@ model AiProvider {
 }
 
 model Conversation {
-  id                  Int      @id @default(autoincrement())
-  uuid                String   @unique @default(uuid())
+  id                  Int             @id @default(autoincrement())
+  uuid                String          @unique @default(uuid())
   org_uuid            String
   user_uuid           String
   title               String?
-  composio_session_id String?  @unique
-  created_at          DateTime @default(now())
-  updated_at          DateTime @updatedAt
+  ai_provider         AiProviderType?
+  ai_model            String?
+  composio_session_id String?         @unique
+  created_at          DateTime        @default(now())
+  updated_at          DateTime        @updatedAt
 
   organization Organization     @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
   user         User             @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade)

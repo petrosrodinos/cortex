@@ -10,6 +10,8 @@ import { Routes } from '@/routes/routes';
 import { RoleTypes } from '@/features/user/interfaces/user.interface';
 import { useGetIntegrations } from '@/features/integrations/common/hooks/use-integrations';
 import { useGetAiProviders } from '@/features/ai-providers/hooks/use-ai-providers';
+import { aiProviderDefaultModels } from '@/features/integrations/constants/provider-metadata';
+import type { AiProviderType } from '@/features/integrations/constants/ai-provider-types';
 import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import {
   useApproveExecution,
@@ -133,6 +135,31 @@ const ConversationsPage: FC = () => {
     () => conversations.find((c) => c.uuid === conversationUuid),
     [conversations, conversationUuid],
   );
+
+  const defaultConnectedProvider = useMemo(
+    () =>
+      aiProviders.find((provider) => provider.is_default && provider.has_api_key) ??
+      aiProviders.find((provider) => provider.has_api_key),
+    [aiProviders],
+  );
+  const selectedProvider = activeConversation?.ai_provider ?? defaultConnectedProvider?.provider ?? null;
+  const selectedModel =
+    activeConversation?.ai_model ??
+    (defaultConnectedProvider
+      ? defaultConnectedProvider.default_model ||
+        aiProviderDefaultModels[defaultConnectedProvider.provider as AiProviderType]
+      : null);
+
+  const handleModelSelect = (provider: AiProviderType, model: string) => {
+    if (!conversationUuid) {
+      return;
+    }
+    void updateConversation.mutateAsync({
+      conversationUuid,
+      ai_provider: provider,
+      ai_model: model,
+    });
+  };
 
   const sortedConversations = useMemo(
     () => [...conversations].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()),
@@ -699,6 +726,9 @@ const ConversationsPage: FC = () => {
                 toolkits={conversationToolkits}
                 selectedIntegrationUuids={selectedIntegrationUuids}
                 selectedToolkitBindings={selectedToolkitBindings}
+                aiProviders={aiProviders}
+                selectedProvider={selectedProvider}
+                selectedModel={selectedModel}
                 disabled={isChatInputDisabled}
                 isUploading={uploadDocument.isPending}
                 draftEditorRef={draftEditorRef}
@@ -709,6 +739,7 @@ const ConversationsPage: FC = () => {
                 onRemoveFile={removeAttachedFile}
                 onIntegrationSelectionChange={setSelectedIntegrationUuids}
                 onToolkitSelectionChange={setSelectedToolkitBindings}
+                onModelSelect={handleModelSelect}
               />
             )}
           </div>

@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import {
   AgentExecutionStatus,
+  AiProviderType,
   MessageRole,
   OrganizationMemberStatus,
   ToolCallStatus,
@@ -42,6 +43,8 @@ interface SavedExecutionInput {
   integrationUuids?: string[];
   toolkitSlugs?: string[];
   toolkitConnectionTiers?: Record<string, string>;
+  aiProvider?: AiProviderType | null;
+  aiModel?: string | null;
   approvalRequests?: Array<{
     approvalId: string;
     toolName?: string;
@@ -88,6 +91,8 @@ export class AgentRunnerService {
       integrationUuids?: string[];
       toolkitSlugs?: string[];
       toolkitConnectionTiers?: Record<string, string>;
+      aiProvider?: AiProviderType | null;
+      aiModel?: string | null;
     },
   ): Promise<AgentRunResult> {
     const existingExecution = await this.prisma.agentExecution.findUnique({
@@ -162,8 +167,13 @@ export class AgentRunnerService {
         userUuid,
         organizationUuid,
       );
-      const resolved =
-        await this.providerFactory.resolveProvider(organizationUuid);
+      const resolved = await this.providerFactory.resolveProvider(
+        organizationUuid,
+        {
+          provider: options?.aiProvider ?? savedInput.aiProvider,
+          modelId: options?.aiModel ?? savedInput.aiModel,
+        },
+      );
       const messages = await this.memory.getMessages(
         organizationUuid,
         conversationId,

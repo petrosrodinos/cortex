@@ -1,6 +1,6 @@
 import axiosInstance from '@/config/api/axios';
 import { ApiRoutes } from '@/config/api/routes';
-import type { Conversation, Message, SendMessageResponse, AgentExecution, ConversationAgentTools } from '../interfaces/conversation.interfaces';
+import type { Conversation, Message, SendMessageResponse, AgentExecution, ConversationAgentTools, UpdateConversationPayload } from '../interfaces/conversation.interfaces';
 
 export const getConversations = async (organizationUuid: string): Promise<Conversation[]> => {
   try {
@@ -40,12 +40,12 @@ export const deleteConversation = async (organizationUuid: string, conversationU
 export const updateConversation = async (
   organizationUuid: string,
   conversationUuid: string,
-  title: string,
+  payload: UpdateConversationPayload,
 ): Promise<Conversation> => {
   try {
     const response = await axiosInstance.patch(
       ApiRoutes.organizations.conversation(organizationUuid, conversationUuid),
-      { title },
+      payload,
     );
     return response.data;
   } catch (error: any) {

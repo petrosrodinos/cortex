@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from 'generated/prisma';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { OrganizationsService } from '@/modules/organizations/organizations.service';
 import { ConversationMemoryService } from '@/shared/services/ai/memory/conversation-memory.service';
@@ -57,9 +58,26 @@ export class ConversationsService {
     await this.organizations.requireActiveMember(userUuid, organizationUuid);
     const conversation = await this.getConversation(userUuid, organizationUuid, conversationUuid);
 
+    const data: Prisma.ConversationUpdateInput = {};
+    if (dto.title !== undefined) {
+      data.title = dto.title.trim();
+    }
+    if (dto.ai_provider !== undefined) {
+      const connected = await this.prisma.aiProvider.findFirst({
+        where: { org_uuid: organizationUuid, provider: dto.ai_provider },
+      });
+      if (!connected) {
+        throw new BadRequestException(
+          `${dto.ai_provider} is not connected. Connect it in Integrations.`,
+        );
+      }
+      data.ai_provider = dto.ai_provider;
+      data.ai_model = dto.ai_model ?? connected.default_model;
+    }
+
     return this.prisma.conversation.update({
       where: { uuid: conversation.uuid },
-      data: { title: dto.title.trim() },
+      data,
     });
   }
 

@@ -175,10 +175,10 @@ export class MessagesService {
           documentUuids: dto.documentUuids ?? [],
           integrationUuids: toolScope.integrationUuids,
           toolkitSlugs: toolScope.toolkitSlugs,
-          ...(toolkitConnectionTiers ? { toolkitConnectionTiers } : {}),
-          ...(awaitingConnectionTier
-            ? { connectionTierChoices: ambiguousChoices }
-            : {}),
+          toolkitConnectionTiers: toolkitConnectionTiers ?? undefined,
+          aiProvider: conversation.ai_provider ?? undefined,
+          aiModel: conversation.ai_model ?? undefined,
+          connectionTierChoices: awaitingConnectionTier ? ambiguousChoices : undefined,
         } as object,
       },
     });
@@ -196,6 +196,8 @@ export class MessagesService {
           integrationUuids: toolScope.integrationUuids,
           toolkitSlugs: toolScope.toolkitSlugs,
           toolkitConnectionTiers,
+          aiProvider: conversation.ai_provider,
+          aiModel: conversation.ai_model,
         },
         {
           jobId: `run-${execution.uuid}`,

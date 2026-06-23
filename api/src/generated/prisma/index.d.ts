@@ -28888,6 +28888,8 @@ export namespace Prisma {
     org_uuid: string | null
     user_uuid: string | null
     title: string | null
+    ai_provider: $Enums.AiProviderType | null
+    ai_model: string | null
     composio_session_id: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -28899,6 +28901,8 @@ export namespace Prisma {
     org_uuid: string | null
     user_uuid: string | null
     title: string | null
+    ai_provider: $Enums.AiProviderType | null
+    ai_model: string | null
     composio_session_id: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -28910,6 +28914,8 @@ export namespace Prisma {
     org_uuid: number
     user_uuid: number
     title: number
+    ai_provider: number
+    ai_model: number
     composio_session_id: number
     created_at: number
     updated_at: number
@@ -28931,6 +28937,8 @@ export namespace Prisma {
     org_uuid?: true
     user_uuid?: true
     title?: true
+    ai_provider?: true
+    ai_model?: true
     composio_session_id?: true
     created_at?: true
     updated_at?: true
@@ -28942,6 +28950,8 @@ export namespace Prisma {
     org_uuid?: true
     user_uuid?: true
     title?: true
+    ai_provider?: true
+    ai_model?: true
     composio_session_id?: true
     created_at?: true
     updated_at?: true
@@ -28953,6 +28963,8 @@ export namespace Prisma {
     org_uuid?: true
     user_uuid?: true
     title?: true
+    ai_provider?: true
+    ai_model?: true
     composio_session_id?: true
     created_at?: true
     updated_at?: true
@@ -29051,6 +29063,8 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title: string | null
+    ai_provider: $Enums.AiProviderType | null
+    ai_model: string | null
     composio_session_id: string | null
     created_at: Date
     updated_at: Date
@@ -29081,6 +29095,8 @@ export namespace Prisma {
     org_uuid?: boolean
     user_uuid?: boolean
     title?: boolean
+    ai_provider?: boolean
+    ai_model?: boolean
     composio_session_id?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -29097,6 +29113,8 @@ export namespace Prisma {
     org_uuid?: boolean
     user_uuid?: boolean
     title?: boolean
+    ai_provider?: boolean
+    ai_model?: boolean
     composio_session_id?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -29110,6 +29128,8 @@ export namespace Prisma {
     org_uuid?: boolean
     user_uuid?: boolean
     title?: boolean
+    ai_provider?: boolean
+    ai_model?: boolean
     composio_session_id?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -29123,12 +29143,14 @@ export namespace Prisma {
     org_uuid?: boolean
     user_uuid?: boolean
     title?: boolean
+    ai_provider?: boolean
+    ai_model?: boolean
     composio_session_id?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type ConversationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "org_uuid" | "user_uuid" | "title" | "composio_session_id" | "created_at" | "updated_at", ExtArgs["result"]["conversation"]>
+  export type ConversationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "org_uuid" | "user_uuid" | "title" | "ai_provider" | "ai_model" | "composio_session_id" | "created_at" | "updated_at", ExtArgs["result"]["conversation"]>
   export type ConversationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -29159,6 +29181,8 @@ export namespace Prisma {
       org_uuid: string
       user_uuid: string
       title: string | null
+      ai_provider: $Enums.AiProviderType | null
+      ai_model: string | null
       composio_session_id: string | null
       created_at: Date
       updated_at: Date
@@ -29594,6 +29618,8 @@ export namespace Prisma {
     readonly org_uuid: FieldRef<"Conversation", 'String'>
     readonly user_uuid: FieldRef<"Conversation", 'String'>
     readonly title: FieldRef<"Conversation", 'String'>
+    readonly ai_provider: FieldRef<"Conversation", 'AiProviderType'>
+    readonly ai_model: FieldRef<"Conversation", 'String'>
     readonly composio_session_id: FieldRef<"Conversation", 'String'>
     readonly created_at: FieldRef<"Conversation", 'DateTime'>
     readonly updated_at: FieldRef<"Conversation", 'DateTime'>
@@ -35285,6 +35311,8 @@ export namespace Prisma {
     org_uuid: 'org_uuid',
     user_uuid: 'user_uuid',
     title: 'title',
+    ai_provider: 'ai_provider',
+    ai_model: 'ai_model',
     composio_session_id: 'composio_session_id',
     created_at: 'created_at',
     updated_at: 'updated_at'
@@ -37600,6 +37628,8 @@ export namespace Prisma {
     org_uuid?: StringFilter<"Conversation"> | string
     user_uuid?: StringFilter<"Conversation"> | string
     title?: StringNullableFilter<"Conversation"> | string | null
+    ai_provider?: EnumAiProviderTypeNullableFilter<"Conversation"> | $Enums.AiProviderType | null
+    ai_model?: StringNullableFilter<"Conversation"> | string | null
     composio_session_id?: StringNullableFilter<"Conversation"> | string | null
     created_at?: DateTimeFilter<"Conversation"> | Date | string
     updated_at?: DateTimeFilter<"Conversation"> | Date | string
@@ -37615,6 +37645,8 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrderInput | SortOrder
+    ai_provider?: SortOrderInput | SortOrder
+    ai_model?: SortOrderInput | SortOrder
     composio_session_id?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -37634,6 +37666,8 @@ export namespace Prisma {
     org_uuid?: StringFilter<"Conversation"> | string
     user_uuid?: StringFilter<"Conversation"> | string
     title?: StringNullableFilter<"Conversation"> | string | null
+    ai_provider?: EnumAiProviderTypeNullableFilter<"Conversation"> | $Enums.AiProviderType | null
+    ai_model?: StringNullableFilter<"Conversation"> | string | null
     created_at?: DateTimeFilter<"Conversation"> | Date | string
     updated_at?: DateTimeFilter<"Conversation"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
@@ -37648,6 +37682,8 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrderInput | SortOrder
+    ai_provider?: SortOrderInput | SortOrder
+    ai_model?: SortOrderInput | SortOrder
     composio_session_id?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -37667,6 +37703,8 @@ export namespace Prisma {
     org_uuid?: StringWithAggregatesFilter<"Conversation"> | string
     user_uuid?: StringWithAggregatesFilter<"Conversation"> | string
     title?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
+    ai_provider?: EnumAiProviderTypeNullableWithAggregatesFilter<"Conversation"> | $Enums.AiProviderType | null
+    ai_model?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
     composio_session_id?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"Conversation"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Conversation"> | Date | string
@@ -39974,6 +40012,8 @@ export namespace Prisma {
   export type ConversationCreateInput = {
     uuid?: string
     title?: string | null
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
     composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -39989,6 +40029,8 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title?: string | null
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
     composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -39999,6 +40041,8 @@ export namespace Prisma {
   export type ConversationUpdateInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40014,6 +40058,8 @@ export namespace Prisma {
     org_uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40027,6 +40073,8 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title?: string | null
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
     composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -40035,6 +40083,8 @@ export namespace Prisma {
   export type ConversationUpdateManyMutationInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40046,6 +40096,8 @@ export namespace Prisma {
     org_uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42236,6 +42288,13 @@ export namespace Prisma {
     _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
+  export type EnumAiProviderTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiProviderType | EnumAiProviderTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AiProviderType[] | ListEnumAiProviderTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AiProviderType[] | ListEnumAiProviderTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAiProviderTypeNullableFilter<$PrismaModel> | $Enums.AiProviderType | null
+  }
+
   export type MessageListRelationFilter = {
     every?: MessageWhereInput
     some?: MessageWhereInput
@@ -42252,6 +42311,8 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrder
+    ai_provider?: SortOrder
+    ai_model?: SortOrder
     composio_session_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -42267,6 +42328,8 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrder
+    ai_provider?: SortOrder
+    ai_model?: SortOrder
     composio_session_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -42278,6 +42341,8 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrder
+    ai_provider?: SortOrder
+    ai_model?: SortOrder
     composio_session_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -42285,6 +42350,16 @@ export namespace Prisma {
 
   export type ConversationSumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type EnumAiProviderTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiProviderType | EnumAiProviderTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AiProviderType[] | ListEnumAiProviderTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AiProviderType[] | ListEnumAiProviderTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAiProviderTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.AiProviderType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumAiProviderTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumAiProviderTypeNullableFilter<$PrismaModel>
   }
 
   export type EnumMessageRoleFilter<$PrismaModel = never> = {
@@ -44422,6 +44497,10 @@ export namespace Prisma {
     connect?: AgentExecutionWhereUniqueInput | AgentExecutionWhereUniqueInput[]
   }
 
+  export type NullableEnumAiProviderTypeFieldUpdateOperationsInput = {
+    set?: $Enums.AiProviderType | null
+  }
+
   export type OrganizationUpdateOneRequiredWithoutConversationsNestedInput = {
     create?: XOR<OrganizationCreateWithoutConversationsInput, OrganizationUncheckedCreateWithoutConversationsInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutConversationsInput
@@ -45229,6 +45308,23 @@ export namespace Prisma {
     _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumAiProviderTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiProviderType | EnumAiProviderTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AiProviderType[] | ListEnumAiProviderTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AiProviderType[] | ListEnumAiProviderTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAiProviderTypeNullableFilter<$PrismaModel> | $Enums.AiProviderType | null
+  }
+
+  export type NestedEnumAiProviderTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiProviderType | EnumAiProviderTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AiProviderType[] | ListEnumAiProviderTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AiProviderType[] | ListEnumAiProviderTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAiProviderTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.AiProviderType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumAiProviderTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumAiProviderTypeNullableFilter<$PrismaModel>
+  }
+
   export type NestedEnumMessageRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.MessageRole | EnumMessageRoleFieldRefInput<$PrismaModel>
     in?: $Enums.MessageRole[] | ListEnumMessageRoleFieldRefInput<$PrismaModel>
@@ -45457,6 +45553,8 @@ export namespace Prisma {
   export type ConversationCreateWithoutUserInput = {
     uuid?: string
     title?: string | null
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
     composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -45470,6 +45568,8 @@ export namespace Prisma {
     uuid?: string
     org_uuid: string
     title?: string | null
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
     composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -45685,6 +45785,8 @@ export namespace Prisma {
     org_uuid?: StringFilter<"Conversation"> | string
     user_uuid?: StringFilter<"Conversation"> | string
     title?: StringNullableFilter<"Conversation"> | string | null
+    ai_provider?: EnumAiProviderTypeNullableFilter<"Conversation"> | $Enums.AiProviderType | null
+    ai_model?: StringNullableFilter<"Conversation"> | string | null
     composio_session_id?: StringNullableFilter<"Conversation"> | string | null
     created_at?: DateTimeFilter<"Conversation"> | Date | string
     updated_at?: DateTimeFilter<"Conversation"> | Date | string
@@ -46107,6 +46209,8 @@ export namespace Prisma {
   export type ConversationCreateWithoutOrganizationInput = {
     uuid?: string
     title?: string | null
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
     composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -46120,6 +46224,8 @@ export namespace Prisma {
     uuid?: string
     user_uuid: string
     title?: string | null
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
     composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -49681,6 +49787,8 @@ export namespace Prisma {
   export type ConversationCreateWithoutMessagesInput = {
     uuid?: string
     title?: string | null
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
     composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -49695,6 +49803,8 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title?: string | null
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
     composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -49765,6 +49875,8 @@ export namespace Prisma {
   export type ConversationUpdateWithoutMessagesInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49779,6 +49891,8 @@ export namespace Prisma {
     org_uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49828,6 +49942,8 @@ export namespace Prisma {
   export type ConversationCreateWithoutExecutionsInput = {
     uuid?: string
     title?: string | null
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
     composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -49842,6 +49958,8 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title?: string | null
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
     composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -50030,6 +50148,8 @@ export namespace Prisma {
   export type ConversationUpdateWithoutExecutionsInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50044,6 +50164,8 @@ export namespace Prisma {
     org_uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50562,6 +50684,8 @@ export namespace Prisma {
     uuid?: string
     org_uuid: string
     title?: string | null
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
     composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -50715,6 +50839,8 @@ export namespace Prisma {
   export type ConversationUpdateWithoutUserInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50728,6 +50854,8 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     org_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50740,6 +50868,8 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     org_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50947,6 +51077,8 @@ export namespace Prisma {
     uuid?: string
     user_uuid: string
     title?: string | null
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
     composio_session_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -51303,6 +51435,8 @@ export namespace Prisma {
   export type ConversationUpdateWithoutOrganizationInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51316,6 +51450,8 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51328,6 +51464,8 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string

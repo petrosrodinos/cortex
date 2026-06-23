@@ -23,9 +23,17 @@ export interface Conversation {
   org_uuid: string;
   user_uuid: string;
   title: string | null;
+  ai_provider?: string | null;
+  ai_model?: string | null;
   created_at: string;
   updated_at: string;
   messages?: Message[];
+}
+
+export interface UpdateConversationPayload {
+  title?: string;
+  ai_provider?: string;
+  ai_model?: string;
 }
 
 export interface MessageAttachment {

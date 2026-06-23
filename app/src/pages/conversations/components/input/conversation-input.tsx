@@ -6,6 +6,8 @@ import { ConversationReplyPreview } from './conversation-reply-preview';
 import type { ConversationReplyTarget } from '../../utils/conversation-reply.utils';
 import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import type { Integration } from '@/features/integrations/common/interfaces/integration.interface';
+import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
+import type { AiProviderType } from '@/features/integrations/constants/ai-provider-types';
 import {
   ConversationDraftEditor,
   draftPartsToPlainText,
@@ -33,6 +35,9 @@ interface ConversationInputProps {
   toolkits: IntegrationAppsToolkit[];
   selectedIntegrationUuids: string[];
   selectedToolkitBindings: ToolkitBinding[];
+  aiProviders: AiProvider[];
+  selectedProvider?: string | null;
+  selectedModel?: string | null;
   disabled: boolean;
   isUploading: boolean;
   draftEditorRef?: Ref<ConversationDraftEditorHandle>;
@@ -43,6 +48,7 @@ interface ConversationInputProps {
   onRemoveFile: (id: string) => void;
   onIntegrationSelectionChange: (integrationUuids: string[]) => void;
   onToolkitSelectionChange: (toolkitBindings: ToolkitBinding[]) => void;
+  onModelSelect: (provider: AiProviderType, model: string) => void;
 }
 
 export const ConversationInput: FC<ConversationInputProps> = ({
@@ -53,6 +59,9 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   toolkits,
   selectedIntegrationUuids,
   selectedToolkitBindings,
+  aiProviders,
+  selectedProvider,
+  selectedModel,
   disabled,
   isUploading,
   draftEditorRef,
@@ -63,6 +72,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   onRemoveFile,
   onIntegrationSelectionChange,
   onToolkitSelectionChange,
+  onModelSelect,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const draftText = draftPartsToPlainText(draftParts);
@@ -109,10 +119,14 @@ export const ConversationInput: FC<ConversationInputProps> = ({
             toolkits={toolkits}
             selectedIntegrationUuids={selectedIntegrationUuids}
             selectedToolkitBindings={selectedToolkitBindings}
+            aiProviders={aiProviders}
+            selectedProvider={selectedProvider}
+            selectedModel={selectedModel}
             disabled={disabled || isUploading}
             onUpload={() => fileInputRef.current?.click()}
             onIntegrationSelectionChange={onIntegrationSelectionChange}
             onToolkitSelectionChange={onToolkitSelectionChange}
+            onModelSelect={onModelSelect}
           />
 
           <ConversationDraftEditor

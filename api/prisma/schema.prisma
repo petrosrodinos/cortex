@@ -607,6 +607,8 @@ model Conversation {
   org_uuid   String
   user_uuid  String
   title      String?
+  ai_provider AiProviderType?
+  ai_model    String?
   composio_session_id String?  @unique
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

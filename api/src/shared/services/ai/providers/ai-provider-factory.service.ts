@@ -27,7 +27,30 @@ export class AiProviderFactoryService {
     private readonly grok: GrokProviderAdapter,
   ) {}
 
-  async resolveProvider(organizationUuid: string): Promise<ResolvedAiProvider> {
+  async resolveProvider(
+    organizationUuid: string,
+    override?: { provider?: AiProviderType | null; modelId?: string | null },
+  ): Promise<ResolvedAiProvider> {
+    if (override?.provider) {
+      const overrideRecord = await this.prisma.aiProvider.findFirst({
+        where: { org_uuid: organizationUuid, provider: override.provider },
+        orderBy: { created_at: 'asc' },
+      });
+
+      if (overrideRecord) {
+        const apiKey = this.encryption.decrypt(overrideRecord.api_key);
+        const adapter = this.getAdapter(overrideRecord.provider);
+        const modelId = override.modelId ?? overrideRecord.default_model;
+        return {
+          provider: overrideRecord.provider,
+          modelId,
+          model: adapter.createModel(apiKey, modelId),
+          adapter,
+        };
+      }
+      // Requested provider is not connected — fall back to org default below.
+    }
+
     const record = await this.prisma.aiProvider.findFirst({
       where: { org_uuid: organizationUuid, is_default: true },
       orderBy: { created_at: 'asc' },
