@@ -39,6 +39,7 @@ export class ComposioConnectionsController {
   constructor(private readonly service: ComposioConnectionsService) {}
 
   @Post('connect')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   @UseGuards(ComposioConnectRateLimitGuard)
   connect(
     @Param('organization_uuid') organizationUuid: string,
@@ -49,6 +50,7 @@ export class ComposioConnectionsController {
   }
 
   @Post('callback')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   verifyCallback(
     @Param('organization_uuid') organizationUuid: string,
     @CurrentUser() user: any,
@@ -68,6 +70,7 @@ export class ComposioConnectionsController {
   }
 
   @Delete('accounts/:connected_account_id')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   disconnect(
     @Param('organization_uuid') organizationUuid: string,
     @CurrentUser() user: any,
@@ -77,6 +80,7 @@ export class ComposioConnectionsController {
   }
 
   @Post('accounts/:connected_account_id/reconnect')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   @UseGuards(ComposioConnectRateLimitGuard)
   reconnect(
     @Param('organization_uuid') organizationUuid: string,

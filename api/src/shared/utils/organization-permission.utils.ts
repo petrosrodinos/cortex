@@ -4,20 +4,16 @@ export const PERMISSION_KEY_ALIASES: Record<string, readonly string[]> = {
   [PermissionKeys.DOCUMENTS_READ]: [PermissionKeys.FILES_READ],
   [PermissionKeys.DOCUMENTS_WRITE]: [PermissionKeys.FILES_WRITE],
   [PermissionKeys.DOCUMENTS_DELETE]: [PermissionKeys.FILES_DELETE],
-  [PermissionKeys.INTEGRATIONS_MANAGE]: [PermissionKeys.ORG_INTEGRATIONS_MANAGE],
-  [PermissionKeys.INTEGRATIONS_CONNECT]: [PermissionKeys.ORG_INTEGRATIONS_USE],
   [PermissionKeys.AGENTS_READ]: [PermissionKeys.AI_PROMPTS_READ],
   [PermissionKeys.AGENTS_WRITE]: [PermissionKeys.AI_PROMPTS_WRITE],
 };
 
 export const DEPRECATED_TO_NEW_PERMISSION_KEYS: Record<string, string> = {
-  [PermissionKeys.ORG_INTEGRATIONS_MANAGE]: PermissionKeys.INTEGRATIONS_MANAGE,
   [PermissionKeys.AI_PROMPTS_READ]: PermissionKeys.AGENTS_READ,
   [PermissionKeys.AI_PROMPTS_WRITE]: PermissionKeys.AGENTS_WRITE,
   [PermissionKeys.FILES_READ]: PermissionKeys.DOCUMENTS_READ,
   [PermissionKeys.FILES_WRITE]: PermissionKeys.DOCUMENTS_WRITE,
   [PermissionKeys.FILES_DELETE]: PermissionKeys.DOCUMENTS_DELETE,
-  [PermissionKeys.ORG_INTEGRATIONS_USE]: PermissionKeys.INTEGRATIONS_CONNECT,
 };
 
 export function resolvePermissionKeys(requiredKey: string): string[] {

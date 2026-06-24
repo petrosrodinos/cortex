@@ -17,6 +17,8 @@ import type {
   IntegrationAppsTool,
 } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import { cn } from '@/lib/utils';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
+import { useOrganizationPermission } from '@/hooks/use-organization-permissions';
 import {
   getConnectionTierFromAccount,
   getConnectionTierLabel,
@@ -47,6 +49,7 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
   const disableToolkit = useDisableIntegrationAppsToolkit(organizationUuid);
   const disconnectAccount = useDisconnectIntegrationAppsAccount(organizationUuid, toolkitSlug);
   const updateToolPermission = useUpdateIntegrationAppsToolPermission(organizationUuid, toolkitSlug);
+  const canManageIntegrations = useOrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE);
   const detail = detailQuery.data;
   const toolkit = detail?.toolkit;
   const connections = detail?.connections ?? [];
@@ -123,7 +126,7 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
                 <span className="text-xs text-foreground">{toolkit.is_org_enabled ? 'Enabled' : 'Disabled'}</span>
                 <EnabledSwitch
                   checked={toolkit.is_org_enabled}
-                  disabled={isTogglingOrgEnabled}
+                  disabled={!canManageIntegrations || isTogglingOrgEnabled}
                   onChange={(enabled) => {
                     if (enabled) {
                       enableToolkit.mutate(toolkit.slug);
@@ -139,6 +142,7 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
                   type="button"
                   variant="outline"
                   className="sm:w-auto"
+                  disabled={!canManageIntegrations}
                   onClick={() => setDisconnectAccountId(connections[0].account_id)}
                 >
                   <Unplug className="h-4 w-4" />
@@ -151,6 +155,7 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
               type="button"
               className="sm:w-auto"
               loading={connectToolkit.isPending}
+              disabled={!canManageIntegrations}
               onClick={() =>
                 connectToolkit.mutate({
                   toolkitSlug: toolkit.slug,
@@ -194,6 +199,7 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
                       type="button"
                       variant="outline"
                       className="h-9 shrink-0 sm:w-auto"
+                      disabled={!canManageIntegrations}
                       onClick={() => setDisconnectAccountId(connection.account_id)}
                     >
                       <Unplug className="h-4 w-4" />
@@ -215,7 +221,7 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
                     type="button"
                     className="h-9 shrink-0 sm:w-auto"
                     loading={isConnectingThisTier}
-                    disabled={connectToolkit.isPending && !isConnectingThisTier}
+                    disabled={!canManageIntegrations || (connectToolkit.isPending && !isConnectingThisTier)}
                     onClick={() => handleConnectTier(tier)}
                   >
                     <Plug className="h-4 w-4" />
@@ -265,7 +271,7 @@ export function ToolkitDetail({ organizationUuid, toolkitSlug, onBack }: Toolkit
               <ToolPermissionRow
                 key={tool.uuid}
                 tool={tool}
-                disabled={!toolkit.is_org_enabled || updateToolPermission.isPending}
+                disabled={!canManageIntegrations || !toolkit.is_org_enabled || updateToolPermission.isPending}
                 onToggleEnabled={(enabled) =>
                   updateToolPermission.mutate({ toolSlug: tool.slug, payload: { enabled } })
                 }

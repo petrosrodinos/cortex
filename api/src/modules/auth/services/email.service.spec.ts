@@ -39,7 +39,7 @@ describe('EmailAuthService switchOrganization', () => {
         name: 'Admin',
         permissions: [
           { permission: { key: 'org:update' } },
-          { permission: { key: 'org:integrations:manage' } },
+          { permission: { key: 'integrations:manage' } },
         ],
       },
       user: {
@@ -70,7 +70,7 @@ describe('EmailAuthService switchOrganization', () => {
       role: 'USER',
       organization_uuid: 'organization-uuid',
       organization_role: 'Admin',
-      organization_permissions: ['org:update', 'org:integrations:manage'],
+      organization_permissions: ['org:update', 'integrations:manage'],
     });
   });
 

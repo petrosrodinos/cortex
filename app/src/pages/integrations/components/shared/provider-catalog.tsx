@@ -142,7 +142,7 @@ function ProviderCatalogCard({
   const Icon = meta.icon;
   const isConnected = connectedCount > 0;
   const managePermission = isAiProvider ? PermissionKeys.AI_PROVIDERS_MANAGE : PermissionKeys.INTEGRATIONS_MANAGE;
-  const connectPermission = isAiProvider ? PermissionKeys.AI_PROVIDERS_MANAGE : PermissionKeys.INTEGRATIONS_CONNECT;
+  const connectPermission = isAiProvider ? PermissionKeys.AI_PROVIDERS_MANAGE : PermissionKeys.INTEGRATIONS_MANAGE;
 
   return (
     <IntegrationCatalogCard

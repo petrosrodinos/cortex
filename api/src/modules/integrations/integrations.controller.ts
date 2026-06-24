@@ -83,7 +83,7 @@ export class IntegrationsController {
   }
 
   @Post(':integration_uuid/test')
-  @OrganizationPermission(PermissionKeys.INTEGRATIONS_READ)
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   async testConnection(
     @Param('organization_uuid') organization_uuid: string,
     @Param('integration_uuid') integration_uuid: string,

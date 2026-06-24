@@ -17,7 +17,7 @@ describe('ComposioToolProvider', () => {
                     {
                       enabled: true,
                       requires_approval: true,
-                      required_permission_key: PermissionKeys.INTEGRATIONS_CONNECT,
+                      required_permission_key: PermissionKeys.INTEGRATIONS_MANAGE,
                     },
                   ],
                 },
@@ -70,7 +70,7 @@ describe('ComposioToolProvider', () => {
       userUuid: 'user-uuid',
       conversationUuid: 'conversation-uuid',
       executionUuid: 'execution-uuid',
-      userPermissions: [PermissionKeys.INTEGRATIONS_CONNECT],
+      userPermissions: [PermissionKeys.INTEGRATIONS_MANAGE],
       documentUuids: [],
       toolkitSlugs: ['slack'],
       progress,

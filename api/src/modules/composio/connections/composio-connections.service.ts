@@ -44,7 +44,7 @@ export class ComposioConnectionsService {
       toolkit.connection_tiers,
       dto.connection_tier,
     );
-    this.assertCanConnect(connectionTier, user);
+    this.assertCanConnect(user);
 
     const composioUserId = this.buildComposioUserId(
       connectionTier,
@@ -118,6 +118,7 @@ export class ComposioConnectionsService {
       toolkit.connection_tiers,
       dto.connection_tier,
     );
+    this.assertCanConnect(user);
     const composioUserId = this.buildComposioUserId(
       connectionTier,
       organizationUuid,
@@ -287,9 +288,7 @@ export class ComposioConnectionsService {
       );
     }
 
-    if (!account.user_uuid) {
-      this.assertManagePermission(user);
-    }
+    this.assertCanConnect(user);
 
     await (this.composioClient.getClient() as any).connectedAccounts.delete(
       connectedAccountId,
@@ -702,26 +701,8 @@ export class ComposioConnectionsService {
       : `user:${userUuid}`;
   }
 
-  private assertCanConnect(
-    connectionTier: ComposioConnectionTier,
-    user: AuthUser,
-  ): void {
-    if (connectionTier === ComposioConnectionTier.ORG_SHARED) {
-      this.assertManagePermission(user);
-      return;
-    }
-
-    if (
-      !hasOrganizationPermission(
-        user.organization_permissions,
-        user.organization_role,
-        PermissionKeys.INTEGRATIONS_CONNECT,
-      )
-    ) {
-      throw new ForbiddenException(
-        'Missing organization integration connect permission',
-      );
-    }
+  private assertCanConnect(user: AuthUser): void {
+    this.assertManagePermission(user);
   }
 
   private assertManagePermission(user: AuthUser): void {

@@ -85,7 +85,7 @@ describe('ComposioConnectionsService', () => {
 
   const personalConnector = {
     uuid: 'user-uuid',
-    organization_permissions: [PermissionKeys.INTEGRATIONS_CONNECT],
+    organization_permissions: [PermissionKeys.INTEGRATIONS_MANAGE],
   };
 
   it('creates an org-shared connect link only for integration managers and audits it', async () => {
@@ -118,6 +118,23 @@ describe('ComposioConnectionsService', () => {
         resource_id: 'slack',
       }),
     });
+  });
+
+  it('rejects personal connections without manage permission', async () => {
+    const { service } = createService({
+      uuid: 'toolkit-uuid',
+      slug: 'gmail',
+      is_enabled: true,
+      connection_tiers: [ComposioConnectionTier.USER_PERSONAL],
+    });
+
+    await expect(
+      service.connect(
+        'org-uuid',
+        { uuid: 'user-uuid', organization_permissions: [PermissionKeys.INTEGRATIONS_READ] },
+        { toolkit_slug: 'gmail' },
+      ),
+    ).rejects.toBeInstanceOf(ForbiddenException);
   });
 
   it('rejects org-shared connections without manage permission', async () => {
