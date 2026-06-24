@@ -19,6 +19,7 @@ import { CapabilitiesToolsService } from './agents/capabilities/capabilities-too
 import { CapabilitiesToolProvider } from './agents/tools/providers/capabilities-tool.provider';
 import { ComposioToolProvider } from './agents/tools/providers/composio-tool.provider';
 import { DocumentToolProvider } from './agents/tools/providers/document-tool.provider';
+import { DocumentBoardToolProvider } from './agents/tools/providers/document-board-tool.provider';
 import { LegacyIntegrationToolProvider } from './agents/tools/providers/legacy-integration-tool.provider';
 import { OrganizationToolProvider } from './agents/tools/providers/organization-tool.provider';
 import { OutputToolProvider } from './agents/tools/providers/output-tool.provider';
@@ -51,7 +52,10 @@ import { EmailToolPreprocessorService } from './agents/tools/dispatch/email-tool
 import { AgentActorService } from './agents/actor/agent-actor.service';
 import { OrganizationToolsFactory } from './agents/organization/organization-tools.factory';
 import { OrganizationToolsService } from './agents/organization/organization-tools.service';
+import { DocumentBoardToolsFactory } from './agents/document-boards/document-board-tools.factory';
+import { DocumentBoardToolsService } from './agents/document-boards/document-board-tools.service';
 import { ConversationPersonalizationModule } from '@/modules/conversation-personalization/conversation-personalization.module';
+import { DocumentBoardsModule } from '@/modules/document-boards/document-boards.module';
 import { EncryptionService } from '@/shared/utils/encryption.service';
 
 @Module({
@@ -63,6 +67,7 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     GcsIntegrationModule,
     ConversationPersonalizationModule,
     ComposioModule,
+    DocumentBoardsModule,
   ],
   providers: [
     EncryptionService,
@@ -91,6 +96,7 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     CapabilitiesToolProvider,
     SandboxToolProvider,
     DocumentToolProvider,
+    DocumentBoardToolProvider,
     OutputToolProvider,
     OrganizationToolProvider,
     UnifiedToolRegistry,
@@ -109,6 +115,8 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     AgentActorService,
     OrganizationToolsService,
     OrganizationToolsFactory,
+    DocumentBoardToolsService,
+    DocumentBoardToolsFactory,
     SystemPromptBuilder,
     AgentProgressEmitterService,
     AgentRunnerService,

@@ -3,6 +3,7 @@ import type { ToolSet } from 'ai';
 import { CapabilitiesToolProvider } from '../providers/capabilities-tool.provider';
 import { ComposioToolProvider } from '../providers/composio-tool.provider';
 import { DocumentToolProvider } from '../providers/document-tool.provider';
+import { DocumentBoardToolProvider } from '../providers/document-board-tool.provider';
 import { LegacyIntegrationToolProvider } from '../providers/legacy-integration-tool.provider';
 import { OrganizationToolProvider } from '../providers/organization-tool.provider';
 import { OutputToolProvider } from '../providers/output-tool.provider';
@@ -22,6 +23,7 @@ export class UnifiedToolRegistry {
     capabilities: CapabilitiesToolProvider,
     sandbox: SandboxToolProvider,
     documents: DocumentToolProvider,
+    documentBoards: DocumentBoardToolProvider,
     outputs: OutputToolProvider,
     organization: OrganizationToolProvider,
   ) {
@@ -31,6 +33,7 @@ export class UnifiedToolRegistry {
       capabilities,
       sandbox,
       documents,
+      documentBoards,
       outputs,
       organization,
     ];

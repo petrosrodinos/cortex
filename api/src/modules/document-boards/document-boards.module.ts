@@ -8,5 +8,6 @@ import { DocumentBoardsService } from './document-boards.service';
   imports: [PrismaModule, OrganizationsModule],
   controllers: [DocumentBoardsController],
   providers: [DocumentBoardsService],
+  exports: [DocumentBoardsService],
 })
 export class DocumentBoardsModule {}
