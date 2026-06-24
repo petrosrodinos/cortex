@@ -61,12 +61,13 @@ export class RolesController {
   @UseGuards(OrganizationMatchGuard, OrganizationActiveMemberGuard)
   async setPermissions(
     @CurrentUser('uuid') user_uuid: string,
+    @CurrentUser('role') user_role: string,
     @Param('organization_uuid') organization_uuid: string,
     @Param('organization_role_uuid') organization_role_uuid: string,
     @Body() dto: SetRolePermissionsDto,
   ) {
     try {
-      return await this.roles_service.setPermissions(user_uuid, organization_uuid, organization_role_uuid, dto);
+      return await this.roles_service.setPermissions(user_uuid, user_role, organization_uuid, organization_role_uuid, dto);
     } catch (error) {
       throw error;
     }

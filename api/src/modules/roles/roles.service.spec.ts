@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { AuthRole } from 'generated/prisma';
 import { OrganizationRoleTypes } from '@/modules/roles/permissions';
 import { RolesService } from './roles.service';
 
@@ -48,16 +49,36 @@ describe('RolesService', () => {
     expect(prisma.organizationRole.delete).not.toHaveBeenCalled();
   });
 
-  it('does not update Owner role permissions', async () => {
+  it('does not update Owner role permissions for non-super-admin users', async () => {
     prisma.organizationRole.findFirst.mockResolvedValue({ id: 3, uuid: 'role-uuid', name: OrganizationRoleTypes.OWNER, is_system: true });
     const service = createService();
 
     await expect(
-      service.setPermissions('user-uuid', 'org-uuid', 'role-uuid', {
+      service.setPermissions('user-uuid', AuthRole.USER, 'org-uuid', 'role-uuid', {
         permission_keys: ['org:roles:read'],
       }),
     ).rejects.toBeInstanceOf(BadRequestException);
     expect(prisma.rolePermission.deleteMany).not.toHaveBeenCalled();
+  });
+
+  it('updates Owner role permissions for super admin users', async () => {
+    prisma.organizationRole.findFirst.mockResolvedValue({ id: 3, uuid: 'role-uuid', name: OrganizationRoleTypes.OWNER, is_system: true });
+    prisma.permission.findMany.mockResolvedValue([{ uuid: 'permission-uuid', key: 'org:roles:read' }]);
+    prisma.organizationRole.findUnique.mockResolvedValue({
+      id: 3,
+      uuid: 'role-uuid',
+      name: OrganizationRoleTypes.OWNER,
+      is_system: true,
+      permissions: [{ permission: { uuid: 'permission-uuid', key: 'org:roles:read' } }],
+    });
+    const service = createService();
+
+    await expect(
+      service.setPermissions('user-uuid', AuthRole.SUPER_ADMIN, 'org-uuid', 'role-uuid', {
+        permission_keys: ['org:roles:read'],
+      }),
+    ).resolves.toMatchObject({ uuid: 'role-uuid', name: OrganizationRoleTypes.OWNER });
+    expect(prisma.rolePermission.deleteMany).toHaveBeenCalledWith({ where: { role_uuid: 'role-uuid' } });
   });
 
   it('updates permission links for non-owner system roles without changing the role itself', async () => {
@@ -73,7 +94,7 @@ describe('RolesService', () => {
     const service = createService();
 
     await expect(
-      service.setPermissions('user-uuid', 'org-uuid', 'role-uuid', {
+      service.setPermissions('user-uuid', AuthRole.USER, 'org-uuid', 'role-uuid', {
         permission_keys: ['org:roles:read'],
       }),
     ).resolves.toMatchObject({ uuid: 'role-uuid', is_system: true });

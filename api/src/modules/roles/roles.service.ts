@@ -6,7 +6,7 @@ import { SetRolePermissionsDto } from './dto/set-role-permissions.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { membershipHasPermission } from '@/shared/utils/organization-permission.utils';
 import { OrganizationRoleTypes, PermissionKeys } from '@/modules/roles/permissions';
-import { OrganizationMemberStatus } from 'generated/prisma';
+import { AuthRole, OrganizationMemberStatus } from 'generated/prisma';
 
 @Injectable()
 export class RolesService {
@@ -87,13 +87,19 @@ export class RolesService {
     }
   }
 
-  async setPermissions(user_uuid: string, organization_uuid: string, organization_role_uuid: string, dto: SetRolePermissionsDto) {
+  async setPermissions(
+    user_uuid: string,
+    user_role: string,
+    organization_uuid: string,
+    organization_role_uuid: string,
+    dto: SetRolePermissionsDto,
+  ) {
     try {
       await this.requirePermission(user_uuid, organization_uuid, PermissionKeys.ORG_ROLES_UPDATE);
       const membership = await this.organizationsService.requireActiveMember(user_uuid, organization_uuid);
       const role = await this.getOrganizationRole(membership.organization.uuid, organization_role_uuid);
 
-      if (role.name === OrganizationRoleTypes.OWNER) {
+      if (role.name === OrganizationRoleTypes.OWNER && user_role !== AuthRole.SUPER_ADMIN) {
         throw new BadRequestException('Owner role permissions cannot be modified');
       }
 
