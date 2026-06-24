@@ -40,8 +40,8 @@ export function UsageRecordsTable({
         <p className="mt-0.5 text-xs text-muted">Execution history with token and cost details.</p>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border bg-surface">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-xl border border-border bg-surface">
+        <table className="w-full min-w-[720px] text-sm">
           <thead>
             <tr className="border-b border-border bg-surface-secondary">
               <th className="px-4 py-3 text-left text-xs font-medium text-muted">Date</th>
