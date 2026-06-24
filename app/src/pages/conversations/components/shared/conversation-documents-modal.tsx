@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import { File, FileText, Image, X } from 'lucide-react';
 import type { Message, MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
+import { formatDateTime } from '@/lib/date';
 import { getConversationDocuments } from '../../utils/conversation-documents';
 
 interface ConversationDocumentsModalProps {
@@ -54,7 +55,7 @@ export const ConversationDocumentsModal: FC<ConversationDocumentsModalProps> = (
             <h2 id="conversation-documents-title" className="text-sm font-semibold text-foreground">
               Documents
             </h2>
-            <p className="mt-0.5 text-xs text-muted">Files you attached in this conversation.</p>
+            <p className="mt-0.5 text-xs text-muted">Files shared or generated in this conversation.</p>
           </div>
           <button
             type="button"
@@ -68,7 +69,7 @@ export const ConversationDocumentsModal: FC<ConversationDocumentsModalProps> = (
 
         <div className="flex-1 overflow-y-auto p-4">
           {documents.length === 0 ? (
-            <p className="text-sm text-muted">No documents in this conversation yet.</p>
+            <p className="text-sm text-muted">No files in this conversation yet.</p>
           ) : (
             <ul className="space-y-2">
               {documents.map((document) => {
@@ -86,10 +87,11 @@ export const ConversationDocumentsModal: FC<ConversationDocumentsModalProps> = (
                           href={document.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="block truncate text-sm font-medium text-accent hover:underline"
+                          className="text-sm font-medium text-accent hover:underline break-all"
                         >
                           {document.filename}
                         </a>
+                        <p className="mt-0.5 text-xs text-muted">{formatDateTime(document.createdAt)}</p>
                       </div>
                     </div>
 
