@@ -2,7 +2,12 @@ import { BadRequestException, ConflictException, ForbiddenException, HttpExcepti
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
-import { OrganizationRoleTypes, PermissionKeys, SYSTEM_ROLE_NAMES, SYSTEM_ROLE_PERMISSIONS } from '@/modules/roles/permissions';
+import {
+  getInitialRolePermissionKeys,
+  OrganizationRoleTypes,
+  PermissionKeys,
+  SYSTEM_ROLE_NAMES,
+} from '@/modules/roles/permissions';
 import { membershipHasPermission } from '@/shared/utils/organization-permission.utils';
 import { OrganizationMemberStatus } from 'generated/prisma';
 
@@ -36,10 +41,10 @@ export class OrganizationsService {
 
         await tx.rolePermission.createMany({
           data: roles.flatMap((role) => {
-            const permission_keys =
-              role.name === OrganizationRoleTypes.OWNER
-                ? permissions.map((permission) => permission.key)
-                : (SYSTEM_ROLE_PERMISSIONS[role.name] ?? []);
+            const permission_keys = getInitialRolePermissionKeys(
+              role.name,
+              permissions.map((permission) => permission.key),
+            );
 
             return permission_keys
               .map((permission_key) => permissions_by_key.get(permission_key))

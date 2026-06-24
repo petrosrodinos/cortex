@@ -78,43 +78,4 @@ export const SYSTEM_ROLE_NAMES = [
   OrganizationRoleTypes.EMPLOYEE,
 ] as const;
 
-const ALL_PERMISSION_KEYS = PERMISSIONS.map((permission) => permission.key);
-
-export const SYSTEM_ROLE_PERMISSIONS: Record<
-  (typeof SYSTEM_ROLE_NAMES)[number],
-  string[]
-> = {
-  [OrganizationRoleTypes.OWNER]: ALL_PERMISSION_KEYS,
-  [OrganizationRoleTypes.ADMIN]: ALL_PERMISSION_KEYS.filter((key) => key !== PermissionKeys.ORG_DELETE),
-  [OrganizationRoleTypes.MANAGER]: [
-    PermissionKeys.ORG_READ,
-    PermissionKeys.ORG_MEMBERS_READ,
-    PermissionKeys.ORG_MEMBERS_INVITE,
-    PermissionKeys.ORG_ROLES_READ,
-    PermissionKeys.CONVERSATIONS_READ,
-    PermissionKeys.CONVERSATIONS_WRITE,
-    PermissionKeys.CONVERSATIONS_DELETE,
-    PermissionKeys.EXECUTIONS_READ,
-    PermissionKeys.EXECUTIONS_APPROVE,
-    PermissionKeys.AGENTS_READ,
-    PermissionKeys.AGENTS_WRITE,
-    PermissionKeys.DOCUMENTS_READ,
-    PermissionKeys.DOCUMENTS_WRITE,
-    PermissionKeys.INTEGRATIONS_READ,
-    PermissionKeys.INTEGRATIONS_MANAGE,
-    PermissionKeys.AI_PROVIDERS_READ,
-    PermissionKeys.AI_USAGE_READ,
-    PermissionKeys.AUDIT_READ,
-  ],
-  [OrganizationRoleTypes.EMPLOYEE]: [
-    PermissionKeys.ORG_READ,
-    PermissionKeys.ORG_MEMBERS_READ,
-    PermissionKeys.CONVERSATIONS_READ,
-    PermissionKeys.CONVERSATIONS_WRITE,
-    PermissionKeys.EXECUTIONS_READ,
-    PermissionKeys.AGENTS_READ,
-    PermissionKeys.DOCUMENTS_READ,
-    PermissionKeys.INTEGRATIONS_READ,
-    PermissionKeys.AI_PROVIDERS_READ,
-  ],
-};
+export { SYSTEM_ROLE_DEFAULT_PERMISSIONS, getInitialRolePermissionKeys } from './system-role-permissions.config';

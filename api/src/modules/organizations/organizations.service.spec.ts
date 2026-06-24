@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
-import { OrganizationRoleTypes } from '@/modules/roles/permissions';
+import { OrganizationRoleTypes, PermissionKeys, getInitialRolePermissionKeys } from '@/modules/roles/permissions';
 import { OrganizationsService } from './organizations.service';
 import { OrganizationMemberStatus } from 'generated/prisma';
 
@@ -38,6 +38,15 @@ describe('OrganizationsService', () => {
     },
   };
 
+  const mockPermissions = [
+    { id: 1, uuid: 'org-read-permission-uuid', key: PermissionKeys.ORG_READ },
+    { id: 2, uuid: 'org-update-permission-uuid', key: PermissionKeys.ORG_UPDATE },
+    { id: 3, uuid: 'org-delete-permission-uuid', key: PermissionKeys.ORG_DELETE },
+    { id: 4, uuid: 'documents-read-permission-uuid', key: PermissionKeys.DOCUMENTS_READ },
+    { id: 5, uuid: 'documents-write-permission-uuid', key: PermissionKeys.DOCUMENTS_WRITE },
+    { id: 6, uuid: 'conversations-write-permission-uuid', key: PermissionKeys.CONVERSATIONS_WRITE },
+  ];
+
   beforeEach(() => {
     jest.clearAllMocks();
     tx.organization.create.mockResolvedValue({ id: 7, uuid: 'org-uuid', name: 'Acme', slug: 'acme' });
@@ -48,11 +57,7 @@ describe('OrganizationsService', () => {
       { id: 13, uuid: 'manager-role-uuid', name: OrganizationRoleTypes.MANAGER },
       { id: 14, uuid: 'employee-role-uuid', name: OrganizationRoleTypes.EMPLOYEE },
     ]);
-    tx.permission.findMany.mockResolvedValue([
-      { id: 1, uuid: 'org-update-permission-uuid', key: 'org:update' },
-      { id: 2, uuid: 'documents-read-permission-uuid', key: 'documents:read' },
-      { id: 3, uuid: 'documents-write-permission-uuid', key: 'documents:write' },
-    ]);
+    tx.permission.findMany.mockResolvedValue(mockPermissions);
   });
 
   it('creates an organization with system roles and makes the creator Owner', async () => {
@@ -87,11 +92,30 @@ describe('OrganizationsService', () => {
     expect(tx.rolePermission.createMany).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.arrayContaining([
+          { role_uuid: 'owner-role-uuid', permission_uuid: 'org-read-permission-uuid' },
           { role_uuid: 'owner-role-uuid', permission_uuid: 'org-update-permission-uuid' },
+          { role_uuid: 'owner-role-uuid', permission_uuid: 'org-delete-permission-uuid' },
           { role_uuid: 'owner-role-uuid', permission_uuid: 'documents-read-permission-uuid' },
           { role_uuid: 'owner-role-uuid', permission_uuid: 'documents-write-permission-uuid' },
+          { role_uuid: 'owner-role-uuid', permission_uuid: 'conversations-write-permission-uuid' },
+          { role_uuid: 'admin-role-uuid', permission_uuid: 'org-update-permission-uuid' },
+          { role_uuid: 'admin-role-uuid', permission_uuid: 'documents-read-permission-uuid' },
+          { role_uuid: 'manager-role-uuid', permission_uuid: 'documents-write-permission-uuid' },
+          { role_uuid: 'manager-role-uuid', permission_uuid: 'conversations-write-permission-uuid' },
+          { role_uuid: 'employee-role-uuid', permission_uuid: 'org-read-permission-uuid' },
+          { role_uuid: 'employee-role-uuid', permission_uuid: 'conversations-write-permission-uuid' },
+          { role_uuid: 'employee-role-uuid', permission_uuid: 'documents-write-permission-uuid' },
         ]),
         skipDuplicates: true,
+      }),
+    );
+    expect(tx.rolePermission.createMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.not.arrayContaining([
+          { role_uuid: 'admin-role-uuid', permission_uuid: 'org-delete-permission-uuid' },
+          { role_uuid: 'manager-role-uuid', permission_uuid: 'org-delete-permission-uuid' },
+          { role_uuid: 'employee-role-uuid', permission_uuid: 'org-update-permission-uuid' },
+        ]),
       }),
     );
   });
@@ -119,3 +143,47 @@ describe('OrganizationsService', () => {
     await expect(service.findAll('user-uuid')).rejects.toBeInstanceOf(BadRequestException);
   });
 });
+
+describe('getInitialRolePermissionKeys', () => {
+  const allPermissionKeys = mockPermissionsFromDescribe();
+
+  it('grants Owner every permission in the database', () => {
+    expect(getInitialRolePermissionKeys(OrganizationRoleTypes.OWNER, allPermissionKeys)).toEqual(allPermissionKeys);
+  });
+
+  it('grants Admin explicit permissions without org delete', () => {
+    const keys = getInitialRolePermissionKeys(OrganizationRoleTypes.ADMIN, allPermissionKeys);
+
+    expect(keys).toContain(PermissionKeys.ORG_UPDATE);
+    expect(keys).not.toContain(PermissionKeys.ORG_DELETE);
+  });
+
+  it('grants Manager operational permissions', () => {
+    const keys = getInitialRolePermissionKeys(OrganizationRoleTypes.MANAGER, allPermissionKeys);
+
+    expect(keys).toContain(PermissionKeys.CONVERSATIONS_WRITE);
+    expect(keys).toContain(PermissionKeys.ORG_MEMBERS_UPDATE);
+    expect(keys).not.toContain(PermissionKeys.ORG_UPDATE);
+    expect(keys).not.toContain(PermissionKeys.ORG_DELETE);
+  });
+
+  it('grants Employee contributor permissions', () => {
+    const keys = getInitialRolePermissionKeys(OrganizationRoleTypes.EMPLOYEE, allPermissionKeys);
+
+    expect(keys).toContain(PermissionKeys.CONVERSATIONS_WRITE);
+    expect(keys).toContain(PermissionKeys.DOCUMENTS_WRITE);
+    expect(keys).not.toContain(PermissionKeys.ORG_UPDATE);
+    expect(keys).not.toContain(PermissionKeys.INTEGRATIONS_MANAGE);
+  });
+});
+
+function mockPermissionsFromDescribe() {
+  return [
+    PermissionKeys.ORG_READ,
+    PermissionKeys.ORG_UPDATE,
+    PermissionKeys.ORG_DELETE,
+    PermissionKeys.DOCUMENTS_READ,
+    PermissionKeys.DOCUMENTS_WRITE,
+    PermissionKeys.CONVERSATIONS_WRITE,
+  ];
+}
