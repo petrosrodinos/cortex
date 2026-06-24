@@ -26,6 +26,7 @@ import AdminIntegrationAppsToolkitsPage from "@/pages/admin/integration-apps/too
 import AdminIntegrationAppsToolkitDetailPage from "@/pages/admin/integration-apps/toolkit-detail";
 import AdminIntegrationAppsSyncPage from "@/pages/admin/integration-apps/sync";
 import { RoleTypes } from "@/features/user/interfaces/user.interface";
+import LandingPage from "@/pages/landing";
 
 export default function AppRoutes() {
   return (
@@ -97,8 +98,8 @@ export default function AppRoutes() {
         </Route>
       </Route>
 
-      {/* Default redirect */}
-      <Route path="/" element={<Navigate to={Routes.auth.sign_in} replace />} />
+      {/* Landing page */}
+      <Route path="/" element={<LandingPage />} />
 
       {/* Catch all */}
       <Route path="*" element={<Navigate to="/" replace />} />
