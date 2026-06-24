@@ -625,6 +625,7 @@ model DocumentBoardItem {
   board_uuid    String
   document_uuid String
   added_by      String
+  title         String?
   created_at    DateTime @default(now())
 
   board    DocumentBoard @relation(fields: [board_uuid], references: [uuid], onDelete: Cascade)

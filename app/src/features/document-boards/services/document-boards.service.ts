@@ -63,10 +63,12 @@ export const addDocumentToBoard = async (
   orgUuid: string,
   boardUuid: string,
   documentUuid: string,
+  title?: string,
 ): Promise<DocumentBoardItem> => {
   try {
     const response = await axiosInstance.post(ApiRoutes.documentBoardItems(orgUuid, boardUuid), {
       document_uuid: documentUuid,
+      ...(title ? { title } : {}),
     });
     return response.data;
   } catch (error: any) {

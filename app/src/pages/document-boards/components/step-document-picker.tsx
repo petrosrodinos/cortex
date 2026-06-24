@@ -17,7 +17,7 @@ type StepDocumentPickerProps = {
   orgUuid: string;
   conversation: Conversation;
   isAdding: boolean;
-  onConfirm: (documentUuids: string[]) => void;
+  onConfirm: (docs: { uuid: string; title?: string }[]) => void;
 };
 
 export function StepDocumentPicker({
@@ -27,13 +27,22 @@ export function StepDocumentPicker({
   onConfirm,
 }: StepDocumentPickerProps) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [titles, setTitles] = useState<Record<string, string>>({});
   const { data: documents = [], isLoading } = useGetConversationDocuments(orgUuid, conversation.uuid);
 
   const toggleDoc = (uuid: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(uuid)) next.delete(uuid);
-      else next.add(uuid);
+      if (next.has(uuid)) {
+        next.delete(uuid);
+        setTitles((t) => {
+          const copy = { ...t };
+          delete copy[uuid];
+          return copy;
+        });
+      } else {
+        next.add(uuid);
+      }
       return next;
     });
   };
@@ -85,6 +94,20 @@ export function StepDocumentPicker({
                     {formatDateTime(doc.created_at)}
                     {!canSelect ? ' · Cannot be added (no file record)' : ''}
                   </p>
+                  {isChecked && doc.uuid ? (
+                    <input
+                      type="text"
+                      placeholder="Title (optional)"
+                      value={titles[doc.uuid] ?? ''}
+                      maxLength={255}
+                      onClick={(e) => e.preventDefault()}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setTitles((t) => ({ ...t, [doc.uuid!]: val }));
+                      }}
+                      className="mt-2 w-full rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent"
+                    />
+                  ) : null}
                 </div>
               </label>
             </li>
@@ -96,7 +119,13 @@ export function StepDocumentPicker({
         <button
           type="button"
           disabled={selected.size === 0 || isAdding}
-          onClick={() => onConfirm(Array.from(selected))}
+          onClick={() => {
+            const docs = Array.from(selected).map((uuid) => ({
+              uuid,
+              title: titles[uuid]?.trim() || undefined,
+            }));
+            onConfirm(docs);
+          }}
           className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isAdding

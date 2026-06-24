@@ -29545,6 +29545,7 @@ export namespace Prisma {
     board_uuid: string | null
     document_uuid: string | null
     added_by: string | null
+    title: string | null
     created_at: Date | null
   }
 
@@ -29554,6 +29555,7 @@ export namespace Prisma {
     board_uuid: string | null
     document_uuid: string | null
     added_by: string | null
+    title: string | null
     created_at: Date | null
   }
 
@@ -29563,6 +29565,7 @@ export namespace Prisma {
     board_uuid: number
     document_uuid: number
     added_by: number
+    title: number
     created_at: number
     _all: number
   }
@@ -29582,6 +29585,7 @@ export namespace Prisma {
     board_uuid?: true
     document_uuid?: true
     added_by?: true
+    title?: true
     created_at?: true
   }
 
@@ -29591,6 +29595,7 @@ export namespace Prisma {
     board_uuid?: true
     document_uuid?: true
     added_by?: true
+    title?: true
     created_at?: true
   }
 
@@ -29600,6 +29605,7 @@ export namespace Prisma {
     board_uuid?: true
     document_uuid?: true
     added_by?: true
+    title?: true
     created_at?: true
     _all?: true
   }
@@ -29696,6 +29702,7 @@ export namespace Prisma {
     board_uuid: string
     document_uuid: string
     added_by: string
+    title: string | null
     created_at: Date
     _count: DocumentBoardItemCountAggregateOutputType | null
     _avg: DocumentBoardItemAvgAggregateOutputType | null
@@ -29724,6 +29731,7 @@ export namespace Prisma {
     board_uuid?: boolean
     document_uuid?: boolean
     added_by?: boolean
+    title?: boolean
     created_at?: boolean
     board?: boolean | DocumentBoardDefaultArgs<ExtArgs>
     document?: boolean | DocumentDefaultArgs<ExtArgs>
@@ -29736,6 +29744,7 @@ export namespace Prisma {
     board_uuid?: boolean
     document_uuid?: boolean
     added_by?: boolean
+    title?: boolean
     created_at?: boolean
     board?: boolean | DocumentBoardDefaultArgs<ExtArgs>
     document?: boolean | DocumentDefaultArgs<ExtArgs>
@@ -29748,6 +29757,7 @@ export namespace Prisma {
     board_uuid?: boolean
     document_uuid?: boolean
     added_by?: boolean
+    title?: boolean
     created_at?: boolean
     board?: boolean | DocumentBoardDefaultArgs<ExtArgs>
     document?: boolean | DocumentDefaultArgs<ExtArgs>
@@ -29760,10 +29770,11 @@ export namespace Prisma {
     board_uuid?: boolean
     document_uuid?: boolean
     added_by?: boolean
+    title?: boolean
     created_at?: boolean
   }
 
-  export type DocumentBoardItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "board_uuid" | "document_uuid" | "added_by" | "created_at", ExtArgs["result"]["documentBoardItem"]>
+  export type DocumentBoardItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "board_uuid" | "document_uuid" | "added_by" | "title" | "created_at", ExtArgs["result"]["documentBoardItem"]>
   export type DocumentBoardItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     board?: boolean | DocumentBoardDefaultArgs<ExtArgs>
     document?: boolean | DocumentDefaultArgs<ExtArgs>
@@ -29793,6 +29804,7 @@ export namespace Prisma {
       board_uuid: string
       document_uuid: string
       added_by: string
+      title: string | null
       created_at: Date
     }, ExtArgs["result"]["documentBoardItem"]>
     composites: {}
@@ -30225,6 +30237,7 @@ export namespace Prisma {
     readonly board_uuid: FieldRef<"DocumentBoardItem", 'String'>
     readonly document_uuid: FieldRef<"DocumentBoardItem", 'String'>
     readonly added_by: FieldRef<"DocumentBoardItem", 'String'>
+    readonly title: FieldRef<"DocumentBoardItem", 'String'>
     readonly created_at: FieldRef<"DocumentBoardItem", 'DateTime'>
   }
     
@@ -39533,6 +39546,7 @@ export namespace Prisma {
     board_uuid: 'board_uuid',
     document_uuid: 'document_uuid',
     added_by: 'added_by',
+    title: 'title',
     created_at: 'created_at'
   };
 
@@ -41939,6 +41953,7 @@ export namespace Prisma {
     board_uuid?: StringFilter<"DocumentBoardItem"> | string
     document_uuid?: StringFilter<"DocumentBoardItem"> | string
     added_by?: StringFilter<"DocumentBoardItem"> | string
+    title?: StringNullableFilter<"DocumentBoardItem"> | string | null
     created_at?: DateTimeFilter<"DocumentBoardItem"> | Date | string
     board?: XOR<DocumentBoardScalarRelationFilter, DocumentBoardWhereInput>
     document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>
@@ -41951,6 +41966,7 @@ export namespace Prisma {
     board_uuid?: SortOrder
     document_uuid?: SortOrder
     added_by?: SortOrder
+    title?: SortOrderInput | SortOrder
     created_at?: SortOrder
     board?: DocumentBoardOrderByWithRelationInput
     document?: DocumentOrderByWithRelationInput
@@ -41967,6 +41983,7 @@ export namespace Prisma {
     board_uuid?: StringFilter<"DocumentBoardItem"> | string
     document_uuid?: StringFilter<"DocumentBoardItem"> | string
     added_by?: StringFilter<"DocumentBoardItem"> | string
+    title?: StringNullableFilter<"DocumentBoardItem"> | string | null
     created_at?: DateTimeFilter<"DocumentBoardItem"> | Date | string
     board?: XOR<DocumentBoardScalarRelationFilter, DocumentBoardWhereInput>
     document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>
@@ -41979,6 +41996,7 @@ export namespace Prisma {
     board_uuid?: SortOrder
     document_uuid?: SortOrder
     added_by?: SortOrder
+    title?: SortOrderInput | SortOrder
     created_at?: SortOrder
     _count?: DocumentBoardItemCountOrderByAggregateInput
     _avg?: DocumentBoardItemAvgOrderByAggregateInput
@@ -41996,6 +42014,7 @@ export namespace Prisma {
     board_uuid?: StringWithAggregatesFilter<"DocumentBoardItem"> | string
     document_uuid?: StringWithAggregatesFilter<"DocumentBoardItem"> | string
     added_by?: StringWithAggregatesFilter<"DocumentBoardItem"> | string
+    title?: StringNullableWithAggregatesFilter<"DocumentBoardItem"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"DocumentBoardItem"> | Date | string
   }
 
@@ -44601,6 +44620,7 @@ export namespace Prisma {
 
   export type DocumentBoardItemCreateInput = {
     uuid?: string
+    title?: string | null
     created_at?: Date | string
     board: DocumentBoardCreateNestedOneWithoutItemsInput
     document: DocumentCreateNestedOneWithoutBoard_itemsInput
@@ -44613,11 +44633,13 @@ export namespace Prisma {
     board_uuid: string
     document_uuid: string
     added_by: string
+    title?: string | null
     created_at?: Date | string
   }
 
   export type DocumentBoardItemUpdateInput = {
     uuid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     board?: DocumentBoardUpdateOneRequiredWithoutItemsNestedInput
     document?: DocumentUpdateOneRequiredWithoutBoard_itemsNestedInput
@@ -44630,6 +44652,7 @@ export namespace Prisma {
     board_uuid?: StringFieldUpdateOperationsInput | string
     document_uuid?: StringFieldUpdateOperationsInput | string
     added_by?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -44639,11 +44662,13 @@ export namespace Prisma {
     board_uuid: string
     document_uuid: string
     added_by: string
+    title?: string | null
     created_at?: Date | string
   }
 
   export type DocumentBoardItemUpdateManyMutationInput = {
     uuid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -44653,6 +44678,7 @@ export namespace Prisma {
     board_uuid?: StringFieldUpdateOperationsInput | string
     document_uuid?: StringFieldUpdateOperationsInput | string
     added_by?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -47136,6 +47162,7 @@ export namespace Prisma {
     board_uuid?: SortOrder
     document_uuid?: SortOrder
     added_by?: SortOrder
+    title?: SortOrder
     created_at?: SortOrder
   }
 
@@ -47149,6 +47176,7 @@ export namespace Prisma {
     board_uuid?: SortOrder
     document_uuid?: SortOrder
     added_by?: SortOrder
+    title?: SortOrder
     created_at?: SortOrder
   }
 
@@ -47158,6 +47186,7 @@ export namespace Prisma {
     board_uuid?: SortOrder
     document_uuid?: SortOrder
     added_by?: SortOrder
+    title?: SortOrder
     created_at?: SortOrder
   }
 
@@ -51391,6 +51420,7 @@ export namespace Prisma {
 
   export type DocumentBoardItemCreateWithoutAdderInput = {
     uuid?: string
+    title?: string | null
     created_at?: Date | string
     board: DocumentBoardCreateNestedOneWithoutItemsInput
     document: DocumentCreateNestedOneWithoutBoard_itemsInput
@@ -51401,6 +51431,7 @@ export namespace Prisma {
     uuid?: string
     board_uuid: string
     document_uuid: string
+    title?: string | null
     created_at?: Date | string
   }
 
@@ -51735,6 +51766,7 @@ export namespace Prisma {
     board_uuid?: StringFilter<"DocumentBoardItem"> | string
     document_uuid?: StringFilter<"DocumentBoardItem"> | string
     added_by?: StringFilter<"DocumentBoardItem"> | string
+    title?: StringNullableFilter<"DocumentBoardItem"> | string | null
     created_at?: DateTimeFilter<"DocumentBoardItem"> | Date | string
   }
 
@@ -55552,6 +55584,7 @@ export namespace Prisma {
 
   export type DocumentBoardItemCreateWithoutDocumentInput = {
     uuid?: string
+    title?: string | null
     created_at?: Date | string
     board: DocumentBoardCreateNestedOneWithoutItemsInput
     adder: UserCreateNestedOneWithoutDocument_board_itemsInput
@@ -55562,6 +55595,7 @@ export namespace Prisma {
     uuid?: string
     board_uuid: string
     added_by: string
+    title?: string | null
     created_at?: Date | string
   }
 
@@ -55747,6 +55781,7 @@ export namespace Prisma {
 
   export type DocumentBoardItemCreateWithoutBoardInput = {
     uuid?: string
+    title?: string | null
     created_at?: Date | string
     document: DocumentCreateNestedOneWithoutBoard_itemsInput
     adder: UserCreateNestedOneWithoutDocument_board_itemsInput
@@ -55757,6 +55792,7 @@ export namespace Prisma {
     uuid?: string
     document_uuid: string
     added_by: string
+    title?: string | null
     created_at?: Date | string
   }
 
@@ -57975,6 +58011,7 @@ export namespace Prisma {
     uuid?: string
     board_uuid: string
     document_uuid: string
+    title?: string | null
     created_at?: Date | string
   }
 
@@ -58325,6 +58362,7 @@ export namespace Prisma {
 
   export type DocumentBoardItemUpdateWithoutAdderInput = {
     uuid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     board?: DocumentBoardUpdateOneRequiredWithoutItemsNestedInput
     document?: DocumentUpdateOneRequiredWithoutBoard_itemsNestedInput
@@ -58335,6 +58373,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     board_uuid?: StringFieldUpdateOperationsInput | string
     document_uuid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -58343,6 +58382,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     board_uuid?: StringFieldUpdateOperationsInput | string
     document_uuid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -59550,11 +59590,13 @@ export namespace Prisma {
     uuid?: string
     board_uuid: string
     added_by: string
+    title?: string | null
     created_at?: Date | string
   }
 
   export type DocumentBoardItemUpdateWithoutDocumentInput = {
     uuid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     board?: DocumentBoardUpdateOneRequiredWithoutItemsNestedInput
     adder?: UserUpdateOneRequiredWithoutDocument_board_itemsNestedInput
@@ -59565,6 +59607,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     board_uuid?: StringFieldUpdateOperationsInput | string
     added_by?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -59573,6 +59616,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     board_uuid?: StringFieldUpdateOperationsInput | string
     added_by?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -59581,11 +59625,13 @@ export namespace Prisma {
     uuid?: string
     document_uuid: string
     added_by: string
+    title?: string | null
     created_at?: Date | string
   }
 
   export type DocumentBoardItemUpdateWithoutBoardInput = {
     uuid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document?: DocumentUpdateOneRequiredWithoutBoard_itemsNestedInput
     adder?: UserUpdateOneRequiredWithoutDocument_board_itemsNestedInput
@@ -59596,6 +59642,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     document_uuid?: StringFieldUpdateOperationsInput | string
     added_by?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -59604,6 +59651,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     document_uuid?: StringFieldUpdateOperationsInput | string
     added_by?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

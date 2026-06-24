@@ -27,12 +27,12 @@ export function AddFromConversationModal({
     setStep('pick-documents');
   };
 
-  const handleConfirm = (documentUuids: string[]) => {
-    if (documentUuids.length === 0) return;
+  const handleConfirm = (docs: { uuid: string; title?: string }[]) => {
+    if (docs.length === 0) return;
 
-    let remaining = documentUuids.length;
-    for (const uuid of documentUuids) {
-      addDocument.mutate(uuid, {
+    let remaining = docs.length;
+    for (const doc of docs) {
+      addDocument.mutate({ documentUuid: doc.uuid, title: doc.title }, {
         onSettled: () => {
           remaining -= 1;
           if (remaining === 0) onClose();

@@ -14,6 +14,7 @@ import { useOrganizationStore } from '@/stores/organization';
 import { Routes } from '@/routes/routes';
 import { AddFromConversationModal } from './components/add-from-conversation-modal';
 import { BoardDetailDocuments } from './components/board-detail-documents';
+import { BoardDetailSkeleton } from './components/board-detail-skeleton';
 
 const DocumentBoardDetailPage: FC = () => {
   const { boardUuid } = useParams<{ boardUuid: string }>();
@@ -24,6 +25,8 @@ const DocumentBoardDetailPage: FC = () => {
 
   const [addFromConvOpen, setAddFromConvOpen] = useState(false);
   const [removeTarget, setRemoveTarget] = useState<string | null>(null);
+  const [pendingDocUuid, setPendingDocUuid] = useState<string | null>(null);
+  const [titleInput, setTitleInput] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: board, isLoading } = useGetDocumentBoard(organizationUuid, boardUuid);
@@ -37,20 +40,24 @@ const DocumentBoardDetailPage: FC = () => {
 
     uploadDocument.mutate(file, {
       onSuccess: (uploaded) => {
-        addDocument.mutate(uploaded.uuid);
+        setPendingDocUuid(uploaded.uuid);
+        setTitleInput('');
       },
     });
 
     e.target.value = '';
   };
 
-  if (isLoading) {
-    return (
-      <div className="mx-auto max-w-5xl">
-        <div className="h-6 w-40 animate-pulse rounded bg-surface-secondary" />
-        <div className="mt-4 h-8 w-64 animate-pulse rounded bg-surface-secondary" />
-      </div>
+  const handleAddPending = () => {
+    if (!pendingDocUuid) return;
+    addDocument.mutate(
+      { documentUuid: pendingDocUuid, title: titleInput.trim() || undefined },
+      { onSettled: () => setPendingDocUuid(null) },
     );
+  };
+
+  if (isLoading) {
+    return <BoardDetailSkeleton />;
   }
 
   if (!board) {
@@ -117,6 +124,56 @@ const DocumentBoardDetailPage: FC = () => {
           boardUuid={boardUuid}
           onClose={() => setAddFromConvOpen(false)}
         />
+      ) : null}
+
+      {pendingDocUuid ? (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <button
+            type="button"
+            aria-label="Close"
+            className="absolute inset-0 bg-[color-mix(in_oklch,black_42%,transparent)]"
+            onClick={() => setPendingDocUuid(null)}
+          />
+          <section
+            role="dialog"
+            aria-modal="true"
+            className="relative w-full max-w-sm overflow-hidden rounded-lg border border-border bg-surface p-5 shadow-xl"
+            style={{ boxShadow: '0 24px 60px -20px color-mix(in oklch, black 55%, transparent)' }}
+          >
+            <h2 className="text-sm font-semibold text-foreground">Add to board</h2>
+            <p className="mt-0.5 text-xs text-muted">Optionally give this document a title.</p>
+            <input
+              autoFocus
+              type="text"
+              placeholder="Title (optional)"
+              value={titleInput}
+              maxLength={255}
+              onChange={(e) => setTitleInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleAddPending();
+                if (e.key === 'Escape') setPendingDocUuid(null);
+              }}
+              className="mt-3 w-full rounded-md border border-border bg-surface-secondary px-3 py-2 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent"
+            />
+            <div className="mt-3 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setPendingDocUuid(null)}
+                className="rounded-md border border-border px-3 py-1.5 text-sm text-muted hover:bg-surface-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={addDocument.isPending}
+                onClick={handleAddPending}
+                className="rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-accent-foreground hover:opacity-90 disabled:opacity-50"
+              >
+                {addDocument.isPending ? 'Adding…' : 'Add to board'}
+              </button>
+            </div>
+          </section>
+        </div>
       ) : null}
 
       <ConfirmationDialog

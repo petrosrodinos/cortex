@@ -49,6 +49,8 @@ function BoardPicker({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const addToBoard = useAddDocumentToBoardById(orgUuid);
+  const [title, setTitle] = useState('');
+  const [pendingBoard, setPendingBoard] = useState<DocumentBoard | null>(null);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -57,6 +59,57 @@ function BoardPicker({
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [onClose]);
+
+  const handleAdd = () => {
+    if (!pendingBoard) return;
+    addToBoard.mutate(
+      { boardUuid: pendingBoard.uuid, documentUuid, title: title.trim() || undefined },
+      { onSettled: onClose },
+    );
+  };
+
+  if (pendingBoard) {
+    return (
+      <div
+        ref={ref}
+        className="absolute right-0 top-full z-[120] mt-1 w-64 overflow-hidden rounded-xl border border-border bg-surface p-3 shadow-lg"
+      >
+        <p className="mb-2 text-xs font-medium text-foreground">
+          Add to &quot;{pendingBoard.name}&quot;
+        </p>
+        <input
+          autoFocus
+          type="text"
+          placeholder="Title (optional)"
+          value={title}
+          maxLength={255}
+          onChange={(e) => setTitle(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleAdd();
+            if (e.key === 'Escape') setPendingBoard(null);
+          }}
+          className="w-full rounded-md border border-border bg-surface-secondary px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent"
+        />
+        <div className="mt-2 flex gap-2">
+          <button
+            type="button"
+            onClick={() => setPendingBoard(null)}
+            className="flex-1 rounded-md border border-border px-2 py-1.5 text-xs text-muted hover:bg-surface-secondary"
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            disabled={addToBoard.isPending}
+            onClick={handleAdd}
+            className="flex-1 rounded-md bg-accent px-2 py-1.5 text-xs font-medium text-accent-foreground hover:opacity-90 disabled:opacity-50"
+          >
+            {addToBoard.isPending ? 'Adding…' : 'Add'}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -70,11 +123,8 @@ function BoardPicker({
           <button
             key={board.uuid}
             type="button"
-            disabled={addToBoard.isPending}
-            className="flex w-full items-center rounded-lg px-2 py-2 text-sm text-foreground hover:bg-surface-secondary disabled:opacity-50"
-            onClick={() => {
-              addToBoard.mutate({ boardUuid: board.uuid, documentUuid }, { onSettled: onClose });
-            }}
+            className="flex w-full items-center rounded-lg px-2 py-2 text-sm text-foreground hover:bg-surface-secondary"
+            onClick={() => setPendingBoard(board)}
           >
             {board.name}
           </button>

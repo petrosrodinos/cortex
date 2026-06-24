@@ -388,6 +388,7 @@ exports.Prisma.DocumentBoardItemScalarFieldEnum = {
   board_uuid: 'board_uuid',
   document_uuid: 'document_uuid',
   added_by: 'added_by',
+  title: 'title',
   created_at: 'created_at'
 };
 

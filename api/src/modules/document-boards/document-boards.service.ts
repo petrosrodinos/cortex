@@ -127,6 +127,7 @@ export class DocumentBoardsService {
           board_uuid: boardUuid,
           document_uuid: dto.document_uuid,
           added_by: userUuid,
+          title: dto.title?.trim() ?? null,
         },
         include: { document: true },
       });

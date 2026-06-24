@@ -30,6 +30,7 @@ export interface DocumentBoardItem {
   board_uuid: string;
   document_uuid: string;
   added_by: string;
+  title: string | null;
   created_at: string;
   document: BoardDocument;
 }

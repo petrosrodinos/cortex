@@ -81,8 +81,8 @@ export function useAddDocumentToBoard(orgUuid?: string, boardUuid?: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (documentUuid: string) =>
-      addDocumentToBoard(orgUuid as string, boardUuid as string, documentUuid),
+    mutationFn: ({ documentUuid, title }: { documentUuid: string; title?: string }) =>
+      addDocumentToBoard(orgUuid as string, boardUuid as string, documentUuid, title),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [...documentBoardsQueryKey, orgUuid, boardUuid] });
       toast({ title: 'Document added to board', duration: 2000 });
@@ -97,8 +97,8 @@ export function useAddDocumentToBoardById(orgUuid?: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ boardUuid, documentUuid }: { boardUuid: string; documentUuid: string }) =>
-      addDocumentToBoard(orgUuid as string, boardUuid, documentUuid),
+    mutationFn: ({ boardUuid, documentUuid, title }: { boardUuid: string; documentUuid: string; title?: string }) =>
+      addDocumentToBoard(orgUuid as string, boardUuid, documentUuid, title),
     onSuccess: (_data, { boardUuid }) => {
       queryClient.invalidateQueries({ queryKey: [...documentBoardsQueryKey, orgUuid, boardUuid] });
       toast({ title: 'Added to board', duration: 2000 });
