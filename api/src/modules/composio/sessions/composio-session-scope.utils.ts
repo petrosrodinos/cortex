@@ -98,6 +98,69 @@ export function isToolkitConnectedForTier(
   );
 }
 
+export type SessionConnectedAccount = {
+  slug: string;
+  user_uuid: string | null;
+  composio_user_id: string;
+};
+
+export function getSessionConnectedToolkitSlugs(
+  toolkitSlugs: string[],
+  tierMap: Record<string, ComposioConnectionTier>,
+  accounts: SessionConnectedAccount[],
+  organizationUuid: string,
+  userUuid: string,
+  orgSharedOnlyToolkits: boolean,
+): Set<string> {
+  if (toolkitSlugs.length === 0) {
+    return new Set();
+  }
+
+  const composioUserId = resolveComposioUserIdFromTierMap(
+    organizationUuid,
+    userUuid,
+    toolkitSlugs,
+    tierMap,
+    orgSharedOnlyToolkits,
+  );
+  const sessionToolkitSlugs = filterToolkitsForComposioUserId(
+    toolkitSlugs,
+    tierMap,
+    composioUserId,
+  );
+  const connected = new Set<string>();
+
+  for (const slug of sessionToolkitSlugs) {
+    const preferredTier = tierMap[slug];
+
+    for (const account of accounts) {
+      if (account.slug !== slug) {
+        continue;
+      }
+
+      if (preferredTier) {
+        const accountTier = inferConnectionTierFromAccount(account);
+        if (accountTier !== preferredTier) {
+          continue;
+        }
+      }
+
+      if (!isAccountTierCompatibleWithComposioUserId(account, composioUserId)) {
+        continue;
+      }
+
+      if (account.user_uuid && account.user_uuid !== userUuid) {
+        continue;
+      }
+
+      connected.add(slug);
+      break;
+    }
+  }
+
+  return connected;
+}
+
 export function allTieredToolkitsHaveConnectedAccounts(
   toolkitSlugs: string[],
   connectedAccounts: Record<string, string>,

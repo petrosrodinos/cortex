@@ -1,3 +1,5 @@
+import type { ComposioConnectionTier } from '@/features/integration-apps/constants/composio-connection-tier';
+
 export const MessageRoles = {
   USER: 'USER',
   ASSISTANT: 'ASSISTANT',
@@ -67,7 +69,7 @@ export interface ConversationAgentIntegration {
 }
 
 export interface ConversationAgentConnectedAccount {
-  connection_tier: 'ORG_SHARED' | 'USER_PERSONAL';
+  connection_tier: ComposioConnectionTier;
   account_label?: string | null;
 }
 
@@ -79,7 +81,7 @@ export interface ConversationAgentToolkit {
   logo_url: string | null;
   tool_count: number;
   is_connected: boolean;
-  connection_tiers: Array<'ORG_SHARED' | 'USER_PERSONAL'>;
+  connection_tiers: ComposioConnectionTier[];
   connected_accounts: ConversationAgentConnectedAccount[];
 }
 
@@ -101,7 +103,7 @@ export interface AgentExecution {
       input?: unknown;
     }>;
     connectionTierChoices?: ExecutionConnectionTierChoice[];
-    toolkitConnectionTiers?: Record<string, 'ORG_SHARED' | 'USER_PERSONAL'>;
+    toolkitConnectionTiers?: Record<string, ComposioConnectionTier>;
   } | null;
   output?: {
     content?: string;
@@ -148,7 +150,7 @@ export interface ExecutionApprovalRequest {
 export interface ExecutionConnectionTierChoice {
   slug: string;
   name: string;
-  availableTiers: Array<'ORG_SHARED' | 'USER_PERSONAL'>;
+  availableTiers: ComposioConnectionTier[];
 }
 
 export interface ExecutionConnectionTierRequest {

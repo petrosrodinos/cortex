@@ -6,12 +6,15 @@ import type { ToolSet } from 'ai';
 import type { AgentProgressScope } from '../progress/agent-progress-scope';
 import { ExecutionToolIdempotencyService } from '../tools/dispatch/execution-tool-idempotency.service';
 import { CapabilitiesToolsService } from './capabilities-tools.service';
+import { normalizeToolkitConnectionTierMap } from './toolkit-connection-tiers.utils';
 
 export interface CapabilitiesToolsFactoryContext {
   organizationUuid: string;
+  userUuid?: string;
   executionUuid: string;
   integrationUuids?: string[];
   toolkitSlugs?: string[];
+  toolkitConnectionTiers?: Record<string, string>;
   progress?: AgentProgressScope;
 }
 
@@ -26,8 +29,12 @@ export class CapabilitiesToolsFactory {
   buildTools(context: CapabilitiesToolsFactoryContext): ToolSet {
     const toolContext = {
       organizationUuid: context.organizationUuid,
+      userUuid: context.userUuid,
       integrationUuids: context.integrationUuids,
       toolkitSlugs: context.toolkitSlugs,
+      toolkitConnectionTiers: normalizeToolkitConnectionTierMap(
+        context.toolkitConnectionTiers,
+      ),
     };
 
     return {

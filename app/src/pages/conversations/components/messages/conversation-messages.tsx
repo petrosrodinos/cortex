@@ -1,5 +1,6 @@
 import { useEffect, useRef, type FC } from 'react';
 import { Card } from '@/components/ui/card';
+import type { ComposioConnectionTier } from '@/features/integration-apps/constants/composio-connection-tier';
 import type {
   ExecutionApprovalRequest,
   ExecutionConnectionTierRequest,
@@ -45,7 +46,7 @@ interface ConversationMessagesProps {
   onApprove: () => void;
   onReject: () => void;
   onResolveConnectionTiers: (
-    choices: Record<string, 'ORG_SHARED' | 'USER_PERSONAL'>,
+    choices: Record<string, ComposioConnectionTier>,
   ) => void;
   isSendDisabled: boolean;
   onRetryMessage: (message: Message) => void;

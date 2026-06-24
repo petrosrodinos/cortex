@@ -72,7 +72,7 @@ describe('toolkit-connection-tiers.utils', () => {
     expect(
       normalizeToolkitConnectionTierMap({
         linear: 'org_shared',
-        gmail: 'USER_PERSONAL',
+        gmail: ComposioConnectionTier.USER_PERSONAL,
       }),
     ).toEqual({
       linear: ComposioConnectionTier.ORG_SHARED,

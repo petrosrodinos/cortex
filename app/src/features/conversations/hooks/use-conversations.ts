@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
+import type { ComposioConnectionTier } from '@/features/integration-apps/constants/composio-connection-tier';
 import type { UpdateConversationPayload } from '../interfaces/conversation.interfaces';
 import {
   approveExecution,
@@ -114,7 +115,7 @@ export function useSendMessage(organizationUuid?: string, conversationUuid?: str
       documentUuids?: string[];
       integrationUuids?: string[];
       toolkitSlugs?: string[];
-      toolkitConnectionTiers?: Record<string, 'ORG_SHARED' | 'USER_PERSONAL'>;
+      toolkitConnectionTiers?: Record<string, ComposioConnectionTier>;
     }) =>
       sendMessage(
         organizationUuid as string,
@@ -177,7 +178,7 @@ export function useResolveConnectionTiers(organizationUuid?: string) {
       choices,
     }: {
       executionUuid: string;
-      choices: Record<string, 'ORG_SHARED' | 'USER_PERSONAL'>;
+      choices: Record<string, ComposioConnectionTier>;
     }) => resolveConnectionTiers(organizationUuid as string, executionUuid, choices),
     onError: (error: Error) => {
       toast({ title: 'Could not continue', description: error.message, variant: 'error' });

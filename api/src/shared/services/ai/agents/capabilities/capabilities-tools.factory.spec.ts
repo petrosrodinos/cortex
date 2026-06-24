@@ -1,3 +1,4 @@
+import { ComposioConnectionTier } from 'generated/prisma';
 import { CapabilitiesToolsFactory } from './capabilities-tools.factory';
 import { CapabilitiesToolsService } from './capabilities-tools.service';
 
@@ -17,8 +18,10 @@ describe('CapabilitiesToolsFactory', () => {
     );
     const tools = factory.buildTools({
       organizationUuid: 'org-uuid',
+      userUuid: 'user-uuid',
       executionUuid: 'execution-uuid',
       toolkitSlugs: ['linear'],
+      toolkitConnectionTiers: { linear: ComposioConnectionTier.ORG_SHARED },
     });
 
     await expect((tools.capabilities__list_toolkits as any).execute({})).resolves.toEqual({
@@ -27,8 +30,10 @@ describe('CapabilitiesToolsFactory', () => {
 
     expect(capabilities.listToolkits).toHaveBeenCalledWith({
       organizationUuid: 'org-uuid',
+      userUuid: 'user-uuid',
       integrationUuids: undefined,
       toolkitSlugs: ['linear'],
+      toolkitConnectionTiers: { linear: ComposioConnectionTier.ORG_SHARED },
     });
   });
 });

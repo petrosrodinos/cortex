@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ComposioConnectionTier } from 'generated/prisma';
 import {
   IsArray,
   IsObject,
@@ -47,7 +48,7 @@ export class SendMessageDto {
   toolkit_slugs?: string[];
 
   @ApiPropertyOptional({
-    example: { linear: 'ORG_SHARED' },
+    example: { linear: ComposioConnectionTier.ORG_SHARED },
     description: 'Preferred Composio connection tier per toolkit slug.',
   })
   @IsOptional()
@@ -55,7 +56,7 @@ export class SendMessageDto {
   toolkitConnectionTiers?: Record<string, string>;
 
   @ApiPropertyOptional({
-    example: { linear: 'ORG_SHARED' },
+    example: { linear: ComposioConnectionTier.ORG_SHARED },
     description: 'Snake_case alias for toolkitConnectionTiers.',
   })
   @IsOptional()

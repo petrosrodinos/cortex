@@ -1,5 +1,6 @@
 import { useMemo, useState, type FC } from 'react';
 import { Loader2 } from 'lucide-react';
+import { ComposioConnectionTier } from '@/features/integration-apps/constants/composio-connection-tier';
 import type { IntegrationAppsConnectionTier } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import type { ExecutionConnectionTierRequest } from '@/features/conversations/interfaces/conversation.interfaces';
 import { ConnectionTierSelector } from '@/pages/integrations/components/integration-apps/connection-tier-selector';
@@ -22,7 +23,7 @@ export const ExecutionConnectionTierCard: FC<ExecutionConnectionTierCardProps> =
     const choices: Record<string, IntegrationAppsConnectionTier> = {};
 
     for (const choice of request.connectionTierChoices) {
-      choices[choice.slug] = choice.availableTiers[0] ?? 'ORG_SHARED';
+      choices[choice.slug] = choice.availableTiers[0] ?? ComposioConnectionTier.ORG_SHARED;
     }
 
     return choices;
@@ -56,7 +57,7 @@ export const ExecutionConnectionTierCard: FC<ExecutionConnectionTierCardProps> =
             <ConnectionTierSelector
               name={`connection-tier-${choice.slug}`}
               tiers={choice.availableTiers}
-              value={choices[choice.slug] ?? choice.availableTiers[0] ?? 'ORG_SHARED'}
+              value={choices[choice.slug] ?? choice.availableTiers[0] ?? ComposioConnectionTier.ORG_SHARED}
               disabled={isSubmitting}
               onChange={(tier) => {
                 setChoices((current) => ({

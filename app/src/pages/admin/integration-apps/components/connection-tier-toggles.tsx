@@ -1,3 +1,4 @@
+import { ComposioConnectionTier } from '@/features/integration-apps/constants/composio-connection-tier';
 import type { IntegrationAppsConnectionTier } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import { ToggleSwitch } from './toggle-switch';
 
@@ -5,8 +6,8 @@ const CONNECTION_TIER_OPTIONS: Array<{
   value: IntegrationAppsConnectionTier;
   label: string;
 }> = [
-  { value: 'USER_PERSONAL', label: 'User personal' },
-  { value: 'ORG_SHARED', label: 'Organization shared' },
+  { value: ComposioConnectionTier.USER_PERSONAL, label: 'User personal' },
+  { value: ComposioConnectionTier.ORG_SHARED, label: 'Organization shared' },
 ];
 
 interface ConnectionTierTogglesProps {

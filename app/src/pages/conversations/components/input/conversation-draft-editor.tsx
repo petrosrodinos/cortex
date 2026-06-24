@@ -8,6 +8,7 @@ import {
   type KeyboardEvent,
 } from 'react';
 import type { Integration, IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
+import { ComposioConnectionTier } from '@/features/integration-apps/constants/composio-connection-tier';
 import type { IntegrationAppsToolkit } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import { getProviderBrandColor } from '@/features/integrations/constants/provider-metadata';
 import { cn } from '@/lib/utils';
@@ -132,7 +133,9 @@ function serializeEditor(root: HTMLElement): DraftPart[] {
         type: 'toolkit',
         slug: node.dataset.toolkitSlug,
         label: node.dataset.toolkitLabel ?? '',
-        connectionTier: (node.dataset.toolkitConnectionTier ?? 'ORG_SHARED') as IntegrationAppsConnectionTier,
+        connectionTier:
+          (node.dataset.toolkitConnectionTier as IntegrationAppsConnectionTier | undefined) ??
+          ComposioConnectionTier.ORG_SHARED,
       });
       return;
     }
@@ -525,7 +528,9 @@ export const ConversationDraftEditor = forwardRef<ConversationDraftEditorHandle,
         }
 
         const oppositeTier =
-          item.connectionTier === 'ORG_SHARED' ? 'USER_PERSONAL' : 'ORG_SHARED';
+          item.connectionTier === ComposioConnectionTier.ORG_SHARED
+            ? ComposioConnectionTier.USER_PERSONAL
+            : ComposioConnectionTier.ORG_SHARED;
         removeToolkitChipsWithTier(root, oppositeTier);
 
         const label = getConversationToolItemLabel(item);

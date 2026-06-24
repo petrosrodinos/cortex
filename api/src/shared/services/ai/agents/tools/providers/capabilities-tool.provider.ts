@@ -17,9 +17,11 @@ export class CapabilitiesToolProvider implements AgentToolProvider {
   buildTools(context: AgentToolProviderContext): ToolSet {
     return this.capabilitiesToolsFactory.buildTools({
       organizationUuid: context.organizationUuid,
+      userUuid: context.userUuid,
       executionUuid: context.executionUuid,
       integrationUuids: context.integrationUuids,
       toolkitSlugs: context.toolkitSlugs,
+      toolkitConnectionTiers: context.toolkitConnectionTiers,
       progress: context.progress,
     });
   }

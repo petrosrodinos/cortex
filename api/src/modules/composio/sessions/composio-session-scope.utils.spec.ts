@@ -1,6 +1,7 @@
 import { ComposioConnectionTier } from 'generated/prisma';
 import {
   filterToolkitsForComposioUserId,
+  getSessionConnectedToolkitSlugs,
   resolveComposioUserIdFromTierMap,
 } from './composio-session-scope.utils';
 
@@ -43,5 +44,51 @@ describe('composio-session-scope.utils', () => {
         'user:user-uuid',
       ),
     ).toEqual(['gmail']);
+  });
+
+  it('marks only session-compatible toolkits as connected', () => {
+    expect(
+      getSessionConnectedToolkitSlugs(
+        ['github', 'resend'],
+        {
+          github: ComposioConnectionTier.USER_PERSONAL,
+          resend: ComposioConnectionTier.ORG_SHARED,
+        },
+        [
+          {
+            slug: 'github',
+            user_uuid: 'user-uuid',
+            composio_user_id: 'user:user-uuid',
+          },
+          {
+            slug: 'resend',
+            user_uuid: null,
+            composio_user_id: 'org:org-uuid',
+          },
+        ],
+        'org-uuid',
+        'user-uuid',
+        false,
+      ),
+    ).toEqual(new Set(['github']));
+  });
+
+  it('binds org toolkits when the session is org-scoped', () => {
+    expect(
+      getSessionConnectedToolkitSlugs(
+        ['resend'],
+        { resend: ComposioConnectionTier.ORG_SHARED },
+        [
+          {
+            slug: 'resend',
+            user_uuid: null,
+            composio_user_id: 'org:org-uuid',
+          },
+        ],
+        'org-uuid',
+        'user-uuid',
+        false,
+      ),
+    ).toEqual(new Set(['resend']));
   });
 });

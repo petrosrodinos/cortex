@@ -19,9 +19,7 @@ import {
   type ToolkitConnectionTierMap,
 } from './toolkit-connection-tiers.utils';
 import {
-  filterToolkitsForComposioUserId,
-  isToolkitConnectedForTier,
-  resolveComposioUserIdFromTierMap,
+  getSessionConnectedToolkitSlugs,
 } from '@/modules/composio/sessions/composio-session-scope.utils';
 
 export interface CapabilitiesToolsContext {
@@ -298,6 +296,7 @@ export class CapabilitiesToolsService {
               },
               select: {
                 user_uuid: true,
+                composio_user_id: true,
               },
             },
           },
@@ -317,36 +316,33 @@ export class CapabilitiesToolsService {
           ComposioConnectionTier.USER_PERSONAL,
         ),
     );
-    const composioUserId = context.userUuid
-      ? resolveComposioUserIdFromTierMap(
-          context.organizationUuid,
-          context.userUuid,
+    const sessionConnectedSlugs = context.userUuid
+      ? getSessionConnectedToolkitSlugs(
           toolkitSlugs,
           tierMap,
+          enabled.flatMap((entry) =>
+            entry.toolkit.connected_accounts.map((account) => ({
+              slug: entry.toolkit.slug,
+              user_uuid: account.user_uuid,
+              composio_user_id: account.composio_user_id,
+            })),
+          ),
+          context.organizationUuid,
+          context.userUuid,
           orgSharedOnly,
         )
-      : null;
-    const sessionToolkitSlugs =
-      composioUserId && toolkitSlugs.length > 0
-        ? filterToolkitsForComposioUserId(
-            toolkitSlugs,
-            tierMap,
-            composioUserId,
-          )
-        : toolkitSlugs;
-    const sessionToolkitSlugSet = new Set(sessionToolkitSlugs);
+      : new Set(
+          enabled
+            .filter((entry) => entry.toolkit.connected_accounts.length > 0)
+            .map((entry) => entry.toolkit.slug),
+        );
 
     return {
       toolkits: enabled.map((entry) => ({
         slug: entry.toolkit.slug,
         name: entry.toolkit.name,
         description: entry.toolkit.description,
-        is_connected:
-          sessionToolkitSlugSet.has(entry.toolkit.slug) &&
-          isToolkitConnectedForTier(
-            entry.toolkit.connected_accounts,
-            tierMap[entry.toolkit.slug],
-          ),
+        is_connected: sessionConnectedSlugs.has(entry.toolkit.slug),
       })),
     };
   }

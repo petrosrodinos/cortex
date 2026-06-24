@@ -1,4 +1,6 @@
-export type IntegrationAppsConnectionTier = 'ORG_SHARED' | 'USER_PERSONAL';
+import type { ComposioConnectionTier } from '../constants/composio-connection-tier';
+
+export type IntegrationAppsConnectionTier = ComposioConnectionTier;
 export type IntegrationAppsAccountStatus = 'ACTIVE' | 'PENDING' | 'EXPIRED' | 'INACTIVE';
 
 export interface IntegrationAppsConnectedAccountSummary {

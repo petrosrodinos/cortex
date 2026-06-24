@@ -1,3 +1,4 @@
+import { ComposioConnectionTier } from '@/features/integration-apps/constants/composio-connection-tier';
 import type {
   IntegrationAppsConnectionTier,
   IntegrationAppsToolkit,
@@ -73,7 +74,10 @@ function expandToolkitItems(toolkit: IntegrationAppsToolkit): ConversationToolIt
       {
         kind: 'toolkit',
         toolkit,
-        connectionTier: connectedTiers[0] ?? toolkit.connection_tiers[0] ?? 'ORG_SHARED',
+        connectionTier:
+          connectedTiers[0] ??
+          toolkit.connection_tiers[0] ??
+          ComposioConnectionTier.ORG_SHARED,
       },
     ];
   }
@@ -92,7 +96,7 @@ export function getToolEligibleToolkits(toolkits: IntegrationAppsToolkit[]): Int
 export function getAutoSelectableToolkitBindings(
   toolkits: IntegrationAppsToolkit[],
 ): ToolkitBinding[] {
-  return getToolEligibleToolkits(toolkits).flatMap((toolkit) => {
+  const bindings = getToolEligibleToolkits(toolkits).flatMap((toolkit) => {
     const connectedTiers = getToolkitConnectedTiers(toolkit);
 
     if (connectedTiers.length !== 1) {
@@ -101,6 +105,42 @@ export function getAutoSelectableToolkitBindings(
 
     return [{ slug: toolkit.slug, connectionTier: connectedTiers[0] }];
   });
+
+  const tiers = new Set(bindings.map((binding) => binding.connectionTier));
+
+  if (tiers.size <= 1) {
+    return bindings;
+  }
+
+  const bindingsByTier = bindings.reduce<
+    Partial<Record<IntegrationAppsConnectionTier, ToolkitBinding[]>>
+  >((groups, binding) => {
+    const tierBindings = groups[binding.connectionTier] ?? [];
+    tierBindings.push(binding);
+    groups[binding.connectionTier] = tierBindings;
+    return groups;
+  }, {});
+
+  const rankedTiers = [...tiers].sort((left, right) => {
+    const leftCount = bindingsByTier[left]?.length ?? 0;
+    const rightCount = bindingsByTier[right]?.length ?? 0;
+
+    if (leftCount !== rightCount) {
+      return rightCount - leftCount;
+    }
+
+    if (left === ComposioConnectionTier.ORG_SHARED) {
+      return -1;
+    }
+
+    if (right === ComposioConnectionTier.ORG_SHARED) {
+      return 1;
+    }
+
+    return 0;
+  });
+
+  return bindingsByTier[rankedTiers[0]!] ?? [];
 }
 
 export function getConversationToolItemId(item: ConversationToolItem): string {

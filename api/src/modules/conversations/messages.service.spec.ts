@@ -1,4 +1,4 @@
-import { AgentExecutionStatus, MessageRole } from 'generated/prisma';
+import { AgentExecutionStatus, ComposioConnectionTier, MessageRole } from 'generated/prisma';
 import { MessagesService } from './messages.service';
 
 describe('MessagesService', () => {
@@ -42,10 +42,10 @@ describe('MessagesService', () => {
       resolveAgentToolScope: jest.fn().mockResolvedValue({
         integrationUuids: undefined,
         toolkitSlugs: ['gmail', 'slack'],
-        toolkitConnectionTiers: { gmail: 'USER_PERSONAL' },
+        toolkitConnectionTiers: { gmail: ComposioConnectionTier.USER_PERSONAL },
       }),
       resolveToolkitConnectionAmbiguities: jest.fn().mockResolvedValue({
-        resolvedTierMap: { gmail: 'USER_PERSONAL' },
+        resolvedTierMap: { gmail: ComposioConnectionTier.USER_PERSONAL },
         ambiguousChoices: [],
       }),
     };
@@ -106,7 +106,7 @@ describe('MessagesService', () => {
           documentUuids: [],
           integrationUuids: undefined,
           toolkitSlugs: ['gmail', 'slack'],
-          toolkitConnectionTiers: { gmail: 'USER_PERSONAL' },
+          toolkitConnectionTiers: { gmail: ComposioConnectionTier.USER_PERSONAL },
         },
       },
     });
@@ -121,7 +121,7 @@ describe('MessagesService', () => {
         documentUuids: [],
         integrationUuids: undefined,
         toolkitSlugs: ['gmail', 'slack'],
-        toolkitConnectionTiers: { gmail: 'USER_PERSONAL' },
+        toolkitConnectionTiers: { gmail: ComposioConnectionTier.USER_PERSONAL },
       }),
       expect.objectContaining({ jobId: 'run-execution-uuid' }),
     );
@@ -135,7 +135,10 @@ describe('MessagesService', () => {
         {
           slug: 'linear',
           name: 'Linear',
-          availableTiers: ['ORG_SHARED', 'USER_PERSONAL'],
+          availableTiers: [
+            ComposioConnectionTier.ORG_SHARED,
+            ComposioConnectionTier.USER_PERSONAL,
+          ],
         },
       ],
     });
@@ -153,7 +156,10 @@ describe('MessagesService', () => {
             {
               slug: 'linear',
               name: 'Linear',
-              availableTiers: ['ORG_SHARED', 'USER_PERSONAL'],
+              availableTiers: [
+            ComposioConnectionTier.ORG_SHARED,
+            ComposioConnectionTier.USER_PERSONAL,
+          ],
             },
           ],
         }),

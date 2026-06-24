@@ -1,3 +1,4 @@
+import { ComposioConnectionTier } from '@/features/integration-apps/constants/composio-connection-tier';
 import type { IntegrationAppsConnectionTier } from '@/features/integration-apps/interfaces/integrationApps.interface';
 import { cn } from '@/lib/utils';
 
@@ -7,12 +8,12 @@ export const CONNECTION_TIER_OPTIONS: Array<{
   description: string;
 }> = [
   {
-    value: 'ORG_SHARED',
+    value: ComposioConnectionTier.ORG_SHARED,
     label: 'Organization',
     description: 'Shared across your organization. Anyone with access can use this connection.',
   },
   {
-    value: 'USER_PERSONAL',
+    value: ComposioConnectionTier.USER_PERSONAL,
     label: 'Personal',
     description: 'Only you can use this connection. Your account stays private to you.',
   },
@@ -25,7 +26,7 @@ export function getConnectionTierLabel(tier: IntegrationAppsConnectionTier): str
 export function getConnectionTierFromAccount(
   userUuid?: string | null,
 ): IntegrationAppsConnectionTier {
-  return userUuid ? 'USER_PERSONAL' : 'ORG_SHARED';
+  return userUuid ? ComposioConnectionTier.USER_PERSONAL : ComposioConnectionTier.ORG_SHARED;
 }
 
 export function getConnectionTierOption(tier: IntegrationAppsConnectionTier) {
@@ -35,7 +36,7 @@ export function getConnectionTierOption(tier: IntegrationAppsConnectionTier) {
 export function getDefaultConnectionTier(
   tiers: IntegrationAppsConnectionTier[],
 ): IntegrationAppsConnectionTier {
-  return tiers[0] ?? 'ORG_SHARED';
+  return tiers[0] ?? ComposioConnectionTier.ORG_SHARED;
 }
 
 interface ConnectionTierSelectorProps {

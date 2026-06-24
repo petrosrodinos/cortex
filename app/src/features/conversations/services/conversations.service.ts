@@ -1,5 +1,6 @@
 import axiosInstance from '@/config/api/axios';
 import { ApiRoutes } from '@/config/api/routes';
+import type { ComposioConnectionTier } from '@/features/integration-apps/constants/composio-connection-tier';
 import type { Conversation, Message, SendMessageResponse, AgentExecution, ConversationAgentTools, UpdateConversationPayload } from '../interfaces/conversation.interfaces';
 
 export const getConversations = async (organizationUuid: string): Promise<Conversation[]> => {
@@ -82,7 +83,7 @@ export const sendMessage = async (
   documentUuids?: string[],
   integrationUuids?: string[],
   toolkitSlugs?: string[],
-  toolkitConnectionTiers?: Record<string, 'ORG_SHARED' | 'USER_PERSONAL'>,
+  toolkitConnectionTiers?: Record<string, ComposioConnectionTier>,
 ): Promise<SendMessageResponse> => {
   try {
     const response = await axiosInstance.post(
@@ -139,7 +140,7 @@ export const rejectExecution = async (organizationUuid: string, executionUuid: s
 export const resolveConnectionTiers = async (
   organizationUuid: string,
   executionUuid: string,
-  choices: Record<string, 'ORG_SHARED' | 'USER_PERSONAL'>,
+  choices: Record<string, ComposioConnectionTier>,
 ) => {
   try {
     const response = await axiosInstance.post(

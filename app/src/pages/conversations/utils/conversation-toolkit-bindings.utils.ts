@@ -1,3 +1,4 @@
+import { ComposioConnectionTier } from '@/features/integration-apps/constants/composio-connection-tier';
 import type { IntegrationAppsConnectionTier } from '@/features/integration-apps/interfaces/integrationApps.interface';
 
 export type ToolkitBinding = {
@@ -57,7 +58,7 @@ export function getToolkitTierScopeNotice(
     return null;
   }
 
-  if (scope === 'ORG_SHARED') {
+  if (scope === ComposioConnectionTier.ORG_SHARED) {
     return 'Organization connections only. Personal apps are disabled for this message.';
   }
 
