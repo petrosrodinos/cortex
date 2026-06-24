@@ -33,6 +33,9 @@ export function BoardDocumentCard({ item, canWrite, onRemove }: BoardDocumentCar
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-foreground break-all">{document.filename}</p>
           <p className="mt-0.5 text-xs text-muted">Added {formatDateTime(item.created_at)}</p>
+          <p className="mt-0.5 text-xs text-muted">
+            By {[document.user.first_name, document.user.last_name].filter(Boolean).join(' ') || document.user.email}
+          </p>
         </div>
 
         <Dropdown>

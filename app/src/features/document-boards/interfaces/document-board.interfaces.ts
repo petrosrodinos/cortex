@@ -8,6 +8,13 @@ export interface DocumentBoard {
   updated_at: string;
 }
 
+export interface BoardDocumentUser {
+  uuid: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string;
+}
+
 export interface BoardDocument {
   uuid: string;
   filename: string;
@@ -15,6 +22,7 @@ export interface BoardDocument {
   size: number;
   url: string;
   created_at: string;
+  user: BoardDocumentUser;
 }
 
 export interface DocumentBoardItem {

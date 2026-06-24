@@ -37,7 +37,13 @@ export class DocumentBoardsService {
       where: { uuid: boardUuid, org_uuid: organizationUuid },
       include: {
         items: {
-          include: { document: true },
+          include: {
+            document: {
+              include: {
+                user: { select: { uuid: true, first_name: true, last_name: true, email: true } },
+              },
+            },
+          },
           orderBy: { created_at: 'desc' },
         },
       },

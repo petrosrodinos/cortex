@@ -195,6 +195,7 @@ model User {
   scheduled_agents              ScheduledAgent[]
   created_document_boards       DocumentBoard[]
   document_board_items          DocumentBoardItem[]
+  documents                     Document[]
 
   @@index([email])
   @@index([phone])
@@ -591,6 +592,7 @@ model Document {
   type       DocumentType @default(LOGO)
   created_at DateTime     @default(now())
 
+  user        User                @relation(fields: [user_uuid], references: [uuid])
   board_items DocumentBoardItem[]
 
   @@index([user_uuid])

@@ -3745,6 +3745,7 @@ export namespace Prisma {
     scheduled_agents: number
     created_document_boards: number
     document_board_items: number
+    documents: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3757,6 +3758,7 @@ export namespace Prisma {
     scheduled_agents?: boolean | UserCountOutputTypeCountScheduled_agentsArgs
     created_document_boards?: boolean | UserCountOutputTypeCountCreated_document_boardsArgs
     document_board_items?: boolean | UserCountOutputTypeCountDocument_board_itemsArgs
+    documents?: boolean | UserCountOutputTypeCountDocumentsArgs
   }
 
   // Custom InputTypes
@@ -3831,6 +3833,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountDocument_board_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DocumentBoardItemWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentWhereInput
   }
 
 
@@ -4597,6 +4606,7 @@ export namespace Prisma {
     scheduled_agents?: boolean | User$scheduled_agentsArgs<ExtArgs>
     created_document_boards?: boolean | User$created_document_boardsArgs<ExtArgs>
     document_board_items?: boolean | User$document_board_itemsArgs<ExtArgs>
+    documents?: boolean | User$documentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -4650,6 +4660,7 @@ export namespace Prisma {
     scheduled_agents?: boolean | User$scheduled_agentsArgs<ExtArgs>
     created_document_boards?: boolean | User$created_document_boardsArgs<ExtArgs>
     document_board_items?: boolean | User$document_board_itemsArgs<ExtArgs>
+    documents?: boolean | User$documentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4667,6 +4678,7 @@ export namespace Prisma {
       scheduled_agents: Prisma.$ScheduledAgentPayload<ExtArgs>[]
       created_document_boards: Prisma.$DocumentBoardPayload<ExtArgs>[]
       document_board_items: Prisma.$DocumentBoardItemPayload<ExtArgs>[]
+      documents: Prisma.$DocumentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -5082,6 +5094,7 @@ export namespace Prisma {
     scheduled_agents<T extends User$scheduled_agentsArgs<ExtArgs> = {}>(args?: Subset<T, User$scheduled_agentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     created_document_boards<T extends User$created_document_boardsArgs<ExtArgs> = {}>(args?: Subset<T, User$created_document_boardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     document_board_items<T extends User$document_board_itemsArgs<ExtArgs> = {}>(args?: Subset<T, User$document_board_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    documents<T extends User$documentsArgs<ExtArgs> = {}>(args?: Subset<T, User$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5722,6 +5735,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DocumentBoardItemScalarFieldEnum | DocumentBoardItemScalarFieldEnum[]
+  }
+
+  /**
+   * User.documents
+   */
+  export type User$documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    where?: DocumentWhereInput
+    orderBy?: DocumentOrderByWithRelationInput | DocumentOrderByWithRelationInput[]
+    cursor?: DocumentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DocumentScalarFieldEnum | DocumentScalarFieldEnum[]
   }
 
   /**
@@ -27364,6 +27401,7 @@ export namespace Prisma {
     path?: boolean
     type?: boolean
     created_at?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
     board_items?: boolean | Document$board_itemsArgs<ExtArgs>
     _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["document"]>
@@ -27379,6 +27417,7 @@ export namespace Prisma {
     path?: boolean
     type?: boolean
     created_at?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["document"]>
 
   export type DocumentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -27392,6 +27431,7 @@ export namespace Prisma {
     path?: boolean
     type?: boolean
     created_at?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["document"]>
 
   export type DocumentSelectScalar = {
@@ -27409,15 +27449,21 @@ export namespace Prisma {
 
   export type DocumentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "user_uuid" | "filename" | "mimetype" | "size" | "url" | "path" | "type" | "created_at", ExtArgs["result"]["document"]>
   export type DocumentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
     board_items?: boolean | Document$board_itemsArgs<ExtArgs>
     _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type DocumentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type DocumentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type DocumentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type DocumentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
 
   export type $DocumentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Document"
     objects: {
+      user: Prisma.$UserPayload<ExtArgs>
       board_items: Prisma.$DocumentBoardItemPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -27825,6 +27871,7 @@ export namespace Prisma {
    */
   export interface Prisma__DocumentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     board_items<T extends Document$board_itemsArgs<ExtArgs> = {}>(args?: Subset<T, Document$board_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -28114,6 +28161,10 @@ export namespace Prisma {
      */
     data: DocumentCreateManyInput | DocumentCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -28184,6 +28235,10 @@ export namespace Prisma {
      * Limit how many Documents to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -40091,6 +40146,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentListRelationFilter
     created_document_boards?: DocumentBoardListRelationFilter
     document_board_items?: DocumentBoardItemListRelationFilter
+    documents?: DocumentListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -40113,6 +40169,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentOrderByRelationAggregateInput
     created_document_boards?: DocumentBoardOrderByRelationAggregateInput
     document_board_items?: DocumentBoardItemOrderByRelationAggregateInput
+    documents?: DocumentOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -40138,6 +40195,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentListRelationFilter
     created_document_boards?: DocumentBoardListRelationFilter
     document_board_items?: DocumentBoardItemListRelationFilter
+    documents?: DocumentListRelationFilter
   }, "id" | "uuid" | "email" | "phone">
 
   export type UserOrderByWithAggregationInput = {
@@ -41723,6 +41781,7 @@ export namespace Prisma {
     path?: StringFilter<"Document"> | string
     type?: EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
     created_at?: DateTimeFilter<"Document"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     board_items?: DocumentBoardItemListRelationFilter
   }
 
@@ -41737,6 +41796,7 @@ export namespace Prisma {
     path?: SortOrder
     type?: SortOrder
     created_at?: SortOrder
+    user?: UserOrderByWithRelationInput
     board_items?: DocumentBoardItemOrderByRelationAggregateInput
   }
 
@@ -41754,6 +41814,7 @@ export namespace Prisma {
     path?: StringFilter<"Document"> | string
     type?: EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
     created_at?: DateTimeFilter<"Document"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     board_items?: DocumentBoardItemListRelationFilter
   }, "id" | "uuid">
 
@@ -42656,6 +42717,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -42678,6 +42740,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -42699,6 +42762,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -42721,6 +42785,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -44369,7 +44434,6 @@ export namespace Prisma {
 
   export type DocumentCreateInput = {
     uuid?: string
-    user_uuid: string
     filename: string
     mimetype: string
     size: number
@@ -44377,6 +44441,7 @@ export namespace Prisma {
     path: string
     type?: $Enums.DocumentType
     created_at?: Date | string
+    user: UserCreateNestedOneWithoutDocumentsInput
     board_items?: DocumentBoardItemCreateNestedManyWithoutDocumentInput
   }
 
@@ -44396,7 +44461,6 @@ export namespace Prisma {
 
   export type DocumentUpdateInput = {
     uuid?: StringFieldUpdateOperationsInput | string
-    user_uuid?: StringFieldUpdateOperationsInput | string
     filename?: StringFieldUpdateOperationsInput | string
     mimetype?: StringFieldUpdateOperationsInput | string
     size?: IntFieldUpdateOperationsInput | number
@@ -44404,6 +44468,7 @@ export namespace Prisma {
     path?: StringFieldUpdateOperationsInput | string
     type?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutDocumentsNestedInput
     board_items?: DocumentBoardItemUpdateManyWithoutDocumentNestedInput
   }
 
@@ -44436,7 +44501,6 @@ export namespace Prisma {
 
   export type DocumentUpdateManyMutationInput = {
     uuid?: StringFieldUpdateOperationsInput | string
-    user_uuid?: StringFieldUpdateOperationsInput | string
     filename?: StringFieldUpdateOperationsInput | string
     mimetype?: StringFieldUpdateOperationsInput | string
     size?: IntFieldUpdateOperationsInput | number
@@ -45445,6 +45509,12 @@ export namespace Prisma {
     none?: DocumentBoardItemWhereInput
   }
 
+  export type DocumentListRelationFilter = {
+    every?: DocumentWhereInput
+    some?: DocumentWhereInput
+    none?: DocumentWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -45483,6 +45553,10 @@ export namespace Prisma {
   }
 
   export type DocumentBoardItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DocumentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -47810,6 +47884,13 @@ export namespace Prisma {
     connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
   }
 
+  export type DocumentCreateNestedManyWithoutUserInput = {
+    create?: XOR<DocumentCreateWithoutUserInput, DocumentUncheckedCreateWithoutUserInput> | DocumentCreateWithoutUserInput[] | DocumentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutUserInput | DocumentCreateOrConnectWithoutUserInput[]
+    createMany?: DocumentCreateManyUserInputEnvelope
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+  }
+
   export type OrganizationMemberUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OrganizationMemberCreateWithoutUserInput, OrganizationMemberUncheckedCreateWithoutUserInput> | OrganizationMemberCreateWithoutUserInput[] | OrganizationMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutUserInput | OrganizationMemberCreateOrConnectWithoutUserInput[]
@@ -47871,6 +47952,13 @@ export namespace Prisma {
     connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutAdderInput | DocumentBoardItemCreateOrConnectWithoutAdderInput[]
     createMany?: DocumentBoardItemCreateManyAdderInputEnvelope
     connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+  }
+
+  export type DocumentUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<DocumentCreateWithoutUserInput, DocumentUncheckedCreateWithoutUserInput> | DocumentCreateWithoutUserInput[] | DocumentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutUserInput | DocumentCreateOrConnectWithoutUserInput[]
+    createMany?: DocumentCreateManyUserInputEnvelope
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -48015,6 +48103,20 @@ export namespace Prisma {
     deleteMany?: DocumentBoardItemScalarWhereInput | DocumentBoardItemScalarWhereInput[]
   }
 
+  export type DocumentUpdateManyWithoutUserNestedInput = {
+    create?: XOR<DocumentCreateWithoutUserInput, DocumentUncheckedCreateWithoutUserInput> | DocumentCreateWithoutUserInput[] | DocumentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutUserInput | DocumentCreateOrConnectWithoutUserInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutUserInput | DocumentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: DocumentCreateManyUserInputEnvelope
+    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutUserInput | DocumentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutUserInput | DocumentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -48147,6 +48249,20 @@ export namespace Prisma {
     update?: DocumentBoardItemUpdateWithWhereUniqueWithoutAdderInput | DocumentBoardItemUpdateWithWhereUniqueWithoutAdderInput[]
     updateMany?: DocumentBoardItemUpdateManyWithWhereWithoutAdderInput | DocumentBoardItemUpdateManyWithWhereWithoutAdderInput[]
     deleteMany?: DocumentBoardItemScalarWhereInput | DocumentBoardItemScalarWhereInput[]
+  }
+
+  export type DocumentUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<DocumentCreateWithoutUserInput, DocumentUncheckedCreateWithoutUserInput> | DocumentCreateWithoutUserInput[] | DocumentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutUserInput | DocumentCreateOrConnectWithoutUserInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutUserInput | DocumentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: DocumentCreateManyUserInputEnvelope
+    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutUserInput | DocumentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutUserInput | DocumentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutCreated_organizationsInput = {
@@ -49659,6 +49775,12 @@ export namespace Prisma {
     update?: XOR<XOR<ComposioToolkitUpdateToOneWithWhereWithoutTriggersInput, ComposioToolkitUpdateWithoutTriggersInput>, ComposioToolkitUncheckedUpdateWithoutTriggersInput>
   }
 
+  export type UserCreateNestedOneWithoutDocumentsInput = {
+    create?: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDocumentsInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type DocumentBoardItemCreateNestedManyWithoutDocumentInput = {
     create?: XOR<DocumentBoardItemCreateWithoutDocumentInput, DocumentBoardItemUncheckedCreateWithoutDocumentInput> | DocumentBoardItemCreateWithoutDocumentInput[] | DocumentBoardItemUncheckedCreateWithoutDocumentInput[]
     connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutDocumentInput | DocumentBoardItemCreateOrConnectWithoutDocumentInput[]
@@ -49675,6 +49797,14 @@ export namespace Prisma {
 
   export type EnumDocumentTypeFieldUpdateOperationsInput = {
     set?: $Enums.DocumentType
+  }
+
+  export type UserUpdateOneRequiredWithoutDocumentsNestedInput = {
+    create?: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDocumentsInput
+    upsert?: UserUpsertWithoutDocumentsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDocumentsInput, UserUpdateWithoutDocumentsInput>, UserUncheckedUpdateWithoutDocumentsInput>
   }
 
   export type DocumentBoardItemUpdateManyWithoutDocumentNestedInput = {
@@ -51284,6 +51414,41 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type DocumentCreateWithoutUserInput = {
+    uuid?: string
+    filename: string
+    mimetype: string
+    size: number
+    url: string
+    path: string
+    type?: $Enums.DocumentType
+    created_at?: Date | string
+    board_items?: DocumentBoardItemCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentUncheckedCreateWithoutUserInput = {
+    id?: number
+    uuid?: string
+    filename: string
+    mimetype: string
+    size: number
+    url: string
+    path: string
+    type?: $Enums.DocumentType
+    created_at?: Date | string
+    board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentCreateOrConnectWithoutUserInput = {
+    where: DocumentWhereUniqueInput
+    create: XOR<DocumentCreateWithoutUserInput, DocumentUncheckedCreateWithoutUserInput>
+  }
+
+  export type DocumentCreateManyUserInputEnvelope = {
+    data: DocumentCreateManyUserInput | DocumentCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationMemberUpsertWithWhereUniqueWithoutUserInput = {
     where: OrganizationMemberWhereUniqueInput
     update: XOR<OrganizationMemberUpdateWithoutUserInput, OrganizationMemberUncheckedUpdateWithoutUserInput>
@@ -51573,6 +51738,38 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"DocumentBoardItem"> | Date | string
   }
 
+  export type DocumentUpsertWithWhereUniqueWithoutUserInput = {
+    where: DocumentWhereUniqueInput
+    update: XOR<DocumentUpdateWithoutUserInput, DocumentUncheckedUpdateWithoutUserInput>
+    create: XOR<DocumentCreateWithoutUserInput, DocumentUncheckedCreateWithoutUserInput>
+  }
+
+  export type DocumentUpdateWithWhereUniqueWithoutUserInput = {
+    where: DocumentWhereUniqueInput
+    data: XOR<DocumentUpdateWithoutUserInput, DocumentUncheckedUpdateWithoutUserInput>
+  }
+
+  export type DocumentUpdateManyWithWhereWithoutUserInput = {
+    where: DocumentScalarWhereInput
+    data: XOR<DocumentUpdateManyMutationInput, DocumentUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type DocumentScalarWhereInput = {
+    AND?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+    OR?: DocumentScalarWhereInput[]
+    NOT?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+    id?: IntFilter<"Document"> | number
+    uuid?: StringFilter<"Document"> | string
+    user_uuid?: StringFilter<"Document"> | string
+    filename?: StringFilter<"Document"> | string
+    mimetype?: StringFilter<"Document"> | string
+    size?: IntFilter<"Document"> | number
+    url?: StringFilter<"Document"> | string
+    path?: StringFilter<"Document"> | string
+    type?: EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
+    created_at?: DateTimeFilter<"Document"> | Date | string
+  }
+
   export type UserCreateWithoutCreated_organizationsInput = {
     uuid?: string
     email: string
@@ -51591,6 +51788,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreated_organizationsInput = {
@@ -51612,6 +51810,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreated_organizationsInput = {
@@ -52146,6 +52345,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreated_organizationsInput = {
@@ -52167,6 +52367,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganizationMemberUpsertWithWhereUniqueWithoutOrganizationInput = {
@@ -52574,6 +52775,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrganization_membersInput = {
@@ -52595,6 +52797,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOrganization_membersInput = {
@@ -52711,6 +52914,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganization_membersInput = {
@@ -52732,6 +52936,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganizationRoleUpsertWithoutMembersInput = {
@@ -53167,6 +53372,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAudit_logsInput = {
@@ -53188,6 +53394,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAudit_logsInput = {
@@ -53282,6 +53489,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAudit_logsInput = {
@@ -53303,6 +53511,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganizationCreateWithoutIntegrationsInput = {
@@ -55293,6 +55502,54 @@ export namespace Prisma {
     connected_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutToolkitNestedInput
   }
 
+  export type UserCreateWithoutDocumentsInput = {
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationCreateNestedManyWithoutCreatorInput
+    audit_logs?: AuditLogCreateNestedManyWithoutUserInput
+    conversations?: ConversationCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
+  }
+
+  export type UserUncheckedCreateWithoutDocumentsInput = {
+    id?: number
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationUncheckedCreateNestedManyWithoutCreatorInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
+  }
+
+  export type UserCreateOrConnectWithoutDocumentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
+  }
+
   export type DocumentBoardItemCreateWithoutDocumentInput = {
     uuid?: string
     created_at?: Date | string
@@ -55316,6 +55573,60 @@ export namespace Prisma {
   export type DocumentBoardItemCreateManyDocumentInputEnvelope = {
     data: DocumentBoardItemCreateManyDocumentInput | DocumentBoardItemCreateManyDocumentInput[]
     skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutDocumentsInput = {
+    update: XOR<UserUpdateWithoutDocumentsInput, UserUncheckedUpdateWithoutDocumentsInput>
+    create: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutDocumentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDocumentsInput, UserUncheckedUpdateWithoutDocumentsInput>
+  }
+
+  export type UserUpdateWithoutDocumentsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUpdateManyWithoutCreatorNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDocumentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUncheckedUpdateManyWithoutCreatorNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
   }
 
   export type DocumentBoardItemUpsertWithWhereUniqueWithoutDocumentInput = {
@@ -55404,6 +55715,7 @@ export namespace Prisma {
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreated_document_boardsInput = {
@@ -55425,6 +55737,7 @@ export namespace Prisma {
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreated_document_boardsInput = {
@@ -55544,6 +55857,7 @@ export namespace Prisma {
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreated_document_boardsInput = {
@@ -55565,6 +55879,7 @@ export namespace Prisma {
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type DocumentBoardItemUpsertWithWhereUniqueWithoutBoardInput = {
@@ -55611,7 +55926,6 @@ export namespace Prisma {
 
   export type DocumentCreateWithoutBoard_itemsInput = {
     uuid?: string
-    user_uuid: string
     filename: string
     mimetype: string
     size: number
@@ -55619,6 +55933,7 @@ export namespace Prisma {
     path: string
     type?: $Enums.DocumentType
     created_at?: Date | string
+    user: UserCreateNestedOneWithoutDocumentsInput
   }
 
   export type DocumentUncheckedCreateWithoutBoard_itemsInput = {
@@ -55657,6 +55972,7 @@ export namespace Prisma {
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDocument_board_itemsInput = {
@@ -55678,6 +55994,7 @@ export namespace Prisma {
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDocument_board_itemsInput = {
@@ -55730,7 +56047,6 @@ export namespace Prisma {
 
   export type DocumentUpdateWithoutBoard_itemsInput = {
     uuid?: StringFieldUpdateOperationsInput | string
-    user_uuid?: StringFieldUpdateOperationsInput | string
     filename?: StringFieldUpdateOperationsInput | string
     mimetype?: StringFieldUpdateOperationsInput | string
     size?: IntFieldUpdateOperationsInput | number
@@ -55738,6 +56054,7 @@ export namespace Prisma {
     path?: StringFieldUpdateOperationsInput | string
     type?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutDocumentsNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutBoard_itemsInput = {
@@ -55782,6 +56099,7 @@ export namespace Prisma {
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDocument_board_itemsInput = {
@@ -55803,6 +56121,7 @@ export namespace Prisma {
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganizationCreateWithoutAi_providersInput = {
@@ -55985,6 +56304,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutConversationsInput = {
@@ -56006,6 +56326,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutConversationsInput = {
@@ -56208,6 +56529,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutConversationsInput = {
@@ -56229,6 +56551,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
@@ -56386,6 +56709,7 @@ export namespace Prisma {
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutScheduled_agentsInput = {
@@ -56407,6 +56731,7 @@ export namespace Prisma {
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutScheduled_agentsInput = {
@@ -56539,6 +56864,7 @@ export namespace Prisma {
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutScheduled_agentsInput = {
@@ -56560,6 +56886,7 @@ export namespace Prisma {
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ConversationUpsertWithoutScheduled_agentInput = {
@@ -56881,6 +57208,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAgent_executionsInput = {
@@ -56902,6 +57230,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAgent_executionsInput = {
@@ -57115,6 +57444,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAgent_executionsInput = {
@@ -57136,6 +57466,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ToolCallUpsertWithWhereUniqueWithoutExecutionInput = {
@@ -57344,6 +57675,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutConversation_personalizationsInput = {
@@ -57365,6 +57697,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutConversation_personalizationsInput = {
@@ -57453,6 +57786,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutConversation_personalizationsInput = {
@@ -57474,6 +57808,7 @@ export namespace Prisma {
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganizationUpsertWithoutConversation_personalizationsInput = {
@@ -57640,6 +57975,18 @@ export namespace Prisma {
     uuid?: string
     board_uuid: string
     document_uuid: string
+    created_at?: Date | string
+  }
+
+  export type DocumentCreateManyUserInput = {
+    id?: number
+    uuid?: string
+    filename: string
+    mimetype: string
+    size: number
+    url: string
+    path: string
+    type?: $Enums.DocumentType
     created_at?: Date | string
   }
 
@@ -57996,6 +58343,43 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     board_uuid?: StringFieldUpdateOperationsInput | string
     document_uuid?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentUpdateWithoutUserInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    mimetype?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    url?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    type?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    board_items?: DocumentBoardItemUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    mimetype?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    url?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    type?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    board_items?: DocumentBoardItemUncheckedUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    mimetype?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    url?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    type?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
