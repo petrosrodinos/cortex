@@ -302,7 +302,7 @@ describe('EmailAuthService switchOrganization', () => {
       .mockResolvedValueOnce({
         role: {
           name: 'Member',
-          permissions: [{ permission: { key: 'files:read' } }],
+          permissions: [{ permission: { key: 'documents:read' } }],
         },
         user: {
           role: 'USER',

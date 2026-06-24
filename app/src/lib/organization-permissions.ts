@@ -2,9 +2,6 @@ import { PermissionKeys, type PermissionKey } from '@/features/permissions/inter
 import { OrganizationRoleTypes } from '@/features/roles/interfaces/role.interfaces';
 
 export const PERMISSION_KEY_ALIASES: Record<string, readonly string[]> = {
-  [PermissionKeys.DOCUMENTS_READ]: [PermissionKeys.FILES_READ],
-  [PermissionKeys.DOCUMENTS_WRITE]: [PermissionKeys.FILES_WRITE],
-  [PermissionKeys.DOCUMENTS_DELETE]: [PermissionKeys.FILES_DELETE],
   [PermissionKeys.AGENTS_READ]: [PermissionKeys.AI_PROMPTS_READ],
   [PermissionKeys.AGENTS_WRITE]: [PermissionKeys.AI_PROMPTS_WRITE],
 };

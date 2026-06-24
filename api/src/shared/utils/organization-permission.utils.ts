@@ -1,9 +1,6 @@
 import { OrganizationRoleTypes, PermissionKeys } from '@/modules/roles/permissions';
 
 export const PERMISSION_KEY_ALIASES: Record<string, readonly string[]> = {
-  [PermissionKeys.DOCUMENTS_READ]: [PermissionKeys.FILES_READ],
-  [PermissionKeys.DOCUMENTS_WRITE]: [PermissionKeys.FILES_WRITE],
-  [PermissionKeys.DOCUMENTS_DELETE]: [PermissionKeys.FILES_DELETE],
   [PermissionKeys.AGENTS_READ]: [PermissionKeys.AI_PROMPTS_READ],
   [PermissionKeys.AGENTS_WRITE]: [PermissionKeys.AI_PROMPTS_WRITE],
 };
@@ -11,9 +8,6 @@ export const PERMISSION_KEY_ALIASES: Record<string, readonly string[]> = {
 export const DEPRECATED_TO_NEW_PERMISSION_KEYS: Record<string, string> = {
   [PermissionKeys.AI_PROMPTS_READ]: PermissionKeys.AGENTS_READ,
   [PermissionKeys.AI_PROMPTS_WRITE]: PermissionKeys.AGENTS_WRITE,
-  [PermissionKeys.FILES_READ]: PermissionKeys.DOCUMENTS_READ,
-  [PermissionKeys.FILES_WRITE]: PermissionKeys.DOCUMENTS_WRITE,
-  [PermissionKeys.FILES_DELETE]: PermissionKeys.DOCUMENTS_DELETE,
 };
 
 export function resolvePermissionKeys(requiredKey: string): string[] {

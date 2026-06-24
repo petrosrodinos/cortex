@@ -29,9 +29,6 @@ export const PermissionKeys = {
   AUDIT_READ: "audit:read",
   AI_PROMPTS_READ: "ai:prompts:read",
   AI_PROMPTS_WRITE: "ai:prompts:write",
-  FILES_READ: "files:read",
-  FILES_WRITE: "files:write",
-  FILES_DELETE: "files:delete",
 } as const;
 
 export type PermissionKey = (typeof PermissionKeys)[keyof typeof PermissionKeys];

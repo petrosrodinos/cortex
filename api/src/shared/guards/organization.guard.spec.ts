@@ -47,13 +47,13 @@ describe('OrganizationGuard', () => {
   });
 
   it('accepts legacy permission aliases', async () => {
-    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue([PermissionKeys.DOCUMENTS_WRITE]);
+    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue([PermissionKeys.AGENTS_READ]);
     const aliasContext: any = {
       getHandler: jest.fn(),
       getClass: jest.fn(),
       switchToHttp: () => ({
         getRequest: () => ({
-          user: { organization_permissions: [PermissionKeys.FILES_WRITE] },
+          user: { organization_permissions: [PermissionKeys.AI_PROMPTS_READ] },
         }),
       }),
     };

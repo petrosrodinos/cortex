@@ -29,9 +29,6 @@ export const PermissionKeys = {
   AUDIT_READ: 'audit:read',
   AI_PROMPTS_READ: 'ai:prompts:read',
   AI_PROMPTS_WRITE: 'ai:prompts:write',
-  FILES_READ: 'files:read',
-  FILES_WRITE: 'files:write',
-  FILES_DELETE: 'files:delete',
 } as const;
 
 export type PermissionKey = (typeof PermissionKeys)[keyof typeof PermissionKeys];
@@ -67,9 +64,6 @@ export const PERMISSIONS = [
   { key: PermissionKeys.AUDIT_READ, label: 'View audit logs', group: 'audit' },
   { key: PermissionKeys.AI_PROMPTS_READ, label: 'View AI prompts (legacy)', group: 'ai' },
   { key: PermissionKeys.AI_PROMPTS_WRITE, label: 'Manage AI prompts (legacy)', group: 'ai' },
-  { key: PermissionKeys.FILES_READ, label: 'View files (legacy)', group: 'documents' },
-  { key: PermissionKeys.FILES_WRITE, label: 'Upload and edit files (legacy)', group: 'documents' },
-  { key: PermissionKeys.FILES_DELETE, label: 'Delete files (legacy)', group: 'documents' },
 ] as const;
 
 export const OrganizationRoleTypes = {
@@ -91,9 +85,6 @@ export const SYSTEM_ROLE_NAMES = [
 const LEGACY_PERMISSION_KEYS = new Set<string>([
   PermissionKeys.AI_PROMPTS_READ,
   PermissionKeys.AI_PROMPTS_WRITE,
-  PermissionKeys.FILES_READ,
-  PermissionKeys.FILES_WRITE,
-  PermissionKeys.FILES_DELETE,
 ]);
 
 const CURRENT_PERMISSION_KEYS = PERMISSIONS.map((permission) => permission.key).filter(

@@ -50,8 +50,8 @@ describe('OrganizationsService', () => {
     ]);
     tx.permission.findMany.mockResolvedValue([
       { id: 1, uuid: 'org-update-permission-uuid', key: 'org:update' },
-      { id: 2, uuid: 'files-read-permission-uuid', key: 'files:read' },
-      { id: 3, uuid: 'legacy-permission-uuid', key: 'files:write' },
+      { id: 2, uuid: 'documents-read-permission-uuid', key: 'documents:read' },
+      { id: 3, uuid: 'documents-write-permission-uuid', key: 'documents:write' },
     ]);
   });
 
@@ -88,8 +88,8 @@ describe('OrganizationsService', () => {
       expect.objectContaining({
         data: expect.arrayContaining([
           { role_uuid: 'owner-role-uuid', permission_uuid: 'org-update-permission-uuid' },
-          { role_uuid: 'owner-role-uuid', permission_uuid: 'files-read-permission-uuid' },
-          { role_uuid: 'owner-role-uuid', permission_uuid: 'legacy-permission-uuid' },
+          { role_uuid: 'owner-role-uuid', permission_uuid: 'documents-read-permission-uuid' },
+          { role_uuid: 'owner-role-uuid', permission_uuid: 'documents-write-permission-uuid' },
         ]),
         skipDuplicates: true,
       }),
