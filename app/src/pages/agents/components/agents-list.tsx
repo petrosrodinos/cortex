@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom';
-import { MessageSquare, Pencil, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Button, Dropdown, Label, Switch } from '@heroui/react';
+import { MessageSquare, MoreHorizontal, Pencil, Power, Trash2 } from 'lucide-react';
 import {
   AgentCronPresetLabels,
   AgentCronPresets,
@@ -7,7 +8,6 @@ import {
 } from '@/features/agents/interfaces/agents.interfaces';
 import { Routes } from '@/routes/routes';
 import { formatDateTime } from '@/lib/date';
-import { cn } from '@/lib/utils';
 
 function formatScheduleLabel(cronExpression: string): string {
   const presetEntry = Object.entries(AgentCronPresetLabels).find(
@@ -37,6 +37,8 @@ export function AgentsList({
   onDelete,
   togglingUuid,
 }: AgentsListProps) {
+  const navigate = useNavigate();
+
   if (agents.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-border px-6 py-12 text-center">
@@ -68,16 +70,16 @@ export function AgentsList({
                 <td className="px-4 py-3 font-medium text-foreground">{agent.title}</td>
                 <td className="px-4 py-3 text-muted">{formatScheduleLabel(agent.cron_expression)}</td>
                 <td className="px-4 py-3">
-                  <span
-                    className={cn(
-                      'inline-flex rounded-full px-2 py-0.5 text-xs font-medium',
-                      agent.is_enabled
-                        ? 'bg-emerald-500/10 text-emerald-600'
-                        : 'bg-surface-secondary text-muted',
-                    )}
+                  <Switch
+                    isSelected={agent.is_enabled}
+                    isDisabled={togglingUuid === agent.uuid}
+                    onChange={() => onToggle(agent)}
+                    size="sm"
                   >
-                    {agent.is_enabled ? 'Enabled' : 'Disabled'}
-                  </span>
+                    <Switch.Control>
+                      <Switch.Thumb />
+                    </Switch.Control>
+                  </Switch>
                 </td>
                 <td className="px-4 py-3 text-muted">
                   {agent.last_run_at ? formatDateTime(agent.last_run_at) : '—'}
@@ -86,38 +88,49 @@ export function AgentsList({
                   {agent.is_enabled && agent.next_run_at ? formatDateTime(agent.next_run_at) : '—'}
                 </td>
                 <td className="px-4 py-3">
-                  <div className="flex items-center justify-end gap-1">
-                    <Link
-                      to={Routes.dashboard.conversation(agent.conversation_uuid)}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:bg-surface-secondary hover:text-foreground"
-                      title="View conversation"
-                    >
-                      <MessageSquare className="h-4 w-4" />
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => onEdit(agent)}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:bg-surface-secondary hover:text-foreground"
-                      title="Edit"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onToggle(agent)}
-                      disabled={togglingUuid === agent.uuid}
-                      className="rounded-lg px-2 py-1 text-xs font-medium text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
-                    >
-                      {agent.is_enabled ? 'Disable' : 'Enable'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onDelete(agent)}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:bg-red-500/10 hover:text-red-600"
-                      title="Delete"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                  <div className="flex justify-end">
+                    <Dropdown>
+                      <Button
+                        aria-label="Row actions"
+                        variant="secondary"
+                        isDisabled={togglingUuid === agent.uuid}
+                        className="inline-flex h-8 w-8 min-w-8 shrink-0 rounded-lg border-0 bg-transparent p-0 text-muted shadow-none hover:bg-surface-secondary hover:text-foreground data-[hover=true]:bg-surface-secondary data-[hover=true]:text-foreground"
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                      <Dropdown.Popover
+                        placement="bottom end"
+                        offset={4}
+                        className="z-50 min-w-[180px] overflow-hidden rounded-xl border border-border bg-surface p-1 shadow-lg"
+                      >
+                        <Dropdown.Menu
+                          onAction={(key) => {
+                            const k = String(key);
+                            if (k === 'view') navigate(Routes.dashboard.conversation(agent.conversation_uuid));
+                            if (k === 'edit') onEdit(agent);
+                            if (k === 'toggle') onToggle(agent);
+                            if (k === 'delete') onDelete(agent);
+                          }}
+                        >
+                          <Dropdown.Item id="view" textValue="View conversation" className="gap-2.5 rounded-lg px-2 py-2">
+                            <MessageSquare className="h-4 w-4 shrink-0 text-muted" />
+                            <Label className="text-sm">View conversation</Label>
+                          </Dropdown.Item>
+                          <Dropdown.Item id="edit" textValue="Edit" className="gap-2.5 rounded-lg px-2 py-2">
+                            <Pencil className="h-4 w-4 shrink-0 text-muted" />
+                            <Label className="text-sm">Edit</Label>
+                          </Dropdown.Item>
+                          <Dropdown.Item id="toggle" textValue={agent.is_enabled ? 'Disable' : 'Enable'} className="gap-2.5 rounded-lg px-2 py-2">
+                            <Power className="h-4 w-4 shrink-0 text-muted" />
+                            <Label className="text-sm">{agent.is_enabled ? 'Disable' : 'Enable'}</Label>
+                          </Dropdown.Item>
+                          <Dropdown.Item id="delete" textValue="Delete" className="gap-2.5 rounded-lg px-2 py-2 text-red-500">
+                            <Trash2 className="h-4 w-4 shrink-0" />
+                            <Label className="text-sm">Delete</Label>
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown.Popover>
+                    </Dropdown>
                   </div>
                 </td>
               </tr>

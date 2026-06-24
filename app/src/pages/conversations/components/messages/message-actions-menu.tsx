@@ -10,6 +10,7 @@ interface MessageActionsMenuProps {
   message: Message;
   canDelete?: boolean;
   canRetry?: boolean;
+  showReply?: boolean;
   isDeleting?: boolean;
   onReply: (message: Message) => void;
   onRetry?: (message: Message) => void;
@@ -21,6 +22,7 @@ export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
   message,
   canDelete = false,
   canRetry = false,
+  showReply = true,
   isDeleting = false,
   onReply,
   onRetry,
@@ -81,10 +83,12 @@ export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
             <Copy className="h-4 w-4 shrink-0 text-muted" />
             <Label className="text-sm">Copy</Label>
           </Dropdown.Item>
-          <Dropdown.Item id="reply" textValue="Reply" className="rounded-lg px-2 py-2">
-            <CornerDownRight className="h-4 w-4 shrink-0 text-muted" />
-            <Label className="text-sm">Reply</Label>
-          </Dropdown.Item>
+          {showReply ? (
+            <Dropdown.Item id="reply" textValue="Reply" className="rounded-lg px-2 py-2">
+              <CornerDownRight className="h-4 w-4 shrink-0 text-muted" />
+              <Label className="text-sm">Reply</Label>
+            </Dropdown.Item>
+          ) : null}
           {message.role === MessageRoles.USER && canRetry && onRetry ? (
             <Dropdown.Item id="retry" textValue="Retry" className="rounded-lg px-2 py-2">
               <RotateCcw className="h-4 w-4 shrink-0 text-muted" />

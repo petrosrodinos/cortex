@@ -13,6 +13,7 @@ import type { AgentFormValues } from '@/features/agents/validation-schemas/agent
 import { useOrganizationStore } from '@/stores/organization';
 import { AgentModal } from './components/agent-modal';
 import { AgentsList } from './components/agents-list';
+import { AgentsTableSkeleton } from './components/agents-skeleton';
 
 type ModalState =
   | { mode: 'create' }
@@ -88,9 +89,7 @@ const AgentsPage: FC = () => {
       </div>
 
       {isLoading ? (
-        <div className="rounded-xl border border-border px-4 py-8 text-center text-sm text-muted">
-          Loading agents…
-        </div>
+        <AgentsTableSkeleton />
       ) : (
         <AgentsList
           agents={agents}

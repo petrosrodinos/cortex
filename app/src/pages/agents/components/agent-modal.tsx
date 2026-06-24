@@ -45,6 +45,7 @@ export function AgentModal({
         </div>
 
         <AgentForm
+          key={agent?.uuid ?? 'create'}
           initialValues={
             agent
               ? {

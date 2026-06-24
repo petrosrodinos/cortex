@@ -117,7 +117,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
     executionError != null;
 
   if (!hasMessages) {
-    return <ConversationNoMessagesState />;
+    return <ConversationNoMessagesState isAgent={readOnly} />;
   }
 
   return (
@@ -161,17 +161,16 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
               )}
             </div>
             <div className="mt-0.5 flex shrink-0 items-start">
-              {!readOnly ? (
               <MessageActionsMenu
                 message={message}
-                canRetry={message.role === MessageRoles.USER && !isSendDisabled}
-                canDelete={canDeleteMessages}
+                showReply={!readOnly}
+                canRetry={!readOnly && message.role === MessageRoles.USER && !isSendDisabled}
+                canDelete={readOnly ? message.role === MessageRoles.ASSISTANT : canDeleteMessages}
                 isDeleting={isDeletingMessage}
                 onReply={onReplyToMessage}
                 onRetry={onRetryMessage}
                 onDelete={onDeleteMessage}
               />
-              ) : null}
             </div>
           </div>
 
