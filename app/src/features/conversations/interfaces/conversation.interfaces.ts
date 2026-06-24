@@ -1,5 +1,12 @@
 import type { ComposioConnectionTier } from '@/features/integration-apps/constants/composio-connection-tier';
 
+export const ConversationKinds = {
+  STANDARD: 'STANDARD',
+  SCHEDULED_AGENT: 'SCHEDULED_AGENT',
+} as const;
+
+export type ConversationKind = (typeof ConversationKinds)[keyof typeof ConversationKinds];
+
 export const MessageRoles = {
   USER: 'USER',
   ASSISTANT: 'ASSISTANT',
@@ -25,6 +32,7 @@ export interface Conversation {
   org_uuid: string;
   user_uuid: string;
   title: string | null;
+  kind?: ConversationKind;
   ai_provider?: string | null;
   ai_model?: string | null;
   ai_research_mode?: string | null;

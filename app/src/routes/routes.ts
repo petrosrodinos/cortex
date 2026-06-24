@@ -14,6 +14,7 @@ export const Routes = {
         integrationApp: (toolkitSlug: string) => `/dashboard/integrations/apps/${toolkitSlug}`,
         conversations: "/dashboard/conversations",
         conversation: (conversationUuid: string) => `/dashboard/conversations/${conversationUuid}`,
+        agents: "/dashboard/agents",
         integration: (integrationUuid: string) => `/dashboard/integrations/${integrationUuid}`,
         aiProvider: (aiProviderUuid: string) => `/dashboard/integrations/ai/${aiProviderUuid}`,
         settings: '/dashboard/settings',

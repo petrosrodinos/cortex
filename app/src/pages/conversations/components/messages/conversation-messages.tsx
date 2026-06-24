@@ -54,6 +54,7 @@ interface ConversationMessagesProps {
   canDeleteMessages?: boolean;
   onDeleteMessage?: (message: Message) => void;
   isDeletingMessage?: boolean;
+  readOnly?: boolean;
 }
 
 export const ConversationMessages: FC<ConversationMessagesProps> = ({
@@ -83,6 +84,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
   canDeleteMessages = false,
   onDeleteMessage,
   isDeletingMessage = false,
+  readOnly = false,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -159,6 +161,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
               )}
             </div>
             <div className="mt-0.5 flex shrink-0 items-start">
+              {!readOnly ? (
               <MessageActionsMenu
                 message={message}
                 canRetry={message.role === MessageRoles.USER && !isSendDisabled}
@@ -168,6 +171,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
                 onRetry={onRetryMessage}
                 onDelete={onDeleteMessage}
               />
+              ) : null}
             </div>
           </div>
 

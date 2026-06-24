@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 interface ConversationHeaderProps {
   title: string;
   isTitleLoading?: boolean;
+  readOnly?: boolean;
   onRename: (title: string) => void;
   onDelete: () => void;
   onOpenDocuments: () => void;
@@ -17,6 +18,7 @@ interface ConversationHeaderProps {
 export const ConversationHeader: FC<ConversationHeaderProps> = ({
   title,
   isTitleLoading = false,
+  readOnly = false,
   onRename,
   onDelete,
   onOpenDocuments,
@@ -128,6 +130,8 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({
         </button>
 
         <div className="relative" ref={menuRef}>
+          {!readOnly ? (
+          <>
           <button
             type="button"
             onClick={() => setMenuOpen((open) => !open)}
@@ -163,6 +167,8 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({
               </button>
             </div>
           )}
+          </>
+          ) : null}
         </div>
       </div>
     </header>

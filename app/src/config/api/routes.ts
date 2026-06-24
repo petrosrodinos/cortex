@@ -74,6 +74,9 @@ export const ApiRoutes = {
         conversationMessages: (organizationUuid: string, conversationUuid: string) => `/organizations/${organizationUuid}/conversations/${conversationUuid}/messages`,
         conversationMessage: (organizationUuid: string, conversationUuid: string, messageUuid: string) => `/organizations/${organizationUuid}/conversations/${conversationUuid}/messages/${messageUuid}`,
         conversationAgentTools: (organizationUuid: string) => `/organizations/${organizationUuid}/conversations/agent-tools`,
+        agents: (organizationUuid: string) => `/organizations/${organizationUuid}/agents`,
+        agent: (organizationUuid: string, agentUuid: string) =>
+            `/organizations/${organizationUuid}/agents/${agentUuid}`,
         conversationPersonalization: (organizationUuid: string) => `/organizations/${organizationUuid}/conversation-personalization`,
         executions: (organizationUuid: string) => `/organizations/${organizationUuid}/executions`,
         execution: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}`,

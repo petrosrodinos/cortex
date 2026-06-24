@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FC, type KeyboardEvent } from 'react';
 import { MoreHorizontal, PanelLeftClose, PanelLeftOpen, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { Conversation } from '@/features/conversations/interfaces/conversation.interfaces';
-import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
+import { ConversationKinds, MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
 import { cn } from '@/lib/utils';
 import { stripMarkdownForPreview } from '@/lib/message-markdown.utils';
 
@@ -169,6 +169,7 @@ export const ConversationSidebar: FC<ConversationSidebarProps> = ({
         {conversations.map((conversation) => {
           const isActive = conversation.uuid === activeConversationUuid;
           const isEditing = editingUuid === conversation.uuid;
+          const isAgent = conversation.kind === ConversationKinds.SCHEDULED_AGENT;
 
           return (
             <div
@@ -197,13 +198,20 @@ export const ConversationSidebar: FC<ConversationSidebarProps> = ({
                   className="min-w-0 flex-1 px-3 py-2 text-left text-sm"
                 >
                   <p className="truncate font-medium text-foreground">{conversation.title || 'Untitled chat'}</p>
-                  <p className="truncate text-xs text-muted">
-                    {getLastMessagePreview(conversation)}
-                  </p>
+                  <div className="flex items-center gap-1.5">
+                    {isAgent ? (
+                      <span className="shrink-0 rounded-full bg-violet-500/10 px-1.5 py-0.5 text-[10px] font-medium text-violet-600">
+                        Agent
+                      </span>
+                    ) : null}
+                    <p className="truncate text-xs text-muted">
+                      {getLastMessagePreview(conversation)}
+                    </p>
+                  </div>
                 </button>
               )}
 
-              {!isEditing && (
+              {!isEditing && !isAgent && (
                 <div className="relative pr-1" ref={menuOpenUuid === conversation.uuid ? menuRef : undefined}>
                   <button
                     type="button"

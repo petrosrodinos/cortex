@@ -22,6 +22,7 @@ import { DocumentsModule } from './modules/documents/documents.module';
 import { UsersModule } from './modules/users/users.module';
 import { ConversationPersonalizationModule } from './modules/conversation-personalization/conversation-personalization.module';
 import { ComposioModule } from './modules/composio/composio.module';
+import { AgentsModule } from './modules/agents/agents.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { ComposioModule } from './modules/composio/composio.module';
     UsersModule,
     ConversationPersonalizationModule,
     ComposioModule,
+    AgentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

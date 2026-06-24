@@ -11,6 +11,7 @@ import IntegrationsPage from "@/pages/integrations";
 import IntegrationAppDetailPage from "@/pages/integrations/integration-app-detail";
 import IntegrationAppsCallbackPage from "@/pages/integrations/integrationApps-callback";
 import ConversationsPage from "@/pages/conversations";
+import AgentsPage from "@/pages/agents";
 import SettingsLayout from "@/pages/settings";
 import ProfilePage from "@/pages/settings/profile";
 import PersonalizationPage from "@/pages/settings/personalization";
@@ -59,6 +60,8 @@ export default function AppRoutes() {
         <Route path="integrations/:integrationUuid" element={<IntegrationsPage />} />
         <Route path="conversations" element={<ConversationsPage />} />
         <Route path="conversations/:conversationUuid" element={<ConversationsPage />} />
+        <Route path="agents" element={<AgentsPage />} />
+        <Route path="scheduled-agents" element={<Navigate to={Routes.dashboard.agents} replace />} />
         <Route path="organizations/members" element={<Navigate to={Routes.dashboard.organizations} replace />} />
         <Route path="organizations/roles" element={<Navigate to={Routes.dashboard.organizations} replace />} />
         <Route path="settings" element={<SettingsLayout />}>

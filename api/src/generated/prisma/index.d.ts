@@ -124,6 +124,11 @@ export type AiProvider = $Result.DefaultSelection<Prisma.$AiProviderPayload>
  */
 export type Conversation = $Result.DefaultSelection<Prisma.$ConversationPayload>
 /**
+ * Model ScheduledAgent
+ * 
+ */
+export type ScheduledAgent = $Result.DefaultSelection<Prisma.$ScheduledAgentPayload>
+/**
  * Model Message
  * 
  */
@@ -368,6 +373,14 @@ export const CharacteristicLevel: {
 
 export type CharacteristicLevel = (typeof CharacteristicLevel)[keyof typeof CharacteristicLevel]
 
+
+export const ConversationKind: {
+  STANDARD: 'STANDARD',
+  SCHEDULED_AGENT: 'SCHEDULED_AGENT'
+};
+
+export type ConversationKind = (typeof ConversationKind)[keyof typeof ConversationKind]
+
 }
 
 export type AuthRole = $Enums.AuthRole
@@ -457,6 +470,10 @@ export const ResponseStyle: typeof $Enums.ResponseStyle
 export type CharacteristicLevel = $Enums.CharacteristicLevel
 
 export const CharacteristicLevel: typeof $Enums.CharacteristicLevel
+
+export type ConversationKind = $Enums.ConversationKind
+
+export const ConversationKind: typeof $Enums.ConversationKind
 
 /**
  * ##  Prisma Client ʲˢ
@@ -794,6 +811,16 @@ export class PrismaClient<
     * ```
     */
   get conversation(): Prisma.ConversationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.scheduledAgent`: Exposes CRUD operations for the **ScheduledAgent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ScheduledAgents
+    * const scheduledAgents = await prisma.scheduledAgent.findMany()
+    * ```
+    */
+  get scheduledAgent(): Prisma.ScheduledAgentDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.message`: Exposes CRUD operations for the **Message** model.
@@ -1290,6 +1317,7 @@ export namespace Prisma {
     Document: 'Document',
     AiProvider: 'AiProvider',
     Conversation: 'Conversation',
+    ScheduledAgent: 'ScheduledAgent',
     Message: 'Message',
     AgentExecution: 'AgentExecution',
     ToolCall: 'ToolCall',
@@ -1309,7 +1337,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "databaseIntegration" | "openApiIntegration" | "mcpIntegration" | "integrationAction" | "composioToolkit" | "composioToolkitTool" | "composioSyncRun" | "organisationEnabledToolkit" | "organisationToolPermission" | "composioConnectedAccount" | "composioTrigger" | "document" | "aiProvider" | "conversation" | "message" | "agentExecution" | "toolCall" | "conversationPersonalization"
+      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "databaseIntegration" | "openApiIntegration" | "mcpIntegration" | "integrationAction" | "composioToolkit" | "composioToolkitTool" | "composioSyncRun" | "organisationEnabledToolkit" | "organisationToolPermission" | "composioConnectedAccount" | "composioTrigger" | "document" | "aiProvider" | "conversation" | "scheduledAgent" | "message" | "agentExecution" | "toolCall" | "conversationPersonalization"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2941,6 +2969,80 @@ export namespace Prisma {
           }
         }
       }
+      ScheduledAgent: {
+        payload: Prisma.$ScheduledAgentPayload<ExtArgs>
+        fields: Prisma.ScheduledAgentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ScheduledAgentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduledAgentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ScheduledAgentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduledAgentPayload>
+          }
+          findFirst: {
+            args: Prisma.ScheduledAgentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduledAgentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ScheduledAgentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduledAgentPayload>
+          }
+          findMany: {
+            args: Prisma.ScheduledAgentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduledAgentPayload>[]
+          }
+          create: {
+            args: Prisma.ScheduledAgentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduledAgentPayload>
+          }
+          createMany: {
+            args: Prisma.ScheduledAgentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ScheduledAgentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduledAgentPayload>[]
+          }
+          delete: {
+            args: Prisma.ScheduledAgentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduledAgentPayload>
+          }
+          update: {
+            args: Prisma.ScheduledAgentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduledAgentPayload>
+          }
+          deleteMany: {
+            args: Prisma.ScheduledAgentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ScheduledAgentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ScheduledAgentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduledAgentPayload>[]
+          }
+          upsert: {
+            args: Prisma.ScheduledAgentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduledAgentPayload>
+          }
+          aggregate: {
+            args: Prisma.ScheduledAgentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateScheduledAgent>
+          }
+          groupBy: {
+            args: Prisma.ScheduledAgentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ScheduledAgentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ScheduledAgentCountArgs<ExtArgs>
+            result: $Utils.Optional<ScheduledAgentCountAggregateOutputType> | number
+          }
+        }
+      }
       Message: {
         payload: Prisma.$MessagePayload<ExtArgs>
         fields: Prisma.MessageFieldRefs
@@ -3367,6 +3469,7 @@ export namespace Prisma {
     document?: DocumentOmit
     aiProvider?: AiProviderOmit
     conversation?: ConversationOmit
+    scheduledAgent?: ScheduledAgentOmit
     message?: MessageOmit
     agentExecution?: AgentExecutionOmit
     toolCall?: ToolCallOmit
@@ -3457,6 +3560,7 @@ export namespace Prisma {
     conversations: number
     agent_executions: number
     conversation_personalizations: number
+    scheduled_agents: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3466,6 +3570,7 @@ export namespace Prisma {
     conversations?: boolean | UserCountOutputTypeCountConversationsArgs
     agent_executions?: boolean | UserCountOutputTypeCountAgent_executionsArgs
     conversation_personalizations?: boolean | UserCountOutputTypeCountConversation_personalizationsArgs
+    scheduled_agents?: boolean | UserCountOutputTypeCountScheduled_agentsArgs
   }
 
   // Custom InputTypes
@@ -3521,6 +3626,13 @@ export namespace Prisma {
     where?: ConversationPersonalizationWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountScheduled_agentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScheduledAgentWhereInput
+  }
+
 
   /**
    * Count Type OrganizationCountOutputType
@@ -3539,6 +3651,7 @@ export namespace Prisma {
     conversations: number
     agent_executions: number
     conversation_personalizations: number
+    scheduled_agents: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3554,6 +3667,7 @@ export namespace Prisma {
     conversations?: boolean | OrganizationCountOutputTypeCountConversationsArgs
     agent_executions?: boolean | OrganizationCountOutputTypeCountAgent_executionsArgs
     conversation_personalizations?: boolean | OrganizationCountOutputTypeCountConversation_personalizationsArgs
+    scheduled_agents?: boolean | OrganizationCountOutputTypeCountScheduled_agentsArgs
   }
 
   // Custom InputTypes
@@ -3649,6 +3763,13 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountConversation_personalizationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ConversationPersonalizationWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountScheduled_agentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScheduledAgentWhereInput
   }
 
 
@@ -4202,6 +4323,7 @@ export namespace Prisma {
     conversations?: boolean | User$conversationsArgs<ExtArgs>
     agent_executions?: boolean | User$agent_executionsArgs<ExtArgs>
     conversation_personalizations?: boolean | User$conversation_personalizationsArgs<ExtArgs>
+    scheduled_agents?: boolean | User$scheduled_agentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -4252,6 +4374,7 @@ export namespace Prisma {
     conversations?: boolean | User$conversationsArgs<ExtArgs>
     agent_executions?: boolean | User$agent_executionsArgs<ExtArgs>
     conversation_personalizations?: boolean | User$conversation_personalizationsArgs<ExtArgs>
+    scheduled_agents?: boolean | User$scheduled_agentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4266,6 +4389,7 @@ export namespace Prisma {
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
       agent_executions: Prisma.$AgentExecutionPayload<ExtArgs>[]
       conversation_personalizations: Prisma.$ConversationPersonalizationPayload<ExtArgs>[]
+      scheduled_agents: Prisma.$ScheduledAgentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -4678,6 +4802,7 @@ export namespace Prisma {
     conversations<T extends User$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, User$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     agent_executions<T extends User$agent_executionsArgs<ExtArgs> = {}>(args?: Subset<T, User$agent_executionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     conversation_personalizations<T extends User$conversation_personalizationsArgs<ExtArgs> = {}>(args?: Subset<T, User$conversation_personalizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    scheduled_agents<T extends User$scheduled_agentsArgs<ExtArgs> = {}>(args?: Subset<T, User$scheduled_agentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5249,6 +5374,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.scheduled_agents
+   */
+  export type User$scheduled_agentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentInclude<ExtArgs> | null
+    where?: ScheduledAgentWhereInput
+    orderBy?: ScheduledAgentOrderByWithRelationInput | ScheduledAgentOrderByWithRelationInput[]
+    cursor?: ScheduledAgentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ScheduledAgentScalarFieldEnum | ScheduledAgentScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5502,6 +5651,7 @@ export namespace Prisma {
     conversations?: boolean | Organization$conversationsArgs<ExtArgs>
     agent_executions?: boolean | Organization$agent_executionsArgs<ExtArgs>
     conversation_personalizations?: boolean | Organization$conversation_personalizationsArgs<ExtArgs>
+    scheduled_agents?: boolean | Organization$scheduled_agentsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -5555,6 +5705,7 @@ export namespace Prisma {
     conversations?: boolean | Organization$conversationsArgs<ExtArgs>
     agent_executions?: boolean | Organization$agent_executionsArgs<ExtArgs>
     conversation_personalizations?: boolean | Organization$conversation_personalizationsArgs<ExtArgs>
+    scheduled_agents?: boolean | Organization$scheduled_agentsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5580,6 +5731,7 @@ export namespace Prisma {
       conversations: Prisma.$ConversationPayload<ExtArgs>[]
       agent_executions: Prisma.$AgentExecutionPayload<ExtArgs>[]
       conversation_personalizations: Prisma.$ConversationPersonalizationPayload<ExtArgs>[]
+      scheduled_agents: Prisma.$ScheduledAgentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -5997,6 +6149,7 @@ export namespace Prisma {
     conversations<T extends Organization$conversationsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     agent_executions<T extends Organization$agent_executionsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$agent_executionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     conversation_personalizations<T extends Organization$conversation_personalizationsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$conversation_personalizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    scheduled_agents<T extends Organization$scheduled_agentsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$scheduled_agentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6715,6 +6868,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ConversationPersonalizationScalarFieldEnum | ConversationPersonalizationScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.scheduled_agents
+   */
+  export type Organization$scheduled_agentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentInclude<ExtArgs> | null
+    where?: ScheduledAgentWhereInput
+    orderBy?: ScheduledAgentOrderByWithRelationInput | ScheduledAgentOrderByWithRelationInput[]
+    cursor?: ScheduledAgentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ScheduledAgentScalarFieldEnum | ScheduledAgentScalarFieldEnum[]
   }
 
   /**
@@ -28901,6 +29078,7 @@ export namespace Prisma {
     org_uuid: string | null
     user_uuid: string | null
     title: string | null
+    kind: $Enums.ConversationKind | null
     ai_provider: $Enums.AiProviderType | null
     ai_model: string | null
     ai_research_mode: $Enums.AiResearchMode | null
@@ -28915,6 +29093,7 @@ export namespace Prisma {
     org_uuid: string | null
     user_uuid: string | null
     title: string | null
+    kind: $Enums.ConversationKind | null
     ai_provider: $Enums.AiProviderType | null
     ai_model: string | null
     ai_research_mode: $Enums.AiResearchMode | null
@@ -28929,6 +29108,7 @@ export namespace Prisma {
     org_uuid: number
     user_uuid: number
     title: number
+    kind: number
     ai_provider: number
     ai_model: number
     ai_research_mode: number
@@ -28953,6 +29133,7 @@ export namespace Prisma {
     org_uuid?: true
     user_uuid?: true
     title?: true
+    kind?: true
     ai_provider?: true
     ai_model?: true
     ai_research_mode?: true
@@ -28967,6 +29148,7 @@ export namespace Prisma {
     org_uuid?: true
     user_uuid?: true
     title?: true
+    kind?: true
     ai_provider?: true
     ai_model?: true
     ai_research_mode?: true
@@ -28981,6 +29163,7 @@ export namespace Prisma {
     org_uuid?: true
     user_uuid?: true
     title?: true
+    kind?: true
     ai_provider?: true
     ai_model?: true
     ai_research_mode?: true
@@ -29082,6 +29265,7 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title: string | null
+    kind: $Enums.ConversationKind
     ai_provider: $Enums.AiProviderType | null
     ai_model: string | null
     ai_research_mode: $Enums.AiResearchMode
@@ -29115,6 +29299,7 @@ export namespace Prisma {
     org_uuid?: boolean
     user_uuid?: boolean
     title?: boolean
+    kind?: boolean
     ai_provider?: boolean
     ai_model?: boolean
     ai_research_mode?: boolean
@@ -29125,6 +29310,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     messages?: boolean | Conversation$messagesArgs<ExtArgs>
     executions?: boolean | Conversation$executionsArgs<ExtArgs>
+    scheduled_agent?: boolean | Conversation$scheduled_agentArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["conversation"]>
 
@@ -29134,6 +29320,7 @@ export namespace Prisma {
     org_uuid?: boolean
     user_uuid?: boolean
     title?: boolean
+    kind?: boolean
     ai_provider?: boolean
     ai_model?: boolean
     ai_research_mode?: boolean
@@ -29150,6 +29337,7 @@ export namespace Prisma {
     org_uuid?: boolean
     user_uuid?: boolean
     title?: boolean
+    kind?: boolean
     ai_provider?: boolean
     ai_model?: boolean
     ai_research_mode?: boolean
@@ -29166,6 +29354,7 @@ export namespace Prisma {
     org_uuid?: boolean
     user_uuid?: boolean
     title?: boolean
+    kind?: boolean
     ai_provider?: boolean
     ai_model?: boolean
     ai_research_mode?: boolean
@@ -29174,12 +29363,13 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type ConversationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "org_uuid" | "user_uuid" | "title" | "ai_provider" | "ai_model" | "ai_research_mode" | "composio_session_id" | "created_at" | "updated_at", ExtArgs["result"]["conversation"]>
+  export type ConversationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "org_uuid" | "user_uuid" | "title" | "kind" | "ai_provider" | "ai_model" | "ai_research_mode" | "composio_session_id" | "created_at" | "updated_at", ExtArgs["result"]["conversation"]>
   export type ConversationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     messages?: boolean | Conversation$messagesArgs<ExtArgs>
     executions?: boolean | Conversation$executionsArgs<ExtArgs>
+    scheduled_agent?: boolean | Conversation$scheduled_agentArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -29198,6 +29388,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
       messages: Prisma.$MessagePayload<ExtArgs>[]
       executions: Prisma.$AgentExecutionPayload<ExtArgs>[]
+      scheduled_agent: Prisma.$ScheduledAgentPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -29205,6 +29396,7 @@ export namespace Prisma {
       org_uuid: string
       user_uuid: string
       title: string | null
+      kind: $Enums.ConversationKind
       ai_provider: $Enums.AiProviderType | null
       ai_model: string | null
       ai_research_mode: $Enums.AiResearchMode
@@ -29609,6 +29801,7 @@ export namespace Prisma {
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     messages<T extends Conversation$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     executions<T extends Conversation$executionsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$executionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    scheduled_agent<T extends Conversation$scheduled_agentArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$scheduled_agentArgs<ExtArgs>>): Prisma__ScheduledAgentClient<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -29643,6 +29836,7 @@ export namespace Prisma {
     readonly org_uuid: FieldRef<"Conversation", 'String'>
     readonly user_uuid: FieldRef<"Conversation", 'String'>
     readonly title: FieldRef<"Conversation", 'String'>
+    readonly kind: FieldRef<"Conversation", 'ConversationKind'>
     readonly ai_provider: FieldRef<"Conversation", 'AiProviderType'>
     readonly ai_model: FieldRef<"Conversation", 'String'>
     readonly ai_research_mode: FieldRef<"Conversation", 'AiResearchMode'>
@@ -30093,6 +30287,25 @@ export namespace Prisma {
   }
 
   /**
+   * Conversation.scheduled_agent
+   */
+  export type Conversation$scheduled_agentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentInclude<ExtArgs> | null
+    where?: ScheduledAgentWhereInput
+  }
+
+  /**
    * Conversation without action
    */
   export type ConversationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -30108,6 +30321,1218 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ConversationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ScheduledAgent
+   */
+
+  export type AggregateScheduledAgent = {
+    _count: ScheduledAgentCountAggregateOutputType | null
+    _avg: ScheduledAgentAvgAggregateOutputType | null
+    _sum: ScheduledAgentSumAggregateOutputType | null
+    _min: ScheduledAgentMinAggregateOutputType | null
+    _max: ScheduledAgentMaxAggregateOutputType | null
+  }
+
+  export type ScheduledAgentAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ScheduledAgentSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ScheduledAgentMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    org_uuid: string | null
+    user_uuid: string | null
+    title: string | null
+    prompt: string | null
+    cron_expression: string | null
+    is_enabled: boolean | null
+    conversation_uuid: string | null
+    last_run_at: Date | null
+    next_run_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ScheduledAgentMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    org_uuid: string | null
+    user_uuid: string | null
+    title: string | null
+    prompt: string | null
+    cron_expression: string | null
+    is_enabled: boolean | null
+    conversation_uuid: string | null
+    last_run_at: Date | null
+    next_run_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type ScheduledAgentCountAggregateOutputType = {
+    id: number
+    uuid: number
+    org_uuid: number
+    user_uuid: number
+    title: number
+    prompt: number
+    cron_expression: number
+    is_enabled: number
+    conversation_uuid: number
+    last_run_at: number
+    next_run_at: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type ScheduledAgentAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type ScheduledAgentSumAggregateInputType = {
+    id?: true
+  }
+
+  export type ScheduledAgentMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    user_uuid?: true
+    title?: true
+    prompt?: true
+    cron_expression?: true
+    is_enabled?: true
+    conversation_uuid?: true
+    last_run_at?: true
+    next_run_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ScheduledAgentMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    user_uuid?: true
+    title?: true
+    prompt?: true
+    cron_expression?: true
+    is_enabled?: true
+    conversation_uuid?: true
+    last_run_at?: true
+    next_run_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type ScheduledAgentCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    user_uuid?: true
+    title?: true
+    prompt?: true
+    cron_expression?: true
+    is_enabled?: true
+    conversation_uuid?: true
+    last_run_at?: true
+    next_run_at?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type ScheduledAgentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ScheduledAgent to aggregate.
+     */
+    where?: ScheduledAgentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduledAgents to fetch.
+     */
+    orderBy?: ScheduledAgentOrderByWithRelationInput | ScheduledAgentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ScheduledAgentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduledAgents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduledAgents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ScheduledAgents
+    **/
+    _count?: true | ScheduledAgentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ScheduledAgentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ScheduledAgentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ScheduledAgentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ScheduledAgentMaxAggregateInputType
+  }
+
+  export type GetScheduledAgentAggregateType<T extends ScheduledAgentAggregateArgs> = {
+        [P in keyof T & keyof AggregateScheduledAgent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateScheduledAgent[P]>
+      : GetScalarType<T[P], AggregateScheduledAgent[P]>
+  }
+
+
+
+
+  export type ScheduledAgentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScheduledAgentWhereInput
+    orderBy?: ScheduledAgentOrderByWithAggregationInput | ScheduledAgentOrderByWithAggregationInput[]
+    by: ScheduledAgentScalarFieldEnum[] | ScheduledAgentScalarFieldEnum
+    having?: ScheduledAgentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ScheduledAgentCountAggregateInputType | true
+    _avg?: ScheduledAgentAvgAggregateInputType
+    _sum?: ScheduledAgentSumAggregateInputType
+    _min?: ScheduledAgentMinAggregateInputType
+    _max?: ScheduledAgentMaxAggregateInputType
+  }
+
+  export type ScheduledAgentGroupByOutputType = {
+    id: number
+    uuid: string
+    org_uuid: string
+    user_uuid: string
+    title: string
+    prompt: string
+    cron_expression: string
+    is_enabled: boolean
+    conversation_uuid: string
+    last_run_at: Date | null
+    next_run_at: Date | null
+    created_at: Date
+    updated_at: Date
+    _count: ScheduledAgentCountAggregateOutputType | null
+    _avg: ScheduledAgentAvgAggregateOutputType | null
+    _sum: ScheduledAgentSumAggregateOutputType | null
+    _min: ScheduledAgentMinAggregateOutputType | null
+    _max: ScheduledAgentMaxAggregateOutputType | null
+  }
+
+  type GetScheduledAgentGroupByPayload<T extends ScheduledAgentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ScheduledAgentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ScheduledAgentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ScheduledAgentGroupByOutputType[P]>
+            : GetScalarType<T[P], ScheduledAgentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ScheduledAgentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    user_uuid?: boolean
+    title?: boolean
+    prompt?: boolean
+    cron_expression?: boolean
+    is_enabled?: boolean
+    conversation_uuid?: boolean
+    last_run_at?: boolean
+    next_run_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["scheduledAgent"]>
+
+  export type ScheduledAgentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    user_uuid?: boolean
+    title?: boolean
+    prompt?: boolean
+    cron_expression?: boolean
+    is_enabled?: boolean
+    conversation_uuid?: boolean
+    last_run_at?: boolean
+    next_run_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["scheduledAgent"]>
+
+  export type ScheduledAgentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    user_uuid?: boolean
+    title?: boolean
+    prompt?: boolean
+    cron_expression?: boolean
+    is_enabled?: boolean
+    conversation_uuid?: boolean
+    last_run_at?: boolean
+    next_run_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["scheduledAgent"]>
+
+  export type ScheduledAgentSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    user_uuid?: boolean
+    title?: boolean
+    prompt?: boolean
+    cron_expression?: boolean
+    is_enabled?: boolean
+    conversation_uuid?: boolean
+    last_run_at?: boolean
+    next_run_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type ScheduledAgentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "org_uuid" | "user_uuid" | "title" | "prompt" | "cron_expression" | "is_enabled" | "conversation_uuid" | "last_run_at" | "next_run_at" | "created_at" | "updated_at", ExtArgs["result"]["scheduledAgent"]>
+  export type ScheduledAgentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }
+  export type ScheduledAgentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }
+  export type ScheduledAgentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }
+
+  export type $ScheduledAgentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ScheduledAgent"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+      conversation: Prisma.$ConversationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      org_uuid: string
+      user_uuid: string
+      title: string
+      prompt: string
+      cron_expression: string
+      is_enabled: boolean
+      conversation_uuid: string
+      last_run_at: Date | null
+      next_run_at: Date | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["scheduledAgent"]>
+    composites: {}
+  }
+
+  type ScheduledAgentGetPayload<S extends boolean | null | undefined | ScheduledAgentDefaultArgs> = $Result.GetResult<Prisma.$ScheduledAgentPayload, S>
+
+  type ScheduledAgentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ScheduledAgentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ScheduledAgentCountAggregateInputType | true
+    }
+
+  export interface ScheduledAgentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ScheduledAgent'], meta: { name: 'ScheduledAgent' } }
+    /**
+     * Find zero or one ScheduledAgent that matches the filter.
+     * @param {ScheduledAgentFindUniqueArgs} args - Arguments to find a ScheduledAgent
+     * @example
+     * // Get one ScheduledAgent
+     * const scheduledAgent = await prisma.scheduledAgent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ScheduledAgentFindUniqueArgs>(args: SelectSubset<T, ScheduledAgentFindUniqueArgs<ExtArgs>>): Prisma__ScheduledAgentClient<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ScheduledAgent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ScheduledAgentFindUniqueOrThrowArgs} args - Arguments to find a ScheduledAgent
+     * @example
+     * // Get one ScheduledAgent
+     * const scheduledAgent = await prisma.scheduledAgent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ScheduledAgentFindUniqueOrThrowArgs>(args: SelectSubset<T, ScheduledAgentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ScheduledAgentClient<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ScheduledAgent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduledAgentFindFirstArgs} args - Arguments to find a ScheduledAgent
+     * @example
+     * // Get one ScheduledAgent
+     * const scheduledAgent = await prisma.scheduledAgent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ScheduledAgentFindFirstArgs>(args?: SelectSubset<T, ScheduledAgentFindFirstArgs<ExtArgs>>): Prisma__ScheduledAgentClient<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ScheduledAgent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduledAgentFindFirstOrThrowArgs} args - Arguments to find a ScheduledAgent
+     * @example
+     * // Get one ScheduledAgent
+     * const scheduledAgent = await prisma.scheduledAgent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ScheduledAgentFindFirstOrThrowArgs>(args?: SelectSubset<T, ScheduledAgentFindFirstOrThrowArgs<ExtArgs>>): Prisma__ScheduledAgentClient<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ScheduledAgents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduledAgentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ScheduledAgents
+     * const scheduledAgents = await prisma.scheduledAgent.findMany()
+     * 
+     * // Get first 10 ScheduledAgents
+     * const scheduledAgents = await prisma.scheduledAgent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const scheduledAgentWithIdOnly = await prisma.scheduledAgent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ScheduledAgentFindManyArgs>(args?: SelectSubset<T, ScheduledAgentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ScheduledAgent.
+     * @param {ScheduledAgentCreateArgs} args - Arguments to create a ScheduledAgent.
+     * @example
+     * // Create one ScheduledAgent
+     * const ScheduledAgent = await prisma.scheduledAgent.create({
+     *   data: {
+     *     // ... data to create a ScheduledAgent
+     *   }
+     * })
+     * 
+     */
+    create<T extends ScheduledAgentCreateArgs>(args: SelectSubset<T, ScheduledAgentCreateArgs<ExtArgs>>): Prisma__ScheduledAgentClient<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ScheduledAgents.
+     * @param {ScheduledAgentCreateManyArgs} args - Arguments to create many ScheduledAgents.
+     * @example
+     * // Create many ScheduledAgents
+     * const scheduledAgent = await prisma.scheduledAgent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ScheduledAgentCreateManyArgs>(args?: SelectSubset<T, ScheduledAgentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ScheduledAgents and returns the data saved in the database.
+     * @param {ScheduledAgentCreateManyAndReturnArgs} args - Arguments to create many ScheduledAgents.
+     * @example
+     * // Create many ScheduledAgents
+     * const scheduledAgent = await prisma.scheduledAgent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ScheduledAgents and only return the `id`
+     * const scheduledAgentWithIdOnly = await prisma.scheduledAgent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ScheduledAgentCreateManyAndReturnArgs>(args?: SelectSubset<T, ScheduledAgentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ScheduledAgent.
+     * @param {ScheduledAgentDeleteArgs} args - Arguments to delete one ScheduledAgent.
+     * @example
+     * // Delete one ScheduledAgent
+     * const ScheduledAgent = await prisma.scheduledAgent.delete({
+     *   where: {
+     *     // ... filter to delete one ScheduledAgent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ScheduledAgentDeleteArgs>(args: SelectSubset<T, ScheduledAgentDeleteArgs<ExtArgs>>): Prisma__ScheduledAgentClient<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ScheduledAgent.
+     * @param {ScheduledAgentUpdateArgs} args - Arguments to update one ScheduledAgent.
+     * @example
+     * // Update one ScheduledAgent
+     * const scheduledAgent = await prisma.scheduledAgent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ScheduledAgentUpdateArgs>(args: SelectSubset<T, ScheduledAgentUpdateArgs<ExtArgs>>): Prisma__ScheduledAgentClient<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ScheduledAgents.
+     * @param {ScheduledAgentDeleteManyArgs} args - Arguments to filter ScheduledAgents to delete.
+     * @example
+     * // Delete a few ScheduledAgents
+     * const { count } = await prisma.scheduledAgent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ScheduledAgentDeleteManyArgs>(args?: SelectSubset<T, ScheduledAgentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ScheduledAgents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduledAgentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ScheduledAgents
+     * const scheduledAgent = await prisma.scheduledAgent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ScheduledAgentUpdateManyArgs>(args: SelectSubset<T, ScheduledAgentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ScheduledAgents and returns the data updated in the database.
+     * @param {ScheduledAgentUpdateManyAndReturnArgs} args - Arguments to update many ScheduledAgents.
+     * @example
+     * // Update many ScheduledAgents
+     * const scheduledAgent = await prisma.scheduledAgent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ScheduledAgents and only return the `id`
+     * const scheduledAgentWithIdOnly = await prisma.scheduledAgent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ScheduledAgentUpdateManyAndReturnArgs>(args: SelectSubset<T, ScheduledAgentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ScheduledAgent.
+     * @param {ScheduledAgentUpsertArgs} args - Arguments to update or create a ScheduledAgent.
+     * @example
+     * // Update or create a ScheduledAgent
+     * const scheduledAgent = await prisma.scheduledAgent.upsert({
+     *   create: {
+     *     // ... data to create a ScheduledAgent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ScheduledAgent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ScheduledAgentUpsertArgs>(args: SelectSubset<T, ScheduledAgentUpsertArgs<ExtArgs>>): Prisma__ScheduledAgentClient<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ScheduledAgents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduledAgentCountArgs} args - Arguments to filter ScheduledAgents to count.
+     * @example
+     * // Count the number of ScheduledAgents
+     * const count = await prisma.scheduledAgent.count({
+     *   where: {
+     *     // ... the filter for the ScheduledAgents we want to count
+     *   }
+     * })
+    **/
+    count<T extends ScheduledAgentCountArgs>(
+      args?: Subset<T, ScheduledAgentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ScheduledAgentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ScheduledAgent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduledAgentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ScheduledAgentAggregateArgs>(args: Subset<T, ScheduledAgentAggregateArgs>): Prisma.PrismaPromise<GetScheduledAgentAggregateType<T>>
+
+    /**
+     * Group by ScheduledAgent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduledAgentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ScheduledAgentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ScheduledAgentGroupByArgs['orderBy'] }
+        : { orderBy?: ScheduledAgentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ScheduledAgentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetScheduledAgentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ScheduledAgent model
+   */
+  readonly fields: ScheduledAgentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ScheduledAgent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ScheduledAgentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    conversation<T extends ConversationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ConversationDefaultArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ScheduledAgent model
+   */
+  interface ScheduledAgentFieldRefs {
+    readonly id: FieldRef<"ScheduledAgent", 'Int'>
+    readonly uuid: FieldRef<"ScheduledAgent", 'String'>
+    readonly org_uuid: FieldRef<"ScheduledAgent", 'String'>
+    readonly user_uuid: FieldRef<"ScheduledAgent", 'String'>
+    readonly title: FieldRef<"ScheduledAgent", 'String'>
+    readonly prompt: FieldRef<"ScheduledAgent", 'String'>
+    readonly cron_expression: FieldRef<"ScheduledAgent", 'String'>
+    readonly is_enabled: FieldRef<"ScheduledAgent", 'Boolean'>
+    readonly conversation_uuid: FieldRef<"ScheduledAgent", 'String'>
+    readonly last_run_at: FieldRef<"ScheduledAgent", 'DateTime'>
+    readonly next_run_at: FieldRef<"ScheduledAgent", 'DateTime'>
+    readonly created_at: FieldRef<"ScheduledAgent", 'DateTime'>
+    readonly updated_at: FieldRef<"ScheduledAgent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ScheduledAgent findUnique
+   */
+  export type ScheduledAgentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduledAgent to fetch.
+     */
+    where: ScheduledAgentWhereUniqueInput
+  }
+
+  /**
+   * ScheduledAgent findUniqueOrThrow
+   */
+  export type ScheduledAgentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduledAgent to fetch.
+     */
+    where: ScheduledAgentWhereUniqueInput
+  }
+
+  /**
+   * ScheduledAgent findFirst
+   */
+  export type ScheduledAgentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduledAgent to fetch.
+     */
+    where?: ScheduledAgentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduledAgents to fetch.
+     */
+    orderBy?: ScheduledAgentOrderByWithRelationInput | ScheduledAgentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ScheduledAgents.
+     */
+    cursor?: ScheduledAgentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduledAgents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduledAgents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ScheduledAgents.
+     */
+    distinct?: ScheduledAgentScalarFieldEnum | ScheduledAgentScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduledAgent findFirstOrThrow
+   */
+  export type ScheduledAgentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduledAgent to fetch.
+     */
+    where?: ScheduledAgentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduledAgents to fetch.
+     */
+    orderBy?: ScheduledAgentOrderByWithRelationInput | ScheduledAgentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ScheduledAgents.
+     */
+    cursor?: ScheduledAgentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduledAgents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduledAgents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ScheduledAgents.
+     */
+    distinct?: ScheduledAgentScalarFieldEnum | ScheduledAgentScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduledAgent findMany
+   */
+  export type ScheduledAgentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduledAgents to fetch.
+     */
+    where?: ScheduledAgentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduledAgents to fetch.
+     */
+    orderBy?: ScheduledAgentOrderByWithRelationInput | ScheduledAgentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ScheduledAgents.
+     */
+    cursor?: ScheduledAgentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduledAgents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduledAgents.
+     */
+    skip?: number
+    distinct?: ScheduledAgentScalarFieldEnum | ScheduledAgentScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduledAgent create
+   */
+  export type ScheduledAgentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ScheduledAgent.
+     */
+    data: XOR<ScheduledAgentCreateInput, ScheduledAgentUncheckedCreateInput>
+  }
+
+  /**
+   * ScheduledAgent createMany
+   */
+  export type ScheduledAgentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ScheduledAgents.
+     */
+    data: ScheduledAgentCreateManyInput | ScheduledAgentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ScheduledAgent createManyAndReturn
+   */
+  export type ScheduledAgentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * The data used to create many ScheduledAgents.
+     */
+    data: ScheduledAgentCreateManyInput | ScheduledAgentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ScheduledAgent update
+   */
+  export type ScheduledAgentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ScheduledAgent.
+     */
+    data: XOR<ScheduledAgentUpdateInput, ScheduledAgentUncheckedUpdateInput>
+    /**
+     * Choose, which ScheduledAgent to update.
+     */
+    where: ScheduledAgentWhereUniqueInput
+  }
+
+  /**
+   * ScheduledAgent updateMany
+   */
+  export type ScheduledAgentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ScheduledAgents.
+     */
+    data: XOR<ScheduledAgentUpdateManyMutationInput, ScheduledAgentUncheckedUpdateManyInput>
+    /**
+     * Filter which ScheduledAgents to update
+     */
+    where?: ScheduledAgentWhereInput
+    /**
+     * Limit how many ScheduledAgents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ScheduledAgent updateManyAndReturn
+   */
+  export type ScheduledAgentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * The data used to update ScheduledAgents.
+     */
+    data: XOR<ScheduledAgentUpdateManyMutationInput, ScheduledAgentUncheckedUpdateManyInput>
+    /**
+     * Filter which ScheduledAgents to update
+     */
+    where?: ScheduledAgentWhereInput
+    /**
+     * Limit how many ScheduledAgents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ScheduledAgent upsert
+   */
+  export type ScheduledAgentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ScheduledAgent to update in case it exists.
+     */
+    where: ScheduledAgentWhereUniqueInput
+    /**
+     * In case the ScheduledAgent found by the `where` argument doesn't exist, create a new ScheduledAgent with this data.
+     */
+    create: XOR<ScheduledAgentCreateInput, ScheduledAgentUncheckedCreateInput>
+    /**
+     * In case the ScheduledAgent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ScheduledAgentUpdateInput, ScheduledAgentUncheckedUpdateInput>
+  }
+
+  /**
+   * ScheduledAgent delete
+   */
+  export type ScheduledAgentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentInclude<ExtArgs> | null
+    /**
+     * Filter which ScheduledAgent to delete.
+     */
+    where: ScheduledAgentWhereUniqueInput
+  }
+
+  /**
+   * ScheduledAgent deleteMany
+   */
+  export type ScheduledAgentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ScheduledAgents to delete
+     */
+    where?: ScheduledAgentWhereInput
+    /**
+     * Limit how many ScheduledAgents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ScheduledAgent without action
+   */
+  export type ScheduledAgentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduledAgent
+     */
+    select?: ScheduledAgentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduledAgent
+     */
+    omit?: ScheduledAgentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduledAgentInclude<ExtArgs> | null
   }
 
 
@@ -35337,6 +36762,7 @@ export namespace Prisma {
     org_uuid: 'org_uuid',
     user_uuid: 'user_uuid',
     title: 'title',
+    kind: 'kind',
     ai_provider: 'ai_provider',
     ai_model: 'ai_model',
     ai_research_mode: 'ai_research_mode',
@@ -35346,6 +36772,25 @@ export namespace Prisma {
   };
 
   export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
+
+
+  export const ScheduledAgentScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    org_uuid: 'org_uuid',
+    user_uuid: 'user_uuid',
+    title: 'title',
+    prompt: 'prompt',
+    cron_expression: 'cron_expression',
+    is_enabled: 'is_enabled',
+    conversation_uuid: 'conversation_uuid',
+    last_run_at: 'last_run_at',
+    next_run_at: 'next_run_at',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type ScheduledAgentScalarFieldEnum = (typeof ScheduledAgentScalarFieldEnum)[keyof typeof ScheduledAgentScalarFieldEnum]
 
 
   export const MessageScalarFieldEnum: {
@@ -35763,6 +37208,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ConversationKind'
+   */
+  export type EnumConversationKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ConversationKind'>
+    
+
+
+  /**
+   * Reference to a field of type 'ConversationKind[]'
+   */
+  export type ListEnumConversationKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ConversationKind[]'>
+    
+
+
+  /**
    * Reference to a field of type 'AiResearchMode'
    */
   export type EnumAiResearchModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AiResearchMode'>
@@ -35883,6 +37342,7 @@ export namespace Prisma {
     conversations?: ConversationListRelationFilter
     agent_executions?: AgentExecutionListRelationFilter
     conversation_personalizations?: ConversationPersonalizationListRelationFilter
+    scheduled_agents?: ScheduledAgentListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -35902,6 +37362,7 @@ export namespace Prisma {
     conversations?: ConversationOrderByRelationAggregateInput
     agent_executions?: AgentExecutionOrderByRelationAggregateInput
     conversation_personalizations?: ConversationPersonalizationOrderByRelationAggregateInput
+    scheduled_agents?: ScheduledAgentOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -35924,6 +37385,7 @@ export namespace Prisma {
     conversations?: ConversationListRelationFilter
     agent_executions?: AgentExecutionListRelationFilter
     conversation_personalizations?: ConversationPersonalizationListRelationFilter
+    scheduled_agents?: ScheduledAgentListRelationFilter
   }, "id" | "uuid" | "email" | "phone">
 
   export type UserOrderByWithAggregationInput = {
@@ -35985,6 +37447,7 @@ export namespace Prisma {
     conversations?: ConversationListRelationFilter
     agent_executions?: AgentExecutionListRelationFilter
     conversation_personalizations?: ConversationPersonalizationListRelationFilter
+    scheduled_agents?: ScheduledAgentListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -36009,6 +37472,7 @@ export namespace Prisma {
     conversations?: ConversationOrderByRelationAggregateInput
     agent_executions?: AgentExecutionOrderByRelationAggregateInput
     conversation_personalizations?: ConversationPersonalizationOrderByRelationAggregateInput
+    scheduled_agents?: ScheduledAgentOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -36036,6 +37500,7 @@ export namespace Prisma {
     conversations?: ConversationListRelationFilter
     agent_executions?: AgentExecutionListRelationFilter
     conversation_personalizations?: ConversationPersonalizationListRelationFilter
+    scheduled_agents?: ScheduledAgentListRelationFilter
   }, "id" | "uuid" | "slug">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -37669,6 +39134,7 @@ export namespace Prisma {
     org_uuid?: StringFilter<"Conversation"> | string
     user_uuid?: StringFilter<"Conversation"> | string
     title?: StringNullableFilter<"Conversation"> | string | null
+    kind?: EnumConversationKindFilter<"Conversation"> | $Enums.ConversationKind
     ai_provider?: EnumAiProviderTypeNullableFilter<"Conversation"> | $Enums.AiProviderType | null
     ai_model?: StringNullableFilter<"Conversation"> | string | null
     ai_research_mode?: EnumAiResearchModeFilter<"Conversation"> | $Enums.AiResearchMode
@@ -37679,6 +39145,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     messages?: MessageListRelationFilter
     executions?: AgentExecutionListRelationFilter
+    scheduled_agent?: XOR<ScheduledAgentNullableScalarRelationFilter, ScheduledAgentWhereInput> | null
   }
 
   export type ConversationOrderByWithRelationInput = {
@@ -37687,6 +39154,7 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrderInput | SortOrder
+    kind?: SortOrder
     ai_provider?: SortOrderInput | SortOrder
     ai_model?: SortOrderInput | SortOrder
     ai_research_mode?: SortOrder
@@ -37697,6 +39165,7 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     messages?: MessageOrderByRelationAggregateInput
     executions?: AgentExecutionOrderByRelationAggregateInput
+    scheduled_agent?: ScheduledAgentOrderByWithRelationInput
   }
 
   export type ConversationWhereUniqueInput = Prisma.AtLeast<{
@@ -37709,6 +39178,7 @@ export namespace Prisma {
     org_uuid?: StringFilter<"Conversation"> | string
     user_uuid?: StringFilter<"Conversation"> | string
     title?: StringNullableFilter<"Conversation"> | string | null
+    kind?: EnumConversationKindFilter<"Conversation"> | $Enums.ConversationKind
     ai_provider?: EnumAiProviderTypeNullableFilter<"Conversation"> | $Enums.AiProviderType | null
     ai_model?: StringNullableFilter<"Conversation"> | string | null
     ai_research_mode?: EnumAiResearchModeFilter<"Conversation"> | $Enums.AiResearchMode
@@ -37718,6 +39188,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     messages?: MessageListRelationFilter
     executions?: AgentExecutionListRelationFilter
+    scheduled_agent?: XOR<ScheduledAgentNullableScalarRelationFilter, ScheduledAgentWhereInput> | null
   }, "id" | "uuid" | "composio_session_id">
 
   export type ConversationOrderByWithAggregationInput = {
@@ -37726,6 +39197,7 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrderInput | SortOrder
+    kind?: SortOrder
     ai_provider?: SortOrderInput | SortOrder
     ai_model?: SortOrderInput | SortOrder
     ai_research_mode?: SortOrder
@@ -37748,12 +39220,116 @@ export namespace Prisma {
     org_uuid?: StringWithAggregatesFilter<"Conversation"> | string
     user_uuid?: StringWithAggregatesFilter<"Conversation"> | string
     title?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
+    kind?: EnumConversationKindWithAggregatesFilter<"Conversation"> | $Enums.ConversationKind
     ai_provider?: EnumAiProviderTypeNullableWithAggregatesFilter<"Conversation"> | $Enums.AiProviderType | null
     ai_model?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
     ai_research_mode?: EnumAiResearchModeWithAggregatesFilter<"Conversation"> | $Enums.AiResearchMode
     composio_session_id?: StringNullableWithAggregatesFilter<"Conversation"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"Conversation"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Conversation"> | Date | string
+  }
+
+  export type ScheduledAgentWhereInput = {
+    AND?: ScheduledAgentWhereInput | ScheduledAgentWhereInput[]
+    OR?: ScheduledAgentWhereInput[]
+    NOT?: ScheduledAgentWhereInput | ScheduledAgentWhereInput[]
+    id?: IntFilter<"ScheduledAgent"> | number
+    uuid?: StringFilter<"ScheduledAgent"> | string
+    org_uuid?: StringFilter<"ScheduledAgent"> | string
+    user_uuid?: StringFilter<"ScheduledAgent"> | string
+    title?: StringFilter<"ScheduledAgent"> | string
+    prompt?: StringFilter<"ScheduledAgent"> | string
+    cron_expression?: StringFilter<"ScheduledAgent"> | string
+    is_enabled?: BoolFilter<"ScheduledAgent"> | boolean
+    conversation_uuid?: StringFilter<"ScheduledAgent"> | string
+    last_run_at?: DateTimeNullableFilter<"ScheduledAgent"> | Date | string | null
+    next_run_at?: DateTimeNullableFilter<"ScheduledAgent"> | Date | string | null
+    created_at?: DateTimeFilter<"ScheduledAgent"> | Date | string
+    updated_at?: DateTimeFilter<"ScheduledAgent"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    conversation?: XOR<ConversationScalarRelationFilter, ConversationWhereInput>
+  }
+
+  export type ScheduledAgentOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrder
+    title?: SortOrder
+    prompt?: SortOrder
+    cron_expression?: SortOrder
+    is_enabled?: SortOrder
+    conversation_uuid?: SortOrder
+    last_run_at?: SortOrderInput | SortOrder
+    next_run_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+    conversation?: ConversationOrderByWithRelationInput
+  }
+
+  export type ScheduledAgentWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    conversation_uuid?: string
+    AND?: ScheduledAgentWhereInput | ScheduledAgentWhereInput[]
+    OR?: ScheduledAgentWhereInput[]
+    NOT?: ScheduledAgentWhereInput | ScheduledAgentWhereInput[]
+    org_uuid?: StringFilter<"ScheduledAgent"> | string
+    user_uuid?: StringFilter<"ScheduledAgent"> | string
+    title?: StringFilter<"ScheduledAgent"> | string
+    prompt?: StringFilter<"ScheduledAgent"> | string
+    cron_expression?: StringFilter<"ScheduledAgent"> | string
+    is_enabled?: BoolFilter<"ScheduledAgent"> | boolean
+    last_run_at?: DateTimeNullableFilter<"ScheduledAgent"> | Date | string | null
+    next_run_at?: DateTimeNullableFilter<"ScheduledAgent"> | Date | string | null
+    created_at?: DateTimeFilter<"ScheduledAgent"> | Date | string
+    updated_at?: DateTimeFilter<"ScheduledAgent"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    conversation?: XOR<ConversationScalarRelationFilter, ConversationWhereInput>
+  }, "id" | "uuid" | "conversation_uuid">
+
+  export type ScheduledAgentOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrder
+    title?: SortOrder
+    prompt?: SortOrder
+    cron_expression?: SortOrder
+    is_enabled?: SortOrder
+    conversation_uuid?: SortOrder
+    last_run_at?: SortOrderInput | SortOrder
+    next_run_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: ScheduledAgentCountOrderByAggregateInput
+    _avg?: ScheduledAgentAvgOrderByAggregateInput
+    _max?: ScheduledAgentMaxOrderByAggregateInput
+    _min?: ScheduledAgentMinOrderByAggregateInput
+    _sum?: ScheduledAgentSumOrderByAggregateInput
+  }
+
+  export type ScheduledAgentScalarWhereWithAggregatesInput = {
+    AND?: ScheduledAgentScalarWhereWithAggregatesInput | ScheduledAgentScalarWhereWithAggregatesInput[]
+    OR?: ScheduledAgentScalarWhereWithAggregatesInput[]
+    NOT?: ScheduledAgentScalarWhereWithAggregatesInput | ScheduledAgentScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ScheduledAgent"> | number
+    uuid?: StringWithAggregatesFilter<"ScheduledAgent"> | string
+    org_uuid?: StringWithAggregatesFilter<"ScheduledAgent"> | string
+    user_uuid?: StringWithAggregatesFilter<"ScheduledAgent"> | string
+    title?: StringWithAggregatesFilter<"ScheduledAgent"> | string
+    prompt?: StringWithAggregatesFilter<"ScheduledAgent"> | string
+    cron_expression?: StringWithAggregatesFilter<"ScheduledAgent"> | string
+    is_enabled?: BoolWithAggregatesFilter<"ScheduledAgent"> | boolean
+    conversation_uuid?: StringWithAggregatesFilter<"ScheduledAgent"> | string
+    last_run_at?: DateTimeNullableWithAggregatesFilter<"ScheduledAgent"> | Date | string | null
+    next_run_at?: DateTimeNullableWithAggregatesFilter<"ScheduledAgent"> | Date | string | null
+    created_at?: DateTimeWithAggregatesFilter<"ScheduledAgent"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"ScheduledAgent"> | Date | string
   }
 
   export type MessageWhereInput = {
@@ -38172,6 +39748,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -38191,6 +39768,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -38209,6 +39787,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -38228,6 +39807,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -38288,6 +39868,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -38311,6 +39892,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -38333,6 +39915,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -38356,6 +39939,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -40058,6 +41642,7 @@ export namespace Prisma {
   export type ConversationCreateInput = {
     uuid?: string
     title?: string | null
+    kind?: $Enums.ConversationKind
     ai_provider?: $Enums.AiProviderType | null
     ai_model?: string | null
     ai_research_mode?: $Enums.AiResearchMode
@@ -40068,6 +41653,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
     executions?: AgentExecutionCreateNestedManyWithoutConversationInput
+    scheduled_agent?: ScheduledAgentCreateNestedOneWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateInput = {
@@ -40076,6 +41662,7 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title?: string | null
+    kind?: $Enums.ConversationKind
     ai_provider?: $Enums.AiProviderType | null
     ai_model?: string | null
     ai_research_mode?: $Enums.AiResearchMode
@@ -40084,11 +41671,13 @@ export namespace Prisma {
     updated_at?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     executions?: AgentExecutionUncheckedCreateNestedManyWithoutConversationInput
+    scheduled_agent?: ScheduledAgentUncheckedCreateNestedOneWithoutConversationInput
   }
 
   export type ConversationUpdateInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
@@ -40099,6 +41688,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
     executions?: AgentExecutionUpdateManyWithoutConversationNestedInput
+    scheduled_agent?: ScheduledAgentUpdateOneWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateInput = {
@@ -40107,6 +41697,7 @@ export namespace Prisma {
     org_uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
@@ -40115,6 +41706,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     executions?: AgentExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    scheduled_agent?: ScheduledAgentUncheckedUpdateOneWithoutConversationNestedInput
   }
 
   export type ConversationCreateManyInput = {
@@ -40123,6 +41715,7 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title?: string | null
+    kind?: $Enums.ConversationKind
     ai_provider?: $Enums.AiProviderType | null
     ai_model?: string | null
     ai_research_mode?: $Enums.AiResearchMode
@@ -40134,6 +41727,7 @@ export namespace Prisma {
   export type ConversationUpdateManyMutationInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
@@ -40148,10 +41742,117 @@ export namespace Prisma {
     org_uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
     composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduledAgentCreateInput = {
+    uuid?: string
+    title: string
+    prompt: string
+    cron_expression: string
+    is_enabled?: boolean
+    last_run_at?: Date | string | null
+    next_run_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutScheduled_agentsInput
+    user: UserCreateNestedOneWithoutScheduled_agentsInput
+    conversation: ConversationCreateNestedOneWithoutScheduled_agentInput
+  }
+
+  export type ScheduledAgentUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    user_uuid: string
+    title: string
+    prompt: string
+    cron_expression: string
+    is_enabled?: boolean
+    conversation_uuid: string
+    last_run_at?: Date | string | null
+    next_run_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ScheduledAgentUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    cron_expression?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutScheduled_agentsNestedInput
+    user?: UserUpdateOneRequiredWithoutScheduled_agentsNestedInput
+    conversation?: ConversationUpdateOneRequiredWithoutScheduled_agentNestedInput
+  }
+
+  export type ScheduledAgentUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    cron_expression?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    conversation_uuid?: StringFieldUpdateOperationsInput | string
+    last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduledAgentCreateManyInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    user_uuid: string
+    title: string
+    prompt: string
+    cron_expression: string
+    is_enabled?: boolean
+    conversation_uuid: string
+    last_run_at?: Date | string | null
+    next_run_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ScheduledAgentUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    cron_expression?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduledAgentUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    cron_expression?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    conversation_uuid?: StringFieldUpdateOperationsInput | string
+    last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -40672,6 +42373,12 @@ export namespace Prisma {
     none?: ConversationPersonalizationWhereInput
   }
 
+  export type ScheduledAgentListRelationFilter = {
+    every?: ScheduledAgentWhereInput
+    some?: ScheduledAgentWhereInput
+    none?: ScheduledAgentWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -40698,6 +42405,10 @@ export namespace Prisma {
   }
 
   export type ConversationPersonalizationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ScheduledAgentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -42341,6 +44052,13 @@ export namespace Prisma {
     _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
+  export type EnumConversationKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.ConversationKind | EnumConversationKindFieldRefInput<$PrismaModel>
+    in?: $Enums.ConversationKind[] | ListEnumConversationKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ConversationKind[] | ListEnumConversationKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumConversationKindFilter<$PrismaModel> | $Enums.ConversationKind
+  }
+
   export type EnumAiProviderTypeNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.AiProviderType | EnumAiProviderTypeFieldRefInput<$PrismaModel> | null
     in?: $Enums.AiProviderType[] | ListEnumAiProviderTypeFieldRefInput<$PrismaModel> | null
@@ -42361,6 +44079,11 @@ export namespace Prisma {
     none?: MessageWhereInput
   }
 
+  export type ScheduledAgentNullableScalarRelationFilter = {
+    is?: ScheduledAgentWhereInput | null
+    isNot?: ScheduledAgentWhereInput | null
+  }
+
   export type MessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -42371,6 +44094,7 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrder
+    kind?: SortOrder
     ai_provider?: SortOrder
     ai_model?: SortOrder
     ai_research_mode?: SortOrder
@@ -42389,6 +44113,7 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrder
+    kind?: SortOrder
     ai_provider?: SortOrder
     ai_model?: SortOrder
     ai_research_mode?: SortOrder
@@ -42403,6 +44128,7 @@ export namespace Prisma {
     org_uuid?: SortOrder
     user_uuid?: SortOrder
     title?: SortOrder
+    kind?: SortOrder
     ai_provider?: SortOrder
     ai_model?: SortOrder
     ai_research_mode?: SortOrder
@@ -42413,6 +44139,16 @@ export namespace Prisma {
 
   export type ConversationSumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type EnumConversationKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ConversationKind | EnumConversationKindFieldRefInput<$PrismaModel>
+    in?: $Enums.ConversationKind[] | ListEnumConversationKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ConversationKind[] | ListEnumConversationKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumConversationKindWithAggregatesFilter<$PrismaModel> | $Enums.ConversationKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumConversationKindFilter<$PrismaModel>
+    _max?: NestedEnumConversationKindFilter<$PrismaModel>
   }
 
   export type EnumAiProviderTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -42435,16 +44171,72 @@ export namespace Prisma {
     _max?: NestedEnumAiResearchModeFilter<$PrismaModel>
   }
 
+  export type ConversationScalarRelationFilter = {
+    is?: ConversationWhereInput
+    isNot?: ConversationWhereInput
+  }
+
+  export type ScheduledAgentCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrder
+    title?: SortOrder
+    prompt?: SortOrder
+    cron_expression?: SortOrder
+    is_enabled?: SortOrder
+    conversation_uuid?: SortOrder
+    last_run_at?: SortOrder
+    next_run_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ScheduledAgentAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ScheduledAgentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrder
+    title?: SortOrder
+    prompt?: SortOrder
+    cron_expression?: SortOrder
+    is_enabled?: SortOrder
+    conversation_uuid?: SortOrder
+    last_run_at?: SortOrder
+    next_run_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ScheduledAgentMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrder
+    title?: SortOrder
+    prompt?: SortOrder
+    cron_expression?: SortOrder
+    is_enabled?: SortOrder
+    conversation_uuid?: SortOrder
+    last_run_at?: SortOrder
+    next_run_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type ScheduledAgentSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
   export type EnumMessageRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.MessageRole | EnumMessageRoleFieldRefInput<$PrismaModel>
     in?: $Enums.MessageRole[] | ListEnumMessageRoleFieldRefInput<$PrismaModel>
     notIn?: $Enums.MessageRole[] | ListEnumMessageRoleFieldRefInput<$PrismaModel>
     not?: NestedEnumMessageRoleFilter<$PrismaModel> | $Enums.MessageRole
-  }
-
-  export type ConversationScalarRelationFilter = {
-    is?: ConversationWhereInput
-    isNot?: ConversationWhereInput
   }
 
   export type MessageCountOrderByAggregateInput = {
@@ -42832,6 +44624,13 @@ export namespace Prisma {
     connect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
   }
 
+  export type ScheduledAgentCreateNestedManyWithoutUserInput = {
+    create?: XOR<ScheduledAgentCreateWithoutUserInput, ScheduledAgentUncheckedCreateWithoutUserInput> | ScheduledAgentCreateWithoutUserInput[] | ScheduledAgentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ScheduledAgentCreateOrConnectWithoutUserInput | ScheduledAgentCreateOrConnectWithoutUserInput[]
+    createMany?: ScheduledAgentCreateManyUserInputEnvelope
+    connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+  }
+
   export type OrganizationMemberUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OrganizationMemberCreateWithoutUserInput, OrganizationMemberUncheckedCreateWithoutUserInput> | OrganizationMemberCreateWithoutUserInput[] | OrganizationMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutUserInput | OrganizationMemberCreateOrConnectWithoutUserInput[]
@@ -42872,6 +44671,13 @@ export namespace Prisma {
     connectOrCreate?: ConversationPersonalizationCreateOrConnectWithoutUserInput | ConversationPersonalizationCreateOrConnectWithoutUserInput[]
     createMany?: ConversationPersonalizationCreateManyUserInputEnvelope
     connect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+  }
+
+  export type ScheduledAgentUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ScheduledAgentCreateWithoutUserInput, ScheduledAgentUncheckedCreateWithoutUserInput> | ScheduledAgentCreateWithoutUserInput[] | ScheduledAgentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ScheduledAgentCreateOrConnectWithoutUserInput | ScheduledAgentCreateOrConnectWithoutUserInput[]
+    createMany?: ScheduledAgentCreateManyUserInputEnvelope
+    connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -42974,6 +44780,20 @@ export namespace Prisma {
     deleteMany?: ConversationPersonalizationScalarWhereInput | ConversationPersonalizationScalarWhereInput[]
   }
 
+  export type ScheduledAgentUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ScheduledAgentCreateWithoutUserInput, ScheduledAgentUncheckedCreateWithoutUserInput> | ScheduledAgentCreateWithoutUserInput[] | ScheduledAgentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ScheduledAgentCreateOrConnectWithoutUserInput | ScheduledAgentCreateOrConnectWithoutUserInput[]
+    upsert?: ScheduledAgentUpsertWithWhereUniqueWithoutUserInput | ScheduledAgentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ScheduledAgentCreateManyUserInputEnvelope
+    set?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    disconnect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    delete?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    update?: ScheduledAgentUpdateWithWhereUniqueWithoutUserInput | ScheduledAgentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ScheduledAgentUpdateManyWithWhereWithoutUserInput | ScheduledAgentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -43066,6 +44886,20 @@ export namespace Prisma {
     deleteMany?: ConversationPersonalizationScalarWhereInput | ConversationPersonalizationScalarWhereInput[]
   }
 
+  export type ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ScheduledAgentCreateWithoutUserInput, ScheduledAgentUncheckedCreateWithoutUserInput> | ScheduledAgentCreateWithoutUserInput[] | ScheduledAgentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ScheduledAgentCreateOrConnectWithoutUserInput | ScheduledAgentCreateOrConnectWithoutUserInput[]
+    upsert?: ScheduledAgentUpsertWithWhereUniqueWithoutUserInput | ScheduledAgentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ScheduledAgentCreateManyUserInputEnvelope
+    set?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    disconnect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    delete?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    update?: ScheduledAgentUpdateWithWhereUniqueWithoutUserInput | ScheduledAgentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ScheduledAgentUpdateManyWithWhereWithoutUserInput | ScheduledAgentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutCreated_organizationsInput = {
     create?: XOR<UserCreateWithoutCreated_organizationsInput, UserUncheckedCreateWithoutCreated_organizationsInput>
     connectOrCreate?: UserCreateOrConnectWithoutCreated_organizationsInput
@@ -43156,6 +44990,13 @@ export namespace Prisma {
     connect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
   }
 
+  export type ScheduledAgentCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ScheduledAgentCreateWithoutOrganizationInput, ScheduledAgentUncheckedCreateWithoutOrganizationInput> | ScheduledAgentCreateWithoutOrganizationInput[] | ScheduledAgentUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ScheduledAgentCreateOrConnectWithoutOrganizationInput | ScheduledAgentCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ScheduledAgentCreateManyOrganizationInputEnvelope
+    connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+  }
+
   export type OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMemberCreateWithoutOrganizationInput, OrganizationMemberUncheckedCreateWithoutOrganizationInput> | OrganizationMemberCreateWithoutOrganizationInput[] | OrganizationMemberUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutOrganizationInput | OrganizationMemberCreateOrConnectWithoutOrganizationInput[]
@@ -43238,6 +45079,13 @@ export namespace Prisma {
     connectOrCreate?: ConversationPersonalizationCreateOrConnectWithoutOrganizationInput | ConversationPersonalizationCreateOrConnectWithoutOrganizationInput[]
     createMany?: ConversationPersonalizationCreateManyOrganizationInputEnvelope
     connect?: ConversationPersonalizationWhereUniqueInput | ConversationPersonalizationWhereUniqueInput[]
+  }
+
+  export type ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ScheduledAgentCreateWithoutOrganizationInput, ScheduledAgentUncheckedCreateWithoutOrganizationInput> | ScheduledAgentCreateWithoutOrganizationInput[] | ScheduledAgentUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ScheduledAgentCreateOrConnectWithoutOrganizationInput | ScheduledAgentCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ScheduledAgentCreateManyOrganizationInputEnvelope
+    connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
   }
 
   export type UserUpdateOneRequiredWithoutCreated_organizationsNestedInput = {
@@ -43416,6 +45264,20 @@ export namespace Prisma {
     deleteMany?: ConversationPersonalizationScalarWhereInput | ConversationPersonalizationScalarWhereInput[]
   }
 
+  export type ScheduledAgentUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ScheduledAgentCreateWithoutOrganizationInput, ScheduledAgentUncheckedCreateWithoutOrganizationInput> | ScheduledAgentCreateWithoutOrganizationInput[] | ScheduledAgentUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ScheduledAgentCreateOrConnectWithoutOrganizationInput | ScheduledAgentCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ScheduledAgentUpsertWithWhereUniqueWithoutOrganizationInput | ScheduledAgentUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ScheduledAgentCreateManyOrganizationInputEnvelope
+    set?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    disconnect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    delete?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    update?: ScheduledAgentUpdateWithWhereUniqueWithoutOrganizationInput | ScheduledAgentUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ScheduledAgentUpdateManyWithWhereWithoutOrganizationInput | ScheduledAgentUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
+  }
+
   export type OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMemberCreateWithoutOrganizationInput, OrganizationMemberUncheckedCreateWithoutOrganizationInput> | OrganizationMemberCreateWithoutOrganizationInput[] | OrganizationMemberUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutOrganizationInput | OrganizationMemberCreateOrConnectWithoutOrganizationInput[]
@@ -43582,6 +45444,20 @@ export namespace Prisma {
     update?: ConversationPersonalizationUpdateWithWhereUniqueWithoutOrganizationInput | ConversationPersonalizationUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: ConversationPersonalizationUpdateManyWithWhereWithoutOrganizationInput | ConversationPersonalizationUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: ConversationPersonalizationScalarWhereInput | ConversationPersonalizationScalarWhereInput[]
+  }
+
+  export type ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ScheduledAgentCreateWithoutOrganizationInput, ScheduledAgentUncheckedCreateWithoutOrganizationInput> | ScheduledAgentCreateWithoutOrganizationInput[] | ScheduledAgentUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ScheduledAgentCreateOrConnectWithoutOrganizationInput | ScheduledAgentCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ScheduledAgentUpsertWithWhereUniqueWithoutOrganizationInput | ScheduledAgentUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ScheduledAgentCreateManyOrganizationInputEnvelope
+    set?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    disconnect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    delete?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+    update?: ScheduledAgentUpdateWithWhereUniqueWithoutOrganizationInput | ScheduledAgentUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ScheduledAgentUpdateManyWithWhereWithoutOrganizationInput | ScheduledAgentUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutMembersInput = {
@@ -44556,6 +46432,12 @@ export namespace Prisma {
     connect?: AgentExecutionWhereUniqueInput | AgentExecutionWhereUniqueInput[]
   }
 
+  export type ScheduledAgentCreateNestedOneWithoutConversationInput = {
+    create?: XOR<ScheduledAgentCreateWithoutConversationInput, ScheduledAgentUncheckedCreateWithoutConversationInput>
+    connectOrCreate?: ScheduledAgentCreateOrConnectWithoutConversationInput
+    connect?: ScheduledAgentWhereUniqueInput
+  }
+
   export type MessageUncheckedCreateNestedManyWithoutConversationInput = {
     create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
@@ -44568,6 +46450,16 @@ export namespace Prisma {
     connectOrCreate?: AgentExecutionCreateOrConnectWithoutConversationInput | AgentExecutionCreateOrConnectWithoutConversationInput[]
     createMany?: AgentExecutionCreateManyConversationInputEnvelope
     connect?: AgentExecutionWhereUniqueInput | AgentExecutionWhereUniqueInput[]
+  }
+
+  export type ScheduledAgentUncheckedCreateNestedOneWithoutConversationInput = {
+    create?: XOR<ScheduledAgentCreateWithoutConversationInput, ScheduledAgentUncheckedCreateWithoutConversationInput>
+    connectOrCreate?: ScheduledAgentCreateOrConnectWithoutConversationInput
+    connect?: ScheduledAgentWhereUniqueInput
+  }
+
+  export type EnumConversationKindFieldUpdateOperationsInput = {
+    set?: $Enums.ConversationKind
   }
 
   export type NullableEnumAiProviderTypeFieldUpdateOperationsInput = {
@@ -44622,6 +46514,16 @@ export namespace Prisma {
     deleteMany?: AgentExecutionScalarWhereInput | AgentExecutionScalarWhereInput[]
   }
 
+  export type ScheduledAgentUpdateOneWithoutConversationNestedInput = {
+    create?: XOR<ScheduledAgentCreateWithoutConversationInput, ScheduledAgentUncheckedCreateWithoutConversationInput>
+    connectOrCreate?: ScheduledAgentCreateOrConnectWithoutConversationInput
+    upsert?: ScheduledAgentUpsertWithoutConversationInput
+    disconnect?: ScheduledAgentWhereInput | boolean
+    delete?: ScheduledAgentWhereInput | boolean
+    connect?: ScheduledAgentWhereUniqueInput
+    update?: XOR<XOR<ScheduledAgentUpdateToOneWithWhereWithoutConversationInput, ScheduledAgentUpdateWithoutConversationInput>, ScheduledAgentUncheckedUpdateWithoutConversationInput>
+  }
+
   export type MessageUncheckedUpdateManyWithoutConversationNestedInput = {
     create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
@@ -44648,6 +46550,58 @@ export namespace Prisma {
     update?: AgentExecutionUpdateWithWhereUniqueWithoutConversationInput | AgentExecutionUpdateWithWhereUniqueWithoutConversationInput[]
     updateMany?: AgentExecutionUpdateManyWithWhereWithoutConversationInput | AgentExecutionUpdateManyWithWhereWithoutConversationInput[]
     deleteMany?: AgentExecutionScalarWhereInput | AgentExecutionScalarWhereInput[]
+  }
+
+  export type ScheduledAgentUncheckedUpdateOneWithoutConversationNestedInput = {
+    create?: XOR<ScheduledAgentCreateWithoutConversationInput, ScheduledAgentUncheckedCreateWithoutConversationInput>
+    connectOrCreate?: ScheduledAgentCreateOrConnectWithoutConversationInput
+    upsert?: ScheduledAgentUpsertWithoutConversationInput
+    disconnect?: ScheduledAgentWhereInput | boolean
+    delete?: ScheduledAgentWhereInput | boolean
+    connect?: ScheduledAgentWhereUniqueInput
+    update?: XOR<XOR<ScheduledAgentUpdateToOneWithWhereWithoutConversationInput, ScheduledAgentUpdateWithoutConversationInput>, ScheduledAgentUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutScheduled_agentsInput = {
+    create?: XOR<OrganizationCreateWithoutScheduled_agentsInput, OrganizationUncheckedCreateWithoutScheduled_agentsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutScheduled_agentsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutScheduled_agentsInput = {
+    create?: XOR<UserCreateWithoutScheduled_agentsInput, UserUncheckedCreateWithoutScheduled_agentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutScheduled_agentsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ConversationCreateNestedOneWithoutScheduled_agentInput = {
+    create?: XOR<ConversationCreateWithoutScheduled_agentInput, ConversationUncheckedCreateWithoutScheduled_agentInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutScheduled_agentInput
+    connect?: ConversationWhereUniqueInput
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutScheduled_agentsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutScheduled_agentsInput, OrganizationUncheckedCreateWithoutScheduled_agentsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutScheduled_agentsInput
+    upsert?: OrganizationUpsertWithoutScheduled_agentsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutScheduled_agentsInput, OrganizationUpdateWithoutScheduled_agentsInput>, OrganizationUncheckedUpdateWithoutScheduled_agentsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutScheduled_agentsNestedInput = {
+    create?: XOR<UserCreateWithoutScheduled_agentsInput, UserUncheckedCreateWithoutScheduled_agentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutScheduled_agentsInput
+    upsert?: UserUpsertWithoutScheduled_agentsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutScheduled_agentsInput, UserUpdateWithoutScheduled_agentsInput>, UserUncheckedUpdateWithoutScheduled_agentsInput>
+  }
+
+  export type ConversationUpdateOneRequiredWithoutScheduled_agentNestedInput = {
+    create?: XOR<ConversationCreateWithoutScheduled_agentInput, ConversationUncheckedCreateWithoutScheduled_agentInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutScheduled_agentInput
+    upsert?: ConversationUpsertWithoutScheduled_agentInput
+    connect?: ConversationWhereUniqueInput
+    update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutScheduled_agentInput, ConversationUpdateWithoutScheduled_agentInput>, ConversationUncheckedUpdateWithoutScheduled_agentInput>
   }
 
   export type ConversationCreateNestedOneWithoutMessagesInput = {
@@ -45385,6 +47339,13 @@ export namespace Prisma {
     _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumConversationKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.ConversationKind | EnumConversationKindFieldRefInput<$PrismaModel>
+    in?: $Enums.ConversationKind[] | ListEnumConversationKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ConversationKind[] | ListEnumConversationKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumConversationKindFilter<$PrismaModel> | $Enums.ConversationKind
+  }
+
   export type NestedEnumAiProviderTypeNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.AiProviderType | EnumAiProviderTypeFieldRefInput<$PrismaModel> | null
     in?: $Enums.AiProviderType[] | ListEnumAiProviderTypeFieldRefInput<$PrismaModel> | null
@@ -45397,6 +47358,16 @@ export namespace Prisma {
     in?: $Enums.AiResearchMode[] | ListEnumAiResearchModeFieldRefInput<$PrismaModel>
     notIn?: $Enums.AiResearchMode[] | ListEnumAiResearchModeFieldRefInput<$PrismaModel>
     not?: NestedEnumAiResearchModeFilter<$PrismaModel> | $Enums.AiResearchMode
+  }
+
+  export type NestedEnumConversationKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ConversationKind | EnumConversationKindFieldRefInput<$PrismaModel>
+    in?: $Enums.ConversationKind[] | ListEnumConversationKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ConversationKind[] | ListEnumConversationKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumConversationKindWithAggregatesFilter<$PrismaModel> | $Enums.ConversationKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumConversationKindFilter<$PrismaModel>
+    _max?: NestedEnumConversationKindFilter<$PrismaModel>
   }
 
   export type NestedEnumAiProviderTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -45579,6 +47550,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCreatorInput = {
@@ -45601,6 +47573,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCreatorInput = {
@@ -45647,6 +47620,7 @@ export namespace Prisma {
   export type ConversationCreateWithoutUserInput = {
     uuid?: string
     title?: string | null
+    kind?: $Enums.ConversationKind
     ai_provider?: $Enums.AiProviderType | null
     ai_model?: string | null
     ai_research_mode?: $Enums.AiResearchMode
@@ -45656,6 +47630,7 @@ export namespace Prisma {
     organization: OrganizationCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
     executions?: AgentExecutionCreateNestedManyWithoutConversationInput
+    scheduled_agent?: ScheduledAgentCreateNestedOneWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutUserInput = {
@@ -45663,6 +47638,7 @@ export namespace Prisma {
     uuid?: string
     org_uuid: string
     title?: string | null
+    kind?: $Enums.ConversationKind
     ai_provider?: $Enums.AiProviderType | null
     ai_model?: string | null
     ai_research_mode?: $Enums.AiResearchMode
@@ -45671,6 +47647,7 @@ export namespace Prisma {
     updated_at?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     executions?: AgentExecutionUncheckedCreateNestedManyWithoutConversationInput
+    scheduled_agent?: ScheduledAgentUncheckedCreateNestedOneWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutUserInput = {
@@ -45762,6 +47739,45 @@ export namespace Prisma {
 
   export type ConversationPersonalizationCreateManyUserInputEnvelope = {
     data: ConversationPersonalizationCreateManyUserInput | ConversationPersonalizationCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ScheduledAgentCreateWithoutUserInput = {
+    uuid?: string
+    title: string
+    prompt: string
+    cron_expression: string
+    is_enabled?: boolean
+    last_run_at?: Date | string | null
+    next_run_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutScheduled_agentsInput
+    conversation: ConversationCreateNestedOneWithoutScheduled_agentInput
+  }
+
+  export type ScheduledAgentUncheckedCreateWithoutUserInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    title: string
+    prompt: string
+    cron_expression: string
+    is_enabled?: boolean
+    conversation_uuid: string
+    last_run_at?: Date | string | null
+    next_run_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ScheduledAgentCreateOrConnectWithoutUserInput = {
+    where: ScheduledAgentWhereUniqueInput
+    create: XOR<ScheduledAgentCreateWithoutUserInput, ScheduledAgentUncheckedCreateWithoutUserInput>
+  }
+
+  export type ScheduledAgentCreateManyUserInputEnvelope = {
+    data: ScheduledAgentCreateManyUserInput | ScheduledAgentCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -45881,6 +47897,7 @@ export namespace Prisma {
     org_uuid?: StringFilter<"Conversation"> | string
     user_uuid?: StringFilter<"Conversation"> | string
     title?: StringNullableFilter<"Conversation"> | string | null
+    kind?: EnumConversationKindFilter<"Conversation"> | $Enums.ConversationKind
     ai_provider?: EnumAiProviderTypeNullableFilter<"Conversation"> | $Enums.AiProviderType | null
     ai_model?: StringNullableFilter<"Conversation"> | string | null
     ai_research_mode?: EnumAiResearchModeFilter<"Conversation"> | $Enums.AiResearchMode
@@ -45960,6 +47977,41 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"ConversationPersonalization"> | Date | string
   }
 
+  export type ScheduledAgentUpsertWithWhereUniqueWithoutUserInput = {
+    where: ScheduledAgentWhereUniqueInput
+    update: XOR<ScheduledAgentUpdateWithoutUserInput, ScheduledAgentUncheckedUpdateWithoutUserInput>
+    create: XOR<ScheduledAgentCreateWithoutUserInput, ScheduledAgentUncheckedCreateWithoutUserInput>
+  }
+
+  export type ScheduledAgentUpdateWithWhereUniqueWithoutUserInput = {
+    where: ScheduledAgentWhereUniqueInput
+    data: XOR<ScheduledAgentUpdateWithoutUserInput, ScheduledAgentUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ScheduledAgentUpdateManyWithWhereWithoutUserInput = {
+    where: ScheduledAgentScalarWhereInput
+    data: XOR<ScheduledAgentUpdateManyMutationInput, ScheduledAgentUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ScheduledAgentScalarWhereInput = {
+    AND?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
+    OR?: ScheduledAgentScalarWhereInput[]
+    NOT?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
+    id?: IntFilter<"ScheduledAgent"> | number
+    uuid?: StringFilter<"ScheduledAgent"> | string
+    org_uuid?: StringFilter<"ScheduledAgent"> | string
+    user_uuid?: StringFilter<"ScheduledAgent"> | string
+    title?: StringFilter<"ScheduledAgent"> | string
+    prompt?: StringFilter<"ScheduledAgent"> | string
+    cron_expression?: StringFilter<"ScheduledAgent"> | string
+    is_enabled?: BoolFilter<"ScheduledAgent"> | boolean
+    conversation_uuid?: StringFilter<"ScheduledAgent"> | string
+    last_run_at?: DateTimeNullableFilter<"ScheduledAgent"> | Date | string | null
+    next_run_at?: DateTimeNullableFilter<"ScheduledAgent"> | Date | string | null
+    created_at?: DateTimeFilter<"ScheduledAgent"> | Date | string
+    updated_at?: DateTimeFilter<"ScheduledAgent"> | Date | string
+  }
+
   export type UserCreateWithoutCreated_organizationsInput = {
     uuid?: string
     email: string
@@ -45975,6 +48027,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreated_organizationsInput = {
@@ -45993,6 +48046,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreated_organizationsInput = {
@@ -46306,6 +48360,7 @@ export namespace Prisma {
   export type ConversationCreateWithoutOrganizationInput = {
     uuid?: string
     title?: string | null
+    kind?: $Enums.ConversationKind
     ai_provider?: $Enums.AiProviderType | null
     ai_model?: string | null
     ai_research_mode?: $Enums.AiResearchMode
@@ -46315,6 +48370,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
     executions?: AgentExecutionCreateNestedManyWithoutConversationInput
+    scheduled_agent?: ScheduledAgentCreateNestedOneWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutOrganizationInput = {
@@ -46322,6 +48378,7 @@ export namespace Prisma {
     uuid?: string
     user_uuid: string
     title?: string | null
+    kind?: $Enums.ConversationKind
     ai_provider?: $Enums.AiProviderType | null
     ai_model?: string | null
     ai_research_mode?: $Enums.AiResearchMode
@@ -46330,6 +48387,7 @@ export namespace Prisma {
     updated_at?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
     executions?: AgentExecutionUncheckedCreateNestedManyWithoutConversationInput
+    scheduled_agent?: ScheduledAgentUncheckedCreateNestedOneWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutOrganizationInput = {
@@ -46424,6 +48482,45 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ScheduledAgentCreateWithoutOrganizationInput = {
+    uuid?: string
+    title: string
+    prompt: string
+    cron_expression: string
+    is_enabled?: boolean
+    last_run_at?: Date | string | null
+    next_run_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    user: UserCreateNestedOneWithoutScheduled_agentsInput
+    conversation: ConversationCreateNestedOneWithoutScheduled_agentInput
+  }
+
+  export type ScheduledAgentUncheckedCreateWithoutOrganizationInput = {
+    id?: number
+    uuid?: string
+    user_uuid: string
+    title: string
+    prompt: string
+    cron_expression: string
+    is_enabled?: boolean
+    conversation_uuid: string
+    last_run_at?: Date | string | null
+    next_run_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ScheduledAgentCreateOrConnectWithoutOrganizationInput = {
+    where: ScheduledAgentWhereUniqueInput
+    create: XOR<ScheduledAgentCreateWithoutOrganizationInput, ScheduledAgentUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ScheduledAgentCreateManyOrganizationInputEnvelope = {
+    data: ScheduledAgentCreateManyOrganizationInput | ScheduledAgentCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutCreated_organizationsInput = {
     update: XOR<UserUpdateWithoutCreated_organizationsInput, UserUncheckedUpdateWithoutCreated_organizationsInput>
     create: XOR<UserCreateWithoutCreated_organizationsInput, UserUncheckedCreateWithoutCreated_organizationsInput>
@@ -46450,6 +48547,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreated_organizationsInput = {
@@ -46468,6 +48566,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganizationMemberUpsertWithWhereUniqueWithoutOrganizationInput = {
@@ -46773,6 +48872,22 @@ export namespace Prisma {
     data: XOR<ConversationPersonalizationUpdateManyMutationInput, ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationInput>
   }
 
+  export type ScheduledAgentUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ScheduledAgentWhereUniqueInput
+    update: XOR<ScheduledAgentUpdateWithoutOrganizationInput, ScheduledAgentUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ScheduledAgentCreateWithoutOrganizationInput, ScheduledAgentUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ScheduledAgentUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ScheduledAgentWhereUniqueInput
+    data: XOR<ScheduledAgentUpdateWithoutOrganizationInput, ScheduledAgentUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ScheduledAgentUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ScheduledAgentScalarWhereInput
+    data: XOR<ScheduledAgentUpdateManyMutationInput, ScheduledAgentUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
   export type OrganizationCreateWithoutMembersInput = {
     uuid?: string
     name: string
@@ -46792,6 +48907,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMembersInput = {
@@ -46814,6 +48930,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMembersInput = {
@@ -46836,6 +48953,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrganization_membersInput = {
@@ -46854,6 +48972,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOrganization_membersInput = {
@@ -46913,6 +49032,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMembersInput = {
@@ -46935,6 +49055,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutOrganization_membersInput = {
@@ -46963,6 +49084,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganization_membersInput = {
@@ -46981,6 +49103,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganizationRoleUpsertWithoutMembersInput = {
@@ -47030,6 +49153,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutRolesInput = {
@@ -47052,6 +49176,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutRolesInput = {
@@ -47139,6 +49264,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutRolesInput = {
@@ -47161,6 +49287,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationMemberUpsertWithWhereUniqueWithoutRoleInput = {
@@ -47357,6 +49484,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAudit_logsInput = {
@@ -47379,6 +49507,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAudit_logsInput = {
@@ -47401,6 +49530,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAudit_logsInput = {
@@ -47419,6 +49549,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAudit_logsInput = {
@@ -47456,6 +49587,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAudit_logsInput = {
@@ -47478,6 +49610,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutAudit_logsInput = {
@@ -47506,6 +49639,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAudit_logsInput = {
@@ -47524,6 +49658,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganizationCreateWithoutIntegrationsInput = {
@@ -47545,6 +49680,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutIntegrationsInput = {
@@ -47567,6 +49703,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutIntegrationsInput = {
@@ -47770,6 +49907,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutIntegrationsInput = {
@@ -47792,6 +49930,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type IntegrationActionUpsertWithWhereUniqueWithoutIntegrationInput = {
@@ -48709,6 +50848,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutEnabled_toolkitsInput = {
@@ -48731,6 +50871,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutEnabled_toolkitsInput = {
@@ -48814,6 +50955,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutEnabled_toolkitsInput = {
@@ -48836,6 +50978,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ComposioToolkitUpsertWithoutEnabled_orgsInput = {
@@ -48909,6 +51052,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTool_permissionsInput = {
@@ -48931,6 +51075,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTool_permissionsInput = {
@@ -49006,6 +51151,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTool_permissionsInput = {
@@ -49028,6 +51174,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ComposioToolkitToolUpsertWithoutPermissionsInput = {
@@ -49093,6 +51240,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutComposio_accountsInput = {
@@ -49115,6 +51263,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutComposio_accountsInput = {
@@ -49198,6 +51347,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutComposio_accountsInput = {
@@ -49220,6 +51370,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ComposioToolkitUpsertWithoutConnected_accountsInput = {
@@ -49293,6 +51444,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutComposio_triggersInput = {
@@ -49315,6 +51467,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutComposio_triggersInput = {
@@ -49398,6 +51551,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutComposio_triggersInput = {
@@ -49420,6 +51574,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ComposioToolkitUpsertWithoutTriggersInput = {
@@ -49493,6 +51648,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAi_providersInput = {
@@ -49515,6 +51671,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAi_providersInput = {
@@ -49552,6 +51709,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAi_providersInput = {
@@ -49574,6 +51732,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutConversationsInput = {
@@ -49595,6 +51754,7 @@ export namespace Prisma {
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutConversationsInput = {
@@ -49617,6 +51777,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutConversationsInput = {
@@ -49639,6 +51800,7 @@ export namespace Prisma {
     audit_logs?: AuditLogCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutConversationsInput = {
@@ -49657,6 +51819,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutConversationsInput = {
@@ -49738,6 +51901,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ScheduledAgentCreateWithoutConversationInput = {
+    uuid?: string
+    title: string
+    prompt: string
+    cron_expression: string
+    is_enabled?: boolean
+    last_run_at?: Date | string | null
+    next_run_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutScheduled_agentsInput
+    user: UserCreateNestedOneWithoutScheduled_agentsInput
+  }
+
+  export type ScheduledAgentUncheckedCreateWithoutConversationInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    user_uuid: string
+    title: string
+    prompt: string
+    cron_expression: string
+    is_enabled?: boolean
+    last_run_at?: Date | string | null
+    next_run_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ScheduledAgentCreateOrConnectWithoutConversationInput = {
+    where: ScheduledAgentWhereUniqueInput
+    create: XOR<ScheduledAgentCreateWithoutConversationInput, ScheduledAgentUncheckedCreateWithoutConversationInput>
+  }
+
   export type OrganizationUpsertWithoutConversationsInput = {
     update: XOR<OrganizationUpdateWithoutConversationsInput, OrganizationUncheckedUpdateWithoutConversationsInput>
     create: XOR<OrganizationCreateWithoutConversationsInput, OrganizationUncheckedCreateWithoutConversationsInput>
@@ -49768,6 +51965,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutConversationsInput = {
@@ -49790,6 +51988,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutConversationsInput = {
@@ -49818,6 +52017,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutConversationsInput = {
@@ -49836,6 +52036,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
@@ -49883,9 +52084,328 @@ export namespace Prisma {
     data: XOR<AgentExecutionUpdateManyMutationInput, AgentExecutionUncheckedUpdateManyWithoutConversationInput>
   }
 
+  export type ScheduledAgentUpsertWithoutConversationInput = {
+    update: XOR<ScheduledAgentUpdateWithoutConversationInput, ScheduledAgentUncheckedUpdateWithoutConversationInput>
+    create: XOR<ScheduledAgentCreateWithoutConversationInput, ScheduledAgentUncheckedCreateWithoutConversationInput>
+    where?: ScheduledAgentWhereInput
+  }
+
+  export type ScheduledAgentUpdateToOneWithWhereWithoutConversationInput = {
+    where?: ScheduledAgentWhereInput
+    data: XOR<ScheduledAgentUpdateWithoutConversationInput, ScheduledAgentUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type ScheduledAgentUpdateWithoutConversationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    cron_expression?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutScheduled_agentsNestedInput
+    user?: UserUpdateOneRequiredWithoutScheduled_agentsNestedInput
+  }
+
+  export type ScheduledAgentUncheckedUpdateWithoutConversationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    cron_expression?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganizationCreateWithoutScheduled_agentsInput = {
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
+    members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutScheduled_agentsInput = {
+    id?: number
+    uuid?: string
+    user_uuid: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutScheduled_agentsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutScheduled_agentsInput, OrganizationUncheckedCreateWithoutScheduled_agentsInput>
+  }
+
+  export type UserCreateWithoutScheduled_agentsInput = {
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationCreateNestedManyWithoutCreatorInput
+    audit_logs?: AuditLogCreateNestedManyWithoutUserInput
+    conversations?: ConversationCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutScheduled_agentsInput = {
+    id?: number
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationUncheckedCreateNestedManyWithoutCreatorInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutScheduled_agentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutScheduled_agentsInput, UserUncheckedCreateWithoutScheduled_agentsInput>
+  }
+
+  export type ConversationCreateWithoutScheduled_agentInput = {
+    uuid?: string
+    title?: string | null
+    kind?: $Enums.ConversationKind
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
+    ai_research_mode?: $Enums.AiResearchMode
+    composio_session_id?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutConversationsInput
+    user: UserCreateNestedOneWithoutConversationsInput
+    messages?: MessageCreateNestedManyWithoutConversationInput
+    executions?: AgentExecutionCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationUncheckedCreateWithoutScheduled_agentInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    user_uuid: string
+    title?: string | null
+    kind?: $Enums.ConversationKind
+    ai_provider?: $Enums.AiProviderType | null
+    ai_model?: string | null
+    ai_research_mode?: $Enums.AiResearchMode
+    composio_session_id?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    executions?: AgentExecutionUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationCreateOrConnectWithoutScheduled_agentInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutScheduled_agentInput, ConversationUncheckedCreateWithoutScheduled_agentInput>
+  }
+
+  export type OrganizationUpsertWithoutScheduled_agentsInput = {
+    update: XOR<OrganizationUpdateWithoutScheduled_agentsInput, OrganizationUncheckedUpdateWithoutScheduled_agentsInput>
+    create: XOR<OrganizationCreateWithoutScheduled_agentsInput, OrganizationUncheckedCreateWithoutScheduled_agentsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutScheduled_agentsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutScheduled_agentsInput, OrganizationUncheckedUpdateWithoutScheduled_agentsInput>
+  }
+
+  export type OrganizationUpdateWithoutScheduled_agentsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
+    members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutScheduled_agentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type UserUpsertWithoutScheduled_agentsInput = {
+    update: XOR<UserUpdateWithoutScheduled_agentsInput, UserUncheckedUpdateWithoutScheduled_agentsInput>
+    create: XOR<UserCreateWithoutScheduled_agentsInput, UserUncheckedCreateWithoutScheduled_agentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutScheduled_agentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutScheduled_agentsInput, UserUncheckedUpdateWithoutScheduled_agentsInput>
+  }
+
+  export type UserUpdateWithoutScheduled_agentsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUpdateManyWithoutCreatorNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutScheduled_agentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUncheckedUpdateManyWithoutCreatorNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ConversationUpsertWithoutScheduled_agentInput = {
+    update: XOR<ConversationUpdateWithoutScheduled_agentInput, ConversationUncheckedUpdateWithoutScheduled_agentInput>
+    create: XOR<ConversationCreateWithoutScheduled_agentInput, ConversationUncheckedCreateWithoutScheduled_agentInput>
+    where?: ConversationWhereInput
+  }
+
+  export type ConversationUpdateToOneWithWhereWithoutScheduled_agentInput = {
+    where?: ConversationWhereInput
+    data: XOR<ConversationUpdateWithoutScheduled_agentInput, ConversationUncheckedUpdateWithoutScheduled_agentInput>
+  }
+
+  export type ConversationUpdateWithoutScheduled_agentInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutConversationsNestedInput
+    user?: UserUpdateOneRequiredWithoutConversationsNestedInput
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+    executions?: AgentExecutionUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutScheduled_agentInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
+    ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
+    ai_model?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
+    composio_session_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    executions?: AgentExecutionUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
   export type ConversationCreateWithoutMessagesInput = {
     uuid?: string
     title?: string | null
+    kind?: $Enums.ConversationKind
     ai_provider?: $Enums.AiProviderType | null
     ai_model?: string | null
     ai_research_mode?: $Enums.AiResearchMode
@@ -49895,6 +52415,7 @@ export namespace Prisma {
     organization: OrganizationCreateNestedOneWithoutConversationsInput
     user: UserCreateNestedOneWithoutConversationsInput
     executions?: AgentExecutionCreateNestedManyWithoutConversationInput
+    scheduled_agent?: ScheduledAgentCreateNestedOneWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutMessagesInput = {
@@ -49903,6 +52424,7 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title?: string | null
+    kind?: $Enums.ConversationKind
     ai_provider?: $Enums.AiProviderType | null
     ai_model?: string | null
     ai_research_mode?: $Enums.AiResearchMode
@@ -49910,6 +52432,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     executions?: AgentExecutionUncheckedCreateNestedManyWithoutConversationInput
+    scheduled_agent?: ScheduledAgentUncheckedCreateNestedOneWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutMessagesInput = {
@@ -49976,6 +52499,7 @@ export namespace Prisma {
   export type ConversationUpdateWithoutMessagesInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
@@ -49985,6 +52509,7 @@ export namespace Prisma {
     organization?: OrganizationUpdateOneRequiredWithoutConversationsNestedInput
     user?: UserUpdateOneRequiredWithoutConversationsNestedInput
     executions?: AgentExecutionUpdateManyWithoutConversationNestedInput
+    scheduled_agent?: ScheduledAgentUpdateOneWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutMessagesInput = {
@@ -49993,6 +52518,7 @@ export namespace Prisma {
     org_uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
@@ -50000,6 +52526,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     executions?: AgentExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    scheduled_agent?: ScheduledAgentUncheckedUpdateOneWithoutConversationNestedInput
   }
 
   export type AgentExecutionUpsertWithWhereUniqueWithoutMessageInput = {
@@ -50045,6 +52572,7 @@ export namespace Prisma {
   export type ConversationCreateWithoutExecutionsInput = {
     uuid?: string
     title?: string | null
+    kind?: $Enums.ConversationKind
     ai_provider?: $Enums.AiProviderType | null
     ai_model?: string | null
     ai_research_mode?: $Enums.AiResearchMode
@@ -50054,6 +52582,7 @@ export namespace Prisma {
     organization: OrganizationCreateNestedOneWithoutConversationsInput
     user: UserCreateNestedOneWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    scheduled_agent?: ScheduledAgentCreateNestedOneWithoutConversationInput
   }
 
   export type ConversationUncheckedCreateWithoutExecutionsInput = {
@@ -50062,6 +52591,7 @@ export namespace Prisma {
     org_uuid: string
     user_uuid: string
     title?: string | null
+    kind?: $Enums.ConversationKind
     ai_provider?: $Enums.AiProviderType | null
     ai_model?: string | null
     ai_research_mode?: $Enums.AiResearchMode
@@ -50069,6 +52599,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    scheduled_agent?: ScheduledAgentUncheckedCreateNestedOneWithoutConversationInput
   }
 
   export type ConversationCreateOrConnectWithoutExecutionsInput = {
@@ -50095,6 +52626,7 @@ export namespace Prisma {
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAgent_executionsInput = {
@@ -50117,6 +52649,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAgent_executionsInput = {
@@ -50139,6 +52672,7 @@ export namespace Prisma {
     audit_logs?: AuditLogCreateNestedManyWithoutUserInput
     conversations?: ConversationCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAgent_executionsInput = {
@@ -50157,6 +52691,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAgent_executionsInput = {
@@ -50253,6 +52788,7 @@ export namespace Prisma {
   export type ConversationUpdateWithoutExecutionsInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
@@ -50262,6 +52798,7 @@ export namespace Prisma {
     organization?: OrganizationUpdateOneRequiredWithoutConversationsNestedInput
     user?: UserUpdateOneRequiredWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    scheduled_agent?: ScheduledAgentUpdateOneWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutExecutionsInput = {
@@ -50270,6 +52807,7 @@ export namespace Prisma {
     org_uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
@@ -50277,6 +52815,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    scheduled_agent?: ScheduledAgentUncheckedUpdateOneWithoutConversationNestedInput
   }
 
   export type OrganizationUpsertWithoutAgent_executionsInput = {
@@ -50309,6 +52848,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAgent_executionsInput = {
@@ -50331,6 +52871,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutAgent_executionsInput = {
@@ -50359,6 +52900,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAgent_executionsInput = {
@@ -50377,6 +52919,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ToolCallUpsertWithWhereUniqueWithoutExecutionInput = {
@@ -50582,6 +53125,7 @@ export namespace Prisma {
     audit_logs?: AuditLogCreateNestedManyWithoutUserInput
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutConversation_personalizationsInput = {
@@ -50600,6 +53144,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutConversation_personalizationsInput = {
@@ -50626,6 +53171,7 @@ export namespace Prisma {
     ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutConversation_personalizationsInput = {
@@ -50648,6 +53194,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutConversation_personalizationsInput = {
@@ -50681,6 +53228,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutConversation_personalizationsInput = {
@@ -50699,6 +53247,7 @@ export namespace Prisma {
     audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganizationUpsertWithoutConversation_personalizationsInput = {
@@ -50731,6 +53280,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutConversation_personalizationsInput = {
@@ -50753,6 +53303,7 @@ export namespace Prisma {
     ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationMemberCreateManyUserInput = {
@@ -50791,6 +53342,7 @@ export namespace Prisma {
     uuid?: string
     org_uuid: string
     title?: string | null
+    kind?: $Enums.ConversationKind
     ai_provider?: $Enums.AiProviderType | null
     ai_model?: string | null
     ai_research_mode?: $Enums.AiResearchMode
@@ -50826,6 +53378,21 @@ export namespace Prisma {
     headers_lists?: $Enums.CharacteristicLevel
     emoji?: $Enums.CharacteristicLevel
     custom_instructions?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ScheduledAgentCreateManyUserInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    title: string
+    prompt: string
+    cron_expression: string
+    is_enabled?: boolean
+    conversation_uuid: string
+    last_run_at?: Date | string | null
+    next_run_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -50878,6 +53445,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCreatorInput = {
@@ -50900,6 +53468,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateManyWithoutCreatorInput = {
@@ -50947,6 +53516,7 @@ export namespace Prisma {
   export type ConversationUpdateWithoutUserInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
@@ -50956,6 +53526,7 @@ export namespace Prisma {
     organization?: OrganizationUpdateOneRequiredWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
     executions?: AgentExecutionUpdateManyWithoutConversationNestedInput
+    scheduled_agent?: ScheduledAgentUpdateOneWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutUserInput = {
@@ -50963,6 +53534,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     org_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
@@ -50971,6 +53543,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     executions?: AgentExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    scheduled_agent?: ScheduledAgentUncheckedUpdateOneWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutUserInput = {
@@ -50978,6 +53551,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     org_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
@@ -51075,6 +53649,50 @@ export namespace Prisma {
     headers_lists?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
     emoji?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
     custom_instructions?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduledAgentUpdateWithoutUserInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    cron_expression?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutScheduled_agentsNestedInput
+    conversation?: ConversationUpdateOneRequiredWithoutScheduled_agentNestedInput
+  }
+
+  export type ScheduledAgentUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    cron_expression?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    conversation_uuid?: StringFieldUpdateOperationsInput | string
+    last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduledAgentUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    cron_expression?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    conversation_uuid?: StringFieldUpdateOperationsInput | string
+    last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -51188,6 +53806,7 @@ export namespace Prisma {
     uuid?: string
     user_uuid: string
     title?: string | null
+    kind?: $Enums.ConversationKind
     ai_provider?: $Enums.AiProviderType | null
     ai_model?: string | null
     ai_research_mode?: $Enums.AiResearchMode
@@ -51223,6 +53842,21 @@ export namespace Prisma {
     headers_lists?: $Enums.CharacteristicLevel
     emoji?: $Enums.CharacteristicLevel
     custom_instructions?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ScheduledAgentCreateManyOrganizationInput = {
+    id?: number
+    uuid?: string
+    user_uuid: string
+    title: string
+    prompt: string
+    cron_expression: string
+    is_enabled?: boolean
+    conversation_uuid: string
+    last_run_at?: Date | string | null
+    next_run_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -51547,6 +54181,7 @@ export namespace Prisma {
   export type ConversationUpdateWithoutOrganizationInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
@@ -51556,6 +54191,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
     executions?: AgentExecutionUpdateManyWithoutConversationNestedInput
+    scheduled_agent?: ScheduledAgentUpdateOneWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateWithoutOrganizationInput = {
@@ -51563,6 +54199,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
@@ -51571,6 +54208,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     executions?: AgentExecutionUncheckedUpdateManyWithoutConversationNestedInput
+    scheduled_agent?: ScheduledAgentUncheckedUpdateOneWithoutConversationNestedInput
   }
 
   export type ConversationUncheckedUpdateManyWithoutOrganizationInput = {
@@ -51578,6 +54216,7 @@ export namespace Prisma {
     uuid?: StringFieldUpdateOperationsInput | string
     user_uuid?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: EnumConversationKindFieldUpdateOperationsInput | $Enums.ConversationKind
     ai_provider?: NullableEnumAiProviderTypeFieldUpdateOperationsInput | $Enums.AiProviderType | null
     ai_model?: NullableStringFieldUpdateOperationsInput | string | null
     ai_research_mode?: EnumAiResearchModeFieldUpdateOperationsInput | $Enums.AiResearchMode
@@ -51675,6 +54314,50 @@ export namespace Prisma {
     headers_lists?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
     emoji?: EnumCharacteristicLevelFieldUpdateOperationsInput | $Enums.CharacteristicLevel
     custom_instructions?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduledAgentUpdateWithoutOrganizationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    cron_expression?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutScheduled_agentsNestedInput
+    conversation?: ConversationUpdateOneRequiredWithoutScheduled_agentNestedInput
+  }
+
+  export type ScheduledAgentUncheckedUpdateWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    cron_expression?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    conversation_uuid?: StringFieldUpdateOperationsInput | string
+    last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduledAgentUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    prompt?: StringFieldUpdateOperationsInput | string
+    cron_expression?: StringFieldUpdateOperationsInput | string
+    is_enabled?: BoolFieldUpdateOperationsInput | boolean
+    conversation_uuid?: StringFieldUpdateOperationsInput | string
+    last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }

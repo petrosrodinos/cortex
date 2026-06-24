@@ -14,6 +14,7 @@ import { SendMessageDto } from './dto/send-message.dto';
 import { CapabilitiesToolsService } from '@/shared/services/ai/agents/capabilities/capabilities-tools.service';
 import { buildOrgSharedToolkitConnectionTierMap } from '@/shared/services/ai/agents/capabilities/toolkit-connection-tiers.utils';
 import { collectDocumentUuids } from './utils/conversation-document.utils';
+import { assertInteractiveConversation } from './utils/conversation-kind.utils';
 
 const DEFAULT_CONVERSATION_TITLE = 'New conversation';
 
@@ -119,6 +120,7 @@ export class MessagesService {
       organizationUuid,
       conversationUuid,
     );
+    assertInteractiveConversation(conversation.kind);
     const attachments = await this.resolveMessageAttachments(
       userUuid,
       dto.documentUuids ?? [],
@@ -343,6 +345,8 @@ export class MessagesService {
     if (!conversation) {
       throw new NotFoundException('Conversation not found');
     }
+
+    assertInteractiveConversation(conversation.kind);
 
     const message = await this.prisma.message.findFirst({
       where: {

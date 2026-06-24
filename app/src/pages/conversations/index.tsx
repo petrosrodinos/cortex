@@ -32,7 +32,7 @@ import {
   conversationsQueryKey,
 } from '@/features/conversations/hooks/use-conversations';
 import { useExecution } from '@/features/conversations/hooks/use-execution';
-import { MessageRoles, type Message, type MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
+import { MessageRoles, ConversationKinds, type Message, type MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { useUploadDocument } from '@/features/files/hooks/use-files';
 import { cn } from '@/lib/utils';
 import { ConversationEmptyState } from './components/shared/conversation-empty-state';
@@ -128,6 +128,9 @@ const ConversationsPage: FC = () => {
     () => conversations.find((c) => c.uuid === conversationUuid),
     [conversations, conversationUuid],
   );
+
+  const isAgentConversation =
+    activeConversation?.kind === ConversationKinds.SCHEDULED_AGENT;
 
   const defaultConnectedProvider = useMemo(
     () =>
@@ -672,6 +675,7 @@ const ConversationsPage: FC = () => {
             <ConversationHeader
               title={activeConversation?.title ?? ''}
               isTitleLoading={conversationsLoading && !!conversationUuid && !activeConversation}
+              readOnly={isAgentConversation}
               onRename={(title) => handleRename(conversationUuid, title)}
               onDelete={() => handleDeleteRequest(conversationUuid)}
               onOpenDocuments={() => setDocumentsOpen(true)}
@@ -686,6 +690,12 @@ const ConversationsPage: FC = () => {
               pendingAttachments={isPendingUserMessageVisible ? pendingUserAttachments : []}
               onOpenChange={setDocumentsOpen}
             />
+
+            {isAgentConversation ? (
+              <div className="border-b border-border bg-violet-500/5 px-3 py-2 text-xs text-muted md:px-4">
+                Agent conversation — runs automatically on cron. You can view results and approve tool actions, but cannot send messages here.
+              </div>
+            ) : null}
 
             <ConversationMessages
               conversationUuid={conversationUuid}
@@ -714,11 +724,12 @@ const ConversationsPage: FC = () => {
               canDeleteMessages={isSuperAdmin}
               onDeleteMessage={handleDeleteMessageRequest}
               isDeletingMessage={deleteMessage.isPending}
+              readOnly={isAgentConversation}
             />
 
-            {!aiProvidersLoading && !hasAiProvider ? (
+            {!isAgentConversation && !aiProvidersLoading && !hasAiProvider ? (
               <ConversationAiProviderRequired />
-            ) : (
+            ) : !isAgentConversation ? (
               <ConversationInput
                 draftParts={draftParts}
                 attachedFiles={attachedFiles}
@@ -744,7 +755,7 @@ const ConversationsPage: FC = () => {
                 onModelSelect={handleModelSelect}
                 onResearchModeChange={handleResearchModeChange}
               />
-            )}
+            ) : null}
           </div>
         )}
       </section>

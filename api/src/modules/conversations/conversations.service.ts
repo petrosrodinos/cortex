@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { AiResearchMode, Prisma } from 'generated/prisma';
+import { AiResearchMode, ConversationKind, Prisma } from 'generated/prisma';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { OrganizationsService } from '@/modules/organizations/organizations.service';
 import { ConversationMemoryService } from '@/shared/services/ai/memory/conversation-memory.service';
@@ -11,6 +11,7 @@ import {
   normalizeResearchModeForModel,
   supportsResearchMode,
 } from '@/shared/services/ai/providers/model-capabilities';
+import { assertInteractiveConversation } from './utils/conversation-kind.utils';
 
 @Injectable()
 export class ConversationsService {
@@ -61,6 +62,7 @@ export class ConversationsService {
   ) {
     await this.organizations.requireActiveMember(userUuid, organizationUuid);
     const conversation = await this.getConversation(userUuid, organizationUuid, conversationUuid);
+    assertInteractiveConversation(conversation.kind);
 
     const data: Prisma.ConversationUpdateInput = {};
     if (dto.title !== undefined) {
@@ -120,16 +122,22 @@ export class ConversationsService {
   async delete(userUuid: string, organizationUuid: string, conversationUuid: string) {
     await this.organizations.requireActiveMember(userUuid, organizationUuid);
     const conversation = await this.getConversation(userUuid, organizationUuid, conversationUuid);
-    const documents = await this.getConversationDocuments(conversation.uuid, userUuid);
-
-    await Promise.all(documents.map((document) => this.gcs.deleteImage({ filename: document.path })));
-    if (documents.length > 0) {
-      await this.prisma.document.deleteMany({ where: { uuid: { in: documents.map((document) => document.uuid) } } });
-    }
-
+    assertInteractiveConversation(conversation.kind);
+    await this.purgeConversationDocuments(userUuid, conversation.uuid);
     await this.memory.invalidate(organizationUuid, conversation.uuid);
     await this.prisma.conversation.delete({ where: { uuid: conversation.uuid } });
     return { deleted: true };
+  }
+
+  async purgeConversationDocuments(userUuid: string, conversationUuid: string) {
+    const documents = await this.getConversationDocuments(conversationUuid, userUuid);
+
+    await Promise.all(documents.map((document) => this.gcs.deleteImage({ filename: document.path })));
+    if (documents.length > 0) {
+      await this.prisma.document.deleteMany({
+        where: { uuid: { in: documents.map((document) => document.uuid) } },
+      });
+    }
   }
 
   private async getConversationDocuments(conversationUuid: string, userUuid: string) {

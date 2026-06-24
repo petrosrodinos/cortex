@@ -392,10 +392,27 @@ exports.Prisma.ConversationScalarFieldEnum = {
   org_uuid: 'org_uuid',
   user_uuid: 'user_uuid',
   title: 'title',
+  kind: 'kind',
   ai_provider: 'ai_provider',
   ai_model: 'ai_model',
   ai_research_mode: 'ai_research_mode',
   composio_session_id: 'composio_session_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.ScheduledAgentScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  org_uuid: 'org_uuid',
+  user_uuid: 'user_uuid',
+  title: 'title',
+  prompt: 'prompt',
+  cron_expression: 'cron_expression',
+  is_enabled: 'is_enabled',
+  conversation_uuid: 'conversation_uuid',
+  last_run_at: 'last_run_at',
+  next_run_at: 'next_run_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -593,6 +610,11 @@ exports.AiProviderType = exports.$Enums.AiProviderType = {
   GROK: 'GROK'
 };
 
+exports.ConversationKind = exports.$Enums.ConversationKind = {
+  STANDARD: 'STANDARD',
+  SCHEDULED_AGENT: 'SCHEDULED_AGENT'
+};
+
 exports.AiResearchMode = exports.$Enums.AiResearchMode = {
   DEFAULT: 'DEFAULT',
   SEARCH: 'SEARCH',
@@ -659,6 +681,7 @@ exports.Prisma.ModelName = {
   Document: 'Document',
   AiProvider: 'AiProvider',
   Conversation: 'Conversation',
+  ScheduledAgent: 'ScheduledAgent',
   Message: 'Message',
   AgentExecution: 'AgentExecution',
   ToolCall: 'ToolCall',
