@@ -311,6 +311,9 @@ describe('ComposioSessionService', () => {
     const { service, client, session, prisma } = createService({
       composio_session_id: 'existing-user-session',
     });
+    session.update.mockRejectedValue(
+      new Error('ToolRouterV2_InvalidConnectedAccountIds'),
+    );
     prisma.composioConnectedAccount.findMany.mockResolvedValue([
       {
         composio_account_id: 'resend-org-account',
@@ -353,7 +356,7 @@ describe('ComposioSessionService', () => {
       where: { uuid: 'conversation-uuid' },
       data: { composio_session_id: null },
     });
-    expect(client.use).not.toHaveBeenCalled();
+    expect(client.use).toHaveBeenCalledWith('existing-user-session');
     expect(client.create).toHaveBeenCalledWith(
       'org:org-uuid',
       expect.objectContaining({
@@ -362,7 +365,7 @@ describe('ComposioSessionService', () => {
         },
       }),
     );
-    expect(session.update).not.toHaveBeenCalled();
+    expect(session.update).toHaveBeenCalled();
   });
 
   it('updates an existing session instead of creating a new one', async () => {

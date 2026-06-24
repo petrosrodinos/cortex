@@ -49,9 +49,11 @@ import {
   type ConversationDraftEditorHandle,
   type DraftPart,
 } from './components/input/conversation-draft-editor';
-import { getAutoSelectableToolkitBindings, mapConversationAgentToolkitToIntegrationAppsToolkit } from './components/input/conversation-tool-items.utils';
 import {
-  bindingsToTierMap,
+  getAutoSelectableToolkitBindings,
+  mapConversationAgentToolkitToIntegrationAppsToolkit,
+} from './components/input/conversation-tool-items.utils';
+import {
   type ToolkitBinding,
 } from './utils/conversation-toolkit-bindings.utils';
 import { ConversationMessages } from './components/messages/conversation-messages';
@@ -403,7 +405,6 @@ const ConversationsPage: FC = () => {
     }
     const toolkitBindings = [...toolkitBindingMap.values()];
     const toolkitSlugs = [...new Set(toolkitBindings.map((binding) => binding.slug))];
-    const toolkitConnectionTiers = bindingsToTierMap(toolkitBindings);
     const documentUuids = attachedFiles.filter((attachment) => attachment.uuid).map((attachment) => attachment.uuid as string);
     const sentAttachments: MessageAttachment[] = attachedFiles
       .filter((attachment) => attachment.uuid)
@@ -420,7 +421,6 @@ const ConversationsPage: FC = () => {
       documentUuids,
       integrationUuids,
       toolkitSlugs,
-      toolkitConnectionTiers,
       attachments: sentAttachments,
       isFirstMessage,
     });
@@ -437,7 +437,6 @@ const ConversationsPage: FC = () => {
     documentUuids,
     integrationUuids,
     toolkitSlugs,
-    toolkitConnectionTiers,
     attachments,
     isFirstMessage = false,
   }: {
@@ -445,7 +444,6 @@ const ConversationsPage: FC = () => {
     documentUuids: string[];
     integrationUuids: string[];
     toolkitSlugs: string[];
-    toolkitConnectionTiers: Record<string, IntegrationAppsToolkit['connection_tiers'][number]>;
     attachments: MessageAttachment[];
     isFirstMessage?: boolean;
   }): Promise<boolean> => {
@@ -463,7 +461,6 @@ const ConversationsPage: FC = () => {
         documentUuids,
         integrationUuids,
         toolkitSlugs,
-        toolkitConnectionTiers,
       });
       setActiveExecutionId(response.executionId);
 
@@ -488,7 +485,6 @@ const ConversationsPage: FC = () => {
       documentUuids: attachments.map((attachment) => attachment.uuid),
       integrationUuids: selectedIntegrationUuids,
       toolkitSlugs: selectedToolkitBindings.map((binding) => binding.slug),
-      toolkitConnectionTiers: bindingsToTierMap(selectedToolkitBindings),
       attachments,
     });
   };

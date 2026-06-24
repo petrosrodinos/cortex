@@ -18,6 +18,14 @@ export function inferConnectionTierFromAccount(account: {
     : ComposioConnectionTier.ORG_SHARED;
 }
 
+export function buildOrgSharedToolkitConnectionTierMap(
+  toolkitSlugs: string[],
+): Record<string, ComposioConnectionTier> {
+  return Object.fromEntries(
+    toolkitSlugs.map((slug) => [slug, ComposioConnectionTier.ORG_SHARED]),
+  );
+}
+
 export function normalizeToolkitConnectionTierMap(
   raw?: Record<string, string> | null,
 ): ToolkitConnectionTierMap {

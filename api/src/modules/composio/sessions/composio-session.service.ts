@@ -98,6 +98,16 @@ export class ComposioSessionService {
     const client = this.composioClient.getClient() as any;
 
     if (composioUserId.startsWith('org:') && conversation.composio_session_id) {
+      const existingSession = await client.use(conversation.composio_session_id);
+      try {
+        await existingSession.update(sessionConfig);
+        return existingSession;
+      } catch (error) {
+        if (!this.isInvalidConnectedAccountError(error)) {
+          throw error;
+        }
+      }
+
       await this.clearConversationSession(conversation.uuid);
       conversation.composio_session_id = null;
     }

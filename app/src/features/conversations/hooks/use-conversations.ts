@@ -109,13 +109,11 @@ export function useSendMessage(organizationUuid?: string, conversationUuid?: str
       documentUuids,
       integrationUuids,
       toolkitSlugs,
-      toolkitConnectionTiers,
     }: {
       content: string;
       documentUuids?: string[];
       integrationUuids?: string[];
       toolkitSlugs?: string[];
-      toolkitConnectionTiers?: Record<string, ComposioConnectionTier>;
     }) =>
       sendMessage(
         organizationUuid as string,
@@ -124,7 +122,6 @@ export function useSendMessage(organizationUuid?: string, conversationUuid?: str
         documentUuids,
         integrationUuids,
         toolkitSlugs,
-        toolkitConnectionTiers,
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['messages', organizationUuid, conversationUuid] });

@@ -12,7 +12,7 @@ import { AGENT_RUN_QUEUE } from '@/core/queues/queues.constants';
 import type { AgentRunJobData } from '@/core/queues/processors/agent.processor';
 import { SendMessageDto } from './dto/send-message.dto';
 import { CapabilitiesToolsService } from '@/shared/services/ai/agents/capabilities/capabilities-tools.service';
-import { normalizeToolkitConnectionTierMap } from '@/shared/services/ai/agents/capabilities/toolkit-connection-tiers.utils';
+import { buildOrgSharedToolkitConnectionTierMap } from '@/shared/services/ai/agents/capabilities/toolkit-connection-tiers.utils';
 import { collectDocumentUuids } from './utils/conversation-document.utils';
 
 const DEFAULT_CONVERSATION_TITLE = 'New conversation';
@@ -124,30 +124,17 @@ export class MessagesService {
       dto.documentUuids ?? [],
     );
     const toolkitSlugs = this.resolveToolkitSlugs(dto);
-    const providedTiers = normalizeToolkitConnectionTierMap(
-      dto.toolkitConnectionTiers ?? dto.toolkit_connection_tiers,
-    );
     const toolScope = await this.capabilities.resolveAgentToolScope(
       organizationUuid,
       userUuid,
       dto.integrationUuids,
       toolkitSlugs,
-      providedTiers,
     );
     const scopedToolkitSlugs = toolScope.toolkitSlugs ?? [];
-    const { ambiguousChoices, resolvedTierMap } =
-      await this.capabilities.resolveToolkitConnectionAmbiguities(
-        organizationUuid,
-        userUuid,
-        scopedToolkitSlugs,
-        {
-          ...(toolScope.toolkitConnectionTiers ?? {}),
-          ...providedTiers,
-        },
-      );
-    const awaitingConnectionTier = ambiguousChoices.length > 0;
     const toolkitConnectionTiers =
-      Object.keys(resolvedTierMap).length > 0 ? resolvedTierMap : undefined;
+      scopedToolkitSlugs.length > 0
+        ? buildOrgSharedToolkitConnectionTierMap(scopedToolkitSlugs)
+        : undefined;
 
     const userMessage = await this.prisma.message.create({
       data: {
@@ -167,25 +154,21 @@ export class MessagesService {
         conversation_uuid: conversation.uuid,
         org_uuid: organizationUuid,
         user_uuid: userUuid,
-        status: awaitingConnectionTier
-          ? AgentExecutionStatus.AWAITING_CONNECTION_TIER
-          : AgentExecutionStatus.PENDING,
+        status: AgentExecutionStatus.PENDING,
         input: {
           content: dto.content,
           documentUuids: dto.documentUuids ?? [],
           integrationUuids: toolScope.integrationUuids,
           toolkitSlugs: toolScope.toolkitSlugs,
-          toolkitConnectionTiers: toolkitConnectionTiers ?? undefined,
+          toolkitConnectionTiers,
           aiProvider: conversation.ai_provider ?? undefined,
           aiModel: conversation.ai_model ?? undefined,
           aiResearchMode: conversation.ai_research_mode ?? undefined,
-          connectionTierChoices: awaitingConnectionTier ? ambiguousChoices : undefined,
         } as object,
       },
     });
 
-    if (!awaitingConnectionTier) {
-      await this.agentQueue.add(
+    await this.agentQueue.add(
         'run',
         {
           organizationUuid,
@@ -209,7 +192,6 @@ export class MessagesService {
           removeOnFail: 200,
         },
       );
-    }
 
     await this.prisma.conversation.update({
       where: { uuid: conversation.uuid },

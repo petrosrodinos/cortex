@@ -1,5 +1,6 @@
 import { ComposioConnectionTier } from 'generated/prisma';
 import {
+  buildOrgSharedToolkitConnectionTierMap,
   inferConnectionTierFromAccount,
   normalizeToolkitConnectionTierMap,
   resolveToolkitConnectionTiers,
@@ -65,6 +66,13 @@ describe('toolkit-connection-tiers.utils', () => {
           ],
         },
       ],
+    });
+  });
+
+  it('builds org-shared tier maps for scoped toolkits', () => {
+    expect(buildOrgSharedToolkitConnectionTierMap(['linear', 'gmail'])).toEqual({
+      linear: ComposioConnectionTier.ORG_SHARED,
+      gmail: ComposioConnectionTier.ORG_SHARED,
     });
   });
 

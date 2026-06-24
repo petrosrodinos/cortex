@@ -36,7 +36,10 @@ import { SandboxCodeService } from '../sandbox/sandbox-code.service';
 import { DocumentReaderService } from '../documents/document-reader.service';
 import { CapabilitiesToolsService } from '../capabilities/capabilities-tools.service';
 import type { AgentToolScope } from '../tools/core/agent-tool-scope.utils';
-import { normalizeToolkitConnectionTierMap } from '../capabilities/toolkit-connection-tiers.utils';
+import {
+  buildOrgSharedToolkitConnectionTierMap,
+  normalizeToolkitConnectionTierMap,
+} from '../capabilities/toolkit-connection-tiers.utils';
 import { getResearchModeInstructions } from '../../providers/provider-research-tools';
 
 interface SavedExecutionInput {
@@ -185,16 +188,20 @@ export class AgentRunnerService {
 
       const documentUuids =
         options?.documentUuids ?? savedInput.documentUuids ?? [];
-      const providedTiers = normalizeToolkitConnectionTierMap(
-        options?.toolkitConnectionTiers ?? savedInput.toolkitConnectionTiers,
-      );
-      const toolScope = await this.capabilities.resolveAgentToolScope(
+      const preliminaryToolScope = await this.capabilities.resolveAgentToolScope(
         organizationUuid,
         userUuid,
         options?.integrationUuids ?? savedInput.integrationUuids,
         options?.toolkitSlugs ?? savedInput.toolkitSlugs,
-        providedTiers,
       );
+      const scopedToolkitSlugs = preliminaryToolScope.toolkitSlugs ?? [];
+      const toolScope: AgentToolScope = {
+        ...preliminaryToolScope,
+        toolkitConnectionTiers:
+          scopedToolkitSlugs.length > 0
+            ? buildOrgSharedToolkitConnectionTierMap(scopedToolkitSlugs)
+            : undefined,
+      };
       const attachedDocuments =
         documentUuids.length > 0
           ? await this.documentReader.getAttachedMetadata(documentUuids)
