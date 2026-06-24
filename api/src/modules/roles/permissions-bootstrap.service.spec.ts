@@ -5,11 +5,6 @@ describe('PermissionsBootstrapService', () => {
   const prisma: any = {
     permission: {
       upsert: jest.fn(),
-      findMany: jest.fn().mockResolvedValue([]),
-    },
-    rolePermission: {
-      findMany: jest.fn().mockResolvedValue([]),
-      createMany: jest.fn().mockResolvedValue({ count: 0 }),
     },
   };
 

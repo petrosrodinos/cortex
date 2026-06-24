@@ -1,19 +1,10 @@
 import { PermissionKeys, type PermissionKey } from '@/features/permissions/interfaces/permission.interfaces';
 import { OrganizationRoleTypes } from '@/features/roles/interfaces/role.interfaces';
 
-export const PERMISSION_KEY_ALIASES: Record<string, readonly string[]> = {
-  [PermissionKeys.AGENTS_READ]: [PermissionKeys.AI_PROMPTS_READ],
-  [PermissionKeys.AGENTS_WRITE]: [PermissionKeys.AI_PROMPTS_WRITE],
-};
-
 export type OrganizationPermissionContext = {
   organizationRole: string | null;
   organizationPermissions: string[];
 };
-
-export function resolvePermissionKeys(requiredKey: string): string[] {
-  return [requiredKey, ...(PERMISSION_KEY_ALIASES[requiredKey] ?? [])];
-}
 
 export function hasOrganizationPermission(
   context: OrganizationPermissionContext,
@@ -23,8 +14,7 @@ export function hasOrganizationPermission(
     return true;
   }
 
-  const keys = resolvePermissionKeys(requiredKey);
-  return keys.some((key) => context.organizationPermissions.includes(key));
+  return context.organizationPermissions.includes(requiredKey);
 }
 
 export function hasAnyOrganizationPermission(

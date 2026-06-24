@@ -27,8 +27,6 @@ export const PermissionKeys = {
   AI_PROVIDERS_MANAGE: 'ai:providers:manage',
   AI_USAGE_READ: 'ai:usage:read',
   AUDIT_READ: 'audit:read',
-  AI_PROMPTS_READ: 'ai:prompts:read',
-  AI_PROMPTS_WRITE: 'ai:prompts:write',
 } as const;
 
 export type PermissionKey = (typeof PermissionKeys)[keyof typeof PermissionKeys];
@@ -62,8 +60,6 @@ export const PERMISSIONS = [
   { key: PermissionKeys.AI_PROVIDERS_MANAGE, label: 'Manage AI providers', group: 'ai' },
   { key: PermissionKeys.AI_USAGE_READ, label: 'View organization usage', group: 'ai' },
   { key: PermissionKeys.AUDIT_READ, label: 'View audit logs', group: 'audit' },
-  { key: PermissionKeys.AI_PROMPTS_READ, label: 'View AI prompts (legacy)', group: 'ai' },
-  { key: PermissionKeys.AI_PROMPTS_WRITE, label: 'Manage AI prompts (legacy)', group: 'ai' },
 ] as const;
 
 export const OrganizationRoleTypes = {
@@ -82,21 +78,14 @@ export const SYSTEM_ROLE_NAMES = [
   OrganizationRoleTypes.EMPLOYEE,
 ] as const;
 
-const LEGACY_PERMISSION_KEYS = new Set<string>([
-  PermissionKeys.AI_PROMPTS_READ,
-  PermissionKeys.AI_PROMPTS_WRITE,
-]);
-
-const CURRENT_PERMISSION_KEYS = PERMISSIONS.map((permission) => permission.key).filter(
-  (key) => !LEGACY_PERMISSION_KEYS.has(key),
-);
+const ALL_PERMISSION_KEYS = PERMISSIONS.map((permission) => permission.key);
 
 export const SYSTEM_ROLE_PERMISSIONS: Record<
   (typeof SYSTEM_ROLE_NAMES)[number],
   string[]
 > = {
-  [OrganizationRoleTypes.OWNER]: CURRENT_PERMISSION_KEYS,
-  [OrganizationRoleTypes.ADMIN]: CURRENT_PERMISSION_KEYS.filter((key) => key !== PermissionKeys.ORG_DELETE),
+  [OrganizationRoleTypes.OWNER]: ALL_PERMISSION_KEYS,
+  [OrganizationRoleTypes.ADMIN]: ALL_PERMISSION_KEYS.filter((key) => key !== PermissionKeys.ORG_DELETE),
   [OrganizationRoleTypes.MANAGER]: [
     PermissionKeys.ORG_READ,
     PermissionKeys.ORG_MEMBERS_READ,

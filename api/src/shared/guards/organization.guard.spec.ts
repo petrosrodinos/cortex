@@ -46,22 +46,6 @@ describe('OrganizationGuard', () => {
     await expect(guard.canActivate(ownerContext)).resolves.toBe(true);
   });
 
-  it('accepts legacy permission aliases', async () => {
-    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue([PermissionKeys.AGENTS_READ]);
-    const aliasContext: any = {
-      getHandler: jest.fn(),
-      getClass: jest.fn(),
-      switchToHttp: () => ({
-        getRequest: () => ({
-          user: { organization_permissions: [PermissionKeys.AI_PROMPTS_READ] },
-        }),
-      }),
-    };
-    const guard = new OrganizationGuard(reflector);
-
-    await expect(guard.canActivate(aliasContext)).resolves.toBe(true);
-  });
-
   it('returns 403 when required permission is missing', async () => {
     jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue([PermissionKeys.ORG_DELETE]);
     const guard = new OrganizationGuard(reflector);
