@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { Check, Pencil, Plus, Shield, Trash2, X } from 'lucide-react';
+import { Fragment, useMemo, useState } from 'react';
+import { Check, ChevronRight, Pencil, Plus, Shield, Trash2, X } from 'lucide-react';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { useGetPermissions } from '@/features/permissions/hooks/use-permissions';
 import type { Permission } from '@/features/permissions/interfaces/permission.interfaces';
@@ -37,6 +37,7 @@ export function RolesPermissionsSection() {
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<DeleteRoleTarget>(null);
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => new Set());
   const rolesQuery = useGetRoles(currentOrganization?.uuid);
   const permissionsQuery = useGetPermissions();
   const updateRoleMutation = useUpdateRole(currentOrganization?.uuid);
@@ -61,6 +62,18 @@ export function RolesPermissionsSection() {
     }
     return Object.entries(map).sort(([a], [b]) => a.localeCompare(b));
   }, [permissions]);
+
+  function toggleGroupCollapse(group: string) {
+    setCollapsedGroups((current) => {
+      const next = new Set(current);
+      if (next.has(group)) {
+        next.delete(group);
+      } else {
+        next.add(group);
+      }
+      return next;
+    });
+  }
 
   function startEditingRole(role: OrganizationRole) {
     setEditingRoleUuid(role.uuid);
@@ -324,11 +337,28 @@ export function RolesPermissionsSection() {
             <OrganizationPermissionGate permission={PermissionKeys.ORG_ROLES_UPDATE}>
               {(allowed) => (
                 <tbody>
-              {permissionGroups.map(([group, groupPermissions]) => (
-                <>
-                  <tr key={`group-${group}`} className="border-b border-border/50 bg-surface-secondary">
-                    <td className="sticky left-0 z-10 bg-surface-secondary px-4 py-2 text-[11px] font-medium uppercase tracking-wider text-muted">
-                      {group}
+              {permissionGroups.map(([group, groupPermissions]) => {
+                const isGroupOpen = !collapsedGroups.has(group);
+
+                return (
+                <Fragment key={group}>
+                  <tr className="border-b border-border/50 bg-surface-secondary">
+                    <td className="sticky left-0 z-10 bg-surface-secondary px-4 py-2">
+                      <button
+                        type="button"
+                        onClick={() => toggleGroupCollapse(group)}
+                        aria-expanded={isGroupOpen}
+                        className="flex w-full items-center gap-2 text-left text-[11px] font-medium uppercase tracking-wider text-muted transition-colors hover:text-foreground"
+                      >
+                        <ChevronRight
+                          className={cn(
+                            'h-3.5 w-3.5 shrink-0 transition-transform duration-200',
+                            isGroupOpen && 'rotate-90',
+                          )}
+                          aria-hidden
+                        />
+                        {group}
+                      </button>
                     </td>
                     {roles.map((role) => {
                       const rolePermissionKeys = getRolePermissionKeys(role);
@@ -356,7 +386,8 @@ export function RolesPermissionsSection() {
                       );
                     })}
                   </tr>
-                  {groupPermissions.map((permission, permIndex) => (
+                  {isGroupOpen
+                    ? groupPermissions.map((permission, permIndex) => (
                     <tr
                       key={permission.key}
                       className={cn(
@@ -364,7 +395,7 @@ export function RolesPermissionsSection() {
                         permIndex < groupPermissions.length - 1 && 'border-b border-border/40',
                       )}
                     >
-                      <td className="sticky left-0 z-10 bg-background px-4 py-3 text-sm text-foreground group-hover:bg-surface">
+                      <td className="sticky left-0 z-10 bg-background px-4 py-3 pl-9 text-sm text-foreground group-hover:bg-surface">
                         {permission.label}
                       </td>
                       {roles.map((role) => {
@@ -385,9 +416,11 @@ export function RolesPermissionsSection() {
                         );
                       })}
                     </tr>
-                  ))}
-                </>
-              ))}
+                  ))
+                    : null}
+                </Fragment>
+              );
+              })}
                 </tbody>
               )}
             </OrganizationPermissionGate>
