@@ -1,6 +1,6 @@
 import type { FC, Key } from 'react';
 import { Button, Dropdown, Label } from '@heroui/react';
-import { Copy, CornerDownRight, MoreHorizontal, RotateCcw, Trash2 } from 'lucide-react';
+import { Bot, Copy, CornerDownRight, MoreHorizontal, RotateCcw, Trash2 } from 'lucide-react';
 import type { Message } from '@/features/conversations/interfaces/conversation.interfaces';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
 import { toast } from '@/hooks/use-toast';
@@ -15,6 +15,7 @@ interface MessageActionsMenuProps {
   onReply: (message: Message) => void;
   onRetry?: (message: Message) => void;
   onDelete?: (message: Message) => void;
+  onCreateAgent?: (message: Message) => void;
   className?: string;
 }
 
@@ -27,8 +28,10 @@ export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
   onReply,
   onRetry,
   onDelete,
+  onCreateAgent,
   className,
 }) => {
+  const hasContent = Boolean(message.content?.trim());
   const handleAction = async (key: Key) => {
     if (key === 'copy') {
       if (!message.content) {
@@ -56,6 +59,11 @@ export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
 
     if (key === 'delete') {
       onDelete?.(message);
+      return;
+    }
+
+    if (key === 'create-agent') {
+      onCreateAgent?.(message);
     }
   };
 
@@ -87,6 +95,12 @@ export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
             <Dropdown.Item id="reply" textValue="Reply" className="rounded-lg px-2 py-2">
               <CornerDownRight className="h-4 w-4 shrink-0 text-muted" />
               <Label className="text-sm">Reply</Label>
+            </Dropdown.Item>
+          ) : null}
+          {hasContent && onCreateAgent ? (
+            <Dropdown.Item id="create-agent" textValue="Create agent" className="rounded-lg px-2 py-2">
+              <Bot className="h-4 w-4 shrink-0 text-muted" />
+              <Label className="text-sm">Create agent</Label>
             </Dropdown.Item>
           ) : null}
           {message.role === MessageRoles.USER && canRetry && onRetry ? (

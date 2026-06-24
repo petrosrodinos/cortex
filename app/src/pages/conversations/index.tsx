@@ -32,6 +32,8 @@ import {
   conversationsQueryKey,
 } from '@/features/conversations/hooks/use-conversations';
 import { useExecution } from '@/features/conversations/hooks/use-execution';
+import { useCreateAgent } from '@/features/agents/hooks/use-agents';
+import type { AgentFormValues } from '@/features/agents/validation-schemas/agent.schema';
 import { MessageRoles, ConversationKinds, type Message, type MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { useUploadDocument } from '@/features/files/hooks/use-files';
 import { cn } from '@/lib/utils';
@@ -69,6 +71,7 @@ import {
   createReplyTargetFromMessage,
   type ConversationReplyTarget,
 } from './utils/conversation-reply.utils';
+import { AgentModal } from '@/pages/agents/components/agent-modal';
 
 const ConversationsPage: FC = () => {
   const navigate = useNavigate();
@@ -87,6 +90,7 @@ const ConversationsPage: FC = () => {
   const [pendingUserAttachments, setPendingUserAttachments] = useState<MessageAttachment[]>([]);
   const [deleteTargetUuid, setDeleteTargetUuid] = useState<string | null>(null);
   const [deleteMessageTarget, setDeleteMessageTarget] = useState<Message | null>(null);
+  const [createAgentMessage, setCreateAgentMessage] = useState<Message | null>(null);
   const [documentsOpen, setDocumentsOpen] = useState(false);
   const [chatsPanelCollapsed, setChatsPanelCollapsed] = useState(getInitialConversationsSidebarCollapsed);
   const autoCreateStarted = useRef(false);
@@ -111,6 +115,7 @@ const ConversationsPage: FC = () => {
   const rejectExecution = useRejectExecution(organizationUuid);
   const resolveConnectionTiers = useResolveConnectionTiers(organizationUuid);
   const uploadDocument = useUploadDocument(organizationUuid);
+  const createAgent = useCreateAgent(organizationUuid);
 
   const execution = useExecution(organizationUuid, conversationUuid, activeExecutionId);
   const {
@@ -500,6 +505,16 @@ const ConversationsPage: FC = () => {
     });
   };
 
+  const handleCreateAgentFromMessage = (message: Message) => {
+    setCreateAgentMessage(message);
+  };
+
+  const handleCreateAgentSubmit = (values: AgentFormValues) => {
+    createAgent.mutate(values, {
+      onSuccess: () => setCreateAgentMessage(null),
+    });
+  };
+
   const handleApprove = async () => {
     if (!activeExecutionId) {
       return;
@@ -722,6 +737,7 @@ const ConversationsPage: FC = () => {
               isSendDisabled={isChatInputDisabled}
               onRetryMessage={handleRetryMessage}
               onReplyToMessage={handleReplyToMessage}
+              onCreateAgentFromMessage={handleCreateAgentFromMessage}
               canDeleteMessages={isSuperAdmin}
               onDeleteMessage={handleDeleteMessageRequest}
               isDeletingMessage={deleteMessage.isPending}
@@ -784,6 +800,17 @@ const ConversationsPage: FC = () => {
           if (!open) setDeleteMessageTarget(null);
         }}
       />
+
+      {createAgentMessage ? (
+        <AgentModal
+          mode="create"
+          formKey={createAgentMessage.uuid}
+          initialValues={{ prompt: createAgentMessage.content ?? '' }}
+          isSubmitting={createAgent.isPending}
+          onClose={() => setCreateAgentMessage(null)}
+          onSubmit={handleCreateAgentSubmit}
+        />
+      ) : null}
     </div>
   );
 };

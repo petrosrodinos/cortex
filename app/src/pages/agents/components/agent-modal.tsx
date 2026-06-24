@@ -6,6 +6,8 @@ import { AgentForm } from './agent-form';
 type AgentModalProps = {
   mode: 'create' | 'edit';
   agent?: Agent;
+  initialValues?: Partial<AgentFormValues>;
+  formKey?: string;
   isSubmitting?: boolean;
   onClose: () => void;
   onSubmit: (values: AgentFormValues) => void;
@@ -14,10 +16,21 @@ type AgentModalProps = {
 export function AgentModal({
   mode,
   agent,
+  initialValues,
+  formKey,
   isSubmitting,
   onClose,
   onSubmit,
 }: AgentModalProps) {
+  const formInitialValues =
+    mode === 'edit' && agent
+      ? {
+          title: agent.title,
+          prompt: agent.prompt,
+          cron_expression: agent.cron_expression,
+          is_enabled: agent.is_enabled,
+        }
+      : initialValues;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div
@@ -45,17 +58,8 @@ export function AgentModal({
         </div>
 
         <AgentForm
-          key={agent?.uuid ?? 'create'}
-          initialValues={
-            agent
-              ? {
-                  title: agent.title,
-                  prompt: agent.prompt,
-                  cron_expression: agent.cron_expression,
-                  is_enabled: agent.is_enabled,
-                }
-              : undefined
-          }
+          key={agent?.uuid ?? formKey ?? 'create'}
+          initialValues={formInitialValues}
           submitLabel={mode === 'create' ? 'Create agent' : 'Save changes'}
           isSubmitting={isSubmitting}
           onSubmit={onSubmit}
