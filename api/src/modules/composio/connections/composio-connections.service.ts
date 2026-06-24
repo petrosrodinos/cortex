@@ -15,6 +15,7 @@ import {
 import { ComposioCallbackDto } from './dto/composio-callback.dto';
 import { ConnectComposioDto } from './dto/connect-composio.dto';
 import { OrgToolkitsService } from '../org-toolkits/org-toolkits.service';
+import { resolveComposioAccountLabel } from '@/shared/services/ai/agents/tools/email-tool.utils';
 
 type AuthUser = {
   uuid: string;
@@ -624,8 +625,7 @@ export class ComposioConnectionsService {
             : null,
         toolkit_uuid: toolkit.uuid,
         status: this.mapStatus(account.status),
-        account_label:
-          account.name ?? account.label ?? account.email ?? account.status,
+        account_label: resolveComposioAccountLabel(account),
         last_synced_at: new Date(),
       },
       update: {
@@ -635,8 +635,7 @@ export class ComposioConnectionsService {
             ? userUuid
             : null,
         status: this.mapStatus(account.status),
-        account_label:
-          account.name ?? account.label ?? account.email ?? account.status,
+        account_label: resolveComposioAccountLabel(account),
         last_synced_at: new Date(),
       },
     });

@@ -7,6 +7,9 @@ const EMAIL_ACTION_KEYS = new Set([
 const EMAIL_TOOLKIT_SLUG_PATTERN =
   /gmail|googlemail|sendgrid|resend|outlook|smtp|mailgun|postmark|ses|brevo|sendinblue/i;
 
+const TRANSACTIONAL_EMAIL_TOOLKIT_SLUG_PATTERN =
+  /^(resend|sendgrid|mailgun|postmark|smtp|ses|brevo|sendinblue)$/i;
+
 type IntegrationSummary = {
   uuid: string;
   name: string;
@@ -18,6 +21,7 @@ type ToolkitSummary = {
   slug: string;
   name: string;
   is_connected: boolean;
+  default_sender_email?: string;
 };
 
 export type AgentCapabilitiesSnapshot = {
@@ -56,8 +60,11 @@ export function buildAgentCapabilitiesPromptBlock(
   } else {
     lines.push('- Composio apps:');
     for (const toolkit of snapshot.toolkits) {
+      const senderSuffix = toolkit.default_sender_email
+        ? `, default sender: ${toolkit.default_sender_email}`
+        : '';
       lines.push(
-        `  - ${toolkit.name} (${toolkit.slug})${toolkit.is_connected ? ', connected' : ', not connected'}`,
+        `  - ${toolkit.name} (${toolkit.slug})${toolkit.is_connected ? ', connected' : ', not connected'}${senderSuffix}`,
       );
     }
   }
@@ -71,6 +78,22 @@ export function buildAgentCapabilitiesPromptBlock(
     lines.push(
       `- Email sending: use only these channels — ${emailChannels.join(', ')}. Do not mention other email providers.`,
     );
+    lines.push(
+      '- For Resend, SendGrid, and similar transactional email apps, use default_sender_email from capabilities__list_toolkits as the from address. Never use the authenticated user personal email as the sender.',
+    );
+
+    const missingSenderToolkits = snapshot.toolkits.filter(
+      (toolkit) =>
+        toolkit.is_connected &&
+        TRANSACTIONAL_EMAIL_TOOLKIT_SLUG_PATTERN.test(toolkit.slug) &&
+        !toolkit.default_sender_email,
+    );
+
+    for (const toolkit of missingSenderToolkits) {
+      lines.push(
+        `- ${toolkit.name} is connected but no default sender is configured. Ask the user for the verified sender email address before attempting to send.`,
+      );
+    }
   }
 
   lines.push(

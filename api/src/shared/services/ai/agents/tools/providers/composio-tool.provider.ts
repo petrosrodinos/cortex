@@ -1,8 +1,13 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, BadRequestException, Injectable } from '@nestjs/common';
 import type { ToolSet } from 'ai';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { ComposioSessionService } from '@/modules/composio/sessions/composio-session.service';
-import { ToolCallStatus } from 'generated/prisma';
+import { ComposioClientService } from '@/integrations/composio/composio-client.service';
+import {
+  ComposioAccountStatus,
+  ComposioConnectionTier,
+  ToolCallStatus,
+} from 'generated/prisma';
 import { toJsonValue } from '@/shared/utils/json-value.utils';
 import type {
   AgentToolProvider,
@@ -10,8 +15,15 @@ import type {
 } from '../core/tool-provider.interface';
 import {
   appendEmailSendToolDescription,
+  applyDefaultEmailSender,
+  buildMissingTransactionalSenderError,
   enrichEmailSenderConfigError,
+  extractEmailToolkitSlugFromToolName,
+  extractSenderEmailFromToolInput,
   isEmailSendToolName,
+  isTransactionalEmailToolkitSlug,
+  resolveConnectedTransactionalSenderEmail,
+  stripPersonalEmailFromSenderFields,
 } from '../email-tool.utils';
 
 type ExecutableTool = {
@@ -27,6 +39,7 @@ export class ComposioToolProvider implements AgentToolProvider {
   constructor(
     private readonly prisma: PrismaService,
     private readonly sessions: ComposioSessionService,
+    private readonly composioClient: ComposioClientService,
   ) {}
 
   async buildTools(context: AgentToolProviderContext): Promise<ToolSet> {
@@ -124,10 +137,20 @@ export class ComposioToolProvider implements AgentToolProvider {
 
         const callId = context.progress?.toolStart(toolName, input);
         const started = Date.now();
+        let preparedInput: Record<string, unknown> =
+          typeof input === 'object' && input !== null && !Array.isArray(input)
+            ? { ...(input as Record<string, unknown>) }
+            : {};
 
         try {
+          preparedInput = await this.prepareEmailSendInput(
+            context,
+            toolName,
+            input,
+          );
+
           const result = executable.execute
-            ? await executable.execute(input, options)
+            ? await executable.execute(preparedInput, options)
             : undefined;
           const serializedResult = toJsonValue(result);
           const durationMs = Date.now() - started;
@@ -140,7 +163,7 @@ export class ComposioToolProvider implements AgentToolProvider {
               composio_tool_slug: toolName,
               composio_session_id: sessionId,
               tool_name: toolName,
-              input: input as object,
+              input: preparedInput as object,
               output: serializedResult as object,
               status: ToolCallStatus.SUCCESS,
               duration_ms: durationMs,
@@ -159,10 +182,22 @@ export class ComposioToolProvider implements AgentToolProvider {
           return result;
         } catch (error) {
           const durationMs = Date.now() - started;
-          const message = enrichEmailSenderConfigError(
-            toolName,
-            error instanceof Error ? error.message : 'Composio tool failed',
-          );
+          let message: string;
+
+          if (error instanceof BadRequestException) {
+            const response = error.getResponse();
+            message =
+              typeof response === 'string'
+                ? response
+                : error instanceof Error
+                  ? error.message
+                  : 'Composio tool failed';
+          } else {
+            message = enrichEmailSenderConfigError(
+              toolName,
+              error instanceof Error ? error.message : 'Composio tool failed',
+            );
+          }
 
           await this.prisma.toolCall.create({
             data: {
@@ -172,7 +207,7 @@ export class ComposioToolProvider implements AgentToolProvider {
               composio_tool_slug: toolName,
               composio_session_id: sessionId,
               tool_name: toolName,
-              input: input as object,
+              input: preparedInput as object,
               output: { error: message },
               status: ToolCallStatus.FAILED,
               error: message,
@@ -253,5 +288,103 @@ export class ComposioToolProvider implements AgentToolProvider {
 
   private normalizeToolSlug(slug: string) {
     return slug.replace(/[^a-z0-9]/gi, '').toLowerCase();
+  }
+
+  private async prepareEmailSendInput(
+    context: AgentToolProviderContext,
+    toolName: string,
+    input: unknown,
+  ): Promise<Record<string, unknown>> {
+    if (!isEmailSendToolName(toolName)) {
+      return typeof input === 'object' && input !== null && !Array.isArray(input)
+        ? { ...(input as Record<string, unknown>) }
+        : {};
+    }
+
+    const toolkitSlug = extractEmailToolkitSlugFromToolName(toolName);
+    if (!toolkitSlug || !isTransactionalEmailToolkitSlug(toolkitSlug)) {
+      return typeof input === 'object' && input !== null && !Array.isArray(input)
+        ? { ...(input as Record<string, unknown>) }
+        : {};
+    }
+
+    const baseInput =
+      typeof input === 'object' && input !== null && !Array.isArray(input)
+        ? { ...(input as Record<string, unknown>) }
+        : {};
+    const user = await this.prisma.user.findUnique({
+      where: { uuid: context.userUuid },
+      select: { email: true },
+    });
+    const withoutPersonalSender = stripPersonalEmailFromSenderFields(
+      baseInput,
+      user?.email,
+    );
+    const senderEmail = await this.resolveConnectedSenderEmail(
+      context.organizationUuid,
+      context.userUuid,
+      toolkitSlug,
+      context.toolkitConnectionTiers,
+    );
+
+    if (!senderEmail) {
+      if (extractSenderEmailFromToolInput(withoutPersonalSender)) {
+        return withoutPersonalSender;
+      }
+
+      throw new BadRequestException(
+        buildMissingTransactionalSenderError(toolkitSlug),
+      );
+    }
+
+    return applyDefaultEmailSender(withoutPersonalSender, senderEmail, {
+      force: true,
+    });
+  }
+
+  private async resolveConnectedSenderEmail(
+    organizationUuid: string,
+    userUuid: string,
+    toolkitSlug: string,
+    toolkitConnectionTiers?: Record<string, string>,
+  ): Promise<string | null> {
+    const toolkit = await this.prisma.composioToolkit.findFirst({
+      where: { slug: toolkitSlug, is_enabled: true },
+      select: { uuid: true },
+    });
+
+    if (!toolkit) {
+      return null;
+    }
+
+    const preferredTier =
+      toolkitConnectionTiers?.[toolkitSlug] ?? ComposioConnectionTier.ORG_SHARED;
+    const accounts = await this.prisma.composioConnectedAccount.findMany({
+      where: {
+        org_uuid: organizationUuid,
+        toolkit_uuid: toolkit.uuid,
+        status: ComposioAccountStatus.ACTIVE,
+        OR: [{ user_uuid: userUuid }, { user_uuid: null }],
+      },
+      select: {
+        user_uuid: true,
+        account_label: true,
+        composio_account_id: true,
+      },
+      orderBy: { created_at: 'desc' },
+    });
+
+    const composio = this.composioClient.getClient() as {
+      connectedAccounts?: { get: (id: string) => Promise<unknown> };
+    };
+
+    return resolveConnectedTransactionalSenderEmail(
+      accounts,
+      preferredTier as ComposioConnectionTier,
+      composio.connectedAccounts
+        ? (composioAccountId) =>
+            composio.connectedAccounts!.get(composioAccountId)
+        : undefined,
+    );
   }
 }

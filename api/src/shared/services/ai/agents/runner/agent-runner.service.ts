@@ -593,6 +593,7 @@ export class AgentRunnerService {
         'If the prior assistant reply only summarized results, use the stored tool results or re-run the same organization, database, or integration tools instead of asking the user to provide the data again.',
         'Use generated file URLs or generatedDocuments metadata from earlier output tool results when the selected email tool supports attachments or links.',
         'Use only the email channels listed in "Available tools for this message". If none are listed, tell the user to connect an email app in Integrations instead of claiming a specific provider is blocked.',
+        'If the connected transactional email app has no default_sender_email, ask the user for their verified sender address before calling the send tool.',
         'Do not claim an email was sent until the email tool completes successfully.',
       );
     }

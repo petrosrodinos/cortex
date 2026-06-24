@@ -21,6 +21,10 @@ import {
 import {
   getSessionConnectedToolkitSlugs,
 } from '@/modules/composio/sessions/composio-session-scope.utils';
+import {
+  inferEmailSenderFromAccountLabel,
+  isTransactionalEmailToolkitSlug,
+} from '../tools/email-tool.utils';
 
 export interface CapabilitiesToolsContext {
   organizationUuid: string;
@@ -297,6 +301,7 @@ export class CapabilitiesToolsService {
               select: {
                 user_uuid: true,
                 composio_user_id: true,
+                account_label: true,
               },
             },
           },
@@ -338,12 +343,35 @@ export class CapabilitiesToolsService {
         );
 
     return {
-      toolkits: enabled.map((entry) => ({
-        slug: entry.toolkit.slug,
-        name: entry.toolkit.name,
-        description: entry.toolkit.description,
-        is_connected: sessionConnectedSlugs.has(entry.toolkit.slug),
-      })),
+      toolkits: enabled.map((entry) => {
+        const preferredTier =
+          tierMap[entry.toolkit.slug] ?? ComposioConnectionTier.ORG_SHARED;
+        let default_sender_email: string | undefined;
+
+        if (isTransactionalEmailToolkitSlug(entry.toolkit.slug)) {
+          for (const account of entry.toolkit.connected_accounts) {
+            if (inferConnectionTierFromAccount(account) !== preferredTier) {
+              continue;
+            }
+
+            const senderEmail = inferEmailSenderFromAccountLabel(
+              account.account_label,
+            );
+            if (senderEmail) {
+              default_sender_email = senderEmail;
+              break;
+            }
+          }
+        }
+
+        return {
+          slug: entry.toolkit.slug,
+          name: entry.toolkit.name,
+          description: entry.toolkit.description,
+          is_connected: sessionConnectedSlugs.has(entry.toolkit.slug),
+          ...(default_sender_email ? { default_sender_email } : {}),
+        };
+      }),
     };
   }
 
@@ -373,6 +401,7 @@ export class CapabilitiesToolsService {
         slug: toolkit.slug,
         name: toolkit.name,
         is_connected: toolkit.is_connected,
+        default_sender_email: toolkit.default_sender_email,
       })),
     };
   }
