@@ -4,8 +4,10 @@ import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { useGetPermissions } from '@/features/permissions/hooks/use-permissions';
 import type { Permission } from '@/features/permissions/interfaces/permission.interfaces';
 import { useCreateRole, useDeleteRole, useGetRoles, useSetRolePermissions, useUpdateRole } from '@/features/roles/hooks/use-roles';
-import type { OrganizationRole } from '@/features/roles/interfaces/role.interfaces';
+import { OrganizationRoleTypes, type OrganizationRole } from '@/features/roles/interfaces/role.interfaces';
 import { cn } from '@/lib/utils';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import { useOrganizationStore } from '@/stores/organization';
 
 type DeleteRoleTarget = { uuid: string; label: string } | null;
@@ -84,7 +86,7 @@ export function RolesPermissionsSection() {
   }
 
   async function toggleRolePermission(role: OrganizationRole, permissionKey: string) {
-    if (!currentOrganization) return;
+    if (!currentOrganization || role.name === OrganizationRoleTypes.OWNER) return;
     const keys = role.permissions?.map((item) => item.permission.key) ?? [];
     const nextKeys = keys.includes(permissionKey)
       ? keys.filter((k) => k !== permissionKey)
@@ -124,22 +126,24 @@ export function RolesPermissionsSection() {
 
   return (
     <div className="flex flex-col gap-4">
-      <form onSubmit={createRole} className="flex gap-2">
-        <input
-          value={roleName}
-          onChange={(event) => setRoleName(event.target.value)}
-          placeholder="New role name"
-          className="h-9 min-w-0 flex-1 rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted outline-none transition-all focus:border-accent/60 focus:ring-2 focus:ring-accent/20"
-        />
-        <button
-          type="submit"
-          disabled={loading || !roleName.trim()}
-          className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-accent px-3 text-sm font-medium text-accent-foreground disabled:opacity-50"
-        >
-          <Plus className="h-4 w-4" />
-          Create role
-        </button>
-      </form>
+      <OrganizationPermissionGate permission={PermissionKeys.ORG_ROLES_CREATE}>
+        <form onSubmit={createRole} className="flex gap-2">
+          <input
+            value={roleName}
+            onChange={(event) => setRoleName(event.target.value)}
+            placeholder="New role name"
+            className="h-9 min-w-0 flex-1 rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted outline-none transition-all focus:border-accent/60 focus:ring-2 focus:ring-accent/20"
+          />
+          <button
+            type="submit"
+            disabled={loading || !roleName.trim()}
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-accent px-3 text-sm font-medium text-accent-foreground disabled:opacity-50"
+          >
+            <Plus className="h-4 w-4" />
+            Create role
+          </button>
+        </form>
+      </OrganizationPermissionGate>
 
       {(error || queryError) && (
         <p className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2.5 text-sm text-red-300">
@@ -169,61 +173,69 @@ export function RolesPermissionsSection() {
                     className="min-w-[130px] px-3 py-3 text-center align-top"
                   >
                     {editingRoleUuid === role.uuid ? (
-                      <div className="flex items-center justify-center gap-1">
-                        <input
-                          value={editingRoleName}
-                          onChange={(e) => setEditingRoleName(e.target.value)}
-                          autoFocus
-                          className="h-7 w-24 rounded-md border border-border bg-background px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-accent"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => saveRoleName(role)}
-                          disabled={loading || !editingRoleName.trim()}
-                          title="Save"
-                          className="grid h-7 w-7 place-items-center rounded text-muted hover:text-foreground disabled:opacity-50"
-                        >
-                          <Check className="h-3.5 w-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => { setEditingRoleUuid(null); setEditingRoleName(''); }}
-                          title="Cancel"
-                          className="grid h-7 w-7 place-items-center rounded text-muted hover:text-foreground"
-                        >
-                          <X className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
+                      <OrganizationPermissionGate permission={PermissionKeys.ORG_ROLES_UPDATE}>
+                        <div className="flex items-center justify-center gap-1">
+                          <input
+                            value={editingRoleName}
+                            onChange={(e) => setEditingRoleName(e.target.value)}
+                            autoFocus
+                            className="h-7 w-24 rounded-md border border-border bg-background px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-accent"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => saveRoleName(role)}
+                            disabled={loading || !editingRoleName.trim()}
+                            title="Save"
+                            className="grid h-7 w-7 place-items-center rounded text-muted hover:text-foreground disabled:opacity-50"
+                          >
+                            <Check className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { setEditingRoleUuid(null); setEditingRoleName(''); }}
+                            title="Cancel"
+                            className="grid h-7 w-7 place-items-center rounded text-muted hover:text-foreground"
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </OrganizationPermissionGate>
                     ) : (
                       <div className="flex flex-col items-center gap-1.5">
                         <span className="text-xs font-semibold text-foreground">{role.name}</span>
-                        {!role.is_system && (
+                        {!role.is_system ? (
                           <div className="flex items-center gap-0.5">
-                            <button
-                              type="button"
-                              onClick={() => startEditingRole(role)}
-                              title="Rename role"
-                              className="grid h-6 w-6 place-items-center rounded text-muted hover:bg-surface-secondary hover:text-foreground"
-                            >
-                              <Pencil className="h-3 w-3" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setDeleteTarget({ uuid: role.uuid, label: role.name })}
-                              title="Delete role"
-                              className="grid h-6 w-6 place-items-center rounded text-muted hover:bg-surface-secondary hover:text-red-400"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </button>
+                            <OrganizationPermissionGate permission={PermissionKeys.ORG_ROLES_UPDATE}>
+                              <button
+                                type="button"
+                                onClick={() => startEditingRole(role)}
+                                title="Rename role"
+                                className="grid h-6 w-6 place-items-center rounded text-muted hover:bg-surface-secondary hover:text-foreground"
+                              >
+                                <Pencil className="h-3 w-3" />
+                              </button>
+                            </OrganizationPermissionGate>
+                            <OrganizationPermissionGate permission={PermissionKeys.ORG_ROLES_DELETE}>
+                              <button
+                                type="button"
+                                onClick={() => setDeleteTarget({ uuid: role.uuid, label: role.name })}
+                                title="Delete role"
+                                className="grid h-6 w-6 place-items-center rounded text-muted hover:bg-surface-secondary hover:text-red-400"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
+                            </OrganizationPermissionGate>
                           </div>
-                        )}
+                        ) : null}
                       </div>
                     )}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody>
+            <OrganizationPermissionGate permission={PermissionKeys.ORG_ROLES_UPDATE}>
+              {(allowed) => (
+                <tbody>
               {permissionGroups.map(([group, groupPermissions]) => (
                 <>
                   <tr key={`group-${group}`}>
@@ -246,6 +258,7 @@ export function RolesPermissionsSection() {
                         {permission.label}
                       </td>
                       {roles.map((role) => {
+                        const isOwnerRole = role.name === OrganizationRoleTypes.OWNER;
                         const checked =
                           role.permissions?.some((p) => p.permission.key === permission.key) ?? false;
                         return (
@@ -255,12 +268,12 @@ export function RolesPermissionsSection() {
                               role="switch"
                               aria-checked={checked}
                               aria-label={`${permission.label} for ${role.name}`}
-                              disabled={loading}
+                              disabled={loading || !allowed || isOwnerRole}
                               onClick={() => toggleRolePermission(role, permission.key)}
                               className={cn(
                                 'relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors',
                                 checked ? 'bg-accent' : 'bg-border',
-                                loading && 'cursor-not-allowed opacity-60',
+                                (loading || isOwnerRole) && 'cursor-not-allowed opacity-60',
                               )}
                             >
                               <span
@@ -277,7 +290,9 @@ export function RolesPermissionsSection() {
                   ))}
                 </>
               ))}
-            </tbody>
+                </tbody>
+              )}
+            </OrganizationPermissionGate>
           </table>
         </div>
       )}

@@ -10,6 +10,8 @@ import {
 } from '@/features/agents/hooks/use-agents';
 import type { Agent } from '@/features/agents/interfaces/agents.interfaces';
 import type { AgentFormValues } from '@/features/agents/validation-schemas/agent.schema';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import { useOrganizationStore } from '@/stores/organization';
 import { AgentModal } from './components/agent-modal';
 import { AgentsList } from './components/agents-list';
@@ -78,14 +80,16 @@ const AgentsPage: FC = () => {
             Run prompts on a cron schedule. Each agent keeps a dedicated conversation with run history.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => setModalState({ mode: 'create' })}
-          className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:opacity-90"
-        >
-          <Plus className="h-4 w-4" />
-          New agent
-        </button>
+        <OrganizationPermissionGate permission={PermissionKeys.AGENTS_WRITE}>
+          <button
+            type="button"
+            onClick={() => setModalState({ mode: 'create' })}
+            className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:opacity-90"
+          >
+            <Plus className="h-4 w-4" />
+            New agent
+          </button>
+        </OrganizationPermissionGate>
       </div>
 
       {isLoading ? (

@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
+import { PermissionKeys } from '@/modules/roles/permissions';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
@@ -41,7 +42,7 @@ export class ComposioTriggersController {
   }
 
   @Post()
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   create(
     @Param('organization_uuid') organizationUuid: string,
     @Body(new ZodValidationPipe(CreateComposioTriggerSchema))
@@ -51,7 +52,7 @@ export class ComposioTriggersController {
   }
 
   @Patch(':uuid')
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   update(
     @Param('organization_uuid') organizationUuid: string,
     @Param('uuid') triggerUuid: string,
@@ -62,7 +63,7 @@ export class ComposioTriggersController {
   }
 
   @Delete(':uuid')
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   remove(
     @Param('organization_uuid') organizationUuid: string,
     @Param('uuid') triggerUuid: string,

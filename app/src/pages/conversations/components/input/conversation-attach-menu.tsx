@@ -12,6 +12,8 @@ import {
   type AiResearchMode,
 } from '@/features/integrations/constants/provider-metadata';
 import { cn } from '@/lib/utils';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import { buildConversationToolItems } from './conversation-tool-items.utils';
 import { ConversationToolsMenu } from './conversation-tools-menu';
 import { ConversationModelMenu } from './conversation-model-menu';
@@ -136,10 +138,12 @@ export const ConversationAttachMenu: FC<ConversationAttachMenuProps> = ({
             }
           }}
         >
-          <Dropdown.Item id="upload" textValue="Upload photos and files" className="gap-2.5 rounded-lg px-2 py-2">
-            <Paperclip className="h-4 w-4 shrink-0 text-muted" />
-            <Label className="min-w-0 flex-1 truncate text-sm">Upload photos & files</Label>
-          </Dropdown.Item>
+          <OrganizationPermissionGate permission={PermissionKeys.DOCUMENTS_WRITE}>
+            <Dropdown.Item id="upload" textValue="Upload photos and files" className="gap-2.5 rounded-lg px-2 py-2">
+              <Paperclip className="h-4 w-4 shrink-0 text-muted" />
+              <Label className="min-w-0 flex-1 truncate text-sm">Upload photos & files</Label>
+            </Dropdown.Item>
+          </OrganizationPermissionGate>
 
           {totalToolCount > 0 ? (
             <Dropdown.SubmenuTrigger>

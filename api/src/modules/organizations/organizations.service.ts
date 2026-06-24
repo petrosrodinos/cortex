@@ -2,7 +2,8 @@ import { BadRequestException, ConflictException, ForbiddenException, HttpExcepti
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
-import { SYSTEM_ROLE_NAMES, SYSTEM_ROLE_PERMISSIONS } from '@/modules/roles/permissions';
+import { OrganizationRoleTypes, PermissionKeys, SYSTEM_ROLE_NAMES, SYSTEM_ROLE_PERMISSIONS } from '@/modules/roles/permissions';
+import { membershipHasPermission } from '@/shared/utils/organization-permission.utils';
 import { OrganizationMemberStatus } from 'generated/prisma';
 
 @Injectable()
@@ -34,17 +35,22 @@ export class OrganizationsService {
         const roles = await tx.organizationRole.findMany({ where: { org_uuid: organization.uuid } });
 
         await tx.rolePermission.createMany({
-          data: roles.flatMap((role) =>
-            (SYSTEM_ROLE_PERMISSIONS[role.name] ?? [])
+          data: roles.flatMap((role) => {
+            const permission_keys =
+              role.name === OrganizationRoleTypes.OWNER
+                ? permissions.map((permission) => permission.key)
+                : (SYSTEM_ROLE_PERMISSIONS[role.name] ?? []);
+
+            return permission_keys
               .map((permission_key) => permissions_by_key.get(permission_key))
               .filter(Boolean)
-              .map((permission_uuid) => ({ role_uuid: role.uuid, permission_uuid })),
-          ),
+              .map((permission_uuid) => ({ role_uuid: role.uuid, permission_uuid }));
+          }),
           skipDuplicates: true,
         });
 
         const owner_role = await tx.organizationRole.findFirst({
-          where: { org_uuid: organization.uuid, name: 'Owner' },
+          where: { org_uuid: organization.uuid, name: OrganizationRoleTypes.OWNER },
         });
 
         await tx.organizationMember.create({
@@ -103,7 +109,7 @@ export class OrganizationsService {
   async update(user_uuid: string, organization_uuid: string, dto: UpdateOrganizationDto) {
     try {
       const membership = await this.requireActiveMember(user_uuid, organization_uuid);
-      this.requirePermissionOrOwner(membership, 'org:update');
+      this.requirePermissionOrOwner(membership, PermissionKeys.ORG_UPDATE);
 
       const data: UpdateOrganizationDto = { ...dto };
 
@@ -141,7 +147,7 @@ export class OrganizationsService {
     try {
       const membership = await this.requireActiveMember(user_uuid, organization_uuid);
 
-      if (membership.role.name !== 'Owner') {
+      if (membership.role.name !== OrganizationRoleTypes.OWNER) {
         throw new ForbiddenException('Only organization owners can delete organizations');
       }
 
@@ -199,8 +205,7 @@ export class OrganizationsService {
   }
 
   hasPermission(membership: { role: { name: string; permissions?: Array<{ permission: { key: string } }> } }, permission_key: string) {
-    const permissions = membership.role.permissions?.map((role_permission) => role_permission.permission.key) ?? [];
-    return membership.role.name === 'Owner' || permissions.includes(permission_key);
+    return membershipHasPermission(membership, permission_key);
   }
 
   private requirePermissionOrOwner(membership: any, permission_key: string) {

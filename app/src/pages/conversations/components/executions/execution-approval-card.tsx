@@ -2,6 +2,8 @@ import type { FC } from 'react';
 import { Check, Loader2, X } from 'lucide-react';
 import type { ExecutionApprovalRequest } from '@/features/conversations/interfaces/conversation.interfaces';
 import { cn } from '@/lib/utils';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import { formatExecutionApproval } from '../../utils/format-execution-approval';
 
 interface ExecutionApprovalCardProps {
@@ -49,36 +51,38 @@ export const ExecutionApprovalCard: FC<ExecutionApprovalCardProps> = ({
         </dl>
       )}
 
-      <div className="flex flex-wrap items-center gap-2 border-t border-accent/20 bg-accent/8 px-4 py-3 sm:px-5">
-        <button
-          type="button"
-          onClick={onApprove}
-          disabled={isBusy}
-          className={cn(
-            'inline-flex h-9 min-w-[5.5rem] items-center justify-center gap-1.5 rounded-full px-4',
-            'bg-accent text-sm font-medium text-accent-foreground',
-            'transition-all duration-150 hover:opacity-90 active:scale-[0.98]',
-            'disabled:cursor-not-allowed disabled:opacity-50',
-          )}
-        >
-          {isApproving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-          Allow
-        </button>
-        <button
-          type="button"
-          onClick={onReject}
-          disabled={isBusy}
-          className={cn(
-            'inline-flex h-9 min-w-[5.5rem] items-center justify-center gap-1.5 rounded-full px-4',
-            'border border-accent/40 bg-surface text-sm font-medium text-foreground',
-            'transition-all duration-150 hover:bg-accent/15 active:scale-[0.98]',
-            'disabled:cursor-not-allowed disabled:opacity-50',
-          )}
-        >
-          {isRejecting ? <Loader2 className="h-4 w-4 animate-spin" /> : <X className="h-4 w-4" />}
-          Deny
-        </button>
-      </div>
+      <OrganizationPermissionGate permission={PermissionKeys.EXECUTIONS_APPROVE}>
+        <div className="flex flex-wrap items-center gap-2 border-t border-accent/20 bg-accent/8 px-4 py-3 sm:px-5">
+          <button
+            type="button"
+            onClick={onApprove}
+            disabled={isBusy}
+            className={cn(
+              'inline-flex h-9 min-w-[5.5rem] items-center justify-center gap-1.5 rounded-full px-4',
+              'bg-accent text-sm font-medium text-accent-foreground',
+              'transition-all duration-150 hover:opacity-90 active:scale-[0.98]',
+              'disabled:cursor-not-allowed disabled:opacity-50',
+            )}
+          >
+            {isApproving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+            Allow
+          </button>
+          <button
+            type="button"
+            onClick={onReject}
+            disabled={isBusy}
+            className={cn(
+              'inline-flex h-9 min-w-[5.5rem] items-center justify-center gap-1.5 rounded-full px-4',
+              'border border-accent/40 bg-surface text-sm font-medium text-foreground',
+              'transition-all duration-150 hover:bg-accent/15 active:scale-[0.98]',
+              'disabled:cursor-not-allowed disabled:opacity-50',
+            )}
+          >
+            {isRejecting ? <Loader2 className="h-4 w-4 animate-spin" /> : <X className="h-4 w-4" />}
+            Deny
+          </button>
+        </div>
+      </OrganizationPermissionGate>
     </div>
   );
 };

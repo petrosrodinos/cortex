@@ -3,6 +3,8 @@ import { MoreHorizontal, PanelLeftClose, PanelLeftOpen, Pencil, Plus, Trash2 } f
 import type { Conversation } from '@/features/conversations/interfaces/conversation.interfaces';
 import { ConversationKinds, MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
 import { cn } from '@/lib/utils';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import { stripMarkdownForPreview } from '@/lib/message-markdown.utils';
 
 interface ConversationSidebarProps {
@@ -100,23 +102,27 @@ export const ConversationSidebar: FC<ConversationSidebarProps> = ({
       {showHeader ? (
         collapsed ? (
           <header className="flex shrink-0 flex-col items-center gap-2 border-b border-border px-2 py-3">
-            <button
-              type="button"
-              onClick={onToggleCollapse}
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-secondary hover:text-foreground"
-              aria-label="Expand chats panel"
-            >
-              <PanelLeftOpen className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              onClick={onCreate}
-              disabled={isCreating}
-              className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-secondary text-foreground transition-colors hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
-              aria-label="New chat"
-            >
-              <Plus className="h-4 w-4" />
-            </button>
+            {onToggleCollapse ? (
+              <button
+                type="button"
+                onClick={onToggleCollapse}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-secondary hover:text-foreground"
+                aria-label="Expand chats panel"
+              >
+                <PanelLeftOpen className="h-4 w-4" />
+              </button>
+            ) : null}
+            <OrganizationPermissionGate permission={PermissionKeys.CONVERSATIONS_WRITE}>
+              <button
+                type="button"
+                onClick={onCreate}
+                disabled={isCreating}
+                className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-secondary text-foreground transition-colors hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
+                aria-label="New chat"
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </OrganizationPermissionGate>
           </header>
         ) : (
           <header className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-3 md:px-4">
@@ -126,15 +132,17 @@ export const ConversationSidebar: FC<ConversationSidebarProps> = ({
                 {conversations.length} {conversations.length === 1 ? 'chat' : 'chats'} created
               </p>
             </div>
-            <button
-              type="button"
-              onClick={onCreate}
-              disabled={isCreating}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-secondary text-foreground transition-colors hover:bg-surface hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
-              aria-label="New chat"
-            >
-              <Plus className="h-4 w-4" />
-            </button>
+            <OrganizationPermissionGate permission={PermissionKeys.CONVERSATIONS_WRITE}>
+              <button
+                type="button"
+                onClick={onCreate}
+                disabled={isCreating}
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-secondary text-foreground transition-colors hover:bg-surface hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                aria-label="New chat"
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </OrganizationPermissionGate>
             {onToggleCollapse ? (
               <button
                 type="button"
@@ -152,17 +160,19 @@ export const ConversationSidebar: FC<ConversationSidebarProps> = ({
       {!collapsed ? (
       <div className="flex min-h-0 flex-1 flex-col">
         {!showHeader ? (
-          <div className="flex shrink-0 items-center justify-end border-b border-border px-3 py-2">
-            <button
-              type="button"
-              onClick={onCreate}
-              disabled={isCreating}
-              className="flex h-8 items-center gap-1.5 rounded-lg bg-surface-secondary px-3 text-xs font-medium text-foreground transition-colors hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              New chat
-            </button>
-          </div>
+          <OrganizationPermissionGate permission={PermissionKeys.CONVERSATIONS_WRITE}>
+            <div className="flex shrink-0 items-center justify-end border-b border-border px-3 py-2">
+              <button
+                type="button"
+                onClick={onCreate}
+                disabled={isCreating}
+                className="flex h-8 items-center gap-1.5 rounded-lg bg-surface-secondary px-3 text-xs font-medium text-foreground transition-colors hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                New chat
+              </button>
+            </div>
+          </OrganizationPermissionGate>
         ) : null}
 
         <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto p-2">
@@ -211,50 +221,56 @@ export const ConversationSidebar: FC<ConversationSidebarProps> = ({
                 </button>
               )}
 
-              {!isEditing && !isAgent && (
-                <div className="relative pr-1" ref={menuOpenUuid === conversation.uuid ? menuRef : undefined}>
-                  <button
-                    type="button"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setMenuOpenUuid(menuOpenUuid === conversation.uuid ? null : conversation.uuid);
-                    }}
-                    className={cn(
-                      'rounded-md p-1.5 text-muted transition-opacity hover:bg-surface',
-                      menuOpenUuid === conversation.uuid
-                        ? 'opacity-100'
-                        : 'opacity-100 md:opacity-0 md:group-hover:opacity-100',
-                    )}
-                    aria-label="Conversation options"
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                  </button>
+              {!isEditing && !isAgent ? (
+                <OrganizationPermissionGate permissions={[PermissionKeys.CONVERSATIONS_WRITE, PermissionKeys.CONVERSATIONS_DELETE]} mode="any">
+                  <div className="relative pr-1" ref={menuOpenUuid === conversation.uuid ? menuRef : undefined}>
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setMenuOpenUuid(menuOpenUuid === conversation.uuid ? null : conversation.uuid);
+                      }}
+                      className={cn(
+                        'rounded-md p-1.5 text-muted transition-opacity hover:bg-surface',
+                        menuOpenUuid === conversation.uuid
+                          ? 'opacity-100'
+                          : 'opacity-100 md:opacity-0 md:group-hover:opacity-100',
+                      )}
+                      aria-label="Conversation options"
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                    </button>
 
-                  {menuOpenUuid === conversation.uuid && (
-                    <div className="absolute right-0 top-full z-20 mt-1 min-w-[140px] overflow-hidden rounded-lg border border-border bg-surface py-1 shadow-lg">
-                      <button
-                        type="button"
-                        onClick={() => startEditing(conversation)}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-surface-secondary"
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                        Rename
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMenuOpenUuid(null);
-                          onDelete(conversation.uuid);
-                        }}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-400 hover:bg-surface-secondary"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                        Delete
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
+                    {menuOpenUuid === conversation.uuid && (
+                      <div className="absolute right-0 top-full z-20 mt-1 min-w-[140px] overflow-hidden rounded-lg border border-border bg-surface py-1 shadow-lg">
+                        <OrganizationPermissionGate permission={PermissionKeys.CONVERSATIONS_WRITE}>
+                          <button
+                            type="button"
+                            onClick={() => startEditing(conversation)}
+                            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-surface-secondary"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                            Rename
+                          </button>
+                        </OrganizationPermissionGate>
+                        <OrganizationPermissionGate permission={PermissionKeys.CONVERSATIONS_DELETE}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setMenuOpenUuid(null);
+                              onDelete(conversation.uuid);
+                            }}
+                            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-400 hover:bg-surface-secondary"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                            Delete
+                          </button>
+                        </OrganizationPermissionGate>
+                      </div>
+                    )}
+                  </div>
+                </OrganizationPermissionGate>
+              ) : null}
             </div>
           );
         })}

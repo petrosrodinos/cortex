@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
+import { PermissionKeys } from '@/modules/roles/permissions';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
@@ -31,6 +33,7 @@ export class ConversationsController {
   ) {}
 
   @Get('agent-tools')
+  @OrganizationPermission(PermissionKeys.CONVERSATIONS_READ)
   listAgentTools(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -39,11 +42,13 @@ export class ConversationsController {
   }
 
   @Get()
+  @OrganizationPermission(PermissionKeys.CONVERSATIONS_READ)
   findAll(@CurrentUser('uuid') userUuid: string, @Param('organization_uuid') organizationUuid: string) {
     return this.conversations.findAll(userUuid, organizationUuid);
   }
 
   @Post()
+  @OrganizationPermission(PermissionKeys.CONVERSATIONS_WRITE)
   create(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -53,6 +58,7 @@ export class ConversationsController {
   }
 
   @Get(':conversation_uuid')
+  @OrganizationPermission(PermissionKeys.CONVERSATIONS_READ)
   findOne(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -62,6 +68,7 @@ export class ConversationsController {
   }
 
   @Patch(':conversation_uuid')
+  @OrganizationPermission(PermissionKeys.CONVERSATIONS_WRITE)
   update(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -72,6 +79,7 @@ export class ConversationsController {
   }
 
   @Delete(':conversation_uuid')
+  @OrganizationPermission(PermissionKeys.CONVERSATIONS_DELETE)
   delete(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -81,6 +89,7 @@ export class ConversationsController {
   }
 
   @Get(':conversation_uuid/documents')
+  @OrganizationPermission(PermissionKeys.DOCUMENTS_READ)
   findDocuments(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -90,6 +99,7 @@ export class ConversationsController {
   }
 
   @Get(':conversation_uuid/messages')
+  @OrganizationPermission(PermissionKeys.CONVERSATIONS_READ)
   findMessages(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -99,6 +109,7 @@ export class ConversationsController {
   }
 
   @Post(':conversation_uuid/messages')
+  @OrganizationPermission(PermissionKeys.CONVERSATIONS_WRITE)
   sendMessage(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -157,11 +168,13 @@ export class ExecutionsController {
   }
 
   @Get()
+  @OrganizationPermission(PermissionKeys.EXECUTIONS_READ)
   findAll(@CurrentUser('uuid') userUuid: string, @Param('organization_uuid') organizationUuid: string) {
     return this.executions.findAll(userUuid, organizationUuid);
   }
 
   @Get(':execution_uuid')
+  @OrganizationPermission(PermissionKeys.EXECUTIONS_READ)
   findOne(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -171,6 +184,7 @@ export class ExecutionsController {
   }
 
   @Post(':execution_uuid/approve')
+  @OrganizationPermission(PermissionKeys.EXECUTIONS_APPROVE)
   approve(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -180,6 +194,7 @@ export class ExecutionsController {
   }
 
   @Post(':execution_uuid/reject')
+  @OrganizationPermission(PermissionKeys.EXECUTIONS_APPROVE)
   reject(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -189,6 +204,7 @@ export class ExecutionsController {
   }
 
   @Post(':execution_uuid/connection-tiers')
+  @OrganizationPermission(PermissionKeys.EXECUTIONS_READ)
   resolveConnectionTiers(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,

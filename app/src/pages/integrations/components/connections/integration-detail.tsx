@@ -34,6 +34,8 @@ import { isDatabaseProvider, isOpenApiProvider, isMcpProvider } from '@/features
 import { providerLabels } from '@/features/integrations/constants/provider-metadata';
 import { StatusBadge } from './status-badge';
 import { cn } from '@/lib/utils';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 
 interface IntegrationDetailProps {
   organizationUuid: string;
@@ -149,15 +151,17 @@ export function IntegrationDetail({ organizationUuid, integration }: Integration
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="truncate text-base font-semibold text-foreground">{integration.name}</h2>
             <StatusBadge status={integration.status} />
-            <button
-              type="button"
-              onClick={openEditModal}
-              disabled={loading}
-              title="Edit integration"
-              className="grid h-5 w-5 place-items-center rounded text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-40"
-            >
-              <Pencil className="h-3 w-3" />
-            </button>
+            <OrganizationPermissionGate permission={PermissionKeys.INTEGRATIONS_MANAGE}>
+              <button
+                type="button"
+                onClick={openEditModal}
+                disabled={loading}
+                title="Edit integration"
+                className="grid h-5 w-5 place-items-center rounded text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-40"
+              >
+                <Pencil className="h-3 w-3" />
+              </button>
+            </OrganizationPermissionGate>
           </div>
           {integration.description ? (
             <p className="mt-1 text-sm text-muted">{integration.description}</p>
@@ -176,74 +180,84 @@ export function IntegrationDetail({ organizationUuid, integration }: Integration
             Test
           </button>
           {isDatabaseProvider(integration.provider) ? (
-            <button
-              type="button"
-              disabled={loading}
-              onClick={() => syncSchemaMutation.mutateAsync()}
-              title="Sync schema"
-              className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Sync
-            </button>
+            <OrganizationPermissionGate permission={PermissionKeys.INTEGRATIONS_MANAGE}>
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => syncSchemaMutation.mutateAsync()}
+                title="Sync schema"
+                className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Sync
+              </button>
+            </OrganizationPermissionGate>
           ) : null}
           {isOpenApiProvider(integration.provider) ? (
-            <button
-              type="button"
-              disabled={loading}
-              onClick={() => regenerateOpenApiMutation.mutateAsync()}
-              title="Regenerate tools"
-              className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Regenerate
-            </button>
+            <OrganizationPermissionGate permission={PermissionKeys.INTEGRATIONS_MANAGE}>
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => regenerateOpenApiMutation.mutateAsync()}
+                title="Regenerate tools"
+                className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Regenerate
+              </button>
+            </OrganizationPermissionGate>
           ) : null}
           {isMcpProvider(integration.provider) ? (
-            <button
-              type="button"
-              disabled={loading}
-              onClick={() => syncMcpToolsMutation.mutateAsync()}
-              title="Sync tools"
-              className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Sync tools
-            </button>
+            <OrganizationPermissionGate permission={PermissionKeys.INTEGRATIONS_MANAGE}>
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => syncMcpToolsMutation.mutateAsync()}
+                title="Sync tools"
+                className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Sync tools
+              </button>
+            </OrganizationPermissionGate>
           ) : null}
-          {integration.status === IntegrationStatuses.ACTIVE ? (
+          <OrganizationPermissionGate permission={PermissionKeys.INTEGRATIONS_MANAGE}>
+            {integration.status === IntegrationStatuses.ACTIVE ? (
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => setConfirmDialog({ action: 'disable' })}
+                title="Disable integration"
+                className="inline-flex h-9 items-center gap-2 rounded-md border border-red-500/40 bg-red-500/10 px-3 text-sm text-red-600 hover:bg-red-500/20 dark:text-red-400 disabled:opacity-50"
+              >
+                <PowerOff className="h-4 w-4" />
+                Disable
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => setConfirmDialog({ action: 'enable' })}
+                title="Enable integration"
+                className="inline-flex h-9 items-center gap-2 rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 text-sm text-emerald-600 hover:bg-emerald-500/20 dark:text-emerald-400 disabled:opacity-50"
+              >
+                <Power className="h-4 w-4" />
+                Enable
+              </button>
+            )}
+          </OrganizationPermissionGate>
+          <OrganizationPermissionGate permission={PermissionKeys.INTEGRATIONS_MANAGE}>
             <button
               type="button"
               disabled={loading}
-              onClick={() => setConfirmDialog({ action: 'disable' })}
-              title="Disable integration"
-              className="inline-flex h-9 items-center gap-2 rounded-md border border-red-500/40 bg-red-500/10 px-3 text-sm text-red-600 hover:bg-red-500/20 dark:text-red-400 disabled:opacity-50"
+              onClick={() => setConfirmDialog({ action: 'remove' })}
+              title="Remove integration"
+              className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 disabled:opacity-50"
             >
-              <PowerOff className="h-4 w-4" />
-              Disable
+              <Trash2 className="h-4 w-4" />
+              Remove
             </button>
-          ) : (
-            <button
-              type="button"
-              disabled={loading}
-              onClick={() => setConfirmDialog({ action: 'enable' })}
-              title="Enable integration"
-              className="inline-flex h-9 items-center gap-2 rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 text-sm text-emerald-600 hover:bg-emerald-500/20 dark:text-emerald-400 disabled:opacity-50"
-            >
-              <Power className="h-4 w-4" />
-              Enable
-            </button>
-          )}
-          <button
-            type="button"
-            disabled={loading}
-            onClick={() => setConfirmDialog({ action: 'remove' })}
-            title="Remove integration"
-            className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 disabled:opacity-50"
-          >
-            <Trash2 className="h-4 w-4" />
-            Remove
-          </button>
+          </OrganizationPermissionGate>
         </div>
 
         <ConfirmationDialog
@@ -383,11 +397,13 @@ export function IntegrationDetail({ organizationUuid, integration }: Integration
                       <p className="mt-1 text-xs text-muted">{action.required_permission_key}</p>
                     ) : null}
                   </div>
+                  <OrganizationPermissionGate permission={PermissionKeys.INTEGRATIONS_MANAGE}>
+                    {(allowed) => (
                   <button
                     type="button"
                     role="switch"
                     aria-checked={action.enabled}
-                    disabled={loading || isLocked}
+                    disabled={loading || isLocked || !allowed}
                     onClick={() =>
                       toggleActionMutation.mutate({
                         action_uuid: action.uuid,
@@ -397,7 +413,7 @@ export function IntegrationDetail({ organizationUuid, integration }: Integration
                     className={cn(
                       'relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors',
                       action.enabled ? 'bg-accent' : 'bg-border',
-                      (loading || isLocked) && 'cursor-not-allowed opacity-60',
+                      (loading || isLocked || !allowed) && 'cursor-not-allowed opacity-60',
                     )}
                   >
                     <span
@@ -407,6 +423,8 @@ export function IntegrationDetail({ organizationUuid, integration }: Integration
                       )}
                     />
                   </button>
+                    )}
+                  </OrganizationPermissionGate>
                 </div>
               );
             })

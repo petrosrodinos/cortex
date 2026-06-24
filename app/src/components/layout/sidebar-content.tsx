@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { canAccessNavItem } from '@/lib/organization-permissions';
+import { useOrganizationPermissions } from '@/hooks/use-organization-permissions';
 import { useAuthStore } from '@/stores/auth';
 import { navItems } from './utils/sidebar-content.utils';
 
@@ -70,9 +72,17 @@ function NavItem({
   );
 }
 
-export default function SidebarContent({ collapsed, onNavigate }: SidebarContentProps) {
-  const role = useAuthStore((state) => state.role);
-  const visibleNavItems = navItems.filter((item) => !item.roles || (role && item.roles.includes(role)));
+function SidebarNavItems({ collapsed, onNavigate }: SidebarContentProps) {
+  const userRole = useAuthStore((state) => state.role);
+  const { organizationRole, organizationPermissions } = useOrganizationPermissions();
+
+  const visibleNavItems = navItems.filter((item) =>
+    canAccessNavItem(item, {
+      userRole,
+      organizationRole,
+      organizationPermissions,
+    }),
+  );
 
   return (
     <ul className="space-y-0.5">
@@ -89,4 +99,8 @@ export default function SidebarContent({ collapsed, onNavigate }: SidebarContent
       ))}
     </ul>
   );
+}
+
+export default function SidebarContent({ collapsed, onNavigate }: SidebarContentProps) {
+  return <SidebarNavItems collapsed={collapsed} onNavigate={onNavigate} />;
 }

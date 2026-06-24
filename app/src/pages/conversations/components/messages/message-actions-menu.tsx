@@ -1,16 +1,20 @@
 import type { FC, Key } from 'react';
 import { Button, Dropdown, Label } from '@heroui/react';
 import { Bot, Copy, CornerDownRight, MoreHorizontal, RotateCcw, Trash2 } from 'lucide-react';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import type { Message } from '@/features/conversations/interfaces/conversation.interfaces';
 import { MessageRoles } from '@/features/conversations/interfaces/conversation.interfaces';
+import { RoleTypes } from '@/features/user/interfaces/user.interface';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/stores/auth';
 
 interface MessageActionsMenuProps {
   message: Message;
-  canDelete?: boolean;
   canRetry?: boolean;
   showReply?: boolean;
+  readOnly?: boolean;
   isDeleting?: boolean;
   onReply: (message: Message) => void;
   onRetry?: (message: Message) => void;
@@ -21,9 +25,9 @@ interface MessageActionsMenuProps {
 
 export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
   message,
-  canDelete = false,
   canRetry = false,
   showReply = true,
+  readOnly = false,
   isDeleting = false,
   onReply,
   onRetry,
@@ -31,7 +35,12 @@ export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
   onCreateAgent,
   className,
 }) => {
+  const isSuperAdmin = useAuthStore((state) => state.role) === RoleTypes.SUPER_ADMIN;
   const hasContent = Boolean(message.content?.trim());
+  const showDelete =
+    Boolean(onDelete) &&
+    (readOnly ? message.role === MessageRoles.ASSISTANT && isSuperAdmin : isSuperAdmin);
+
   const handleAction = async (key: Key) => {
     if (key === 'copy') {
       if (!message.content) {
@@ -104,12 +113,14 @@ export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
             </Dropdown.Item>
           ) : null}
           {message.role === MessageRoles.USER && canRetry && onRetry ? (
-            <Dropdown.Item id="retry" textValue="Retry" className="rounded-lg px-2 py-2">
-              <RotateCcw className="h-4 w-4 shrink-0 text-muted" />
-              <Label className="text-sm">Retry</Label>
-            </Dropdown.Item>
+            <OrganizationPermissionGate permission={PermissionKeys.CONVERSATIONS_WRITE}>
+              <Dropdown.Item id="retry" textValue="Retry" className="rounded-lg px-2 py-2">
+                <RotateCcw className="h-4 w-4 shrink-0 text-muted" />
+                <Label className="text-sm">Retry</Label>
+              </Dropdown.Item>
+            </OrganizationPermissionGate>
           ) : null}
-          {canDelete && onDelete ? (
+          {showDelete ? (
             <Dropdown.Item id="delete" textValue="Delete" className="rounded-lg px-2 py-2 text-red-400">
               <Trash2 className="h-4 w-4 shrink-0" />
               <Label className="text-sm">Delete</Label>

@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
+import { PermissionKeys } from '@/modules/roles/permissions';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
@@ -23,7 +24,7 @@ export class McpIntegrationsController {
   }
 
   @Post()
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   async create(@Param('organization_uuid') organizationUuid: string, @Body() dto: CreateMcpIntegrationDto) {
     return await this.mcpIntegrationsService.create(organizationUuid, dto);
   }
@@ -37,7 +38,7 @@ export class McpIntegrationsController {
   }
 
   @Post(':integration_uuid/sync-tools')
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   async syncTools(
     @Param('organization_uuid') organizationUuid: string,
     @Param('integration_uuid') integrationUuid: string,

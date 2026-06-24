@@ -1,4 +1,5 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
+import { OrganizationRoleTypes } from '@/modules/roles/permissions';
 import { OrganizationsService } from './organizations.service';
 import { OrganizationMemberStatus } from 'generated/prisma';
 
@@ -40,16 +41,17 @@ describe('OrganizationsService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     tx.organization.create.mockResolvedValue({ id: 7, uuid: 'org-uuid', name: 'Acme', slug: 'acme' });
-    tx.organizationRole.findFirst.mockResolvedValue({ id: 11, uuid: 'owner-role-uuid', name: 'Owner' });
+    tx.organizationRole.findFirst.mockResolvedValue({ id: 11, uuid: 'owner-role-uuid', name: OrganizationRoleTypes.OWNER });
     tx.organizationRole.findMany.mockResolvedValue([
-      { id: 11, uuid: 'owner-role-uuid', name: 'Owner' },
-      { id: 12, uuid: 'admin-role-uuid', name: 'Admin' },
-      { id: 13, uuid: 'manager-role-uuid', name: 'Manager' },
-      { id: 14, uuid: 'employee-role-uuid', name: 'Employee' },
+      { id: 11, uuid: 'owner-role-uuid', name: OrganizationRoleTypes.OWNER },
+      { id: 12, uuid: 'admin-role-uuid', name: OrganizationRoleTypes.ADMIN },
+      { id: 13, uuid: 'manager-role-uuid', name: OrganizationRoleTypes.MANAGER },
+      { id: 14, uuid: 'employee-role-uuid', name: OrganizationRoleTypes.EMPLOYEE },
     ]);
     tx.permission.findMany.mockResolvedValue([
       { id: 1, uuid: 'org-update-permission-uuid', key: 'org:update' },
       { id: 2, uuid: 'files-read-permission-uuid', key: 'files:read' },
+      { id: 3, uuid: 'legacy-permission-uuid', key: 'files:write' },
     ]);
   });
 
@@ -68,10 +70,10 @@ describe('OrganizationsService', () => {
     });
     expect(tx.organizationRole.createMany).toHaveBeenCalledWith({
       data: expect.arrayContaining([
-        expect.objectContaining({ org_uuid: 'org-uuid', name: 'Owner', is_system: true }),
-        expect.objectContaining({ org_uuid: 'org-uuid', name: 'Admin', is_system: true }),
-        expect.objectContaining({ org_uuid: 'org-uuid', name: 'Manager', is_system: true }),
-        expect.objectContaining({ org_uuid: 'org-uuid', name: 'Employee', is_system: true }),
+        expect.objectContaining({ org_uuid: 'org-uuid', name: OrganizationRoleTypes.OWNER, is_system: true }),
+        expect.objectContaining({ org_uuid: 'org-uuid', name: OrganizationRoleTypes.ADMIN, is_system: true }),
+        expect.objectContaining({ org_uuid: 'org-uuid', name: OrganizationRoleTypes.MANAGER, is_system: true }),
+        expect.objectContaining({ org_uuid: 'org-uuid', name: OrganizationRoleTypes.EMPLOYEE, is_system: true }),
       ]),
     });
     expect(tx.organizationMember.create).toHaveBeenCalledWith({
@@ -82,28 +84,27 @@ describe('OrganizationsService', () => {
         status: OrganizationMemberStatus.ACTIVE,
       }),
     });
-    expect(tx.rolePermission.createMany).toHaveBeenCalledWith({
-      data: expect.arrayContaining([
-        { role_uuid: 'owner-role-uuid', permission_uuid: 'org-update-permission-uuid' },
-        { role_uuid: 'owner-role-uuid', permission_uuid: 'files-read-permission-uuid' },
-        { role_uuid: 'admin-role-uuid', permission_uuid: 'org-update-permission-uuid' },
-        { role_uuid: 'admin-role-uuid', permission_uuid: 'files-read-permission-uuid' },
-        { role_uuid: 'manager-role-uuid', permission_uuid: 'files-read-permission-uuid' },
-        { role_uuid: 'employee-role-uuid', permission_uuid: 'files-read-permission-uuid' },
-      ]),
-      skipDuplicates: true,
-    });
+    expect(tx.rolePermission.createMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.arrayContaining([
+          { role_uuid: 'owner-role-uuid', permission_uuid: 'org-update-permission-uuid' },
+          { role_uuid: 'owner-role-uuid', permission_uuid: 'files-read-permission-uuid' },
+          { role_uuid: 'owner-role-uuid', permission_uuid: 'legacy-permission-uuid' },
+        ]),
+        skipDuplicates: true,
+      }),
+    );
   });
 
   it('blocks organization deletion unless the user is Owner', async () => {
-    prisma.organizationMember.findFirst.mockResolvedValue({ role: { name: 'Admin' } });
+    prisma.organizationMember.findFirst.mockResolvedValue({ role: { name: OrganizationRoleTypes.ADMIN } });
     const service = new OrganizationsService(prisma);
 
     await expect(service.delete('user-uuid', 'org-uuid')).rejects.toBeInstanceOf(ForbiddenException);
   });
 
   it('does not delete the user final active organization', async () => {
-    prisma.organizationMember.findFirst.mockResolvedValue({ role: { name: 'Owner' } });
+    prisma.organizationMember.findFirst.mockResolvedValue({ role: { name: OrganizationRoleTypes.OWNER } });
     prisma.organization.count.mockResolvedValue(1);
     const service = new OrganizationsService(prisma);
 

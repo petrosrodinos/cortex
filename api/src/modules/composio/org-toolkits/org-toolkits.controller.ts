@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
+import { PermissionKeys } from '@/modules/roles/permissions';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
@@ -40,6 +41,7 @@ export class OrgToolkitsController {
   constructor(private readonly service: OrgToolkitsService) {}
 
   @Get('toolkits')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_READ)
   listToolkits(
     @Param('organization_uuid') organizationUuid: string,
     @Query(new ZodValidationPipe(ListOrgToolkitsSchema))
@@ -49,6 +51,7 @@ export class OrgToolkitsController {
   }
 
   @Get('toolkits/count')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_READ)
   countToolkits(
     @Param('organization_uuid') organizationUuid: string,
     @Query(new ZodValidationPipe(CountOrgToolkitsSchema))
@@ -58,6 +61,7 @@ export class OrgToolkitsController {
   }
 
   @Get('toolkits/:slug/tools')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_READ)
   listToolkitTools(
     @Param('organization_uuid') organizationUuid: string,
     @Param('slug') slug: string,
@@ -68,6 +72,7 @@ export class OrgToolkitsController {
   }
 
   @Get('toolkits/:slug')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_READ)
   getToolkit(
     @Param('organization_uuid') organizationUuid: string,
     @Param('slug') slug: string,
@@ -76,7 +81,7 @@ export class OrgToolkitsController {
   }
 
   @Post('toolkits/:slug/enable')
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   enableToolkit(
     @Param('organization_uuid') organizationUuid: string,
     @Param('slug') slug: string,
@@ -85,7 +90,7 @@ export class OrgToolkitsController {
   }
 
   @Post('toolkits/:slug/disable')
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   disableToolkit(
     @Param('organization_uuid') organizationUuid: string,
     @Param('slug') slug: string,
@@ -94,7 +99,7 @@ export class OrgToolkitsController {
   }
 
   @Patch('tools/:tool_slug')
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   updateToolPermission(
     @Param('organization_uuid') organizationUuid: string,
     @Param('tool_slug') toolSlug: string,

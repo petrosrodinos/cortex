@@ -9,6 +9,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
+import { PermissionKeys } from '@/modules/roles/permissions';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
@@ -57,6 +59,7 @@ export class ComposioConnectionsController {
   }
 
   @Get('accounts')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_READ)
   listAccounts(
     @Param('organization_uuid') organizationUuid: string,
     @Query('toolkit_slug') toolkitSlug?: string,

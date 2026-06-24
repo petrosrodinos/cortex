@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { Button, Dropdown, Label, Switch } from '@heroui/react';
 import { MessageSquare, MoreHorizontal, Pencil, Power, Trash2 } from 'lucide-react';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import {
   AgentCronPresetLabels,
   AgentCronPresets,
@@ -70,16 +72,20 @@ export function AgentsList({
                 <td className="px-4 py-3 font-medium text-foreground">{agent.title}</td>
                 <td className="px-4 py-3 text-muted">{formatScheduleLabel(agent.cron_expression)}</td>
                 <td className="px-4 py-3">
-                  <Switch
-                    isSelected={agent.is_enabled}
-                    isDisabled={togglingUuid === agent.uuid}
-                    onChange={() => onToggle(agent)}
-                    size="sm"
-                  >
-                    <Switch.Control>
-                      <Switch.Thumb />
-                    </Switch.Control>
-                  </Switch>
+                  <OrganizationPermissionGate permission={PermissionKeys.AGENTS_WRITE}>
+                    {(allowed) => (
+                      <Switch
+                        isSelected={agent.is_enabled}
+                        isDisabled={!allowed || togglingUuid === agent.uuid}
+                        onChange={() => onToggle(agent)}
+                        size="sm"
+                      >
+                        <Switch.Control>
+                          <Switch.Thumb />
+                        </Switch.Control>
+                      </Switch>
+                    )}
+                  </OrganizationPermissionGate>
                 </td>
                 <td className="px-4 py-3 text-muted">
                   {agent.last_run_at ? formatDateTime(agent.last_run_at) : '—'}
@@ -116,18 +122,22 @@ export function AgentsList({
                             <MessageSquare className="h-4 w-4 shrink-0 text-muted" />
                             <Label className="text-sm">View conversation</Label>
                           </Dropdown.Item>
-                          <Dropdown.Item id="edit" textValue="Edit" className="gap-2.5 rounded-lg px-2 py-2">
-                            <Pencil className="h-4 w-4 shrink-0 text-muted" />
-                            <Label className="text-sm">Edit</Label>
-                          </Dropdown.Item>
-                          <Dropdown.Item id="toggle" textValue={agent.is_enabled ? 'Disable' : 'Enable'} className="gap-2.5 rounded-lg px-2 py-2">
-                            <Power className="h-4 w-4 shrink-0 text-muted" />
-                            <Label className="text-sm">{agent.is_enabled ? 'Disable' : 'Enable'}</Label>
-                          </Dropdown.Item>
-                          <Dropdown.Item id="delete" textValue="Delete" className="gap-2.5 rounded-lg px-2 py-2 text-red-500">
-                            <Trash2 className="h-4 w-4 shrink-0" />
-                            <Label className="text-sm">Delete</Label>
-                          </Dropdown.Item>
+                          <OrganizationPermissionGate permission={PermissionKeys.AGENTS_WRITE}>
+                            <Dropdown.Item id="edit" textValue="Edit" className="gap-2.5 rounded-lg px-2 py-2">
+                              <Pencil className="h-4 w-4 shrink-0 text-muted" />
+                              <Label className="text-sm">Edit</Label>
+                            </Dropdown.Item>
+                            <Dropdown.Item id="toggle" textValue={agent.is_enabled ? 'Disable' : 'Enable'} className="gap-2.5 rounded-lg px-2 py-2">
+                              <Power className="h-4 w-4 shrink-0 text-muted" />
+                              <Label className="text-sm">{agent.is_enabled ? 'Disable' : 'Enable'}</Label>
+                            </Dropdown.Item>
+                          </OrganizationPermissionGate>
+                          <OrganizationPermissionGate permission={PermissionKeys.AGENTS_DELETE}>
+                            <Dropdown.Item id="delete" textValue="Delete" className="gap-2.5 rounded-lg px-2 py-2 text-red-500">
+                              <Trash2 className="h-4 w-4 shrink-0" />
+                              <Label className="text-sm">Delete</Label>
+                            </Dropdown.Item>
+                          </OrganizationPermissionGate>
                         </Dropdown.Menu>
                       </Dropdown.Popover>
                     </Dropdown>

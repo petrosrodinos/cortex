@@ -12,7 +12,8 @@ import type {
   CreateDocumentBoardPayload,
   DocumentBoard,
 } from '@/features/document-boards/interfaces/document-board.interfaces';
-import { useAuthStore } from '@/stores/auth';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import { useOrganizationStore } from '@/stores/organization';
 import { BoardModal } from './components/board-modal';
 import { BoardsList } from './components/boards-list';
@@ -23,9 +24,6 @@ type DeleteTarget = { uuid: string; name: string } | null;
 
 const DocumentBoardsPage: FC = () => {
   const organizationUuid = useOrganizationStore((state) => state.current_organization?.uuid);
-  const canWrite = useAuthStore((state) =>
-    (state.organization_permissions as string[]).includes('files:write'),
-  );
 
   const [modalState, setModalState] = useState<ModalState>(null);
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget>(null);
@@ -58,7 +56,7 @@ const DocumentBoardsPage: FC = () => {
             Shared collections of documents for your organisation members.
           </p>
         </div>
-        {canWrite ? (
+        <OrganizationPermissionGate permission={PermissionKeys.DOCUMENTS_WRITE}>
           <button
             type="button"
             onClick={() => setModalState({ mode: 'create' })}
@@ -67,7 +65,7 @@ const DocumentBoardsPage: FC = () => {
             <Plus className="h-4 w-4" />
             New board
           </button>
-        ) : null}
+        </OrganizationPermissionGate>
       </div>
 
       {isLoading ? (
@@ -75,7 +73,6 @@ const DocumentBoardsPage: FC = () => {
       ) : (
         <BoardsList
           boards={boards}
-          canWrite={canWrite}
           onEdit={(board) => setModalState({ mode: 'edit', board })}
           onDelete={(board) => setDeleteTarget({ uuid: board.uuid, name: board.name })}
         />

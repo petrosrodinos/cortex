@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
+import { PermissionKeys } from '@/modules/roles/permissions';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
@@ -19,7 +20,7 @@ export class DatabaseIntegrationsController {
   constructor(private readonly databaseIntegrationsService: DatabaseIntegrationsService) {}
 
   @Post()
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   async createDatabaseIntegration(
     @Param('organization_uuid') organizationUuid: string,
     @Body() dto: CreateDatabaseIntegrationDto,
@@ -28,7 +29,7 @@ export class DatabaseIntegrationsController {
   }
 
   @Post('test')
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   async testDraftConnection(@Body() dto: TestDatabaseConnectionDto) {
     return await this.databaseIntegrationsService.testDraftConnection(dto);
   }
@@ -42,7 +43,7 @@ export class DatabaseIntegrationsController {
   }
 
   @Post(':integration_uuid/sync')
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   async syncSchema(
     @Param('organization_uuid') organizationUuid: string,
     @Param('integration_uuid') integrationUuid: string,

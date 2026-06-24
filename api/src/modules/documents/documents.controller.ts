@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
+import { PermissionKeys } from '@/modules/roles/permissions';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
@@ -27,6 +29,7 @@ export class DocumentsController {
   constructor(private readonly documents: DocumentsService) {}
 
   @Post()
+  @OrganizationPermission(PermissionKeys.DOCUMENTS_WRITE)
   @UseInterceptors(FileInterceptor('file'))
   upload(
     @CurrentUser('uuid') userUuid: string,
@@ -37,6 +40,7 @@ export class DocumentsController {
   }
 
   @Get()
+  @OrganizationPermission(PermissionKeys.DOCUMENTS_READ)
   findAll(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -45,6 +49,7 @@ export class DocumentsController {
   }
 
   @Get(':document_uuid/widget-content')
+  @OrganizationPermission(PermissionKeys.DOCUMENTS_READ)
   @Header('Content-Type', 'text/html; charset=utf-8')
   getWidgetContent(
     @CurrentUser('uuid') userUuid: string,

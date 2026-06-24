@@ -1,5 +1,14 @@
 import type { Permission } from '@/features/permissions/interfaces/permission.interfaces';
 
+export const OrganizationRoleTypes = {
+  OWNER: 'Owner',
+  ADMIN: 'Admin',
+  MANAGER: 'Manager',
+  EMPLOYEE: 'Employee',
+} as const;
+
+export type OrganizationRoleType = (typeof OrganizationRoleTypes)[keyof typeof OrganizationRoleTypes];
+
 export interface OrganizationRole {
   id: number;
   uuid: string;

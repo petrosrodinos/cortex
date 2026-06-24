@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 import { useOrganizationStore } from '@/stores/organization';
-import { useAuthStore } from '@/stores/auth';
-import { useGetMembers } from '@/features/members/hooks/use-members';
 import { useGetUsage, useGetUsageRecords } from '@/features/executions/hooks/use-executions';
 import { UsageFilters } from './components/usage-filters';
 import { UsageRecordsTable } from './components/usage-records-table';
@@ -10,8 +8,6 @@ import { useUsageFilters } from './hooks/use-usage-filters';
 
 export default function UsagePage() {
   const orgUuid = useOrganizationStore((state) => state.current_organization?.uuid);
-  const organizationPermissions = useAuthStore((state) => state.organization_permissions ?? []);
-  const organizationRole = useAuthStore((state) => state.organization_role);
   const {
     dateFrom,
     dateTo,
@@ -23,10 +19,6 @@ export default function UsagePage() {
     resetFilters,
   } = useUsageFilters();
 
-  const canFilterByMember =
-    organizationRole === 'Owner' || organizationPermissions.includes('ai:usage:read');
-
-  const membersQuery = useGetMembers(canFilterByMember ? orgUuid : undefined);
   const usageQuery = useGetUsage(orgUuid, query);
   const recordsQuery = useGetUsageRecords(orgUuid, query);
 
@@ -49,12 +41,10 @@ export default function UsagePage() {
       </div>
 
       <UsageFilters
+        organizationUuid={orgUuid}
         value={filterValue}
         onChange={updateFilters}
         onReset={resetFilters}
-        members={membersQuery.data ?? []}
-        showMemberFilter={canFilterByMember}
-        isLoadingMembers={membersQuery.isLoading}
       />
 
       <UsageSummarySection usage={usageQuery.data} isLoading={usageQuery.isLoading} />

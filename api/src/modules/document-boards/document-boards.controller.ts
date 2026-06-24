@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
+import { PermissionKeys } from '@/modules/roles/permissions';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
@@ -30,6 +31,7 @@ export class DocumentBoardsController {
   constructor(private readonly boards: DocumentBoardsService) {}
 
   @Get()
+  @OrganizationPermission(PermissionKeys.DOCUMENTS_READ)
   findAll(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -38,7 +40,7 @@ export class DocumentBoardsController {
   }
 
   @Post()
-  @OrganizationPermission('files:write')
+  @OrganizationPermission(PermissionKeys.DOCUMENTS_WRITE)
   create(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -48,6 +50,7 @@ export class DocumentBoardsController {
   }
 
   @Get(':board_uuid')
+  @OrganizationPermission(PermissionKeys.DOCUMENTS_READ)
   findOne(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -57,7 +60,7 @@ export class DocumentBoardsController {
   }
 
   @Patch(':board_uuid')
-  @OrganizationPermission('files:write')
+  @OrganizationPermission(PermissionKeys.DOCUMENTS_WRITE)
   update(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -68,7 +71,7 @@ export class DocumentBoardsController {
   }
 
   @Delete(':board_uuid')
-  @OrganizationPermission('files:delete')
+  @OrganizationPermission(PermissionKeys.DOCUMENTS_DELETE)
   remove(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -78,7 +81,7 @@ export class DocumentBoardsController {
   }
 
   @Post(':board_uuid/items')
-  @OrganizationPermission('files:write')
+  @OrganizationPermission(PermissionKeys.DOCUMENTS_WRITE)
   addItem(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -89,7 +92,7 @@ export class DocumentBoardsController {
   }
 
   @Delete(':board_uuid/items/:item_uuid')
-  @OrganizationPermission('files:write')
+  @OrganizationPermission(PermissionKeys.DOCUMENTS_WRITE)
   removeItem(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,

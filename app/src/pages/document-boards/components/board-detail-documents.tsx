@@ -3,11 +3,10 @@ import { BoardDocumentCard } from './board-document-card';
 
 type BoardDetailDocumentsProps = {
   items: DocumentBoardItem[];
-  canWrite: boolean;
   onRemove: (itemUuid: string) => void;
 };
 
-export function BoardDetailDocuments({ items, canWrite, onRemove }: BoardDetailDocumentsProps) {
+export function BoardDetailDocuments({ items, onRemove }: BoardDetailDocumentsProps) {
   if (items.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-border px-6 py-12 text-center">
@@ -22,12 +21,7 @@ export function BoardDetailDocuments({ items, canWrite, onRemove }: BoardDetailD
   return (
     <ul className="space-y-2">
       {items.map((item) => (
-        <BoardDocumentCard
-          key={item.uuid}
-          item={item}
-          canWrite={canWrite}
-          onRemove={onRemove}
-        />
+        <BoardDocumentCard key={item.uuid} item={item} onRemove={onRemove} />
       ))}
     </ul>
   );

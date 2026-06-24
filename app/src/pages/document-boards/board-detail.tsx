@@ -9,7 +9,8 @@ import {
   useRemoveDocumentFromBoard,
 } from '@/features/document-boards/hooks/use-document-boards';
 import { useUploadDocument } from '@/features/files/hooks/use-files';
-import { useAuthStore } from '@/stores/auth';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import { useOrganizationStore } from '@/stores/organization';
 import { Routes } from '@/routes/routes';
 import { AddFromConversationModal } from './components/add-from-conversation-modal';
@@ -19,9 +20,6 @@ import { BoardDetailSkeleton } from './components/board-detail-skeleton';
 const DocumentBoardDetailPage: FC = () => {
   const { boardUuid } = useParams<{ boardUuid: string }>();
   const organizationUuid = useOrganizationStore((state) => state.current_organization?.uuid);
-  const canWrite = useAuthStore((state) =>
-    (state.organization_permissions as string[]).includes('files:write'),
-  );
 
   const [addFromConvOpen, setAddFromConvOpen] = useState(false);
   const [removeTarget, setRemoveTarget] = useState<string | null>(null);
@@ -84,7 +82,7 @@ const DocumentBoardDetailPage: FC = () => {
         ) : null}
       </div>
 
-      {canWrite ? (
+      <OrganizationPermissionGate permission={PermissionKeys.DOCUMENTS_WRITE}>
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -110,11 +108,10 @@ const DocumentBoardDetailPage: FC = () => {
             onChange={handleFileChange}
           />
         </div>
-      ) : null}
+      </OrganizationPermissionGate>
 
       <BoardDetailDocuments
         items={board.items}
-        canWrite={canWrite}
         onRemove={(itemUuid) => setRemoveTarget(itemUuid)}
       />
 

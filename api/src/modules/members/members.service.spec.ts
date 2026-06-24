@@ -1,4 +1,5 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
+import { OrganizationRoleTypes } from '@/modules/roles/permissions';
 import { MembersService } from './members.service';
 import { OrganizationMemberStatus } from 'generated/prisma';
 
@@ -38,7 +39,7 @@ describe('MembersService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     organizations_service.requireActiveMember.mockResolvedValue({
-      role: { name: 'Owner', permissions: [] },
+      role: { name: OrganizationRoleTypes.OWNER, permissions: [] },
     });
     prisma.user.findUnique
       .mockResolvedValueOnce({ uuid: 'manager-uuid', email: 'manager@example.com' })
@@ -65,7 +66,7 @@ describe('MembersService', () => {
     prisma.organization.findUnique.mockResolvedValue({ uuid: 'organization-uuid' });
     prisma.organizationMember.findFirst.mockResolvedValue({
       uuid: 'member-uuid',
-      role: { name: 'Owner' },
+      role: { name: OrganizationRoleTypes.OWNER },
     });
     const service = new MembersService(
       prisma,
@@ -142,7 +143,7 @@ describe('MembersService', () => {
       uuid: 'organization-member-uuid',
       status: OrganizationMemberStatus.INVITED,
       user: { uuid: 'member-user-uuid', email: 'member@example.com', password: '' },
-      role: { name: 'Employee' },
+      role: { name: OrganizationRoleTypes.EMPLOYEE },
     });
     prisma.user.findUnique.mockResolvedValue({ uuid: 'manager-uuid', email: 'manager@example.com' });
     const service = new MembersService(
@@ -170,7 +171,7 @@ describe('MembersService', () => {
       uuid: 'organization-member-uuid',
       status: OrganizationMemberStatus.INVITED,
       user: { uuid: 'member-user-uuid', email: 'member@example.com', password: '' },
-      role: { name: 'Employee' },
+      role: { name: OrganizationRoleTypes.EMPLOYEE },
     });
     const service = new MembersService(
       prisma,

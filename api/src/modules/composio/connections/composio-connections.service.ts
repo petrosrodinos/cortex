@@ -16,9 +16,12 @@ import { ComposioCallbackDto } from './dto/composio-callback.dto';
 import { ConnectComposioDto } from './dto/connect-composio.dto';
 import { OrgToolkitsService } from '../org-toolkits/org-toolkits.service';
 import { resolveComposioAccountLabel } from '@/shared/services/ai/agents/tools/email-tool.utils';
+import { hasOrganizationPermission } from '@/shared/utils/organization-permission.utils';
+import { PermissionKeys } from '@/modules/roles/permissions';
 
 type AuthUser = {
   uuid: string;
+  organization_role?: string;
   organization_permissions?: string[];
 };
 
@@ -705,11 +708,30 @@ export class ComposioConnectionsService {
   ): void {
     if (connectionTier === ComposioConnectionTier.ORG_SHARED) {
       this.assertManagePermission(user);
+      return;
+    }
+
+    if (
+      !hasOrganizationPermission(
+        user.organization_permissions,
+        user.organization_role,
+        PermissionKeys.INTEGRATIONS_CONNECT,
+      )
+    ) {
+      throw new ForbiddenException(
+        'Missing organization integration connect permission',
+      );
     }
   }
 
   private assertManagePermission(user: AuthUser): void {
-    if (!user.organization_permissions?.includes('org:integrations:manage')) {
+    if (
+      !hasOrganizationPermission(
+        user.organization_permissions,
+        user.organization_role,
+        PermissionKeys.INTEGRATIONS_MANAGE,
+      )
+    ) {
       throw new ForbiddenException(
         'Missing organization integration management permission',
       );

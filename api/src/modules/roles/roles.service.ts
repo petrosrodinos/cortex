@@ -1,20 +1,28 @@
 import { BadRequestException, ForbiddenException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
+import { OrganizationsService } from '@/modules/organizations/organizations.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { SetRolePermissionsDto } from './dto/set-role-permissions.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { membershipHasPermission } from '@/shared/utils/organization-permission.utils';
+import { OrganizationRoleTypes, PermissionKeys } from '@/modules/roles/permissions';
 import { OrganizationMemberStatus } from 'generated/prisma';
 
 @Injectable()
 export class RolesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly organizationsService: OrganizationsService,
+  ) {}
 
   async findAll(user_uuid: string, organization_uuid: string) {
     try {
-      const organization = await this.requireActiveMember(user_uuid, organization_uuid);
+      await this.requirePermission(user_uuid, organization_uuid, PermissionKeys.ORG_ROLES_READ);
+
+      const membership = await this.organizationsService.requireActiveMember(user_uuid, organization_uuid);
 
       return await this.prisma.organizationRole.findMany({
-        where: { org_uuid: organization.uuid },
+        where: { org_uuid: membership.organization.uuid },
         include: { permissions: { include: { permission: true } } },
         orderBy: [{ is_system: 'desc' }, { name: 'asc' }],
       });
@@ -33,12 +41,13 @@ export class RolesService {
 
   async create(user_uuid: string, organization_uuid: string, dto: CreateRoleDto) {
     try {
-      const organization = await this.requireRoleManager(user_uuid, organization_uuid);
+      await this.requirePermission(user_uuid, organization_uuid, PermissionKeys.ORG_ROLES_CREATE);
+      const membership = await this.organizationsService.requireActiveMember(user_uuid, organization_uuid);
 
       return await this.prisma.$transaction(async (tx) => {
         const role = await tx.organizationRole.create({
           data: {
-            org_uuid: organization.uuid,
+            org_uuid: membership.organization.uuid,
             name: dto.name,
             is_system: false,
           },
@@ -60,8 +69,9 @@ export class RolesService {
 
   async update(user_uuid: string, organization_uuid: string, organization_role_uuid: string, dto: UpdateRoleDto) {
     try {
-      const organization = await this.requireRoleManager(user_uuid, organization_uuid);
-      const role = await this.getOrganizationRole(organization.uuid, organization_role_uuid);
+      await this.requirePermission(user_uuid, organization_uuid, PermissionKeys.ORG_ROLES_UPDATE);
+      const membership = await this.organizationsService.requireActiveMember(user_uuid, organization_uuid);
+      const role = await this.getOrganizationRole(membership.organization.uuid, organization_role_uuid);
 
       if (role.is_system) {
         throw new BadRequestException('System roles cannot be updated');
@@ -79,8 +89,13 @@ export class RolesService {
 
   async setPermissions(user_uuid: string, organization_uuid: string, organization_role_uuid: string, dto: SetRolePermissionsDto) {
     try {
-      const organization = await this.requireRoleManager(user_uuid, organization_uuid);
-      const role = await this.getOrganizationRole(organization.uuid, organization_role_uuid);
+      await this.requirePermission(user_uuid, organization_uuid, PermissionKeys.ORG_ROLES_UPDATE);
+      const membership = await this.organizationsService.requireActiveMember(user_uuid, organization_uuid);
+      const role = await this.getOrganizationRole(membership.organization.uuid, organization_role_uuid);
+
+      if (role.name === OrganizationRoleTypes.OWNER) {
+        throw new BadRequestException('Owner role permissions cannot be modified');
+      }
 
       return await this.prisma.$transaction(async (tx) => {
         await this.setPermissionsTx(tx, role.uuid, dto.permission_keys);
@@ -97,8 +112,9 @@ export class RolesService {
 
   async delete(user_uuid: string, organization_uuid: string, organization_role_uuid: string) {
     try {
-      const organization = await this.requireRoleManager(user_uuid, organization_uuid);
-      const role = await this.getOrganizationRole(organization.uuid, organization_role_uuid);
+      await this.requirePermission(user_uuid, organization_uuid, PermissionKeys.ORG_ROLES_DELETE);
+      const membership = await this.organizationsService.requireActiveMember(user_uuid, organization_uuid);
+      const role = await this.getOrganizationRole(membership.organization.uuid, organization_role_uuid);
 
       if (role.is_system) {
         throw new BadRequestException('System roles cannot be deleted');
@@ -112,67 +128,13 @@ export class RolesService {
     }
   }
 
-  private async requireActiveMember(user_uuid: string, organization_uuid: string) {
+  private async requirePermission(user_uuid: string, organization_uuid: string, permission_key: string) {
     try {
-      const membership = await this.prisma.organizationMember.findFirst({
-        where: {
-          user_uuid: user_uuid,
-          status: OrganizationMemberStatus.ACTIVE,
-          organization: { uuid: organization_uuid },
-        },
-        include: {
-          organization: true,
-          role: {
-            include: {
-              permissions: {
-                include: { permission: true },
-              },
-            },
-          },
-        },
-      });
+      const membership = await this.organizationsService.requireActiveMember(user_uuid, organization_uuid);
 
-      if (!membership) {
-        throw new ForbiddenException('You are not a member of this organization');
-      }
-
-      return membership.organization;
-    } catch (error) {
-      this.handleError(error);
-    }
-  }
-
-  private async requireRoleManager(user_uuid: string, organization_uuid: string) {
-    try {
-      const membership = await this.prisma.organizationMember.findFirst({
-        where: {
-          user_uuid: user_uuid,
-          status: OrganizationMemberStatus.ACTIVE,
-          organization: { uuid: organization_uuid },
-        },
-        include: {
-          organization: true,
-          role: {
-            include: {
-              permissions: {
-                include: { permission: true },
-              },
-            },
-          },
-        },
-      });
-
-      if (!membership) {
-        throw new ForbiddenException('You are not a member of this organization');
-      }
-
-      const permissions = membership.role.permissions?.map((role_permission) => role_permission.permission.key) ?? [];
-
-      if (membership.role.name !== 'Owner' && !permissions.includes('org:roles:update')) {
+      if (!membershipHasPermission(membership, permission_key)) {
         throw new ForbiddenException('Missing organization role permission');
       }
-
-      return membership.organization;
     } catch (error) {
       this.handleError(error);
     }

@@ -24,6 +24,8 @@ import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers
 import { useDeleteAiProvider, useUpdateAiProvider } from '@/features/ai-providers/hooks/use-ai-providers';
 import { Routes } from '@/routes/routes';
 import { cn } from '@/lib/utils';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import {
   AiProviderApiKeyField,
   AiProviderModelSelect,
@@ -123,14 +125,16 @@ export function AiProviderDetail({ organizationUuid, provider }: AiProviderDetai
                 Agents cannot use this provider until you add a valid API key.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={openEdit}
-              disabled={loading}
-              className="ml-auto shrink-0 rounded-md bg-amber-500/20 px-3 py-1.5 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-500/30 dark:text-amber-200"
-            >
-              Add key
-            </button>
+            <OrganizationPermissionGate permission={PermissionKeys.AI_PROVIDERS_MANAGE}>
+              <button
+                type="button"
+                onClick={openEdit}
+                disabled={loading}
+                className="ml-auto shrink-0 rounded-md bg-amber-500/20 px-3 py-1.5 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-500/30 dark:text-amber-200"
+              >
+                Add key
+              </button>
+            </OrganizationPermissionGate>
           </div>
         ) : null}
 
@@ -186,40 +190,42 @@ export function AiProviderDetail({ organizationUuid, provider }: AiProviderDetai
                 </div>
               </div>
 
-              <div className="flex shrink-0 flex-wrap gap-2">
-                <button
-                  type="button"
-                  disabled={loading}
-                  onClick={openEdit}
-                  title="Edit provider"
-                  className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted transition-colors hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
-                >
-                  <Pencil className="h-4 w-4" />
-                  Edit
-                </button>
-                {!provider.is_default ? (
+              <OrganizationPermissionGate permission={PermissionKeys.AI_PROVIDERS_MANAGE}>
+                <div className="flex shrink-0 flex-wrap gap-2">
                   <button
                     type="button"
                     disabled={loading}
-                    onClick={toggleDefault}
-                    title="Set as default"
-                    className="inline-flex h-9 items-center gap-2 rounded-md border border-accent/40 bg-accent/10 px-3 text-sm text-accent transition-colors hover:bg-accent/20 disabled:opacity-50"
+                    onClick={openEdit}
+                    title="Edit provider"
+                    className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm text-muted transition-colors hover:bg-surface-secondary hover:text-foreground disabled:opacity-50"
                   >
-                    <Star className="h-4 w-4" />
-                    Set default
+                    <Pencil className="h-4 w-4" />
+                    Edit
                   </button>
-                ) : null}
-                <button
-                  type="button"
-                  disabled={loading}
-                  onClick={() => setConfirmRemove(true)}
-                  title="Remove provider"
-                  className="inline-flex h-9 items-center gap-2 rounded-md border border-red-500/40 bg-red-500/10 px-3 text-sm text-red-600 transition-colors hover:bg-red-500/20 dark:text-red-400 disabled:opacity-50"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Remove
-                </button>
-              </div>
+                  {!provider.is_default ? (
+                    <button
+                      type="button"
+                      disabled={loading}
+                      onClick={toggleDefault}
+                      title="Set as default"
+                      className="inline-flex h-9 items-center gap-2 rounded-md border border-accent/40 bg-accent/10 px-3 text-sm text-accent transition-colors hover:bg-accent/20 disabled:opacity-50"
+                    >
+                      <Star className="h-4 w-4" />
+                      Set default
+                    </button>
+                  ) : null}
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => setConfirmRemove(true)}
+                    title="Remove provider"
+                    className="inline-flex h-9 items-center gap-2 rounded-md border border-red-500/40 bg-red-500/10 px-3 text-sm text-red-600 transition-colors hover:bg-red-500/20 dark:text-red-400 disabled:opacity-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Remove
+                  </button>
+                </div>
+              </OrganizationPermissionGate>
             </div>
           </div>
 

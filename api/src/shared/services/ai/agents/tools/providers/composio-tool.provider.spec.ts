@@ -1,3 +1,4 @@
+import { PermissionKeys } from '@/modules/roles/permissions';
 import { ForbiddenException } from '@nestjs/common';
 import { ComposioConnectionTier, ToolCallStatus } from 'generated/prisma';
 import { ComposioToolProvider } from './composio-tool.provider';
@@ -16,7 +17,7 @@ describe('ComposioToolProvider', () => {
                     {
                       enabled: true,
                       requires_approval: true,
-                      required_permission_key: 'org:integrations:use',
+                      required_permission_key: PermissionKeys.INTEGRATIONS_CONNECT,
                     },
                   ],
                 },
@@ -69,7 +70,7 @@ describe('ComposioToolProvider', () => {
       userUuid: 'user-uuid',
       conversationUuid: 'conversation-uuid',
       executionUuid: 'execution-uuid',
-      userPermissions: ['org:integrations:use'],
+      userPermissions: [PermissionKeys.INTEGRATIONS_CONNECT],
       documentUuids: [],
       toolkitSlugs: ['slack'],
       progress,

@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { OrganizationMemberStatus, IntegrationStatus } from 'generated/prisma';
 import { AgentActorService } from '../actor/agent-actor.service';
+import { OrganizationRoleTypes } from '@/modules/roles/permissions';
 
 export interface OrganizationToolsContext {
   organizationUuid: string;
@@ -142,7 +143,7 @@ export class OrganizationToolsService {
     permissionKey: string,
     userPermissions: string[],
   ) {
-    if (membership.role.name === 'Owner' || userPermissions.includes(permissionKey)) {
+    if (membership.role.name === OrganizationRoleTypes.OWNER || userPermissions.includes(permissionKey)) {
       return;
     }
 

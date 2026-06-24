@@ -5,9 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Drawer, useOverlayState } from '@heroui/react';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { useOrganizationStore } from '@/stores/organization';
-import { useAuthStore } from '@/stores/auth';
 import { Routes } from '@/routes/routes';
-import { RoleTypes } from '@/features/user/interfaces/user.interface';
 import { useGetIntegrations } from '@/features/integrations/common/hooks/use-integrations';
 import { useGetAiProviders } from '@/features/ai-providers/hooks/use-ai-providers';
 import {
@@ -78,8 +76,6 @@ const ConversationsPage: FC = () => {
   const queryClient = useQueryClient();
   const { conversationUuid } = useParams<{ conversationUuid?: string }>();
   const organizationUuid = useOrganizationStore((state) => state.current_organization?.uuid);
-  const role = useAuthStore((state) => state.role);
-  const isSuperAdmin = role === RoleTypes.SUPER_ADMIN;
   const [draftParts, setDraftParts] = useState<DraftPart[]>(() => createEmptyDraft());
   const [replyTarget, setReplyTarget] = useState<ConversationReplyTarget | null>(null);
   const [activeExecutionId, setActiveExecutionId] = useState<string | null>(null);
@@ -738,7 +734,6 @@ const ConversationsPage: FC = () => {
               onRetryMessage={handleRetryMessage}
               onReplyToMessage={handleReplyToMessage}
               onCreateAgentFromMessage={handleCreateAgentFromMessage}
-              canDeleteMessages={isSuperAdmin}
               onDeleteMessage={handleDeleteMessageRequest}
               isDeletingMessage={deleteMessage.isPending}
               readOnly={isAgentConversation}

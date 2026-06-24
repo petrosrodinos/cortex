@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
+import { PermissionKeys } from '@/modules/roles/permissions';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
@@ -32,16 +33,19 @@ export class IntegrationsController {
   ) {}
 
   @Get()
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_READ)
   async findAll(@Param('organization_uuid') organization_uuid: string) {
     return await this.integrations_service.findAll(organization_uuid);
   }
 
   @Get('tools')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_READ)
   async getEnabledTools(@Param('organization_uuid') organization_uuid: string) {
     return await this.integrations_service.getEnabledTools(organization_uuid);
   }
 
   @Get(':integration_uuid')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_READ)
   async findOne(
     @Param('organization_uuid') organization_uuid: string,
     @Param('integration_uuid') integration_uuid: string,
@@ -53,7 +57,7 @@ export class IntegrationsController {
   }
 
   @Patch(':integration_uuid')
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   async update(
     @Param('organization_uuid') organization_uuid: string,
     @Param('integration_uuid') integration_uuid: string,
@@ -67,7 +71,7 @@ export class IntegrationsController {
   }
 
   @Delete(':integration_uuid')
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   async delete(
     @Param('organization_uuid') organization_uuid: string,
     @Param('integration_uuid') integration_uuid: string,
@@ -79,6 +83,7 @@ export class IntegrationsController {
   }
 
   @Post(':integration_uuid/test')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_READ)
   async testConnection(
     @Param('organization_uuid') organization_uuid: string,
     @Param('integration_uuid') integration_uuid: string,
@@ -90,12 +95,13 @@ export class IntegrationsController {
   }
 
   @Get(':integration_uuid/actions')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_READ)
   async getActions(@Param('integration_uuid') integration_uuid: string) {
     return await this.integration_actions_service.getActions(integration_uuid);
   }
 
   @Patch(':integration_uuid/actions/:action_uuid')
-  @OrganizationPermission('org:integrations:manage')
+  @OrganizationPermission(PermissionKeys.INTEGRATIONS_MANAGE)
   async toggleAction(
     @Param('integration_uuid') integration_uuid: string,
     @Param('action_uuid') action_uuid: string,

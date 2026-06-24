@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Check, ChevronDown, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { useGetPermissions } from '@/features/permissions/hooks/use-permissions';
 import { useCreateRole, useDeleteRole, useGetRoles, useSetRolePermissions, useUpdateRole } from '@/features/roles/hooks/use-roles';
-import type { OrganizationRole } from '@/features/roles/interfaces/role.interfaces';
+import { OrganizationRoleTypes, type OrganizationRole } from '@/features/roles/interfaces/role.interfaces';
 import { useOrganizationStore } from '@/stores/organization';
 
 export default function RolesPage() {
@@ -64,7 +64,7 @@ export default function RolesPage() {
   }
 
   async function toggleRolePermission(role: OrganizationRole, permissionKey: string) {
-    if (!currentOrganization) return;
+    if (!currentOrganization || role.name === OrganizationRoleTypes.OWNER) return;
     const keys = role.permissions?.map((item) => item.permission.key) ?? [];
     const nextKeys = keys.includes(permissionKey) ? keys.filter((key) => key !== permissionKey) : [...keys, permissionKey];
     await setRolePermissionsMutation.mutateAsync({ organization_role_uuid: role.uuid, permission_keys: nextKeys });
@@ -117,6 +117,7 @@ export default function RolesPage() {
 
       <div className="grid gap-3">
         {roles.map((role) => {
+          const isOwnerRole = role.name === OrganizationRoleTypes.OWNER;
           const rolePermissionKeys = role.permissions?.map((item) => item.permission.key) ?? [];
           const isOpen = openRoleUuid === role.uuid;
 
@@ -201,7 +202,7 @@ export default function RolesPage() {
                       <input
                         type="checkbox"
                         checked={rolePermissionKeys.includes(permission.key)}
-                        disabled={loading}
+                        disabled={loading || isOwnerRole}
                         onChange={() => toggleRolePermission(role, permission.key)}
                         className="h-4 w-4 accent-[var(--accent)]"
                       />

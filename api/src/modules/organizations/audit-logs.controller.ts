@@ -1,5 +1,7 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
+import { PermissionKeys } from '@/modules/roles/permissions';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
@@ -17,6 +19,7 @@ export class AuditLogsController {
   constructor(private readonly auditLogs: AuditLogsService) {}
 
   @Get()
+  @OrganizationPermission(PermissionKeys.AUDIT_READ)
   findAll(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,

@@ -21,6 +21,8 @@ import { ToolkitCatalog } from './components/integration-apps/toolkit-catalog';
 import { useGetIntegrationAppsToolkitsCount } from '@/features/integration-apps/hooks/use-integrationApps';
 import { Routes } from '@/routes/routes';
 import { useOrganizationStore } from '@/stores/organization';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import { cn } from '@/lib/utils';
 import { AiProviderDetail } from './components/ai-providers/ai-provider-detail';
 import { IntegrationDetail } from './components/connections/integration-detail';
@@ -162,9 +164,15 @@ export default function IntegrationsPage() {
       ) : loading ? (
         <IntegrationsSkeleton />
       ) : isIntegrationDetail && selectedIntegration ? (
-        <IntegrationDetail organizationUuid={currentOrganization.uuid} integration={selectedIntegration} />
+        <IntegrationDetail
+          organizationUuid={currentOrganization.uuid}
+          integration={selectedIntegration}
+        />
       ) : isAiProviderDetail && selectedAiProvider ? (
-        <AiProviderDetail organizationUuid={currentOrganization.uuid} provider={selectedAiProvider} />
+        <AiProviderDetail
+          organizationUuid={currentOrganization.uuid}
+          provider={selectedAiProvider}
+        />
       ) : (
         <div className="flex flex-col gap-5">
           <IntegrationSectionTabs activeSection={activeSection} onSectionChange={handleSectionChange} />
@@ -187,20 +195,24 @@ export default function IntegrationsPage() {
       )}
 
       {connectingProvider && currentOrganization && isAiCatalogProvider(connectingProvider) ? (
-        <AddAiProviderModal
-          organizationUuid={currentOrganization.uuid}
-          provider={connectingProvider}
-          isFirstAiProvider={aiProviders.length === 0}
-          onClose={() => setConnectingProvider(null)}
-        />
+        <OrganizationPermissionGate permission={PermissionKeys.AI_PROVIDERS_MANAGE}>
+          <AddAiProviderModal
+            organizationUuid={currentOrganization.uuid}
+            provider={connectingProvider}
+            isFirstAiProvider={aiProviders.length === 0}
+            onClose={() => setConnectingProvider(null)}
+          />
+        </OrganizationPermissionGate>
       ) : null}
 
       {connectingProvider && currentOrganization && !isAiCatalogProvider(connectingProvider) ? (
-        <AddIntegrationModal
-          organizationUuid={currentOrganization.uuid}
-          provider={connectingProvider}
-          onClose={() => setConnectingProvider(null)}
-        />
+        <OrganizationPermissionGate permission={PermissionKeys.INTEGRATIONS_MANAGE}>
+          <AddIntegrationModal
+            organizationUuid={currentOrganization.uuid}
+            provider={connectingProvider}
+            onClose={() => setConnectingProvider(null)}
+          />
+        </OrganizationPermissionGate>
       ) : null}
     </div>
   );

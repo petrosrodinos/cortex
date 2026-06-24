@@ -2,6 +2,8 @@ import { useEffect, useRef, useState, type FC, type KeyboardEvent } from 'react'
 import { Skeleton } from '@heroui/react';
 import { FileText, Menu, MoreHorizontal, PanelLeftOpen, Pencil, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 
 interface ConversationHeaderProps {
   title: string;
@@ -131,6 +133,7 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({
 
         <div className="relative" ref={menuRef}>
           {!readOnly ? (
+          <OrganizationPermissionGate permissions={[PermissionKeys.CONVERSATIONS_WRITE, PermissionKeys.CONVERSATIONS_DELETE]} mode="any">
           <>
           <button
             type="button"
@@ -146,28 +149,33 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({
 
           {menuOpen && (
             <div className="absolute right-0 top-full z-20 mt-1 min-w-[140px] overflow-hidden rounded-lg border border-border bg-surface py-1 shadow-lg">
-              <button
-                type="button"
-                onClick={startEditing}
-                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-surface-secondary"
-              >
-                <Pencil className="h-3.5 w-3.5" />
-                Rename
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setMenuOpen(false);
-                  onDelete();
-                }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-400 hover:bg-surface-secondary"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-                Delete
-              </button>
+              <OrganizationPermissionGate permission={PermissionKeys.CONVERSATIONS_WRITE}>
+                <button
+                  type="button"
+                  onClick={startEditing}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-surface-secondary"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                  Rename
+                </button>
+              </OrganizationPermissionGate>
+              <OrganizationPermissionGate permission={PermissionKeys.CONVERSATIONS_DELETE}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    onDelete();
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-400 hover:bg-surface-secondary"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Delete
+                </button>
+              </OrganizationPermissionGate>
             </div>
           )}
           </>
+          </OrganizationPermissionGate>
           ) : null}
         </div>
       </div>

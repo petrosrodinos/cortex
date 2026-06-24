@@ -1,18 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import { Button, Dropdown, Label } from '@heroui/react';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import type { DocumentBoard } from '@/features/document-boards/interfaces/document-board.interfaces';
 import { Routes } from '@/routes/routes';
 import { formatDateTime } from '@/lib/date';
 
 type BoardsListProps = {
   boards: DocumentBoard[];
-  canWrite: boolean;
   onEdit: (board: DocumentBoard) => void;
   onDelete: (board: DocumentBoard) => void;
 };
 
-export function BoardsList({ boards, canWrite, onEdit, onDelete }: BoardsListProps) {
+export function BoardsList({ boards, onEdit, onDelete }: BoardsListProps) {
   const navigate = useNavigate();
 
   if (boards.length === 0) {
@@ -50,7 +51,7 @@ export function BoardsList({ boards, canWrite, onEdit, onDelete }: BoardsListPro
                 <td className="px-4 py-3 text-muted">{formatDateTime(board.created_at)}</td>
                 <td className="px-4 py-3">
                   <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
-                    {canWrite ? (
+                    <OrganizationPermissionGate permissions={[PermissionKeys.DOCUMENTS_WRITE, PermissionKeys.DOCUMENTS_DELETE]} mode="any">
                       <Dropdown>
                         <Button
                           aria-label="Row actions"
@@ -71,18 +72,22 @@ export function BoardsList({ boards, canWrite, onEdit, onDelete }: BoardsListPro
                               if (k === 'delete') onDelete(board);
                             }}
                           >
-                            <Dropdown.Item id="edit" textValue="Edit" className="gap-2.5 rounded-lg px-2 py-2">
-                              <Pencil className="h-4 w-4 shrink-0 text-muted" />
-                              <Label className="text-sm">Edit</Label>
-                            </Dropdown.Item>
-                            <Dropdown.Item id="delete" textValue="Delete" className="gap-2.5 rounded-lg px-2 py-2 text-red-500">
-                              <Trash2 className="h-4 w-4 shrink-0" />
-                              <Label className="text-sm">Delete</Label>
-                            </Dropdown.Item>
+                            <OrganizationPermissionGate permission={PermissionKeys.DOCUMENTS_WRITE}>
+                              <Dropdown.Item id="edit" textValue="Edit" className="gap-2.5 rounded-lg px-2 py-2">
+                                <Pencil className="h-4 w-4 shrink-0 text-muted" />
+                                <Label className="text-sm">Edit</Label>
+                              </Dropdown.Item>
+                            </OrganizationPermissionGate>
+                            <OrganizationPermissionGate permission={PermissionKeys.DOCUMENTS_DELETE}>
+                              <Dropdown.Item id="delete" textValue="Delete" className="gap-2.5 rounded-lg px-2 py-2 text-red-500">
+                                <Trash2 className="h-4 w-4 shrink-0" />
+                                <Label className="text-sm">Delete</Label>
+                              </Dropdown.Item>
+                            </OrganizationPermissionGate>
                           </Dropdown.Menu>
                         </Dropdown.Popover>
                       </Dropdown>
-                    ) : null}
+                    </OrganizationPermissionGate>
                   </div>
                 </td>
               </tr>

@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
+import { PermissionKeys } from '@/modules/roles/permissions';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
@@ -19,11 +21,13 @@ export class AiProvidersController {
   constructor(private readonly service: AiProvidersService) {}
 
   @Get()
+  @OrganizationPermission(PermissionKeys.AI_PROVIDERS_READ)
   findAll(@CurrentUser('uuid') userUuid: string, @Param('organization_uuid') organizationUuid: string) {
     return this.service.findAll(userUuid, organizationUuid);
   }
 
   @Post()
+  @OrganizationPermission(PermissionKeys.AI_PROVIDERS_MANAGE)
   create(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -33,6 +37,7 @@ export class AiProvidersController {
   }
 
   @Patch(':provider_uuid')
+  @OrganizationPermission(PermissionKeys.AI_PROVIDERS_MANAGE)
   update(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -43,6 +48,7 @@ export class AiProvidersController {
   }
 
   @Delete(':provider_uuid')
+  @OrganizationPermission(PermissionKeys.AI_PROVIDERS_MANAGE)
   delete(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,

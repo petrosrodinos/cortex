@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ORGANIZATION_PERMISSIONS_KEY } from '../decorators/organization-permission.decorator';
+import { hasOrganizationPermission } from '../utils/organization-permission.utils';
 
 @Injectable()
 export class OrganizationGuard implements CanActivate {
@@ -18,7 +19,10 @@ export class OrganizationGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const permissions = request.user?.organization_permissions ?? [];
-    const hasEveryPermission = requiredPermissions.every((permission) => permissions.includes(permission));
+    const organizationRole = request.user?.organization_role ?? null;
+    const hasEveryPermission = requiredPermissions.every((permission) =>
+      hasOrganizationPermission(permissions, organizationRole, permission),
+    );
 
     if (!hasEveryPermission) {
       throw new ForbiddenException('Missing organization permission');

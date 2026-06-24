@@ -1,6 +1,7 @@
 import { Routes as ReactRoutes, Route, Navigate } from "react-router-dom";
 import { Routes } from "@/routes/routes";
 import ProtectedRoute from "@/routes/protected-route";
+import OrganizationPermissionRoute from "@/routes/organization-permission-route";
 import SignIn from "@/pages/auth/pages/sign-in";
 import SignUp from "@/pages/auth/pages/sign-up";
 import AuthLayout from "@/pages/auth/layout";
@@ -27,11 +28,11 @@ import AdminIntegrationAppsToolkitDetailPage from "@/pages/admin/integration-app
 import AdminIntegrationAppsSyncPage from "@/pages/admin/integration-apps/sync";
 import { RoleTypes } from "@/features/user/interfaces/user.interface";
 import LandingPage from "@/pages/landing";
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 
 export default function AppRoutes() {
   return (
     <ReactRoutes>
-      {/* Auth routes */}
       <Route
         path="/auth"
         element={
@@ -45,7 +46,6 @@ export default function AppRoutes() {
         <Route index element={<Navigate to={Routes.auth.sign_in} replace />} />
       </Route>
 
-      {/* Dashboard routes */}
       <Route
         path="/dashboard/*"
         element={
@@ -55,17 +55,87 @@ export default function AppRoutes() {
         }
       >
         <Route index element={<DashboardHome />} />
-        <Route path="organizations" element={<OrganizationsPage />} />
-        <Route path="integrations" element={<IntegrationsPage />} />
+        <Route
+          path="organizations"
+          element={
+            <OrganizationPermissionRoute permission={PermissionKeys.ORG_READ}>
+              <OrganizationsPage />
+            </OrganizationPermissionRoute>
+          }
+        />
+        <Route
+          path="integrations"
+          element={
+            <OrganizationPermissionRoute permission={PermissionKeys.INTEGRATIONS_READ}>
+              <IntegrationsPage />
+            </OrganizationPermissionRoute>
+          }
+        />
         <Route path="integrations/callback" element={<IntegrationAppsCallbackPage />} />
-        <Route path="integrations/apps/:toolkitSlug" element={<IntegrationAppDetailPage />} />
-        <Route path="integrations/ai/:aiProviderUuid" element={<IntegrationsPage />} />
-        <Route path="integrations/:integrationUuid" element={<IntegrationsPage />} />
-        <Route path="conversations" element={<ConversationsPage />} />
-        <Route path="conversations/:conversationUuid" element={<ConversationsPage />} />
-        <Route path="agents" element={<AgentsPage />} />
-        <Route path="boards" element={<DocumentBoardsPage />} />
-        <Route path="boards/:boardUuid" element={<DocumentBoardDetailPage />} />
+        <Route
+          path="integrations/apps/:toolkitSlug"
+          element={
+            <OrganizationPermissionRoute permission={PermissionKeys.INTEGRATIONS_READ}>
+              <IntegrationAppDetailPage />
+            </OrganizationPermissionRoute>
+          }
+        />
+        <Route
+          path="integrations/ai/:aiProviderUuid"
+          element={
+            <OrganizationPermissionRoute permission={PermissionKeys.INTEGRATIONS_READ}>
+              <IntegrationsPage />
+            </OrganizationPermissionRoute>
+          }
+        />
+        <Route
+          path="integrations/:integrationUuid"
+          element={
+            <OrganizationPermissionRoute permission={PermissionKeys.INTEGRATIONS_READ}>
+              <IntegrationsPage />
+            </OrganizationPermissionRoute>
+          }
+        />
+        <Route
+          path="conversations"
+          element={
+            <OrganizationPermissionRoute permission={PermissionKeys.CONVERSATIONS_READ}>
+              <ConversationsPage />
+            </OrganizationPermissionRoute>
+          }
+        />
+        <Route
+          path="conversations/:conversationUuid"
+          element={
+            <OrganizationPermissionRoute permission={PermissionKeys.CONVERSATIONS_READ}>
+              <ConversationsPage />
+            </OrganizationPermissionRoute>
+          }
+        />
+        <Route
+          path="agents"
+          element={
+            <OrganizationPermissionRoute permission={PermissionKeys.AGENTS_READ}>
+              <AgentsPage />
+            </OrganizationPermissionRoute>
+          }
+        />
+        <Route
+          path="boards"
+          element={
+            <OrganizationPermissionRoute permission={PermissionKeys.DOCUMENTS_READ}>
+              <DocumentBoardsPage />
+            </OrganizationPermissionRoute>
+          }
+        />
+        <Route
+          path="boards/:boardUuid"
+          element={
+            <OrganizationPermissionRoute permission={PermissionKeys.DOCUMENTS_READ}>
+              <DocumentBoardDetailPage />
+            </OrganizationPermissionRoute>
+          }
+        />
         <Route path="scheduled-agents" element={<Navigate to={Routes.dashboard.agents} replace />} />
         <Route path="organizations/members" element={<Navigate to={Routes.dashboard.organizations} replace />} />
         <Route path="organizations/roles" element={<Navigate to={Routes.dashboard.organizations} replace />} />
@@ -75,10 +145,31 @@ export default function AppRoutes() {
           <Route path="personalization" element={<PersonalizationPage />} />
           <Route path="password" element={<Navigate to={Routes.dashboard.settingsProfile} replace />} />
           <Route path="ai-providers" element={<Navigate to={Routes.dashboard.integrationsSection('ai')} replace />} />
-          <Route path="usage" element={<UsagePage />} />
-          <Route path="audit-logs" element={<AuditLogsPage />} />
+          <Route
+            path="usage"
+            element={
+              <OrganizationPermissionRoute permission={PermissionKeys.AI_USAGE_READ}>
+                <UsagePage />
+              </OrganizationPermissionRoute>
+            }
+          />
+          <Route
+            path="audit-logs"
+            element={
+              <OrganizationPermissionRoute permission={PermissionKeys.AUDIT_READ}>
+                <AuditLogsPage />
+              </OrganizationPermissionRoute>
+            }
+          />
         </Route>
-        <Route path="executions/:executionUuid" element={<ExecutionDetailPage />} />
+        <Route
+          path="executions/:executionUuid"
+          element={
+            <OrganizationPermissionRoute permission={PermissionKeys.EXECUTIONS_READ}>
+              <ExecutionDetailPage />
+            </OrganizationPermissionRoute>
+          }
+        />
       </Route>
 
       <Route
@@ -98,10 +189,7 @@ export default function AppRoutes() {
         </Route>
       </Route>
 
-      {/* Landing page */}
       <Route path="/" element={<LandingPage />} />
-
-      {/* Catch all */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </ReactRoutes>
   );

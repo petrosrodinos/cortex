@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Plug, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import {
   useConnectIntegrationAppsToolkit,
   useDisableIntegrationAppsToolkit,
@@ -163,22 +165,34 @@ function ToolkitCard({
             <IntegrationCatalogCardAction variant="secondary" onClick={onManage}>
               Manage
             </IntegrationCatalogCardAction>
-            <div className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-1.5">
-              <span className="text-xs text-foreground">{toolkit.is_org_enabled ? 'Enabled' : 'Disabled'}</span>
-              <EnabledSwitch
-                checked={toolkit.is_org_enabled}
-                disabled={isToggling}
-                onChange={onToggleEnabled}
-              />
-            </div>
+            <OrganizationPermissionGate permission={PermissionKeys.INTEGRATIONS_MANAGE}>
+              {(allowed) =>
+                allowed ? (
+                  <div className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-1.5">
+                    <span className="text-xs text-foreground">{toolkit.is_org_enabled ? 'Enabled' : 'Disabled'}</span>
+                    <EnabledSwitch
+                      checked={toolkit.is_org_enabled}
+                      disabled={isToggling}
+                      onChange={onToggleEnabled}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center rounded-md border border-border px-3 py-1.5 text-xs text-muted">
+                    {toolkit.is_org_enabled ? 'Enabled' : 'Disabled'}
+                  </div>
+                )
+              }
+            </OrganizationPermissionGate>
           </div>
         ) : (
-          <IntegrationCatalogCardAction onClick={onConnect} disabled={isConnecting}>
-            <span className="inline-flex items-center justify-center gap-1.5">
-              <Plug className="h-3.5 w-3.5" />
-              {isConnecting ? 'Connecting...' : 'Connect'}
-            </span>
-          </IntegrationCatalogCardAction>
+          <OrganizationPermissionGate permissions={[PermissionKeys.INTEGRATIONS_CONNECT, PermissionKeys.INTEGRATIONS_MANAGE]} mode="any">
+            <IntegrationCatalogCardAction onClick={onConnect} disabled={isConnecting}>
+              <span className="inline-flex items-center justify-center gap-1.5">
+                <Plug className="h-3.5 w-3.5" />
+                {isConnecting ? 'Connecting...' : 'Connect'}
+              </span>
+            </IntegrationCatalogCardAction>
+          </OrganizationPermissionGate>
         )
       }
     />

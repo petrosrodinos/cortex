@@ -52,7 +52,6 @@ interface ConversationMessagesProps {
   onRetryMessage: (message: Message) => void;
   onReplyToMessage: (message: Message) => void;
   onCreateAgentFromMessage?: (message: Message) => void;
-  canDeleteMessages?: boolean;
   onDeleteMessage?: (message: Message) => void;
   isDeletingMessage?: boolean;
   readOnly?: boolean;
@@ -83,7 +82,6 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
   onRetryMessage,
   onReplyToMessage,
   onCreateAgentFromMessage,
-  canDeleteMessages = false,
   onDeleteMessage,
   isDeletingMessage = false,
   readOnly = false,
@@ -166,8 +164,8 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
               <MessageActionsMenu
                 message={message}
                 showReply={!readOnly}
+                readOnly={readOnly}
                 canRetry={!readOnly && message.role === MessageRoles.USER && !isSendDisabled}
-                canDelete={readOnly ? message.role === MessageRoles.ASSISTANT : canDeleteMessages}
                 isDeleting={isDeletingMessage}
                 onReply={onReplyToMessage}
                 onRetry={onRetryMessage}

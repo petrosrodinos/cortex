@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Trash2, UserPlus } from 'lucide-react';
 import { useOrganizationStore } from '@/stores/organization';
 import { useDeleteMember, useGetMembers, useInviteMember, useUpdateMember } from '@/features/members/hooks/use-members';
+import { OrganizationRoleTypes } from '@/features/roles/interfaces/role.interfaces';
 import { useGetRoles } from '@/features/roles/hooks/use-roles';
 import {
   OrganizationMemberStatuses,
@@ -25,7 +26,7 @@ export default function MembersPage() {
   useEffect(() => {
     setOrganizationRoleUuid((current) => {
       if (roles.some((role) => role.uuid === current)) return current;
-      return roles.find((role) => role.name === 'Employee')?.uuid ?? roles[0]?.uuid ?? '';
+      return roles.find((role) => role.name === OrganizationRoleTypes.EMPLOYEE)?.uuid ?? roles[0]?.uuid ?? '';
     });
   }, [roles]);
 
@@ -143,7 +144,7 @@ export default function MembersPage() {
                   </select>
                 </td>
                 <td className="px-4 py-3 text-right">
-                  {member.role?.name === 'Owner' ? (
+                  {member.role?.name === OrganizationRoleTypes.OWNER ? (
                     <span className="text-xs text-muted">Owner</span>
                   ) : (
                     <button

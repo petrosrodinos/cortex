@@ -9,6 +9,8 @@ import {
 } from '@/features/organizations/hooks/use-organizations';
 import type { Organization } from '@/features/organizations/interfaces/organization.interfaces';
 import { cn } from '@/lib/utils';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import { useAuthStore } from '@/stores/auth';
 import { useOrganizationStore } from '@/stores/organization';
 import { OrganizationLogo } from './organization-logo';
@@ -18,7 +20,7 @@ type WorkspaceRowProps = {
   organization: Organization;
   isActive: boolean;
   loading: boolean;
-  canDelete: boolean;
+  canDeleteOrganization: boolean;
   onSelect: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -28,7 +30,7 @@ function WorkspaceRow({
   organization,
   isActive,
   loading,
-  canDelete,
+  canDeleteOrganization,
   onSelect,
   onEdit,
   onDelete,
@@ -61,24 +63,30 @@ function WorkspaceRow({
         )}
       </button>
       <div className="flex shrink-0 items-center gap-0.5">
-        <button
-          type="button"
-          disabled={loading}
-          title={`Edit ${organization.name}`}
-          onClick={onEdit}
-          className="grid h-8 w-8 place-items-center rounded-md text-muted transition-colors hover:bg-surface-secondary hover:text-foreground disabled:opacity-40"
-        >
-          <Pencil className="h-3.5 w-3.5" />
-        </button>
-        <button
-          type="button"
-          disabled={loading || !canDelete}
-          title={canDelete ? `Delete ${organization.name}` : 'You must keep at least one workspace'}
-          onClick={onDelete}
-          className="grid h-8 w-8 place-items-center rounded-md text-muted transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:opacity-40"
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
+        <OrganizationPermissionGate permission={PermissionKeys.ORG_UPDATE}>
+          <button
+            type="button"
+            disabled={loading}
+            title={`Edit ${organization.name}`}
+            onClick={onEdit}
+            className="grid h-8 w-8 place-items-center rounded-md text-muted transition-colors hover:bg-surface-secondary hover:text-foreground disabled:opacity-40"
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </button>
+        </OrganizationPermissionGate>
+        {canDeleteOrganization ? (
+          <OrganizationPermissionGate permission={PermissionKeys.ORG_DELETE}>
+            <button
+              type="button"
+              disabled={loading}
+              title={`Delete ${organization.name}`}
+              onClick={onDelete}
+              className="grid h-8 w-8 place-items-center rounded-md text-muted transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:opacity-40"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </OrganizationPermissionGate>
+        ) : null}
       </div>
     </div>
   );
@@ -190,14 +198,16 @@ export function OrganizationContextSection() {
             <span className="text-xs font-medium uppercase tracking-wider text-muted">Workspace</span>
             {loading && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted" />}
           </div>
-          <button
-            type="button"
-            onClick={() => setModalState({ mode: 'create' })}
-            className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-accent px-3 text-xs font-medium text-accent-foreground transition-opacity hover:opacity-90"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            New workspace
-          </button>
+          <OrganizationPermissionGate permission={PermissionKeys.ORG_UPDATE}>
+            <button
+              type="button"
+              onClick={() => setModalState({ mode: 'create' })}
+              className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-accent px-3 text-xs font-medium text-accent-foreground transition-opacity hover:opacity-90"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              New workspace
+            </button>
+          </OrganizationPermissionGate>
         </div>
 
         {organizations.length === 0 ? (
@@ -213,7 +223,7 @@ export function OrganizationContextSection() {
                 organization={organization}
                 isActive={organization.uuid === currentOrganization?.uuid}
                 loading={loading}
-                canDelete={canDeleteOrganization}
+                canDeleteOrganization={canDeleteOrganization}
                 onSelect={() => switchOrganization(organization)}
                 onEdit={() => setModalState({ mode: 'edit', organization })}
                 onDelete={() => setDeleteTarget(organization)}

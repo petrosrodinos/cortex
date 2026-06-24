@@ -14,7 +14,10 @@ import {
   type OrganizationMember,
 } from '@/features/members/interfaces/member.interfaces';
 import { useGetRoles } from '@/features/roles/hooks/use-roles';
+import { OrganizationRoleTypes } from '@/features/roles/interfaces/role.interfaces';
 import { cn } from '@/lib/utils';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import { useOrganizationStore } from '@/stores/organization';
 import { MemberRoleDropdown } from './member-role-dropdown';
 
@@ -63,7 +66,7 @@ export function MembersSection() {
   useEffect(() => {
     setMemberRoleUuid((current) => {
       if (roles.some((role) => role.uuid === current)) return current;
-      return roles.find((role) => role.name === 'Employee')?.uuid ?? roles[0]?.uuid ?? '';
+      return roles.find((role) => role.name === OrganizationRoleTypes.EMPLOYEE)?.uuid ?? roles[0]?.uuid ?? '';
     });
   }, [roles]);
 
@@ -157,18 +160,21 @@ export function MembersSection() {
             ? `${memberCount} member${memberCount === 1 ? '' : 's'}`
             : 'Members'}
         </span>
-        <button
-          type="button"
-          onClick={() => setShowInviteForm((v) => !v)}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
-        >
-          <UserPlus className="h-4 w-4" />
-          Invite member
-        </button>
+        <OrganizationPermissionGate permission={PermissionKeys.ORG_MEMBERS_INVITE}>
+          <button
+            type="button"
+            onClick={() => setShowInviteForm((v) => !v)}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
+          >
+            <UserPlus className="h-4 w-4" />
+            Invite member
+          </button>
+        </OrganizationPermissionGate>
       </div>
 
-      {showInviteForm && (
-        <form
+      {showInviteForm ? (
+        <OrganizationPermissionGate permission={PermissionKeys.ORG_MEMBERS_INVITE}>
+          <form
           onSubmit={inviteMember}
           className="flex flex-col gap-3 rounded-xl border border-accent/30 bg-accent/5 p-4"
         >
@@ -207,7 +213,8 @@ export function MembersSection() {
             </button>
           </div>
         </form>
-      )}
+        </OrganizationPermissionGate>
+      ) : null}
 
       {(error || queryError) && (
         <p className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2.5 text-sm text-red-300">
@@ -245,7 +252,7 @@ export function MembersSection() {
             <tbody>
               {members.map((member) => {
                 const memberEmail = member.user?.email ?? member.user_uuid;
-                const isOwner = member.role?.name === 'Owner';
+                const isOwner = member.role?.name === OrganizationRoleTypes.OWNER;
                 const canResendInvitation = member.status === OrganizationMemberStatuses.INVITED;
 
                 return (
@@ -267,107 +274,130 @@ export function MembersSection() {
                           Owner
                         </span>
                       ) : (
-                        <MemberRoleDropdown
-                          roles={roles}
-                          value={member.role_uuid}
-                          onChange={(roleUuid) => updateMember(member, roleUuid)}
-                          disabled={loading}
-                          triggerClassName="h-7 px-2 text-xs"
-                          aria-label={`Select role for ${memberEmail}`}
-                        />
+                        <OrganizationPermissionGate
+                          permission={PermissionKeys.ORG_MEMBERS_UPDATE}
+                          fallback={
+                            <span className="rounded-md border border-border px-2 py-1 text-xs font-medium text-muted">
+                              {member.role?.name ?? 'Member'}
+                            </span>
+                          }
+                        >
+                          <MemberRoleDropdown
+                            roles={roles}
+                            value={member.role_uuid}
+                            onChange={(roleUuid) => updateMember(member, roleUuid)}
+                            disabled={loading}
+                            triggerClassName="h-7 px-2 text-xs"
+                            aria-label={`Select role for ${memberEmail}`}
+                          />
+                        </OrganizationPermissionGate>
                       )}
                     </td>
                     <td className="px-4 py-3">
                       {isOwner ? (
                         <StatusBadge status={member.status} />
                       ) : (
-                        <select
-                          value={member.status}
-                          onChange={(event) =>
-                            updateMember(
-                              member,
-                              undefined,
-                              event.target.value as OrganizationMember['status'],
-                            )
-                          }
-                          disabled={loading}
-                          className={cn(
-                            'h-7 rounded-md border bg-background px-2 text-xs font-medium outline-none transition-all focus:ring-1 focus:ring-accent disabled:opacity-60',
-                            member.status === 'ACTIVE' && 'border-accent/30 text-accent',
-                            member.status === 'INVITED' && 'border-amber-500/30 text-amber-400',
-                            member.status === 'SUSPENDED' && 'border-red-500/30 text-red-400',
-                          )}
+                        <OrganizationPermissionGate
+                          permission={PermissionKeys.ORG_MEMBERS_UPDATE}
+                          fallback={<StatusBadge status={member.status} />}
                         >
-                          {Object.values(OrganizationMemberStatuses).map((status) => (
-                            <option key={status} value={status} className="bg-background text-foreground">
-                              {status}
-                            </option>
-                          ))}
-                        </select>
+                          <select
+                            value={member.status}
+                            onChange={(event) =>
+                              updateMember(
+                                member,
+                                undefined,
+                                event.target.value as OrganizationMember['status'],
+                              )
+                            }
+                            disabled={loading}
+                            className={cn(
+                              'h-7 rounded-md border bg-background px-2 text-xs font-medium outline-none transition-all focus:ring-1 focus:ring-accent disabled:opacity-60',
+                              member.status === 'ACTIVE' && 'border-accent/30 text-accent',
+                              member.status === 'INVITED' && 'border-amber-500/30 text-amber-400',
+                              member.status === 'SUSPENDED' && 'border-red-500/30 text-red-400',
+                            )}
+                          >
+                            {Object.values(OrganizationMemberStatuses).map((status) => (
+                              <option key={status} value={status} className="bg-background text-foreground">
+                                {status}
+                              </option>
+                            ))}
+                          </select>
+                        </OrganizationPermissionGate>
                       )}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      {!isOwner && (
-                        <div
-                          className="relative inline-flex justify-end"
-                          ref={menuOpenUuid === member.uuid ? menuRef : undefined}
+                      {!isOwner ? (
+                        <OrganizationPermissionGate
+                          permissions={[PermissionKeys.ORG_MEMBERS_INVITE, PermissionKeys.ORG_MEMBERS_REMOVE]}
+                          mode="any"
                         >
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setMenuOpenUuid(menuOpenUuid === member.uuid ? null : member.uuid)
-                            }
-                            disabled={loading}
-                            aria-label="Member actions"
-                            className="inline-grid h-7 w-7 place-items-center rounded-md text-muted transition-colors hover:bg-surface-secondary hover:text-foreground disabled:opacity-60"
+                          <div
+                            className="relative inline-flex justify-end"
+                            ref={menuOpenUuid === member.uuid ? menuRef : undefined}
                           >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setMenuOpenUuid(menuOpenUuid === member.uuid ? null : member.uuid)
+                              }
+                              disabled={loading}
+                              aria-label="Member actions"
+                              className="inline-grid h-7 w-7 place-items-center rounded-md text-muted transition-colors hover:bg-surface-secondary hover:text-foreground disabled:opacity-60"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </button>
 
-                          {menuOpenUuid === member.uuid && (
-                            <div className="absolute right-0 top-full z-20 mt-1 min-w-[180px] overflow-hidden rounded-lg border border-border bg-surface py-1 shadow-lg">
-                              {canResendInvitation && (
-                                <>
+                            {menuOpenUuid === member.uuid && (
+                              <div className="absolute right-0 top-full z-20 mt-1 min-w-[180px] overflow-hidden rounded-lg border border-border bg-surface py-1 shadow-lg">
+                                {canResendInvitation ? (
+                                  <OrganizationPermissionGate permission={PermissionKeys.ORG_MEMBERS_INVITE}>
+                                    <>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setMenuOpenUuid(null);
+                                          copyInvitationUrlMutation.mutate(member.uuid);
+                                        }}
+                                        disabled={copyInvitationUrlMutation.isPending}
+                                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-surface-secondary disabled:opacity-60"
+                                      >
+                                        <Copy className="h-3.5 w-3.5" />
+                                        Copy invitation link
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setMenuOpenUuid(null);
+                                          setResendTarget({ uuid: member.uuid, label: memberEmail });
+                                        }}
+                                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-surface-secondary"
+                                      >
+                                        <Mail className="h-3.5 w-3.5" />
+                                        Resend invitation
+                                      </button>
+                                    </>
+                                  </OrganizationPermissionGate>
+                                ) : null}
+                                <OrganizationPermissionGate permission={PermissionKeys.ORG_MEMBERS_REMOVE}>
                                   <button
                                     type="button"
                                     onClick={() => {
                                       setMenuOpenUuid(null);
-                                      copyInvitationUrlMutation.mutate(member.uuid);
+                                      setDeleteTarget({ uuid: member.uuid, label: memberEmail });
                                     }}
-                                    disabled={copyInvitationUrlMutation.isPending}
-                                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-surface-secondary disabled:opacity-60"
+                                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-400 hover:bg-surface-secondary"
                                   >
-                                    <Copy className="h-3.5 w-3.5" />
-                                    Copy invitation link
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                    Remove member
                                   </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setMenuOpenUuid(null);
-                                      setResendTarget({ uuid: member.uuid, label: memberEmail });
-                                    }}
-                                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-surface-secondary"
-                                  >
-                                    <Mail className="h-3.5 w-3.5" />
-                                    Resend invitation
-                                  </button>
-                                </>
-                              )}
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setMenuOpenUuid(null);
-                                  setDeleteTarget({ uuid: member.uuid, label: memberEmail });
-                                }}
-                                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-400 hover:bg-surface-secondary"
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                                Remove member
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      )}
+                                </OrganizationPermissionGate>
+                              </div>
+                            )}
+                          </div>
+                        </OrganizationPermissionGate>
+                      ) : null}
                     </td>
                   </tr>
                 );

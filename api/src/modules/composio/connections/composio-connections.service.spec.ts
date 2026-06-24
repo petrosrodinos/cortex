@@ -4,6 +4,7 @@ import {
   ComposioConnectionTier,
 } from 'generated/prisma';
 import { ComposioConnectionsService } from './composio-connections.service';
+import { PermissionKeys } from '@/modules/roles/permissions';
 
 describe('ComposioConnectionsService', () => {
   const createService = (toolkit?: any) => {
@@ -79,7 +80,12 @@ describe('ComposioConnectionsService', () => {
 
   const manager = {
     uuid: 'user-uuid',
-    organization_permissions: ['org:integrations:manage'],
+    organization_permissions: [PermissionKeys.INTEGRATIONS_MANAGE],
+  };
+
+  const personalConnector = {
+    uuid: 'user-uuid',
+    organization_permissions: [PermissionKeys.INTEGRATIONS_CONNECT],
   };
 
   it('creates an org-shared connect link only for integration managers and audits it', async () => {
@@ -350,7 +356,7 @@ describe('ComposioConnectionsService', () => {
       items: [{ id: 'ac_gmail' }],
     });
 
-    await service.connect('org-uuid', manager, {
+    await service.connect('org-uuid', personalConnector, {
       toolkit_slug: 'gmail',
       connection_tier: ComposioConnectionTier.USER_PERSONAL,
     });

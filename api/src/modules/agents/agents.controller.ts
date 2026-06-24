@@ -9,6 +9,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
+import { PermissionKeys } from '@/modules/roles/permissions';
 import { JwtGuard } from '@/shared/guards/jwt.guard';
 import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
 import { OrganizationGuard } from '@/shared/guards/organization.guard';
@@ -28,6 +30,7 @@ export class AgentsController {
   constructor(private readonly agents: AgentsService) {}
 
   @Get()
+  @OrganizationPermission(PermissionKeys.AGENTS_READ)
   findAll(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -36,6 +39,7 @@ export class AgentsController {
   }
 
   @Post()
+  @OrganizationPermission(PermissionKeys.AGENTS_WRITE)
   create(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -45,6 +49,7 @@ export class AgentsController {
   }
 
   @Get(':agent_uuid')
+  @OrganizationPermission(PermissionKeys.AGENTS_READ)
   findOne(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -54,6 +59,7 @@ export class AgentsController {
   }
 
   @Patch(':agent_uuid')
+  @OrganizationPermission(PermissionKeys.AGENTS_WRITE)
   update(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,
@@ -64,6 +70,7 @@ export class AgentsController {
   }
 
   @Delete(':agent_uuid')
+  @OrganizationPermission(PermissionKeys.AGENTS_DELETE)
   remove(
     @CurrentUser('uuid') userUuid: string,
     @Param('organization_uuid') organizationUuid: string,

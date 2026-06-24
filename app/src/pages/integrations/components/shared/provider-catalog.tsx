@@ -13,6 +13,8 @@ import {
 } from '@/features/integrations/constants/provider-metadata';
 import { isAiCatalogProvider } from '@/features/integrations/utils/integration.utils';
 import type { AiProvider } from '@/features/ai-providers/interfaces/ai-providers.interfaces';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import {
   IntegrationCatalogCard,
   IntegrationCatalogCardAction,
@@ -99,6 +101,7 @@ function ProviderGrid({
               key={provider}
               provider={provider}
               connectedCount={connected.length}
+              isAiProvider
               onConnect={() => onConnect(provider)}
               onManage={() => onManageAiProvider(connected[0])}
             />
@@ -123,14 +126,23 @@ function ProviderGrid({
 interface ProviderCatalogCardProps {
   provider: CatalogProvider;
   connectedCount: number;
+  isAiProvider?: boolean;
   onConnect: () => void;
   onManage: () => void;
 }
 
-function ProviderCatalogCard({ provider, connectedCount, onConnect, onManage }: ProviderCatalogCardProps) {
+function ProviderCatalogCard({
+  provider,
+  connectedCount,
+  isAiProvider = false,
+  onConnect,
+  onManage,
+}: ProviderCatalogCardProps) {
   const meta = CATALOG_PROVIDER_ICON_META[provider];
   const Icon = meta.icon;
   const isConnected = connectedCount > 0;
+  const managePermission = isAiProvider ? PermissionKeys.AI_PROVIDERS_MANAGE : PermissionKeys.INTEGRATIONS_MANAGE;
+  const connectPermission = isAiProvider ? PermissionKeys.AI_PROVIDERS_MANAGE : PermissionKeys.INTEGRATIONS_CONNECT;
 
   return (
     <IntegrationCatalogCard
@@ -155,11 +167,15 @@ function ProviderCatalogCard({ provider, connectedCount, onConnect, onManage }: 
       }
       footer={
         isConnected ? (
-          <IntegrationCatalogCardAction variant="secondary" onClick={onManage}>
-            Manage
-          </IntegrationCatalogCardAction>
+          <OrganizationPermissionGate permission={managePermission}>
+            <IntegrationCatalogCardAction variant="secondary" onClick={onManage}>
+              Manage
+            </IntegrationCatalogCardAction>
+          </OrganizationPermissionGate>
         ) : (
-          <IntegrationCatalogCardAction onClick={onConnect}>Connect</IntegrationCatalogCardAction>
+          <OrganizationPermissionGate permission={connectPermission}>
+            <IntegrationCatalogCardAction onClick={onConnect}>Connect</IntegrationCatalogCardAction>
+          </OrganizationPermissionGate>
         )
       }
     />

@@ -1,5 +1,7 @@
 import { Download, Eye, File, FileText, Image, MoreHorizontal, Trash2 } from 'lucide-react';
 import { Button, Dropdown, Label } from '@heroui/react';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import type { DocumentBoardItem } from '@/features/document-boards/interfaces/document-board.interfaces';
 import { formatDateTime } from '@/lib/date';
 
@@ -19,11 +21,10 @@ function downloadFile(url: string, filename: string) {
 
 type BoardDocumentCardProps = {
   item: DocumentBoardItem;
-  canWrite: boolean;
   onRemove: (itemUuid: string) => void;
 };
 
-export function BoardDocumentCard({ item, canWrite, onRemove }: BoardDocumentCardProps) {
+export function BoardDocumentCard({ item, onRemove }: BoardDocumentCardProps) {
   const { document } = item;
 
   return (
@@ -72,12 +73,12 @@ export function BoardDocumentCard({ item, canWrite, onRemove }: BoardDocumentCar
                 <Download className="h-4 w-4 shrink-0 text-muted" />
                 <Label className="text-sm">Download</Label>
               </Dropdown.Item>
-              {canWrite ? (
+              <OrganizationPermissionGate permission={PermissionKeys.DOCUMENTS_WRITE}>
                 <Dropdown.Item id="delete" textValue="Delete" className="gap-2.5 rounded-lg px-2 py-2 text-red-500">
                   <Trash2 className="h-4 w-4 shrink-0" />
                   <Label className="text-sm">Remove</Label>
                 </Dropdown.Item>
-              ) : null}
+              </OrganizationPermissionGate>
             </Dropdown.Menu>
           </Dropdown.Popover>
         </Dropdown>

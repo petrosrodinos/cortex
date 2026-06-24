@@ -8,6 +8,8 @@ import { InviteMemberDto } from './dto/invite-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { AppUrls } from '@/shared/config/app-urls';
 import { MemberInvitationMailService } from './services/member-invitation-mail.service';
+import { membershipHasPermission } from '@/shared/utils/organization-permission.utils';
+import { OrganizationRoleTypes, PermissionKeys } from '@/modules/roles/permissions';
 import { OrganizationMemberStatus } from 'generated/prisma';
 
 const INVITATION_TOKEN_TYPE = 'organization_invitation';
@@ -24,7 +26,7 @@ export class MembersService {
 
   async findAll(user_uuid: string, organization_uuid: string) {
     try {
-      await this.organizations_service.requireActiveMember(user_uuid, organization_uuid);
+      await this.requirePermission(user_uuid, organization_uuid, PermissionKeys.ORG_MEMBERS_READ);
 
       return await this.prisma.organizationMember.findMany({
         where: { organization: { uuid: organization_uuid } },
@@ -38,7 +40,7 @@ export class MembersService {
 
   async invite(user_uuid: string, organization_uuid: string, dto: InviteMemberDto) {
     try {
-      await this.requireManager(user_uuid, organization_uuid);
+      await this.requirePermission(user_uuid, organization_uuid, PermissionKeys.ORG_MEMBERS_INVITE);
       const organization = await this.getOrganization(organization_uuid);
       const role = await this.getOrganizationRole(organization.uuid, dto.organization_role_uuid);
       const normalized_email = dto.email.trim().toLowerCase();
@@ -99,6 +101,7 @@ export class MembersService {
 
   async resendInvitation(user_uuid: string, organization_uuid: string, organization_member_uuid: string) {
     try {
+      await this.requirePermission(user_uuid, organization_uuid, PermissionKeys.ORG_MEMBERS_INVITE);
       const { organization, member } = await this.requirePendingInvitationMember(
         user_uuid,
         organization_uuid,
@@ -115,6 +118,7 @@ export class MembersService {
 
   async getInvitationUrl(user_uuid: string, organization_uuid: string, organization_member_uuid: string) {
     try {
+      await this.requirePermission(user_uuid, organization_uuid, PermissionKeys.ORG_MEMBERS_INVITE);
       const { organization, member } = await this.requirePendingInvitationMember(
         user_uuid,
         organization_uuid,
@@ -153,7 +157,7 @@ export class MembersService {
 
   async update(user_uuid: string, organization_uuid: string, organization_member_uuid: string, dto: UpdateMemberDto) {
     try {
-      await this.requireManager(user_uuid, organization_uuid);
+      await this.requirePermission(user_uuid, organization_uuid, PermissionKeys.ORG_MEMBERS_UPDATE);
       const organization = await this.getOrganization(organization_uuid);
       const member = await this.getOrganizationMember(organization.uuid, organization_member_uuid);
       const data: any = {};
@@ -184,11 +188,11 @@ export class MembersService {
 
   async remove(user_uuid: string, organization_uuid: string, organization_member_uuid: string) {
     try {
-      await this.requireManager(user_uuid, organization_uuid);
+      await this.requirePermission(user_uuid, organization_uuid, PermissionKeys.ORG_MEMBERS_REMOVE);
       const organization = await this.getOrganization(organization_uuid);
       const member = await this.getOrganizationMember(organization.uuid, organization_member_uuid);
 
-      if (member.role?.name === 'Owner') {
+      if (member.role?.name === OrganizationRoleTypes.OWNER) {
         throw new ForbiddenException('Organization owners cannot be removed');
       }
 
@@ -205,7 +209,6 @@ export class MembersService {
     organization_uuid: string,
     organization_member_uuid: string,
   ) {
-    await this.requireManager(user_uuid, organization_uuid);
     const organization = await this.getOrganization(organization_uuid);
     const member = await this.prisma.organizationMember.findFirst({
       where: { uuid: organization_member_uuid, org_uuid: organization.uuid },
@@ -244,12 +247,11 @@ export class MembersService {
     );
   }
 
-  private async requireManager(user_uuid: string, organization_uuid: string) {
+  private async requirePermission(user_uuid: string, organization_uuid: string, permission_key: string) {
     try {
       const membership = await this.organizations_service.requireActiveMember(user_uuid, organization_uuid);
-      const permissions = membership.role.permissions?.map((role_permission) => role_permission.permission.key) ?? [];
 
-      if (membership.role.name !== 'Owner' && !permissions.includes('org:members:update')) {
+      if (!membershipHasPermission(membership, permission_key)) {
         throw new ForbiddenException('Missing organization member permission');
       }
     } catch (error) {

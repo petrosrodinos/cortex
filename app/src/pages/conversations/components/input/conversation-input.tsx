@@ -1,6 +1,8 @@
 import { useRef, type FC, type Ref } from 'react';
 import { ArrowUp, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
+import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import { ConversationAttachMenu } from './conversation-attach-menu';
 import { ConversationReplyPreview } from './conversation-reply-preview';
 import type { ConversationReplyTarget } from '../../utils/conversation-reply.utils';
@@ -80,9 +82,13 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const draftText = draftPartsToPlainText(draftParts);
   const hasReplyQuote = Boolean(replyTarget?.quotedText.trim());
-  const canSend = (draftText.length > 0 || hasReplyQuote) && !disabled;
 
   return (
+    <OrganizationPermissionGate permission={PermissionKeys.CONVERSATIONS_WRITE}>
+      {(allowed) => {
+        const inputDisabled = disabled || !allowed;
+        const canSend = (draftText.length > 0 || hasReplyQuote) && !inputDisabled;
+        return (
     <div className="shrink-0 min-w-0 border-t border-border p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:p-4">
       {attachedFiles.length > 0 && (
         <div className="mb-2 flex flex-wrap gap-2">
@@ -126,7 +132,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
             selectedProvider={selectedProvider}
             selectedModel={selectedModel}
             selectedResearchMode={selectedResearchMode}
-            disabled={disabled || isUploading}
+            disabled={inputDisabled || isUploading}
             onUpload={() => fileInputRef.current?.click()}
             onIntegrationSelectionChange={onIntegrationSelectionChange}
             onToolkitSelectionChange={onToolkitSelectionChange}
@@ -139,7 +145,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
             parts={draftParts}
             integrations={integrations}
             toolkits={toolkits}
-            disabled={disabled}
+            disabled={inputDisabled}
             placeholder={replyTarget ? 'Write a reply...' : 'Message Cortex...'}
             onPartsChange={onDraftPartsChange}
             onSend={() => {
@@ -168,5 +174,8 @@ export const ConversationInput: FC<ConversationInputProps> = ({
         Open <span className="font-medium text-foreground/70">+</span> → Tools to set defaults when no badges are added.
       </p>
     </div>
+        );
+      }}
+    </OrganizationPermissionGate>
   );
 };
