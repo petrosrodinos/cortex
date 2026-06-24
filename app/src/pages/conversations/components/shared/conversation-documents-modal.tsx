@@ -10,6 +10,7 @@ import {
 } from '@/features/document-boards/hooks/use-document-boards';
 import type { DocumentBoard } from '@/features/document-boards/interfaces/document-board.interfaces';
 import { formatDateTime } from '@/lib/date';
+import { ConversationDocumentsSkeleton } from './conversation-documents-skeleton';
 
 interface ConversationDocumentsModalProps {
   open: boolean;
@@ -236,7 +237,7 @@ export const ConversationDocumentsModal: FC<ConversationDocumentsModalProps> = (
 
         <div className="flex-1 overflow-y-auto p-4">
           {isLoading ? (
-            <p className="text-sm text-muted">Loading…</p>
+            <ConversationDocumentsSkeleton />
           ) : documents.length === 0 && pendingItems.length === 0 ? (
             <p className="text-sm text-muted">No files in this conversation yet.</p>
           ) : (
