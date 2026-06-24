@@ -14,7 +14,7 @@ const settingsNav = [
 ];
 
 export default function SettingsLayout() {
-  const userRole = useAuthStore((state) => state.role);
+  const userRole = useAuthStore((state) => state.role ?? null);
   const { organizationRole, organizationPermissions } = useOrganizationPermissions();
 
   const visibleSettingsNav = settingsNav.filter((item) =>

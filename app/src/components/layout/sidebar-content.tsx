@@ -73,7 +73,7 @@ function NavItem({
 }
 
 function SidebarNavItems({ collapsed, onNavigate }: SidebarContentProps) {
-  const userRole = useAuthStore((state) => state.role);
+  const userRole = useAuthStore((state) => state.role ?? null);
   const { organizationRole, organizationPermissions } = useOrganizationPermissions();
 
   const visibleNavItems = navItems.filter((item) =>

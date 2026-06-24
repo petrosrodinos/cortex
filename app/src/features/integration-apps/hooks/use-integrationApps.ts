@@ -170,7 +170,7 @@ export function useVerifyIntegrationAppsCallback(organizationUuid?: string) {
   });
 }
 
-export function useUpdateIntegrationAppsToolPermission(organizationUuid?: string, toolkitSlug?: string) {
+export function useUpdateIntegrationAppsToolPermission(organizationUuid?: string, _toolkitSlug?: string) {
   const queryClient = useQueryClient();
 
   return useMutation({

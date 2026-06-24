@@ -8,18 +8,8 @@ import {
   type PermissionKey,
 } from '@/lib/organization-permissions';
 
-function selectPermissionContext(state: {
-  organization_role: string | null;
-  organization_permissions: string[];
-}): OrganizationPermissionContext {
-  return {
-    organizationRole: state.organization_role,
-    organizationPermissions: state.organization_permissions ?? [],
-  };
-}
-
 export function useOrganizationPermissions() {
-  const organizationRole = useAuthStore((state) => state.organization_role);
+  const organizationRole = useAuthStore((state) => state.organization_role ?? null);
   const organizationPermissions = useAuthStore((state) => state.organization_permissions ?? []);
 
   const context = useMemo<OrganizationPermissionContext>(

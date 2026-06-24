@@ -1,13 +1,14 @@
 import {
   MessageRoles,
   type Message,
+  type MessageRole,
 } from '@/features/conversations/interfaces/conversation.interfaces';
 import { stripMarkdownForPreview } from '@/lib/message-markdown.utils';
 import { getMessageAttachments } from '../components/messages/message-attachments';
 
 export interface ConversationReplyTarget {
   messageUuid: string;
-  role: MessageRoles;
+  role: MessageRole;
   authorLabel: string;
   quotedText: string;
   attachmentCount: number;
