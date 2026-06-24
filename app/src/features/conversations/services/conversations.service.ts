@@ -54,6 +54,29 @@ export const updateConversation = async (
   }
 };
 
+export interface ConversationDocument {
+  uuid: string | null;
+  filename: string;
+  mimetype: string | null;
+  size: number | null;
+  url: string;
+  created_at: string;
+}
+
+export const getConversationDocuments = async (
+  organizationUuid: string,
+  conversationUuid: string,
+): Promise<ConversationDocument[]> => {
+  try {
+    const response = await axiosInstance.get(
+      ApiRoutes.organizations.conversationDocuments(organizationUuid, conversationUuid),
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to load conversation documents.');
+  }
+};
+
 export const getMessages = async (organizationUuid: string, conversationUuid: string): Promise<Message[]> => {
   try {
     const response = await axiosInstance.get(ApiRoutes.organizations.conversationMessages(organizationUuid, conversationUuid));

@@ -114,6 +114,16 @@ export type ComposioTrigger = $Result.DefaultSelection<Prisma.$ComposioTriggerPa
  */
 export type Document = $Result.DefaultSelection<Prisma.$DocumentPayload>
 /**
+ * Model DocumentBoard
+ * 
+ */
+export type DocumentBoard = $Result.DefaultSelection<Prisma.$DocumentBoardPayload>
+/**
+ * Model DocumentBoardItem
+ * 
+ */
+export type DocumentBoardItem = $Result.DefaultSelection<Prisma.$DocumentBoardItemPayload>
+/**
  * Model AiProvider
  * 
  */
@@ -793,6 +803,26 @@ export class PrismaClient<
   get document(): Prisma.DocumentDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.documentBoard`: Exposes CRUD operations for the **DocumentBoard** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DocumentBoards
+    * const documentBoards = await prisma.documentBoard.findMany()
+    * ```
+    */
+  get documentBoard(): Prisma.DocumentBoardDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.documentBoardItem`: Exposes CRUD operations for the **DocumentBoardItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DocumentBoardItems
+    * const documentBoardItems = await prisma.documentBoardItem.findMany()
+    * ```
+    */
+  get documentBoardItem(): Prisma.DocumentBoardItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.aiProvider`: Exposes CRUD operations for the **AiProvider** model.
     * Example usage:
     * ```ts
@@ -1315,6 +1345,8 @@ export namespace Prisma {
     ComposioConnectedAccount: 'ComposioConnectedAccount',
     ComposioTrigger: 'ComposioTrigger',
     Document: 'Document',
+    DocumentBoard: 'DocumentBoard',
+    DocumentBoardItem: 'DocumentBoardItem',
     AiProvider: 'AiProvider',
     Conversation: 'Conversation',
     ScheduledAgent: 'ScheduledAgent',
@@ -1337,7 +1369,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "databaseIntegration" | "openApiIntegration" | "mcpIntegration" | "integrationAction" | "composioToolkit" | "composioToolkitTool" | "composioSyncRun" | "organisationEnabledToolkit" | "organisationToolPermission" | "composioConnectedAccount" | "composioTrigger" | "document" | "aiProvider" | "conversation" | "scheduledAgent" | "message" | "agentExecution" | "toolCall" | "conversationPersonalization"
+      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "databaseIntegration" | "openApiIntegration" | "mcpIntegration" | "integrationAction" | "composioToolkit" | "composioToolkitTool" | "composioSyncRun" | "organisationEnabledToolkit" | "organisationToolPermission" | "composioConnectedAccount" | "composioTrigger" | "document" | "documentBoard" | "documentBoardItem" | "aiProvider" | "conversation" | "scheduledAgent" | "message" | "agentExecution" | "toolCall" | "conversationPersonalization"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2821,6 +2853,154 @@ export namespace Prisma {
           }
         }
       }
+      DocumentBoard: {
+        payload: Prisma.$DocumentBoardPayload<ExtArgs>
+        fields: Prisma.DocumentBoardFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DocumentBoardFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DocumentBoardFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardPayload>
+          }
+          findFirst: {
+            args: Prisma.DocumentBoardFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DocumentBoardFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardPayload>
+          }
+          findMany: {
+            args: Prisma.DocumentBoardFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardPayload>[]
+          }
+          create: {
+            args: Prisma.DocumentBoardCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardPayload>
+          }
+          createMany: {
+            args: Prisma.DocumentBoardCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DocumentBoardCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardPayload>[]
+          }
+          delete: {
+            args: Prisma.DocumentBoardDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardPayload>
+          }
+          update: {
+            args: Prisma.DocumentBoardUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardPayload>
+          }
+          deleteMany: {
+            args: Prisma.DocumentBoardDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DocumentBoardUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DocumentBoardUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardPayload>[]
+          }
+          upsert: {
+            args: Prisma.DocumentBoardUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardPayload>
+          }
+          aggregate: {
+            args: Prisma.DocumentBoardAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDocumentBoard>
+          }
+          groupBy: {
+            args: Prisma.DocumentBoardGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DocumentBoardGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DocumentBoardCountArgs<ExtArgs>
+            result: $Utils.Optional<DocumentBoardCountAggregateOutputType> | number
+          }
+        }
+      }
+      DocumentBoardItem: {
+        payload: Prisma.$DocumentBoardItemPayload<ExtArgs>
+        fields: Prisma.DocumentBoardItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DocumentBoardItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DocumentBoardItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardItemPayload>
+          }
+          findFirst: {
+            args: Prisma.DocumentBoardItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DocumentBoardItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardItemPayload>
+          }
+          findMany: {
+            args: Prisma.DocumentBoardItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardItemPayload>[]
+          }
+          create: {
+            args: Prisma.DocumentBoardItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardItemPayload>
+          }
+          createMany: {
+            args: Prisma.DocumentBoardItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DocumentBoardItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardItemPayload>[]
+          }
+          delete: {
+            args: Prisma.DocumentBoardItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardItemPayload>
+          }
+          update: {
+            args: Prisma.DocumentBoardItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.DocumentBoardItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DocumentBoardItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DocumentBoardItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.DocumentBoardItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentBoardItemPayload>
+          }
+          aggregate: {
+            args: Prisma.DocumentBoardItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDocumentBoardItem>
+          }
+          groupBy: {
+            args: Prisma.DocumentBoardItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DocumentBoardItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DocumentBoardItemCountArgs<ExtArgs>
+            result: $Utils.Optional<DocumentBoardItemCountAggregateOutputType> | number
+          }
+        }
+      }
       AiProvider: {
         payload: Prisma.$AiProviderPayload<ExtArgs>
         fields: Prisma.AiProviderFieldRefs
@@ -3467,6 +3647,8 @@ export namespace Prisma {
     composioConnectedAccount?: ComposioConnectedAccountOmit
     composioTrigger?: ComposioTriggerOmit
     document?: DocumentOmit
+    documentBoard?: DocumentBoardOmit
+    documentBoardItem?: DocumentBoardItemOmit
     aiProvider?: AiProviderOmit
     conversation?: ConversationOmit
     scheduledAgent?: ScheduledAgentOmit
@@ -3561,6 +3743,8 @@ export namespace Prisma {
     agent_executions: number
     conversation_personalizations: number
     scheduled_agents: number
+    created_document_boards: number
+    document_board_items: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3571,6 +3755,8 @@ export namespace Prisma {
     agent_executions?: boolean | UserCountOutputTypeCountAgent_executionsArgs
     conversation_personalizations?: boolean | UserCountOutputTypeCountConversation_personalizationsArgs
     scheduled_agents?: boolean | UserCountOutputTypeCountScheduled_agentsArgs
+    created_document_boards?: boolean | UserCountOutputTypeCountCreated_document_boardsArgs
+    document_board_items?: boolean | UserCountOutputTypeCountDocument_board_itemsArgs
   }
 
   // Custom InputTypes
@@ -3633,6 +3819,20 @@ export namespace Prisma {
     where?: ScheduledAgentWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCreated_document_boardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentBoardWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountDocument_board_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentBoardItemWhereInput
+  }
+
 
   /**
    * Count Type OrganizationCountOutputType
@@ -3652,6 +3852,7 @@ export namespace Prisma {
     agent_executions: number
     conversation_personalizations: number
     scheduled_agents: number
+    document_boards: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3668,6 +3869,7 @@ export namespace Prisma {
     agent_executions?: boolean | OrganizationCountOutputTypeCountAgent_executionsArgs
     conversation_personalizations?: boolean | OrganizationCountOutputTypeCountConversation_personalizationsArgs
     scheduled_agents?: boolean | OrganizationCountOutputTypeCountScheduled_agentsArgs
+    document_boards?: boolean | OrganizationCountOutputTypeCountDocument_boardsArgs
   }
 
   // Custom InputTypes
@@ -3770,6 +3972,13 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountScheduled_agentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ScheduledAgentWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountDocument_boardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentBoardWhereInput
   }
 
 
@@ -3970,6 +4179,68 @@ export namespace Prisma {
    */
   export type ComposioToolkitToolCountOutputTypeCountPermissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OrganisationToolPermissionWhereInput
+  }
+
+
+  /**
+   * Count Type DocumentCountOutputType
+   */
+
+  export type DocumentCountOutputType = {
+    board_items: number
+  }
+
+  export type DocumentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    board_items?: boolean | DocumentCountOutputTypeCountBoard_itemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DocumentCountOutputType without action
+   */
+  export type DocumentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentCountOutputType
+     */
+    select?: DocumentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DocumentCountOutputType without action
+   */
+  export type DocumentCountOutputTypeCountBoard_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentBoardItemWhereInput
+  }
+
+
+  /**
+   * Count Type DocumentBoardCountOutputType
+   */
+
+  export type DocumentBoardCountOutputType = {
+    items: number
+  }
+
+  export type DocumentBoardCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    items?: boolean | DocumentBoardCountOutputTypeCountItemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DocumentBoardCountOutputType without action
+   */
+  export type DocumentBoardCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardCountOutputType
+     */
+    select?: DocumentBoardCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DocumentBoardCountOutputType without action
+   */
+  export type DocumentBoardCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentBoardItemWhereInput
   }
 
 
@@ -4324,6 +4595,8 @@ export namespace Prisma {
     agent_executions?: boolean | User$agent_executionsArgs<ExtArgs>
     conversation_personalizations?: boolean | User$conversation_personalizationsArgs<ExtArgs>
     scheduled_agents?: boolean | User$scheduled_agentsArgs<ExtArgs>
+    created_document_boards?: boolean | User$created_document_boardsArgs<ExtArgs>
+    document_board_items?: boolean | User$document_board_itemsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -4375,6 +4648,8 @@ export namespace Prisma {
     agent_executions?: boolean | User$agent_executionsArgs<ExtArgs>
     conversation_personalizations?: boolean | User$conversation_personalizationsArgs<ExtArgs>
     scheduled_agents?: boolean | User$scheduled_agentsArgs<ExtArgs>
+    created_document_boards?: boolean | User$created_document_boardsArgs<ExtArgs>
+    document_board_items?: boolean | User$document_board_itemsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4390,6 +4665,8 @@ export namespace Prisma {
       agent_executions: Prisma.$AgentExecutionPayload<ExtArgs>[]
       conversation_personalizations: Prisma.$ConversationPersonalizationPayload<ExtArgs>[]
       scheduled_agents: Prisma.$ScheduledAgentPayload<ExtArgs>[]
+      created_document_boards: Prisma.$DocumentBoardPayload<ExtArgs>[]
+      document_board_items: Prisma.$DocumentBoardItemPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -4803,6 +5080,8 @@ export namespace Prisma {
     agent_executions<T extends User$agent_executionsArgs<ExtArgs> = {}>(args?: Subset<T, User$agent_executionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     conversation_personalizations<T extends User$conversation_personalizationsArgs<ExtArgs> = {}>(args?: Subset<T, User$conversation_personalizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     scheduled_agents<T extends User$scheduled_agentsArgs<ExtArgs> = {}>(args?: Subset<T, User$scheduled_agentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    created_document_boards<T extends User$created_document_boardsArgs<ExtArgs> = {}>(args?: Subset<T, User$created_document_boardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    document_board_items<T extends User$document_board_itemsArgs<ExtArgs> = {}>(args?: Subset<T, User$document_board_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5398,6 +5677,54 @@ export namespace Prisma {
   }
 
   /**
+   * User.created_document_boards
+   */
+  export type User$created_document_boardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardInclude<ExtArgs> | null
+    where?: DocumentBoardWhereInput
+    orderBy?: DocumentBoardOrderByWithRelationInput | DocumentBoardOrderByWithRelationInput[]
+    cursor?: DocumentBoardWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DocumentBoardScalarFieldEnum | DocumentBoardScalarFieldEnum[]
+  }
+
+  /**
+   * User.document_board_items
+   */
+  export type User$document_board_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemInclude<ExtArgs> | null
+    where?: DocumentBoardItemWhereInput
+    orderBy?: DocumentBoardItemOrderByWithRelationInput | DocumentBoardItemOrderByWithRelationInput[]
+    cursor?: DocumentBoardItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DocumentBoardItemScalarFieldEnum | DocumentBoardItemScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5652,6 +5979,7 @@ export namespace Prisma {
     agent_executions?: boolean | Organization$agent_executionsArgs<ExtArgs>
     conversation_personalizations?: boolean | Organization$conversation_personalizationsArgs<ExtArgs>
     scheduled_agents?: boolean | Organization$scheduled_agentsArgs<ExtArgs>
+    document_boards?: boolean | Organization$document_boardsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -5706,6 +6034,7 @@ export namespace Prisma {
     agent_executions?: boolean | Organization$agent_executionsArgs<ExtArgs>
     conversation_personalizations?: boolean | Organization$conversation_personalizationsArgs<ExtArgs>
     scheduled_agents?: boolean | Organization$scheduled_agentsArgs<ExtArgs>
+    document_boards?: boolean | Organization$document_boardsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5732,6 +6061,7 @@ export namespace Prisma {
       agent_executions: Prisma.$AgentExecutionPayload<ExtArgs>[]
       conversation_personalizations: Prisma.$ConversationPersonalizationPayload<ExtArgs>[]
       scheduled_agents: Prisma.$ScheduledAgentPayload<ExtArgs>[]
+      document_boards: Prisma.$DocumentBoardPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -6150,6 +6480,7 @@ export namespace Prisma {
     agent_executions<T extends Organization$agent_executionsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$agent_executionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     conversation_personalizations<T extends Organization$conversation_personalizationsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$conversation_personalizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     scheduled_agents<T extends Organization$scheduled_agentsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$scheduled_agentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    document_boards<T extends Organization$document_boardsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$document_boardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6892,6 +7223,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ScheduledAgentScalarFieldEnum | ScheduledAgentScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.document_boards
+   */
+  export type Organization$document_boardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardInclude<ExtArgs> | null
+    where?: DocumentBoardWhereInput
+    orderBy?: DocumentBoardOrderByWithRelationInput | DocumentBoardOrderByWithRelationInput[]
+    cursor?: DocumentBoardWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DocumentBoardScalarFieldEnum | DocumentBoardScalarFieldEnum[]
   }
 
   /**
@@ -27009,6 +27364,8 @@ export namespace Prisma {
     path?: boolean
     type?: boolean
     created_at?: boolean
+    board_items?: boolean | Document$board_itemsArgs<ExtArgs>
+    _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["document"]>
 
   export type DocumentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -27051,10 +27408,18 @@ export namespace Prisma {
   }
 
   export type DocumentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "user_uuid" | "filename" | "mimetype" | "size" | "url" | "path" | "type" | "created_at", ExtArgs["result"]["document"]>
+  export type DocumentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    board_items?: boolean | Document$board_itemsArgs<ExtArgs>
+    _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type DocumentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type DocumentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $DocumentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Document"
-    objects: {}
+    objects: {
+      board_items: Prisma.$DocumentBoardItemPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       uuid: string
@@ -27460,6 +27825,7 @@ export namespace Prisma {
    */
   export interface Prisma__DocumentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    board_items<T extends Document$board_itemsArgs<ExtArgs> = {}>(args?: Subset<T, Document$board_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -27516,6 +27882,10 @@ export namespace Prisma {
      */
     omit?: DocumentOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
      * Filter, which Document to fetch.
      */
     where: DocumentWhereUniqueInput
@@ -27534,6 +27904,10 @@ export namespace Prisma {
      */
     omit?: DocumentOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
      * Filter, which Document to fetch.
      */
     where: DocumentWhereUniqueInput
@@ -27551,6 +27925,10 @@ export namespace Prisma {
      * Omit specific fields from the Document
      */
     omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
     /**
      * Filter, which Document to fetch.
      */
@@ -27600,6 +27978,10 @@ export namespace Prisma {
      */
     omit?: DocumentOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
      * Filter, which Document to fetch.
      */
     where?: DocumentWhereInput
@@ -27648,6 +28030,10 @@ export namespace Prisma {
      */
     omit?: DocumentOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
      * Filter, which Documents to fetch.
      */
     where?: DocumentWhereInput
@@ -27690,6 +28076,10 @@ export namespace Prisma {
      * Omit specific fields from the Document
      */
     omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
     /**
      * The data needed to create a Document.
      */
@@ -27738,6 +28128,10 @@ export namespace Prisma {
      * Omit specific fields from the Document
      */
     omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
     /**
      * The data needed to update a Document.
      */
@@ -27805,6 +28199,10 @@ export namespace Prisma {
      */
     omit?: DocumentOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
      * The filter to search for the Document to update in case it exists.
      */
     where: DocumentWhereUniqueInput
@@ -27831,6 +28229,10 @@ export namespace Prisma {
      */
     omit?: DocumentOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
      * Filter which Document to delete.
      */
     where: DocumentWhereUniqueInput
@@ -27851,6 +28253,30 @@ export namespace Prisma {
   }
 
   /**
+   * Document.board_items
+   */
+  export type Document$board_itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemInclude<ExtArgs> | null
+    where?: DocumentBoardItemWhereInput
+    orderBy?: DocumentBoardItemOrderByWithRelationInput | DocumentBoardItemOrderByWithRelationInput[]
+    cursor?: DocumentBoardItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DocumentBoardItemScalarFieldEnum | DocumentBoardItemScalarFieldEnum[]
+  }
+
+  /**
    * Document without action
    */
   export type DocumentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -27862,6 +28288,2300 @@ export namespace Prisma {
      * Omit specific fields from the Document
      */
     omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DocumentBoard
+   */
+
+  export type AggregateDocumentBoard = {
+    _count: DocumentBoardCountAggregateOutputType | null
+    _avg: DocumentBoardAvgAggregateOutputType | null
+    _sum: DocumentBoardSumAggregateOutputType | null
+    _min: DocumentBoardMinAggregateOutputType | null
+    _max: DocumentBoardMaxAggregateOutputType | null
+  }
+
+  export type DocumentBoardAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type DocumentBoardSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type DocumentBoardMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    org_uuid: string | null
+    name: string | null
+    description: string | null
+    created_by: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type DocumentBoardMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    org_uuid: string | null
+    name: string | null
+    description: string | null
+    created_by: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type DocumentBoardCountAggregateOutputType = {
+    id: number
+    uuid: number
+    org_uuid: number
+    name: number
+    description: number
+    created_by: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type DocumentBoardAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type DocumentBoardSumAggregateInputType = {
+    id?: true
+  }
+
+  export type DocumentBoardMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    name?: true
+    description?: true
+    created_by?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type DocumentBoardMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    name?: true
+    description?: true
+    created_by?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type DocumentBoardCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    name?: true
+    description?: true
+    created_by?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type DocumentBoardAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DocumentBoard to aggregate.
+     */
+    where?: DocumentBoardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DocumentBoards to fetch.
+     */
+    orderBy?: DocumentBoardOrderByWithRelationInput | DocumentBoardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DocumentBoardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DocumentBoards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DocumentBoards.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DocumentBoards
+    **/
+    _count?: true | DocumentBoardCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DocumentBoardAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DocumentBoardSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DocumentBoardMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DocumentBoardMaxAggregateInputType
+  }
+
+  export type GetDocumentBoardAggregateType<T extends DocumentBoardAggregateArgs> = {
+        [P in keyof T & keyof AggregateDocumentBoard]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDocumentBoard[P]>
+      : GetScalarType<T[P], AggregateDocumentBoard[P]>
+  }
+
+
+
+
+  export type DocumentBoardGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentBoardWhereInput
+    orderBy?: DocumentBoardOrderByWithAggregationInput | DocumentBoardOrderByWithAggregationInput[]
+    by: DocumentBoardScalarFieldEnum[] | DocumentBoardScalarFieldEnum
+    having?: DocumentBoardScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DocumentBoardCountAggregateInputType | true
+    _avg?: DocumentBoardAvgAggregateInputType
+    _sum?: DocumentBoardSumAggregateInputType
+    _min?: DocumentBoardMinAggregateInputType
+    _max?: DocumentBoardMaxAggregateInputType
+  }
+
+  export type DocumentBoardGroupByOutputType = {
+    id: number
+    uuid: string
+    org_uuid: string
+    name: string
+    description: string | null
+    created_by: string
+    created_at: Date
+    updated_at: Date
+    _count: DocumentBoardCountAggregateOutputType | null
+    _avg: DocumentBoardAvgAggregateOutputType | null
+    _sum: DocumentBoardSumAggregateOutputType | null
+    _min: DocumentBoardMinAggregateOutputType | null
+    _max: DocumentBoardMaxAggregateOutputType | null
+  }
+
+  type GetDocumentBoardGroupByPayload<T extends DocumentBoardGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DocumentBoardGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DocumentBoardGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DocumentBoardGroupByOutputType[P]>
+            : GetScalarType<T[P], DocumentBoardGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DocumentBoardSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    name?: boolean
+    description?: boolean
+    created_by?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    creator?: boolean | UserDefaultArgs<ExtArgs>
+    items?: boolean | DocumentBoard$itemsArgs<ExtArgs>
+    _count?: boolean | DocumentBoardCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["documentBoard"]>
+
+  export type DocumentBoardSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    name?: boolean
+    description?: boolean
+    created_by?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    creator?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["documentBoard"]>
+
+  export type DocumentBoardSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    name?: boolean
+    description?: boolean
+    created_by?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    creator?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["documentBoard"]>
+
+  export type DocumentBoardSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    name?: boolean
+    description?: boolean
+    created_by?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type DocumentBoardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "org_uuid" | "name" | "description" | "created_by" | "created_at" | "updated_at", ExtArgs["result"]["documentBoard"]>
+  export type DocumentBoardInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    creator?: boolean | UserDefaultArgs<ExtArgs>
+    items?: boolean | DocumentBoard$itemsArgs<ExtArgs>
+    _count?: boolean | DocumentBoardCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type DocumentBoardIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    creator?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type DocumentBoardIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    creator?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $DocumentBoardPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DocumentBoard"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      creator: Prisma.$UserPayload<ExtArgs>
+      items: Prisma.$DocumentBoardItemPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      org_uuid: string
+      name: string
+      description: string | null
+      created_by: string
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["documentBoard"]>
+    composites: {}
+  }
+
+  type DocumentBoardGetPayload<S extends boolean | null | undefined | DocumentBoardDefaultArgs> = $Result.GetResult<Prisma.$DocumentBoardPayload, S>
+
+  type DocumentBoardCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DocumentBoardFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DocumentBoardCountAggregateInputType | true
+    }
+
+  export interface DocumentBoardDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DocumentBoard'], meta: { name: 'DocumentBoard' } }
+    /**
+     * Find zero or one DocumentBoard that matches the filter.
+     * @param {DocumentBoardFindUniqueArgs} args - Arguments to find a DocumentBoard
+     * @example
+     * // Get one DocumentBoard
+     * const documentBoard = await prisma.documentBoard.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DocumentBoardFindUniqueArgs>(args: SelectSubset<T, DocumentBoardFindUniqueArgs<ExtArgs>>): Prisma__DocumentBoardClient<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DocumentBoard that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DocumentBoardFindUniqueOrThrowArgs} args - Arguments to find a DocumentBoard
+     * @example
+     * // Get one DocumentBoard
+     * const documentBoard = await prisma.documentBoard.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DocumentBoardFindUniqueOrThrowArgs>(args: SelectSubset<T, DocumentBoardFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DocumentBoardClient<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DocumentBoard that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardFindFirstArgs} args - Arguments to find a DocumentBoard
+     * @example
+     * // Get one DocumentBoard
+     * const documentBoard = await prisma.documentBoard.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DocumentBoardFindFirstArgs>(args?: SelectSubset<T, DocumentBoardFindFirstArgs<ExtArgs>>): Prisma__DocumentBoardClient<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DocumentBoard that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardFindFirstOrThrowArgs} args - Arguments to find a DocumentBoard
+     * @example
+     * // Get one DocumentBoard
+     * const documentBoard = await prisma.documentBoard.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DocumentBoardFindFirstOrThrowArgs>(args?: SelectSubset<T, DocumentBoardFindFirstOrThrowArgs<ExtArgs>>): Prisma__DocumentBoardClient<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DocumentBoards that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DocumentBoards
+     * const documentBoards = await prisma.documentBoard.findMany()
+     * 
+     * // Get first 10 DocumentBoards
+     * const documentBoards = await prisma.documentBoard.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const documentBoardWithIdOnly = await prisma.documentBoard.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DocumentBoardFindManyArgs>(args?: SelectSubset<T, DocumentBoardFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DocumentBoard.
+     * @param {DocumentBoardCreateArgs} args - Arguments to create a DocumentBoard.
+     * @example
+     * // Create one DocumentBoard
+     * const DocumentBoard = await prisma.documentBoard.create({
+     *   data: {
+     *     // ... data to create a DocumentBoard
+     *   }
+     * })
+     * 
+     */
+    create<T extends DocumentBoardCreateArgs>(args: SelectSubset<T, DocumentBoardCreateArgs<ExtArgs>>): Prisma__DocumentBoardClient<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DocumentBoards.
+     * @param {DocumentBoardCreateManyArgs} args - Arguments to create many DocumentBoards.
+     * @example
+     * // Create many DocumentBoards
+     * const documentBoard = await prisma.documentBoard.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DocumentBoardCreateManyArgs>(args?: SelectSubset<T, DocumentBoardCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DocumentBoards and returns the data saved in the database.
+     * @param {DocumentBoardCreateManyAndReturnArgs} args - Arguments to create many DocumentBoards.
+     * @example
+     * // Create many DocumentBoards
+     * const documentBoard = await prisma.documentBoard.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DocumentBoards and only return the `id`
+     * const documentBoardWithIdOnly = await prisma.documentBoard.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DocumentBoardCreateManyAndReturnArgs>(args?: SelectSubset<T, DocumentBoardCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DocumentBoard.
+     * @param {DocumentBoardDeleteArgs} args - Arguments to delete one DocumentBoard.
+     * @example
+     * // Delete one DocumentBoard
+     * const DocumentBoard = await prisma.documentBoard.delete({
+     *   where: {
+     *     // ... filter to delete one DocumentBoard
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DocumentBoardDeleteArgs>(args: SelectSubset<T, DocumentBoardDeleteArgs<ExtArgs>>): Prisma__DocumentBoardClient<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DocumentBoard.
+     * @param {DocumentBoardUpdateArgs} args - Arguments to update one DocumentBoard.
+     * @example
+     * // Update one DocumentBoard
+     * const documentBoard = await prisma.documentBoard.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DocumentBoardUpdateArgs>(args: SelectSubset<T, DocumentBoardUpdateArgs<ExtArgs>>): Prisma__DocumentBoardClient<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DocumentBoards.
+     * @param {DocumentBoardDeleteManyArgs} args - Arguments to filter DocumentBoards to delete.
+     * @example
+     * // Delete a few DocumentBoards
+     * const { count } = await prisma.documentBoard.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DocumentBoardDeleteManyArgs>(args?: SelectSubset<T, DocumentBoardDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DocumentBoards.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DocumentBoards
+     * const documentBoard = await prisma.documentBoard.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DocumentBoardUpdateManyArgs>(args: SelectSubset<T, DocumentBoardUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DocumentBoards and returns the data updated in the database.
+     * @param {DocumentBoardUpdateManyAndReturnArgs} args - Arguments to update many DocumentBoards.
+     * @example
+     * // Update many DocumentBoards
+     * const documentBoard = await prisma.documentBoard.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DocumentBoards and only return the `id`
+     * const documentBoardWithIdOnly = await prisma.documentBoard.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DocumentBoardUpdateManyAndReturnArgs>(args: SelectSubset<T, DocumentBoardUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DocumentBoard.
+     * @param {DocumentBoardUpsertArgs} args - Arguments to update or create a DocumentBoard.
+     * @example
+     * // Update or create a DocumentBoard
+     * const documentBoard = await prisma.documentBoard.upsert({
+     *   create: {
+     *     // ... data to create a DocumentBoard
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DocumentBoard we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DocumentBoardUpsertArgs>(args: SelectSubset<T, DocumentBoardUpsertArgs<ExtArgs>>): Prisma__DocumentBoardClient<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DocumentBoards.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardCountArgs} args - Arguments to filter DocumentBoards to count.
+     * @example
+     * // Count the number of DocumentBoards
+     * const count = await prisma.documentBoard.count({
+     *   where: {
+     *     // ... the filter for the DocumentBoards we want to count
+     *   }
+     * })
+    **/
+    count<T extends DocumentBoardCountArgs>(
+      args?: Subset<T, DocumentBoardCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DocumentBoardCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DocumentBoard.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DocumentBoardAggregateArgs>(args: Subset<T, DocumentBoardAggregateArgs>): Prisma.PrismaPromise<GetDocumentBoardAggregateType<T>>
+
+    /**
+     * Group by DocumentBoard.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DocumentBoardGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DocumentBoardGroupByArgs['orderBy'] }
+        : { orderBy?: DocumentBoardGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DocumentBoardGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDocumentBoardGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DocumentBoard model
+   */
+  readonly fields: DocumentBoardFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DocumentBoard.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DocumentBoardClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    creator<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    items<T extends DocumentBoard$itemsArgs<ExtArgs> = {}>(args?: Subset<T, DocumentBoard$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DocumentBoard model
+   */
+  interface DocumentBoardFieldRefs {
+    readonly id: FieldRef<"DocumentBoard", 'Int'>
+    readonly uuid: FieldRef<"DocumentBoard", 'String'>
+    readonly org_uuid: FieldRef<"DocumentBoard", 'String'>
+    readonly name: FieldRef<"DocumentBoard", 'String'>
+    readonly description: FieldRef<"DocumentBoard", 'String'>
+    readonly created_by: FieldRef<"DocumentBoard", 'String'>
+    readonly created_at: FieldRef<"DocumentBoard", 'DateTime'>
+    readonly updated_at: FieldRef<"DocumentBoard", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DocumentBoard findUnique
+   */
+  export type DocumentBoardFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentBoard to fetch.
+     */
+    where: DocumentBoardWhereUniqueInput
+  }
+
+  /**
+   * DocumentBoard findUniqueOrThrow
+   */
+  export type DocumentBoardFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentBoard to fetch.
+     */
+    where: DocumentBoardWhereUniqueInput
+  }
+
+  /**
+   * DocumentBoard findFirst
+   */
+  export type DocumentBoardFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentBoard to fetch.
+     */
+    where?: DocumentBoardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DocumentBoards to fetch.
+     */
+    orderBy?: DocumentBoardOrderByWithRelationInput | DocumentBoardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DocumentBoards.
+     */
+    cursor?: DocumentBoardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DocumentBoards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DocumentBoards.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DocumentBoards.
+     */
+    distinct?: DocumentBoardScalarFieldEnum | DocumentBoardScalarFieldEnum[]
+  }
+
+  /**
+   * DocumentBoard findFirstOrThrow
+   */
+  export type DocumentBoardFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentBoard to fetch.
+     */
+    where?: DocumentBoardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DocumentBoards to fetch.
+     */
+    orderBy?: DocumentBoardOrderByWithRelationInput | DocumentBoardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DocumentBoards.
+     */
+    cursor?: DocumentBoardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DocumentBoards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DocumentBoards.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DocumentBoards.
+     */
+    distinct?: DocumentBoardScalarFieldEnum | DocumentBoardScalarFieldEnum[]
+  }
+
+  /**
+   * DocumentBoard findMany
+   */
+  export type DocumentBoardFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentBoards to fetch.
+     */
+    where?: DocumentBoardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DocumentBoards to fetch.
+     */
+    orderBy?: DocumentBoardOrderByWithRelationInput | DocumentBoardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DocumentBoards.
+     */
+    cursor?: DocumentBoardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DocumentBoards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DocumentBoards.
+     */
+    skip?: number
+    distinct?: DocumentBoardScalarFieldEnum | DocumentBoardScalarFieldEnum[]
+  }
+
+  /**
+   * DocumentBoard create
+   */
+  export type DocumentBoardCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DocumentBoard.
+     */
+    data: XOR<DocumentBoardCreateInput, DocumentBoardUncheckedCreateInput>
+  }
+
+  /**
+   * DocumentBoard createMany
+   */
+  export type DocumentBoardCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DocumentBoards.
+     */
+    data: DocumentBoardCreateManyInput | DocumentBoardCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DocumentBoard createManyAndReturn
+   */
+  export type DocumentBoardCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * The data used to create many DocumentBoards.
+     */
+    data: DocumentBoardCreateManyInput | DocumentBoardCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DocumentBoard update
+   */
+  export type DocumentBoardUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DocumentBoard.
+     */
+    data: XOR<DocumentBoardUpdateInput, DocumentBoardUncheckedUpdateInput>
+    /**
+     * Choose, which DocumentBoard to update.
+     */
+    where: DocumentBoardWhereUniqueInput
+  }
+
+  /**
+   * DocumentBoard updateMany
+   */
+  export type DocumentBoardUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DocumentBoards.
+     */
+    data: XOR<DocumentBoardUpdateManyMutationInput, DocumentBoardUncheckedUpdateManyInput>
+    /**
+     * Filter which DocumentBoards to update
+     */
+    where?: DocumentBoardWhereInput
+    /**
+     * Limit how many DocumentBoards to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DocumentBoard updateManyAndReturn
+   */
+  export type DocumentBoardUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * The data used to update DocumentBoards.
+     */
+    data: XOR<DocumentBoardUpdateManyMutationInput, DocumentBoardUncheckedUpdateManyInput>
+    /**
+     * Filter which DocumentBoards to update
+     */
+    where?: DocumentBoardWhereInput
+    /**
+     * Limit how many DocumentBoards to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DocumentBoard upsert
+   */
+  export type DocumentBoardUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DocumentBoard to update in case it exists.
+     */
+    where: DocumentBoardWhereUniqueInput
+    /**
+     * In case the DocumentBoard found by the `where` argument doesn't exist, create a new DocumentBoard with this data.
+     */
+    create: XOR<DocumentBoardCreateInput, DocumentBoardUncheckedCreateInput>
+    /**
+     * In case the DocumentBoard was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DocumentBoardUpdateInput, DocumentBoardUncheckedUpdateInput>
+  }
+
+  /**
+   * DocumentBoard delete
+   */
+  export type DocumentBoardDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardInclude<ExtArgs> | null
+    /**
+     * Filter which DocumentBoard to delete.
+     */
+    where: DocumentBoardWhereUniqueInput
+  }
+
+  /**
+   * DocumentBoard deleteMany
+   */
+  export type DocumentBoardDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DocumentBoards to delete
+     */
+    where?: DocumentBoardWhereInput
+    /**
+     * Limit how many DocumentBoards to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DocumentBoard.items
+   */
+  export type DocumentBoard$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemInclude<ExtArgs> | null
+    where?: DocumentBoardItemWhereInput
+    orderBy?: DocumentBoardItemOrderByWithRelationInput | DocumentBoardItemOrderByWithRelationInput[]
+    cursor?: DocumentBoardItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DocumentBoardItemScalarFieldEnum | DocumentBoardItemScalarFieldEnum[]
+  }
+
+  /**
+   * DocumentBoard without action
+   */
+  export type DocumentBoardDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoard
+     */
+    select?: DocumentBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoard
+     */
+    omit?: DocumentBoardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DocumentBoardItem
+   */
+
+  export type AggregateDocumentBoardItem = {
+    _count: DocumentBoardItemCountAggregateOutputType | null
+    _avg: DocumentBoardItemAvgAggregateOutputType | null
+    _sum: DocumentBoardItemSumAggregateOutputType | null
+    _min: DocumentBoardItemMinAggregateOutputType | null
+    _max: DocumentBoardItemMaxAggregateOutputType | null
+  }
+
+  export type DocumentBoardItemAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type DocumentBoardItemSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type DocumentBoardItemMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    board_uuid: string | null
+    document_uuid: string | null
+    added_by: string | null
+    created_at: Date | null
+  }
+
+  export type DocumentBoardItemMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    board_uuid: string | null
+    document_uuid: string | null
+    added_by: string | null
+    created_at: Date | null
+  }
+
+  export type DocumentBoardItemCountAggregateOutputType = {
+    id: number
+    uuid: number
+    board_uuid: number
+    document_uuid: number
+    added_by: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type DocumentBoardItemAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type DocumentBoardItemSumAggregateInputType = {
+    id?: true
+  }
+
+  export type DocumentBoardItemMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    board_uuid?: true
+    document_uuid?: true
+    added_by?: true
+    created_at?: true
+  }
+
+  export type DocumentBoardItemMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    board_uuid?: true
+    document_uuid?: true
+    added_by?: true
+    created_at?: true
+  }
+
+  export type DocumentBoardItemCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    board_uuid?: true
+    document_uuid?: true
+    added_by?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type DocumentBoardItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DocumentBoardItem to aggregate.
+     */
+    where?: DocumentBoardItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DocumentBoardItems to fetch.
+     */
+    orderBy?: DocumentBoardItemOrderByWithRelationInput | DocumentBoardItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DocumentBoardItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DocumentBoardItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DocumentBoardItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DocumentBoardItems
+    **/
+    _count?: true | DocumentBoardItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DocumentBoardItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DocumentBoardItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DocumentBoardItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DocumentBoardItemMaxAggregateInputType
+  }
+
+  export type GetDocumentBoardItemAggregateType<T extends DocumentBoardItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateDocumentBoardItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDocumentBoardItem[P]>
+      : GetScalarType<T[P], AggregateDocumentBoardItem[P]>
+  }
+
+
+
+
+  export type DocumentBoardItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentBoardItemWhereInput
+    orderBy?: DocumentBoardItemOrderByWithAggregationInput | DocumentBoardItemOrderByWithAggregationInput[]
+    by: DocumentBoardItemScalarFieldEnum[] | DocumentBoardItemScalarFieldEnum
+    having?: DocumentBoardItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DocumentBoardItemCountAggregateInputType | true
+    _avg?: DocumentBoardItemAvgAggregateInputType
+    _sum?: DocumentBoardItemSumAggregateInputType
+    _min?: DocumentBoardItemMinAggregateInputType
+    _max?: DocumentBoardItemMaxAggregateInputType
+  }
+
+  export type DocumentBoardItemGroupByOutputType = {
+    id: number
+    uuid: string
+    board_uuid: string
+    document_uuid: string
+    added_by: string
+    created_at: Date
+    _count: DocumentBoardItemCountAggregateOutputType | null
+    _avg: DocumentBoardItemAvgAggregateOutputType | null
+    _sum: DocumentBoardItemSumAggregateOutputType | null
+    _min: DocumentBoardItemMinAggregateOutputType | null
+    _max: DocumentBoardItemMaxAggregateOutputType | null
+  }
+
+  type GetDocumentBoardItemGroupByPayload<T extends DocumentBoardItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DocumentBoardItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DocumentBoardItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DocumentBoardItemGroupByOutputType[P]>
+            : GetScalarType<T[P], DocumentBoardItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DocumentBoardItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    board_uuid?: boolean
+    document_uuid?: boolean
+    added_by?: boolean
+    created_at?: boolean
+    board?: boolean | DocumentBoardDefaultArgs<ExtArgs>
+    document?: boolean | DocumentDefaultArgs<ExtArgs>
+    adder?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["documentBoardItem"]>
+
+  export type DocumentBoardItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    board_uuid?: boolean
+    document_uuid?: boolean
+    added_by?: boolean
+    created_at?: boolean
+    board?: boolean | DocumentBoardDefaultArgs<ExtArgs>
+    document?: boolean | DocumentDefaultArgs<ExtArgs>
+    adder?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["documentBoardItem"]>
+
+  export type DocumentBoardItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    board_uuid?: boolean
+    document_uuid?: boolean
+    added_by?: boolean
+    created_at?: boolean
+    board?: boolean | DocumentBoardDefaultArgs<ExtArgs>
+    document?: boolean | DocumentDefaultArgs<ExtArgs>
+    adder?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["documentBoardItem"]>
+
+  export type DocumentBoardItemSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    board_uuid?: boolean
+    document_uuid?: boolean
+    added_by?: boolean
+    created_at?: boolean
+  }
+
+  export type DocumentBoardItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "board_uuid" | "document_uuid" | "added_by" | "created_at", ExtArgs["result"]["documentBoardItem"]>
+  export type DocumentBoardItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    board?: boolean | DocumentBoardDefaultArgs<ExtArgs>
+    document?: boolean | DocumentDefaultArgs<ExtArgs>
+    adder?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type DocumentBoardItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    board?: boolean | DocumentBoardDefaultArgs<ExtArgs>
+    document?: boolean | DocumentDefaultArgs<ExtArgs>
+    adder?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type DocumentBoardItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    board?: boolean | DocumentBoardDefaultArgs<ExtArgs>
+    document?: boolean | DocumentDefaultArgs<ExtArgs>
+    adder?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $DocumentBoardItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DocumentBoardItem"
+    objects: {
+      board: Prisma.$DocumentBoardPayload<ExtArgs>
+      document: Prisma.$DocumentPayload<ExtArgs>
+      adder: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      board_uuid: string
+      document_uuid: string
+      added_by: string
+      created_at: Date
+    }, ExtArgs["result"]["documentBoardItem"]>
+    composites: {}
+  }
+
+  type DocumentBoardItemGetPayload<S extends boolean | null | undefined | DocumentBoardItemDefaultArgs> = $Result.GetResult<Prisma.$DocumentBoardItemPayload, S>
+
+  type DocumentBoardItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DocumentBoardItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DocumentBoardItemCountAggregateInputType | true
+    }
+
+  export interface DocumentBoardItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DocumentBoardItem'], meta: { name: 'DocumentBoardItem' } }
+    /**
+     * Find zero or one DocumentBoardItem that matches the filter.
+     * @param {DocumentBoardItemFindUniqueArgs} args - Arguments to find a DocumentBoardItem
+     * @example
+     * // Get one DocumentBoardItem
+     * const documentBoardItem = await prisma.documentBoardItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DocumentBoardItemFindUniqueArgs>(args: SelectSubset<T, DocumentBoardItemFindUniqueArgs<ExtArgs>>): Prisma__DocumentBoardItemClient<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DocumentBoardItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DocumentBoardItemFindUniqueOrThrowArgs} args - Arguments to find a DocumentBoardItem
+     * @example
+     * // Get one DocumentBoardItem
+     * const documentBoardItem = await prisma.documentBoardItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DocumentBoardItemFindUniqueOrThrowArgs>(args: SelectSubset<T, DocumentBoardItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DocumentBoardItemClient<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DocumentBoardItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardItemFindFirstArgs} args - Arguments to find a DocumentBoardItem
+     * @example
+     * // Get one DocumentBoardItem
+     * const documentBoardItem = await prisma.documentBoardItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DocumentBoardItemFindFirstArgs>(args?: SelectSubset<T, DocumentBoardItemFindFirstArgs<ExtArgs>>): Prisma__DocumentBoardItemClient<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DocumentBoardItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardItemFindFirstOrThrowArgs} args - Arguments to find a DocumentBoardItem
+     * @example
+     * // Get one DocumentBoardItem
+     * const documentBoardItem = await prisma.documentBoardItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DocumentBoardItemFindFirstOrThrowArgs>(args?: SelectSubset<T, DocumentBoardItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__DocumentBoardItemClient<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DocumentBoardItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DocumentBoardItems
+     * const documentBoardItems = await prisma.documentBoardItem.findMany()
+     * 
+     * // Get first 10 DocumentBoardItems
+     * const documentBoardItems = await prisma.documentBoardItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const documentBoardItemWithIdOnly = await prisma.documentBoardItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DocumentBoardItemFindManyArgs>(args?: SelectSubset<T, DocumentBoardItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DocumentBoardItem.
+     * @param {DocumentBoardItemCreateArgs} args - Arguments to create a DocumentBoardItem.
+     * @example
+     * // Create one DocumentBoardItem
+     * const DocumentBoardItem = await prisma.documentBoardItem.create({
+     *   data: {
+     *     // ... data to create a DocumentBoardItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends DocumentBoardItemCreateArgs>(args: SelectSubset<T, DocumentBoardItemCreateArgs<ExtArgs>>): Prisma__DocumentBoardItemClient<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DocumentBoardItems.
+     * @param {DocumentBoardItemCreateManyArgs} args - Arguments to create many DocumentBoardItems.
+     * @example
+     * // Create many DocumentBoardItems
+     * const documentBoardItem = await prisma.documentBoardItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DocumentBoardItemCreateManyArgs>(args?: SelectSubset<T, DocumentBoardItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DocumentBoardItems and returns the data saved in the database.
+     * @param {DocumentBoardItemCreateManyAndReturnArgs} args - Arguments to create many DocumentBoardItems.
+     * @example
+     * // Create many DocumentBoardItems
+     * const documentBoardItem = await prisma.documentBoardItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DocumentBoardItems and only return the `id`
+     * const documentBoardItemWithIdOnly = await prisma.documentBoardItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DocumentBoardItemCreateManyAndReturnArgs>(args?: SelectSubset<T, DocumentBoardItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DocumentBoardItem.
+     * @param {DocumentBoardItemDeleteArgs} args - Arguments to delete one DocumentBoardItem.
+     * @example
+     * // Delete one DocumentBoardItem
+     * const DocumentBoardItem = await prisma.documentBoardItem.delete({
+     *   where: {
+     *     // ... filter to delete one DocumentBoardItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DocumentBoardItemDeleteArgs>(args: SelectSubset<T, DocumentBoardItemDeleteArgs<ExtArgs>>): Prisma__DocumentBoardItemClient<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DocumentBoardItem.
+     * @param {DocumentBoardItemUpdateArgs} args - Arguments to update one DocumentBoardItem.
+     * @example
+     * // Update one DocumentBoardItem
+     * const documentBoardItem = await prisma.documentBoardItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DocumentBoardItemUpdateArgs>(args: SelectSubset<T, DocumentBoardItemUpdateArgs<ExtArgs>>): Prisma__DocumentBoardItemClient<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DocumentBoardItems.
+     * @param {DocumentBoardItemDeleteManyArgs} args - Arguments to filter DocumentBoardItems to delete.
+     * @example
+     * // Delete a few DocumentBoardItems
+     * const { count } = await prisma.documentBoardItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DocumentBoardItemDeleteManyArgs>(args?: SelectSubset<T, DocumentBoardItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DocumentBoardItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DocumentBoardItems
+     * const documentBoardItem = await prisma.documentBoardItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DocumentBoardItemUpdateManyArgs>(args: SelectSubset<T, DocumentBoardItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DocumentBoardItems and returns the data updated in the database.
+     * @param {DocumentBoardItemUpdateManyAndReturnArgs} args - Arguments to update many DocumentBoardItems.
+     * @example
+     * // Update many DocumentBoardItems
+     * const documentBoardItem = await prisma.documentBoardItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DocumentBoardItems and only return the `id`
+     * const documentBoardItemWithIdOnly = await prisma.documentBoardItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DocumentBoardItemUpdateManyAndReturnArgs>(args: SelectSubset<T, DocumentBoardItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DocumentBoardItem.
+     * @param {DocumentBoardItemUpsertArgs} args - Arguments to update or create a DocumentBoardItem.
+     * @example
+     * // Update or create a DocumentBoardItem
+     * const documentBoardItem = await prisma.documentBoardItem.upsert({
+     *   create: {
+     *     // ... data to create a DocumentBoardItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DocumentBoardItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DocumentBoardItemUpsertArgs>(args: SelectSubset<T, DocumentBoardItemUpsertArgs<ExtArgs>>): Prisma__DocumentBoardItemClient<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DocumentBoardItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardItemCountArgs} args - Arguments to filter DocumentBoardItems to count.
+     * @example
+     * // Count the number of DocumentBoardItems
+     * const count = await prisma.documentBoardItem.count({
+     *   where: {
+     *     // ... the filter for the DocumentBoardItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends DocumentBoardItemCountArgs>(
+      args?: Subset<T, DocumentBoardItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DocumentBoardItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DocumentBoardItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DocumentBoardItemAggregateArgs>(args: Subset<T, DocumentBoardItemAggregateArgs>): Prisma.PrismaPromise<GetDocumentBoardItemAggregateType<T>>
+
+    /**
+     * Group by DocumentBoardItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentBoardItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DocumentBoardItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DocumentBoardItemGroupByArgs['orderBy'] }
+        : { orderBy?: DocumentBoardItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DocumentBoardItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDocumentBoardItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DocumentBoardItem model
+   */
+  readonly fields: DocumentBoardItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DocumentBoardItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DocumentBoardItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    board<T extends DocumentBoardDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DocumentBoardDefaultArgs<ExtArgs>>): Prisma__DocumentBoardClient<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    document<T extends DocumentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DocumentDefaultArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    adder<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DocumentBoardItem model
+   */
+  interface DocumentBoardItemFieldRefs {
+    readonly id: FieldRef<"DocumentBoardItem", 'Int'>
+    readonly uuid: FieldRef<"DocumentBoardItem", 'String'>
+    readonly board_uuid: FieldRef<"DocumentBoardItem", 'String'>
+    readonly document_uuid: FieldRef<"DocumentBoardItem", 'String'>
+    readonly added_by: FieldRef<"DocumentBoardItem", 'String'>
+    readonly created_at: FieldRef<"DocumentBoardItem", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DocumentBoardItem findUnique
+   */
+  export type DocumentBoardItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentBoardItem to fetch.
+     */
+    where: DocumentBoardItemWhereUniqueInput
+  }
+
+  /**
+   * DocumentBoardItem findUniqueOrThrow
+   */
+  export type DocumentBoardItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentBoardItem to fetch.
+     */
+    where: DocumentBoardItemWhereUniqueInput
+  }
+
+  /**
+   * DocumentBoardItem findFirst
+   */
+  export type DocumentBoardItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentBoardItem to fetch.
+     */
+    where?: DocumentBoardItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DocumentBoardItems to fetch.
+     */
+    orderBy?: DocumentBoardItemOrderByWithRelationInput | DocumentBoardItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DocumentBoardItems.
+     */
+    cursor?: DocumentBoardItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DocumentBoardItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DocumentBoardItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DocumentBoardItems.
+     */
+    distinct?: DocumentBoardItemScalarFieldEnum | DocumentBoardItemScalarFieldEnum[]
+  }
+
+  /**
+   * DocumentBoardItem findFirstOrThrow
+   */
+  export type DocumentBoardItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentBoardItem to fetch.
+     */
+    where?: DocumentBoardItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DocumentBoardItems to fetch.
+     */
+    orderBy?: DocumentBoardItemOrderByWithRelationInput | DocumentBoardItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DocumentBoardItems.
+     */
+    cursor?: DocumentBoardItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DocumentBoardItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DocumentBoardItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DocumentBoardItems.
+     */
+    distinct?: DocumentBoardItemScalarFieldEnum | DocumentBoardItemScalarFieldEnum[]
+  }
+
+  /**
+   * DocumentBoardItem findMany
+   */
+  export type DocumentBoardItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentBoardItems to fetch.
+     */
+    where?: DocumentBoardItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DocumentBoardItems to fetch.
+     */
+    orderBy?: DocumentBoardItemOrderByWithRelationInput | DocumentBoardItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DocumentBoardItems.
+     */
+    cursor?: DocumentBoardItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DocumentBoardItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DocumentBoardItems.
+     */
+    skip?: number
+    distinct?: DocumentBoardItemScalarFieldEnum | DocumentBoardItemScalarFieldEnum[]
+  }
+
+  /**
+   * DocumentBoardItem create
+   */
+  export type DocumentBoardItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DocumentBoardItem.
+     */
+    data: XOR<DocumentBoardItemCreateInput, DocumentBoardItemUncheckedCreateInput>
+  }
+
+  /**
+   * DocumentBoardItem createMany
+   */
+  export type DocumentBoardItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DocumentBoardItems.
+     */
+    data: DocumentBoardItemCreateManyInput | DocumentBoardItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DocumentBoardItem createManyAndReturn
+   */
+  export type DocumentBoardItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many DocumentBoardItems.
+     */
+    data: DocumentBoardItemCreateManyInput | DocumentBoardItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DocumentBoardItem update
+   */
+  export type DocumentBoardItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DocumentBoardItem.
+     */
+    data: XOR<DocumentBoardItemUpdateInput, DocumentBoardItemUncheckedUpdateInput>
+    /**
+     * Choose, which DocumentBoardItem to update.
+     */
+    where: DocumentBoardItemWhereUniqueInput
+  }
+
+  /**
+   * DocumentBoardItem updateMany
+   */
+  export type DocumentBoardItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DocumentBoardItems.
+     */
+    data: XOR<DocumentBoardItemUpdateManyMutationInput, DocumentBoardItemUncheckedUpdateManyInput>
+    /**
+     * Filter which DocumentBoardItems to update
+     */
+    where?: DocumentBoardItemWhereInput
+    /**
+     * Limit how many DocumentBoardItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DocumentBoardItem updateManyAndReturn
+   */
+  export type DocumentBoardItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * The data used to update DocumentBoardItems.
+     */
+    data: XOR<DocumentBoardItemUpdateManyMutationInput, DocumentBoardItemUncheckedUpdateManyInput>
+    /**
+     * Filter which DocumentBoardItems to update
+     */
+    where?: DocumentBoardItemWhereInput
+    /**
+     * Limit how many DocumentBoardItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DocumentBoardItem upsert
+   */
+  export type DocumentBoardItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DocumentBoardItem to update in case it exists.
+     */
+    where: DocumentBoardItemWhereUniqueInput
+    /**
+     * In case the DocumentBoardItem found by the `where` argument doesn't exist, create a new DocumentBoardItem with this data.
+     */
+    create: XOR<DocumentBoardItemCreateInput, DocumentBoardItemUncheckedCreateInput>
+    /**
+     * In case the DocumentBoardItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DocumentBoardItemUpdateInput, DocumentBoardItemUncheckedUpdateInput>
+  }
+
+  /**
+   * DocumentBoardItem delete
+   */
+  export type DocumentBoardItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemInclude<ExtArgs> | null
+    /**
+     * Filter which DocumentBoardItem to delete.
+     */
+    where: DocumentBoardItemWhereUniqueInput
+  }
+
+  /**
+   * DocumentBoardItem deleteMany
+   */
+  export type DocumentBoardItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DocumentBoardItems to delete
+     */
+    where?: DocumentBoardItemWhereInput
+    /**
+     * Limit how many DocumentBoardItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DocumentBoardItem without action
+   */
+  export type DocumentBoardItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentBoardItem
+     */
+    select?: DocumentBoardItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentBoardItem
+     */
+    omit?: DocumentBoardItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentBoardItemInclude<ExtArgs> | null
   }
 
 
@@ -36738,6 +39458,32 @@ export namespace Prisma {
   export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
 
 
+  export const DocumentBoardScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    org_uuid: 'org_uuid',
+    name: 'name',
+    description: 'description',
+    created_by: 'created_by',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type DocumentBoardScalarFieldEnum = (typeof DocumentBoardScalarFieldEnum)[keyof typeof DocumentBoardScalarFieldEnum]
+
+
+  export const DocumentBoardItemScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    board_uuid: 'board_uuid',
+    document_uuid: 'document_uuid',
+    added_by: 'added_by',
+    created_at: 'created_at'
+  };
+
+  export type DocumentBoardItemScalarFieldEnum = (typeof DocumentBoardItemScalarFieldEnum)[keyof typeof DocumentBoardItemScalarFieldEnum]
+
+
   export const AiProviderScalarFieldEnum: {
     id: 'id',
     uuid: 'uuid',
@@ -37343,6 +40089,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionListRelationFilter
     conversation_personalizations?: ConversationPersonalizationListRelationFilter
     scheduled_agents?: ScheduledAgentListRelationFilter
+    created_document_boards?: DocumentBoardListRelationFilter
+    document_board_items?: DocumentBoardItemListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -37363,6 +40111,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionOrderByRelationAggregateInput
     conversation_personalizations?: ConversationPersonalizationOrderByRelationAggregateInput
     scheduled_agents?: ScheduledAgentOrderByRelationAggregateInput
+    created_document_boards?: DocumentBoardOrderByRelationAggregateInput
+    document_board_items?: DocumentBoardItemOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -37386,6 +40136,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionListRelationFilter
     conversation_personalizations?: ConversationPersonalizationListRelationFilter
     scheduled_agents?: ScheduledAgentListRelationFilter
+    created_document_boards?: DocumentBoardListRelationFilter
+    document_board_items?: DocumentBoardItemListRelationFilter
   }, "id" | "uuid" | "email" | "phone">
 
   export type UserOrderByWithAggregationInput = {
@@ -37448,6 +40200,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionListRelationFilter
     conversation_personalizations?: ConversationPersonalizationListRelationFilter
     scheduled_agents?: ScheduledAgentListRelationFilter
+    document_boards?: DocumentBoardListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -37473,6 +40226,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionOrderByRelationAggregateInput
     conversation_personalizations?: ConversationPersonalizationOrderByRelationAggregateInput
     scheduled_agents?: ScheduledAgentOrderByRelationAggregateInput
+    document_boards?: DocumentBoardOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -37501,6 +40255,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionListRelationFilter
     conversation_personalizations?: ConversationPersonalizationListRelationFilter
     scheduled_agents?: ScheduledAgentListRelationFilter
+    document_boards?: DocumentBoardListRelationFilter
   }, "id" | "uuid" | "slug">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -38968,6 +41723,7 @@ export namespace Prisma {
     path?: StringFilter<"Document"> | string
     type?: EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
     created_at?: DateTimeFilter<"Document"> | Date | string
+    board_items?: DocumentBoardItemListRelationFilter
   }
 
   export type DocumentOrderByWithRelationInput = {
@@ -38981,6 +41737,7 @@ export namespace Prisma {
     path?: SortOrder
     type?: SortOrder
     created_at?: SortOrder
+    board_items?: DocumentBoardItemOrderByRelationAggregateInput
   }
 
   export type DocumentWhereUniqueInput = Prisma.AtLeast<{
@@ -38997,6 +41754,7 @@ export namespace Prisma {
     path?: StringFilter<"Document"> | string
     type?: EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
     created_at?: DateTimeFilter<"Document"> | Date | string
+    board_items?: DocumentBoardItemListRelationFilter
   }, "id" | "uuid">
 
   export type DocumentOrderByWithAggregationInput = {
@@ -39031,6 +41789,153 @@ export namespace Prisma {
     path?: StringWithAggregatesFilter<"Document"> | string
     type?: EnumDocumentTypeWithAggregatesFilter<"Document"> | $Enums.DocumentType
     created_at?: DateTimeWithAggregatesFilter<"Document"> | Date | string
+  }
+
+  export type DocumentBoardWhereInput = {
+    AND?: DocumentBoardWhereInput | DocumentBoardWhereInput[]
+    OR?: DocumentBoardWhereInput[]
+    NOT?: DocumentBoardWhereInput | DocumentBoardWhereInput[]
+    id?: IntFilter<"DocumentBoard"> | number
+    uuid?: StringFilter<"DocumentBoard"> | string
+    org_uuid?: StringFilter<"DocumentBoard"> | string
+    name?: StringFilter<"DocumentBoard"> | string
+    description?: StringNullableFilter<"DocumentBoard"> | string | null
+    created_by?: StringFilter<"DocumentBoard"> | string
+    created_at?: DateTimeFilter<"DocumentBoard"> | Date | string
+    updated_at?: DateTimeFilter<"DocumentBoard"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    creator?: XOR<UserScalarRelationFilter, UserWhereInput>
+    items?: DocumentBoardItemListRelationFilter
+  }
+
+  export type DocumentBoardOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    creator?: UserOrderByWithRelationInput
+    items?: DocumentBoardItemOrderByRelationAggregateInput
+  }
+
+  export type DocumentBoardWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    AND?: DocumentBoardWhereInput | DocumentBoardWhereInput[]
+    OR?: DocumentBoardWhereInput[]
+    NOT?: DocumentBoardWhereInput | DocumentBoardWhereInput[]
+    org_uuid?: StringFilter<"DocumentBoard"> | string
+    name?: StringFilter<"DocumentBoard"> | string
+    description?: StringNullableFilter<"DocumentBoard"> | string | null
+    created_by?: StringFilter<"DocumentBoard"> | string
+    created_at?: DateTimeFilter<"DocumentBoard"> | Date | string
+    updated_at?: DateTimeFilter<"DocumentBoard"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    creator?: XOR<UserScalarRelationFilter, UserWhereInput>
+    items?: DocumentBoardItemListRelationFilter
+  }, "id" | "uuid">
+
+  export type DocumentBoardOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: DocumentBoardCountOrderByAggregateInput
+    _avg?: DocumentBoardAvgOrderByAggregateInput
+    _max?: DocumentBoardMaxOrderByAggregateInput
+    _min?: DocumentBoardMinOrderByAggregateInput
+    _sum?: DocumentBoardSumOrderByAggregateInput
+  }
+
+  export type DocumentBoardScalarWhereWithAggregatesInput = {
+    AND?: DocumentBoardScalarWhereWithAggregatesInput | DocumentBoardScalarWhereWithAggregatesInput[]
+    OR?: DocumentBoardScalarWhereWithAggregatesInput[]
+    NOT?: DocumentBoardScalarWhereWithAggregatesInput | DocumentBoardScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"DocumentBoard"> | number
+    uuid?: StringWithAggregatesFilter<"DocumentBoard"> | string
+    org_uuid?: StringWithAggregatesFilter<"DocumentBoard"> | string
+    name?: StringWithAggregatesFilter<"DocumentBoard"> | string
+    description?: StringNullableWithAggregatesFilter<"DocumentBoard"> | string | null
+    created_by?: StringWithAggregatesFilter<"DocumentBoard"> | string
+    created_at?: DateTimeWithAggregatesFilter<"DocumentBoard"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"DocumentBoard"> | Date | string
+  }
+
+  export type DocumentBoardItemWhereInput = {
+    AND?: DocumentBoardItemWhereInput | DocumentBoardItemWhereInput[]
+    OR?: DocumentBoardItemWhereInput[]
+    NOT?: DocumentBoardItemWhereInput | DocumentBoardItemWhereInput[]
+    id?: IntFilter<"DocumentBoardItem"> | number
+    uuid?: StringFilter<"DocumentBoardItem"> | string
+    board_uuid?: StringFilter<"DocumentBoardItem"> | string
+    document_uuid?: StringFilter<"DocumentBoardItem"> | string
+    added_by?: StringFilter<"DocumentBoardItem"> | string
+    created_at?: DateTimeFilter<"DocumentBoardItem"> | Date | string
+    board?: XOR<DocumentBoardScalarRelationFilter, DocumentBoardWhereInput>
+    document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>
+    adder?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type DocumentBoardItemOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    board_uuid?: SortOrder
+    document_uuid?: SortOrder
+    added_by?: SortOrder
+    created_at?: SortOrder
+    board?: DocumentBoardOrderByWithRelationInput
+    document?: DocumentOrderByWithRelationInput
+    adder?: UserOrderByWithRelationInput
+  }
+
+  export type DocumentBoardItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    board_uuid_document_uuid?: DocumentBoardItemBoard_uuidDocument_uuidCompoundUniqueInput
+    AND?: DocumentBoardItemWhereInput | DocumentBoardItemWhereInput[]
+    OR?: DocumentBoardItemWhereInput[]
+    NOT?: DocumentBoardItemWhereInput | DocumentBoardItemWhereInput[]
+    board_uuid?: StringFilter<"DocumentBoardItem"> | string
+    document_uuid?: StringFilter<"DocumentBoardItem"> | string
+    added_by?: StringFilter<"DocumentBoardItem"> | string
+    created_at?: DateTimeFilter<"DocumentBoardItem"> | Date | string
+    board?: XOR<DocumentBoardScalarRelationFilter, DocumentBoardWhereInput>
+    document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>
+    adder?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "uuid" | "board_uuid_document_uuid">
+
+  export type DocumentBoardItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    board_uuid?: SortOrder
+    document_uuid?: SortOrder
+    added_by?: SortOrder
+    created_at?: SortOrder
+    _count?: DocumentBoardItemCountOrderByAggregateInput
+    _avg?: DocumentBoardItemAvgOrderByAggregateInput
+    _max?: DocumentBoardItemMaxOrderByAggregateInput
+    _min?: DocumentBoardItemMinOrderByAggregateInput
+    _sum?: DocumentBoardItemSumOrderByAggregateInput
+  }
+
+  export type DocumentBoardItemScalarWhereWithAggregatesInput = {
+    AND?: DocumentBoardItemScalarWhereWithAggregatesInput | DocumentBoardItemScalarWhereWithAggregatesInput[]
+    OR?: DocumentBoardItemScalarWhereWithAggregatesInput[]
+    NOT?: DocumentBoardItemScalarWhereWithAggregatesInput | DocumentBoardItemScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"DocumentBoardItem"> | number
+    uuid?: StringWithAggregatesFilter<"DocumentBoardItem"> | string
+    board_uuid?: StringWithAggregatesFilter<"DocumentBoardItem"> | string
+    document_uuid?: StringWithAggregatesFilter<"DocumentBoardItem"> | string
+    added_by?: StringWithAggregatesFilter<"DocumentBoardItem"> | string
+    created_at?: DateTimeWithAggregatesFilter<"DocumentBoardItem"> | Date | string
   }
 
   export type AiProviderWhereInput = {
@@ -39749,6 +42654,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -39769,6 +42676,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
   }
 
   export type UserUpdateInput = {
@@ -39788,6 +42697,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -39808,6 +42719,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -39869,6 +42782,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -39893,6 +42807,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -39916,6 +42831,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -39940,6 +42856,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -41460,6 +44377,7 @@ export namespace Prisma {
     path: string
     type?: $Enums.DocumentType
     created_at?: Date | string
+    board_items?: DocumentBoardItemCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUncheckedCreateInput = {
@@ -41473,6 +44391,7 @@ export namespace Prisma {
     path: string
     type?: $Enums.DocumentType
     created_at?: Date | string
+    board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutDocumentInput
   }
 
   export type DocumentUpdateInput = {
@@ -41485,6 +44404,7 @@ export namespace Prisma {
     path?: StringFieldUpdateOperationsInput | string
     type?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    board_items?: DocumentBoardItemUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentUncheckedUpdateInput = {
@@ -41498,6 +44418,7 @@ export namespace Prisma {
     path?: StringFieldUpdateOperationsInput | string
     type?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    board_items?: DocumentBoardItemUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
   export type DocumentCreateManyInput = {
@@ -41535,6 +44456,139 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     path?: StringFieldUpdateOperationsInput | string
     type?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentBoardCreateInput = {
+    uuid?: string
+    name: string
+    description?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutDocument_boardsInput
+    creator: UserCreateNestedOneWithoutCreated_document_boardsInput
+    items?: DocumentBoardItemCreateNestedManyWithoutBoardInput
+  }
+
+  export type DocumentBoardUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    name: string
+    description?: string | null
+    created_by: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    items?: DocumentBoardItemUncheckedCreateNestedManyWithoutBoardInput
+  }
+
+  export type DocumentBoardUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutDocument_boardsNestedInput
+    creator?: UserUpdateOneRequiredWithoutCreated_document_boardsNestedInput
+    items?: DocumentBoardItemUpdateManyWithoutBoardNestedInput
+  }
+
+  export type DocumentBoardUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: DocumentBoardItemUncheckedUpdateManyWithoutBoardNestedInput
+  }
+
+  export type DocumentBoardCreateManyInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    name: string
+    description?: string | null
+    created_by: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type DocumentBoardUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentBoardUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentBoardItemCreateInput = {
+    uuid?: string
+    created_at?: Date | string
+    board: DocumentBoardCreateNestedOneWithoutItemsInput
+    document: DocumentCreateNestedOneWithoutBoard_itemsInput
+    adder: UserCreateNestedOneWithoutDocument_board_itemsInput
+  }
+
+  export type DocumentBoardItemUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    board_uuid: string
+    document_uuid: string
+    added_by: string
+    created_at?: Date | string
+  }
+
+  export type DocumentBoardItemUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    board?: DocumentBoardUpdateOneRequiredWithoutItemsNestedInput
+    document?: DocumentUpdateOneRequiredWithoutBoard_itemsNestedInput
+    adder?: UserUpdateOneRequiredWithoutDocument_board_itemsNestedInput
+  }
+
+  export type DocumentBoardItemUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    board_uuid?: StringFieldUpdateOperationsInput | string
+    document_uuid?: StringFieldUpdateOperationsInput | string
+    added_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentBoardItemCreateManyInput = {
+    id?: number
+    uuid?: string
+    board_uuid: string
+    document_uuid: string
+    added_by: string
+    created_at?: Date | string
+  }
+
+  export type DocumentBoardItemUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentBoardItemUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    board_uuid?: StringFieldUpdateOperationsInput | string
+    document_uuid?: StringFieldUpdateOperationsInput | string
+    added_by?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -42379,6 +45433,18 @@ export namespace Prisma {
     none?: ScheduledAgentWhereInput
   }
 
+  export type DocumentBoardListRelationFilter = {
+    every?: DocumentBoardWhereInput
+    some?: DocumentBoardWhereInput
+    none?: DocumentBoardWhereInput
+  }
+
+  export type DocumentBoardItemListRelationFilter = {
+    every?: DocumentBoardItemWhereInput
+    some?: DocumentBoardItemWhereInput
+    none?: DocumentBoardItemWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -42409,6 +45475,14 @@ export namespace Prisma {
   }
 
   export type ScheduledAgentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DocumentBoardOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DocumentBoardItemOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -43926,6 +47000,97 @@ export namespace Prisma {
     _max?: NestedEnumDocumentTypeFilter<$PrismaModel>
   }
 
+  export type DocumentBoardCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type DocumentBoardAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type DocumentBoardMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type DocumentBoardMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type DocumentBoardSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type DocumentBoardScalarRelationFilter = {
+    is?: DocumentBoardWhereInput
+    isNot?: DocumentBoardWhereInput
+  }
+
+  export type DocumentScalarRelationFilter = {
+    is?: DocumentWhereInput
+    isNot?: DocumentWhereInput
+  }
+
+  export type DocumentBoardItemBoard_uuidDocument_uuidCompoundUniqueInput = {
+    board_uuid: string
+    document_uuid: string
+  }
+
+  export type DocumentBoardItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    board_uuid?: SortOrder
+    document_uuid?: SortOrder
+    added_by?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type DocumentBoardItemAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type DocumentBoardItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    board_uuid?: SortOrder
+    document_uuid?: SortOrder
+    added_by?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type DocumentBoardItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    board_uuid?: SortOrder
+    document_uuid?: SortOrder
+    added_by?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type DocumentBoardItemSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
   export type EnumAiProviderTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.AiProviderType | EnumAiProviderTypeFieldRefInput<$PrismaModel>
     in?: $Enums.AiProviderType[] | ListEnumAiProviderTypeFieldRefInput<$PrismaModel>
@@ -44631,6 +47796,20 @@ export namespace Prisma {
     connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
   }
 
+  export type DocumentBoardCreateNestedManyWithoutCreatorInput = {
+    create?: XOR<DocumentBoardCreateWithoutCreatorInput, DocumentBoardUncheckedCreateWithoutCreatorInput> | DocumentBoardCreateWithoutCreatorInput[] | DocumentBoardUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: DocumentBoardCreateOrConnectWithoutCreatorInput | DocumentBoardCreateOrConnectWithoutCreatorInput[]
+    createMany?: DocumentBoardCreateManyCreatorInputEnvelope
+    connect?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+  }
+
+  export type DocumentBoardItemCreateNestedManyWithoutAdderInput = {
+    create?: XOR<DocumentBoardItemCreateWithoutAdderInput, DocumentBoardItemUncheckedCreateWithoutAdderInput> | DocumentBoardItemCreateWithoutAdderInput[] | DocumentBoardItemUncheckedCreateWithoutAdderInput[]
+    connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutAdderInput | DocumentBoardItemCreateOrConnectWithoutAdderInput[]
+    createMany?: DocumentBoardItemCreateManyAdderInputEnvelope
+    connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+  }
+
   export type OrganizationMemberUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OrganizationMemberCreateWithoutUserInput, OrganizationMemberUncheckedCreateWithoutUserInput> | OrganizationMemberCreateWithoutUserInput[] | OrganizationMemberUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutUserInput | OrganizationMemberCreateOrConnectWithoutUserInput[]
@@ -44678,6 +47857,20 @@ export namespace Prisma {
     connectOrCreate?: ScheduledAgentCreateOrConnectWithoutUserInput | ScheduledAgentCreateOrConnectWithoutUserInput[]
     createMany?: ScheduledAgentCreateManyUserInputEnvelope
     connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+  }
+
+  export type DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput = {
+    create?: XOR<DocumentBoardCreateWithoutCreatorInput, DocumentBoardUncheckedCreateWithoutCreatorInput> | DocumentBoardCreateWithoutCreatorInput[] | DocumentBoardUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: DocumentBoardCreateOrConnectWithoutCreatorInput | DocumentBoardCreateOrConnectWithoutCreatorInput[]
+    createMany?: DocumentBoardCreateManyCreatorInputEnvelope
+    connect?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+  }
+
+  export type DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput = {
+    create?: XOR<DocumentBoardItemCreateWithoutAdderInput, DocumentBoardItemUncheckedCreateWithoutAdderInput> | DocumentBoardItemCreateWithoutAdderInput[] | DocumentBoardItemUncheckedCreateWithoutAdderInput[]
+    connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutAdderInput | DocumentBoardItemCreateOrConnectWithoutAdderInput[]
+    createMany?: DocumentBoardItemCreateManyAdderInputEnvelope
+    connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -44794,6 +47987,34 @@ export namespace Prisma {
     deleteMany?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
   }
 
+  export type DocumentBoardUpdateManyWithoutCreatorNestedInput = {
+    create?: XOR<DocumentBoardCreateWithoutCreatorInput, DocumentBoardUncheckedCreateWithoutCreatorInput> | DocumentBoardCreateWithoutCreatorInput[] | DocumentBoardUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: DocumentBoardCreateOrConnectWithoutCreatorInput | DocumentBoardCreateOrConnectWithoutCreatorInput[]
+    upsert?: DocumentBoardUpsertWithWhereUniqueWithoutCreatorInput | DocumentBoardUpsertWithWhereUniqueWithoutCreatorInput[]
+    createMany?: DocumentBoardCreateManyCreatorInputEnvelope
+    set?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    disconnect?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    delete?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    connect?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    update?: DocumentBoardUpdateWithWhereUniqueWithoutCreatorInput | DocumentBoardUpdateWithWhereUniqueWithoutCreatorInput[]
+    updateMany?: DocumentBoardUpdateManyWithWhereWithoutCreatorInput | DocumentBoardUpdateManyWithWhereWithoutCreatorInput[]
+    deleteMany?: DocumentBoardScalarWhereInput | DocumentBoardScalarWhereInput[]
+  }
+
+  export type DocumentBoardItemUpdateManyWithoutAdderNestedInput = {
+    create?: XOR<DocumentBoardItemCreateWithoutAdderInput, DocumentBoardItemUncheckedCreateWithoutAdderInput> | DocumentBoardItemCreateWithoutAdderInput[] | DocumentBoardItemUncheckedCreateWithoutAdderInput[]
+    connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutAdderInput | DocumentBoardItemCreateOrConnectWithoutAdderInput[]
+    upsert?: DocumentBoardItemUpsertWithWhereUniqueWithoutAdderInput | DocumentBoardItemUpsertWithWhereUniqueWithoutAdderInput[]
+    createMany?: DocumentBoardItemCreateManyAdderInputEnvelope
+    set?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    disconnect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    delete?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    update?: DocumentBoardItemUpdateWithWhereUniqueWithoutAdderInput | DocumentBoardItemUpdateWithWhereUniqueWithoutAdderInput[]
+    updateMany?: DocumentBoardItemUpdateManyWithWhereWithoutAdderInput | DocumentBoardItemUpdateManyWithWhereWithoutAdderInput[]
+    deleteMany?: DocumentBoardItemScalarWhereInput | DocumentBoardItemScalarWhereInput[]
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -44900,6 +48121,34 @@ export namespace Prisma {
     deleteMany?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
   }
 
+  export type DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput = {
+    create?: XOR<DocumentBoardCreateWithoutCreatorInput, DocumentBoardUncheckedCreateWithoutCreatorInput> | DocumentBoardCreateWithoutCreatorInput[] | DocumentBoardUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: DocumentBoardCreateOrConnectWithoutCreatorInput | DocumentBoardCreateOrConnectWithoutCreatorInput[]
+    upsert?: DocumentBoardUpsertWithWhereUniqueWithoutCreatorInput | DocumentBoardUpsertWithWhereUniqueWithoutCreatorInput[]
+    createMany?: DocumentBoardCreateManyCreatorInputEnvelope
+    set?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    disconnect?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    delete?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    connect?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    update?: DocumentBoardUpdateWithWhereUniqueWithoutCreatorInput | DocumentBoardUpdateWithWhereUniqueWithoutCreatorInput[]
+    updateMany?: DocumentBoardUpdateManyWithWhereWithoutCreatorInput | DocumentBoardUpdateManyWithWhereWithoutCreatorInput[]
+    deleteMany?: DocumentBoardScalarWhereInput | DocumentBoardScalarWhereInput[]
+  }
+
+  export type DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput = {
+    create?: XOR<DocumentBoardItemCreateWithoutAdderInput, DocumentBoardItemUncheckedCreateWithoutAdderInput> | DocumentBoardItemCreateWithoutAdderInput[] | DocumentBoardItemUncheckedCreateWithoutAdderInput[]
+    connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutAdderInput | DocumentBoardItemCreateOrConnectWithoutAdderInput[]
+    upsert?: DocumentBoardItemUpsertWithWhereUniqueWithoutAdderInput | DocumentBoardItemUpsertWithWhereUniqueWithoutAdderInput[]
+    createMany?: DocumentBoardItemCreateManyAdderInputEnvelope
+    set?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    disconnect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    delete?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    update?: DocumentBoardItemUpdateWithWhereUniqueWithoutAdderInput | DocumentBoardItemUpdateWithWhereUniqueWithoutAdderInput[]
+    updateMany?: DocumentBoardItemUpdateManyWithWhereWithoutAdderInput | DocumentBoardItemUpdateManyWithWhereWithoutAdderInput[]
+    deleteMany?: DocumentBoardItemScalarWhereInput | DocumentBoardItemScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutCreated_organizationsInput = {
     create?: XOR<UserCreateWithoutCreated_organizationsInput, UserUncheckedCreateWithoutCreated_organizationsInput>
     connectOrCreate?: UserCreateOrConnectWithoutCreated_organizationsInput
@@ -44997,6 +48246,13 @@ export namespace Prisma {
     connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
   }
 
+  export type DocumentBoardCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<DocumentBoardCreateWithoutOrganizationInput, DocumentBoardUncheckedCreateWithoutOrganizationInput> | DocumentBoardCreateWithoutOrganizationInput[] | DocumentBoardUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: DocumentBoardCreateOrConnectWithoutOrganizationInput | DocumentBoardCreateOrConnectWithoutOrganizationInput[]
+    createMany?: DocumentBoardCreateManyOrganizationInputEnvelope
+    connect?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+  }
+
   export type OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMemberCreateWithoutOrganizationInput, OrganizationMemberUncheckedCreateWithoutOrganizationInput> | OrganizationMemberCreateWithoutOrganizationInput[] | OrganizationMemberUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutOrganizationInput | OrganizationMemberCreateOrConnectWithoutOrganizationInput[]
@@ -45086,6 +48342,13 @@ export namespace Prisma {
     connectOrCreate?: ScheduledAgentCreateOrConnectWithoutOrganizationInput | ScheduledAgentCreateOrConnectWithoutOrganizationInput[]
     createMany?: ScheduledAgentCreateManyOrganizationInputEnvelope
     connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+  }
+
+  export type DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<DocumentBoardCreateWithoutOrganizationInput, DocumentBoardUncheckedCreateWithoutOrganizationInput> | DocumentBoardCreateWithoutOrganizationInput[] | DocumentBoardUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: DocumentBoardCreateOrConnectWithoutOrganizationInput | DocumentBoardCreateOrConnectWithoutOrganizationInput[]
+    createMany?: DocumentBoardCreateManyOrganizationInputEnvelope
+    connect?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
   }
 
   export type UserUpdateOneRequiredWithoutCreated_organizationsNestedInput = {
@@ -45278,6 +48541,20 @@ export namespace Prisma {
     deleteMany?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
   }
 
+  export type DocumentBoardUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<DocumentBoardCreateWithoutOrganizationInput, DocumentBoardUncheckedCreateWithoutOrganizationInput> | DocumentBoardCreateWithoutOrganizationInput[] | DocumentBoardUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: DocumentBoardCreateOrConnectWithoutOrganizationInput | DocumentBoardCreateOrConnectWithoutOrganizationInput[]
+    upsert?: DocumentBoardUpsertWithWhereUniqueWithoutOrganizationInput | DocumentBoardUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: DocumentBoardCreateManyOrganizationInputEnvelope
+    set?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    disconnect?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    delete?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    connect?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    update?: DocumentBoardUpdateWithWhereUniqueWithoutOrganizationInput | DocumentBoardUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: DocumentBoardUpdateManyWithWhereWithoutOrganizationInput | DocumentBoardUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: DocumentBoardScalarWhereInput | DocumentBoardScalarWhereInput[]
+  }
+
   export type OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMemberCreateWithoutOrganizationInput, OrganizationMemberUncheckedCreateWithoutOrganizationInput> | OrganizationMemberCreateWithoutOrganizationInput[] | OrganizationMemberUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMemberCreateOrConnectWithoutOrganizationInput | OrganizationMemberCreateOrConnectWithoutOrganizationInput[]
@@ -45458,6 +48735,20 @@ export namespace Prisma {
     update?: ScheduledAgentUpdateWithWhereUniqueWithoutOrganizationInput | ScheduledAgentUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: ScheduledAgentUpdateManyWithWhereWithoutOrganizationInput | ScheduledAgentUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
+  }
+
+  export type DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<DocumentBoardCreateWithoutOrganizationInput, DocumentBoardUncheckedCreateWithoutOrganizationInput> | DocumentBoardCreateWithoutOrganizationInput[] | DocumentBoardUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: DocumentBoardCreateOrConnectWithoutOrganizationInput | DocumentBoardCreateOrConnectWithoutOrganizationInput[]
+    upsert?: DocumentBoardUpsertWithWhereUniqueWithoutOrganizationInput | DocumentBoardUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: DocumentBoardCreateManyOrganizationInputEnvelope
+    set?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    disconnect?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    delete?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    connect?: DocumentBoardWhereUniqueInput | DocumentBoardWhereUniqueInput[]
+    update?: DocumentBoardUpdateWithWhereUniqueWithoutOrganizationInput | DocumentBoardUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: DocumentBoardUpdateManyWithWhereWithoutOrganizationInput | DocumentBoardUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: DocumentBoardScalarWhereInput | DocumentBoardScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutMembersInput = {
@@ -46368,8 +49659,162 @@ export namespace Prisma {
     update?: XOR<XOR<ComposioToolkitUpdateToOneWithWhereWithoutTriggersInput, ComposioToolkitUpdateWithoutTriggersInput>, ComposioToolkitUncheckedUpdateWithoutTriggersInput>
   }
 
+  export type DocumentBoardItemCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<DocumentBoardItemCreateWithoutDocumentInput, DocumentBoardItemUncheckedCreateWithoutDocumentInput> | DocumentBoardItemCreateWithoutDocumentInput[] | DocumentBoardItemUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutDocumentInput | DocumentBoardItemCreateOrConnectWithoutDocumentInput[]
+    createMany?: DocumentBoardItemCreateManyDocumentInputEnvelope
+    connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+  }
+
+  export type DocumentBoardItemUncheckedCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<DocumentBoardItemCreateWithoutDocumentInput, DocumentBoardItemUncheckedCreateWithoutDocumentInput> | DocumentBoardItemCreateWithoutDocumentInput[] | DocumentBoardItemUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutDocumentInput | DocumentBoardItemCreateOrConnectWithoutDocumentInput[]
+    createMany?: DocumentBoardItemCreateManyDocumentInputEnvelope
+    connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+  }
+
   export type EnumDocumentTypeFieldUpdateOperationsInput = {
     set?: $Enums.DocumentType
+  }
+
+  export type DocumentBoardItemUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<DocumentBoardItemCreateWithoutDocumentInput, DocumentBoardItemUncheckedCreateWithoutDocumentInput> | DocumentBoardItemCreateWithoutDocumentInput[] | DocumentBoardItemUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutDocumentInput | DocumentBoardItemCreateOrConnectWithoutDocumentInput[]
+    upsert?: DocumentBoardItemUpsertWithWhereUniqueWithoutDocumentInput | DocumentBoardItemUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: DocumentBoardItemCreateManyDocumentInputEnvelope
+    set?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    disconnect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    delete?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    update?: DocumentBoardItemUpdateWithWhereUniqueWithoutDocumentInput | DocumentBoardItemUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: DocumentBoardItemUpdateManyWithWhereWithoutDocumentInput | DocumentBoardItemUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: DocumentBoardItemScalarWhereInput | DocumentBoardItemScalarWhereInput[]
+  }
+
+  export type DocumentBoardItemUncheckedUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<DocumentBoardItemCreateWithoutDocumentInput, DocumentBoardItemUncheckedCreateWithoutDocumentInput> | DocumentBoardItemCreateWithoutDocumentInput[] | DocumentBoardItemUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutDocumentInput | DocumentBoardItemCreateOrConnectWithoutDocumentInput[]
+    upsert?: DocumentBoardItemUpsertWithWhereUniqueWithoutDocumentInput | DocumentBoardItemUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: DocumentBoardItemCreateManyDocumentInputEnvelope
+    set?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    disconnect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    delete?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    update?: DocumentBoardItemUpdateWithWhereUniqueWithoutDocumentInput | DocumentBoardItemUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: DocumentBoardItemUpdateManyWithWhereWithoutDocumentInput | DocumentBoardItemUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: DocumentBoardItemScalarWhereInput | DocumentBoardItemScalarWhereInput[]
+  }
+
+  export type OrganizationCreateNestedOneWithoutDocument_boardsInput = {
+    create?: XOR<OrganizationCreateWithoutDocument_boardsInput, OrganizationUncheckedCreateWithoutDocument_boardsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutDocument_boardsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCreated_document_boardsInput = {
+    create?: XOR<UserCreateWithoutCreated_document_boardsInput, UserUncheckedCreateWithoutCreated_document_boardsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreated_document_boardsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type DocumentBoardItemCreateNestedManyWithoutBoardInput = {
+    create?: XOR<DocumentBoardItemCreateWithoutBoardInput, DocumentBoardItemUncheckedCreateWithoutBoardInput> | DocumentBoardItemCreateWithoutBoardInput[] | DocumentBoardItemUncheckedCreateWithoutBoardInput[]
+    connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutBoardInput | DocumentBoardItemCreateOrConnectWithoutBoardInput[]
+    createMany?: DocumentBoardItemCreateManyBoardInputEnvelope
+    connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+  }
+
+  export type DocumentBoardItemUncheckedCreateNestedManyWithoutBoardInput = {
+    create?: XOR<DocumentBoardItemCreateWithoutBoardInput, DocumentBoardItemUncheckedCreateWithoutBoardInput> | DocumentBoardItemCreateWithoutBoardInput[] | DocumentBoardItemUncheckedCreateWithoutBoardInput[]
+    connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutBoardInput | DocumentBoardItemCreateOrConnectWithoutBoardInput[]
+    createMany?: DocumentBoardItemCreateManyBoardInputEnvelope
+    connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutDocument_boardsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutDocument_boardsInput, OrganizationUncheckedCreateWithoutDocument_boardsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutDocument_boardsInput
+    upsert?: OrganizationUpsertWithoutDocument_boardsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutDocument_boardsInput, OrganizationUpdateWithoutDocument_boardsInput>, OrganizationUncheckedUpdateWithoutDocument_boardsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutCreated_document_boardsNestedInput = {
+    create?: XOR<UserCreateWithoutCreated_document_boardsInput, UserUncheckedCreateWithoutCreated_document_boardsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreated_document_boardsInput
+    upsert?: UserUpsertWithoutCreated_document_boardsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreated_document_boardsInput, UserUpdateWithoutCreated_document_boardsInput>, UserUncheckedUpdateWithoutCreated_document_boardsInput>
+  }
+
+  export type DocumentBoardItemUpdateManyWithoutBoardNestedInput = {
+    create?: XOR<DocumentBoardItemCreateWithoutBoardInput, DocumentBoardItemUncheckedCreateWithoutBoardInput> | DocumentBoardItemCreateWithoutBoardInput[] | DocumentBoardItemUncheckedCreateWithoutBoardInput[]
+    connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutBoardInput | DocumentBoardItemCreateOrConnectWithoutBoardInput[]
+    upsert?: DocumentBoardItemUpsertWithWhereUniqueWithoutBoardInput | DocumentBoardItemUpsertWithWhereUniqueWithoutBoardInput[]
+    createMany?: DocumentBoardItemCreateManyBoardInputEnvelope
+    set?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    disconnect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    delete?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    update?: DocumentBoardItemUpdateWithWhereUniqueWithoutBoardInput | DocumentBoardItemUpdateWithWhereUniqueWithoutBoardInput[]
+    updateMany?: DocumentBoardItemUpdateManyWithWhereWithoutBoardInput | DocumentBoardItemUpdateManyWithWhereWithoutBoardInput[]
+    deleteMany?: DocumentBoardItemScalarWhereInput | DocumentBoardItemScalarWhereInput[]
+  }
+
+  export type DocumentBoardItemUncheckedUpdateManyWithoutBoardNestedInput = {
+    create?: XOR<DocumentBoardItemCreateWithoutBoardInput, DocumentBoardItemUncheckedCreateWithoutBoardInput> | DocumentBoardItemCreateWithoutBoardInput[] | DocumentBoardItemUncheckedCreateWithoutBoardInput[]
+    connectOrCreate?: DocumentBoardItemCreateOrConnectWithoutBoardInput | DocumentBoardItemCreateOrConnectWithoutBoardInput[]
+    upsert?: DocumentBoardItemUpsertWithWhereUniqueWithoutBoardInput | DocumentBoardItemUpsertWithWhereUniqueWithoutBoardInput[]
+    createMany?: DocumentBoardItemCreateManyBoardInputEnvelope
+    set?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    disconnect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    delete?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    connect?: DocumentBoardItemWhereUniqueInput | DocumentBoardItemWhereUniqueInput[]
+    update?: DocumentBoardItemUpdateWithWhereUniqueWithoutBoardInput | DocumentBoardItemUpdateWithWhereUniqueWithoutBoardInput[]
+    updateMany?: DocumentBoardItemUpdateManyWithWhereWithoutBoardInput | DocumentBoardItemUpdateManyWithWhereWithoutBoardInput[]
+    deleteMany?: DocumentBoardItemScalarWhereInput | DocumentBoardItemScalarWhereInput[]
+  }
+
+  export type DocumentBoardCreateNestedOneWithoutItemsInput = {
+    create?: XOR<DocumentBoardCreateWithoutItemsInput, DocumentBoardUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: DocumentBoardCreateOrConnectWithoutItemsInput
+    connect?: DocumentBoardWhereUniqueInput
+  }
+
+  export type DocumentCreateNestedOneWithoutBoard_itemsInput = {
+    create?: XOR<DocumentCreateWithoutBoard_itemsInput, DocumentUncheckedCreateWithoutBoard_itemsInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutBoard_itemsInput
+    connect?: DocumentWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutDocument_board_itemsInput = {
+    create?: XOR<UserCreateWithoutDocument_board_itemsInput, UserUncheckedCreateWithoutDocument_board_itemsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDocument_board_itemsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type DocumentBoardUpdateOneRequiredWithoutItemsNestedInput = {
+    create?: XOR<DocumentBoardCreateWithoutItemsInput, DocumentBoardUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: DocumentBoardCreateOrConnectWithoutItemsInput
+    upsert?: DocumentBoardUpsertWithoutItemsInput
+    connect?: DocumentBoardWhereUniqueInput
+    update?: XOR<XOR<DocumentBoardUpdateToOneWithWhereWithoutItemsInput, DocumentBoardUpdateWithoutItemsInput>, DocumentBoardUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type DocumentUpdateOneRequiredWithoutBoard_itemsNestedInput = {
+    create?: XOR<DocumentCreateWithoutBoard_itemsInput, DocumentUncheckedCreateWithoutBoard_itemsInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutBoard_itemsInput
+    upsert?: DocumentUpsertWithoutBoard_itemsInput
+    connect?: DocumentWhereUniqueInput
+    update?: XOR<XOR<DocumentUpdateToOneWithWhereWithoutBoard_itemsInput, DocumentUpdateWithoutBoard_itemsInput>, DocumentUncheckedUpdateWithoutBoard_itemsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutDocument_board_itemsNestedInput = {
+    create?: XOR<UserCreateWithoutDocument_board_itemsInput, UserUncheckedCreateWithoutDocument_board_itemsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDocument_board_itemsInput
+    upsert?: UserUpsertWithoutDocument_board_itemsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDocument_board_itemsInput, UserUpdateWithoutDocument_board_itemsInput>, UserUncheckedUpdateWithoutDocument_board_itemsInput>
   }
 
   export type OrganizationCreateNestedOneWithoutAi_providersInput = {
@@ -47551,6 +50996,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCreatorInput = {
@@ -47574,6 +51020,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCreatorInput = {
@@ -47778,6 +51225,62 @@ export namespace Prisma {
 
   export type ScheduledAgentCreateManyUserInputEnvelope = {
     data: ScheduledAgentCreateManyUserInput | ScheduledAgentCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DocumentBoardCreateWithoutCreatorInput = {
+    uuid?: string
+    name: string
+    description?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutDocument_boardsInput
+    items?: DocumentBoardItemCreateNestedManyWithoutBoardInput
+  }
+
+  export type DocumentBoardUncheckedCreateWithoutCreatorInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    name: string
+    description?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    items?: DocumentBoardItemUncheckedCreateNestedManyWithoutBoardInput
+  }
+
+  export type DocumentBoardCreateOrConnectWithoutCreatorInput = {
+    where: DocumentBoardWhereUniqueInput
+    create: XOR<DocumentBoardCreateWithoutCreatorInput, DocumentBoardUncheckedCreateWithoutCreatorInput>
+  }
+
+  export type DocumentBoardCreateManyCreatorInputEnvelope = {
+    data: DocumentBoardCreateManyCreatorInput | DocumentBoardCreateManyCreatorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DocumentBoardItemCreateWithoutAdderInput = {
+    uuid?: string
+    created_at?: Date | string
+    board: DocumentBoardCreateNestedOneWithoutItemsInput
+    document: DocumentCreateNestedOneWithoutBoard_itemsInput
+  }
+
+  export type DocumentBoardItemUncheckedCreateWithoutAdderInput = {
+    id?: number
+    uuid?: string
+    board_uuid: string
+    document_uuid: string
+    created_at?: Date | string
+  }
+
+  export type DocumentBoardItemCreateOrConnectWithoutAdderInput = {
+    where: DocumentBoardItemWhereUniqueInput
+    create: XOR<DocumentBoardItemCreateWithoutAdderInput, DocumentBoardItemUncheckedCreateWithoutAdderInput>
+  }
+
+  export type DocumentBoardItemCreateManyAdderInputEnvelope = {
+    data: DocumentBoardItemCreateManyAdderInput | DocumentBoardItemCreateManyAdderInput[]
     skipDuplicates?: boolean
   }
 
@@ -48012,6 +51515,64 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"ScheduledAgent"> | Date | string
   }
 
+  export type DocumentBoardUpsertWithWhereUniqueWithoutCreatorInput = {
+    where: DocumentBoardWhereUniqueInput
+    update: XOR<DocumentBoardUpdateWithoutCreatorInput, DocumentBoardUncheckedUpdateWithoutCreatorInput>
+    create: XOR<DocumentBoardCreateWithoutCreatorInput, DocumentBoardUncheckedCreateWithoutCreatorInput>
+  }
+
+  export type DocumentBoardUpdateWithWhereUniqueWithoutCreatorInput = {
+    where: DocumentBoardWhereUniqueInput
+    data: XOR<DocumentBoardUpdateWithoutCreatorInput, DocumentBoardUncheckedUpdateWithoutCreatorInput>
+  }
+
+  export type DocumentBoardUpdateManyWithWhereWithoutCreatorInput = {
+    where: DocumentBoardScalarWhereInput
+    data: XOR<DocumentBoardUpdateManyMutationInput, DocumentBoardUncheckedUpdateManyWithoutCreatorInput>
+  }
+
+  export type DocumentBoardScalarWhereInput = {
+    AND?: DocumentBoardScalarWhereInput | DocumentBoardScalarWhereInput[]
+    OR?: DocumentBoardScalarWhereInput[]
+    NOT?: DocumentBoardScalarWhereInput | DocumentBoardScalarWhereInput[]
+    id?: IntFilter<"DocumentBoard"> | number
+    uuid?: StringFilter<"DocumentBoard"> | string
+    org_uuid?: StringFilter<"DocumentBoard"> | string
+    name?: StringFilter<"DocumentBoard"> | string
+    description?: StringNullableFilter<"DocumentBoard"> | string | null
+    created_by?: StringFilter<"DocumentBoard"> | string
+    created_at?: DateTimeFilter<"DocumentBoard"> | Date | string
+    updated_at?: DateTimeFilter<"DocumentBoard"> | Date | string
+  }
+
+  export type DocumentBoardItemUpsertWithWhereUniqueWithoutAdderInput = {
+    where: DocumentBoardItemWhereUniqueInput
+    update: XOR<DocumentBoardItemUpdateWithoutAdderInput, DocumentBoardItemUncheckedUpdateWithoutAdderInput>
+    create: XOR<DocumentBoardItemCreateWithoutAdderInput, DocumentBoardItemUncheckedCreateWithoutAdderInput>
+  }
+
+  export type DocumentBoardItemUpdateWithWhereUniqueWithoutAdderInput = {
+    where: DocumentBoardItemWhereUniqueInput
+    data: XOR<DocumentBoardItemUpdateWithoutAdderInput, DocumentBoardItemUncheckedUpdateWithoutAdderInput>
+  }
+
+  export type DocumentBoardItemUpdateManyWithWhereWithoutAdderInput = {
+    where: DocumentBoardItemScalarWhereInput
+    data: XOR<DocumentBoardItemUpdateManyMutationInput, DocumentBoardItemUncheckedUpdateManyWithoutAdderInput>
+  }
+
+  export type DocumentBoardItemScalarWhereInput = {
+    AND?: DocumentBoardItemScalarWhereInput | DocumentBoardItemScalarWhereInput[]
+    OR?: DocumentBoardItemScalarWhereInput[]
+    NOT?: DocumentBoardItemScalarWhereInput | DocumentBoardItemScalarWhereInput[]
+    id?: IntFilter<"DocumentBoardItem"> | number
+    uuid?: StringFilter<"DocumentBoardItem"> | string
+    board_uuid?: StringFilter<"DocumentBoardItem"> | string
+    document_uuid?: StringFilter<"DocumentBoardItem"> | string
+    added_by?: StringFilter<"DocumentBoardItem"> | string
+    created_at?: DateTimeFilter<"DocumentBoardItem"> | Date | string
+  }
+
   export type UserCreateWithoutCreated_organizationsInput = {
     uuid?: string
     email: string
@@ -48028,6 +51589,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
   }
 
   export type UserUncheckedCreateWithoutCreated_organizationsInput = {
@@ -48047,6 +51610,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
   }
 
   export type UserCreateOrConnectWithoutCreated_organizationsInput = {
@@ -48521,6 +52086,37 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type DocumentBoardCreateWithoutOrganizationInput = {
+    uuid?: string
+    name: string
+    description?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_document_boardsInput
+    items?: DocumentBoardItemCreateNestedManyWithoutBoardInput
+  }
+
+  export type DocumentBoardUncheckedCreateWithoutOrganizationInput = {
+    id?: number
+    uuid?: string
+    name: string
+    description?: string | null
+    created_by: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    items?: DocumentBoardItemUncheckedCreateNestedManyWithoutBoardInput
+  }
+
+  export type DocumentBoardCreateOrConnectWithoutOrganizationInput = {
+    where: DocumentBoardWhereUniqueInput
+    create: XOR<DocumentBoardCreateWithoutOrganizationInput, DocumentBoardUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type DocumentBoardCreateManyOrganizationInputEnvelope = {
+    data: DocumentBoardCreateManyOrganizationInput | DocumentBoardCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutCreated_organizationsInput = {
     update: XOR<UserUpdateWithoutCreated_organizationsInput, UserUncheckedUpdateWithoutCreated_organizationsInput>
     create: XOR<UserCreateWithoutCreated_organizationsInput, UserUncheckedCreateWithoutCreated_organizationsInput>
@@ -48548,6 +52144,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreated_organizationsInput = {
@@ -48567,6 +52165,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
   }
 
   export type OrganizationMemberUpsertWithWhereUniqueWithoutOrganizationInput = {
@@ -48888,6 +52488,22 @@ export namespace Prisma {
     data: XOR<ScheduledAgentUpdateManyMutationInput, ScheduledAgentUncheckedUpdateManyWithoutOrganizationInput>
   }
 
+  export type DocumentBoardUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: DocumentBoardWhereUniqueInput
+    update: XOR<DocumentBoardUpdateWithoutOrganizationInput, DocumentBoardUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<DocumentBoardCreateWithoutOrganizationInput, DocumentBoardUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type DocumentBoardUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: DocumentBoardWhereUniqueInput
+    data: XOR<DocumentBoardUpdateWithoutOrganizationInput, DocumentBoardUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type DocumentBoardUpdateManyWithWhereWithoutOrganizationInput = {
+    where: DocumentBoardScalarWhereInput
+    data: XOR<DocumentBoardUpdateManyMutationInput, DocumentBoardUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
   export type OrganizationCreateWithoutMembersInput = {
     uuid?: string
     name: string
@@ -48908,6 +52524,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMembersInput = {
@@ -48931,6 +52548,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMembersInput = {
@@ -48954,6 +52572,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
   }
 
   export type UserUncheckedCreateWithoutOrganization_membersInput = {
@@ -48973,6 +52593,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
   }
 
   export type UserCreateOrConnectWithoutOrganization_membersInput = {
@@ -49033,6 +52655,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMembersInput = {
@@ -49056,6 +52679,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutOrganization_membersInput = {
@@ -49085,6 +52709,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganization_membersInput = {
@@ -49104,6 +52730,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
   }
 
   export type OrganizationRoleUpsertWithoutMembersInput = {
@@ -49154,6 +52782,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutRolesInput = {
@@ -49177,6 +52806,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutRolesInput = {
@@ -49265,6 +52895,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutRolesInput = {
@@ -49288,6 +52919,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationMemberUpsertWithWhereUniqueWithoutRoleInput = {
@@ -49485,6 +53117,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAudit_logsInput = {
@@ -49508,6 +53141,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAudit_logsInput = {
@@ -49531,6 +53165,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
   }
 
   export type UserUncheckedCreateWithoutAudit_logsInput = {
@@ -49550,6 +53186,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
   }
 
   export type UserCreateOrConnectWithoutAudit_logsInput = {
@@ -49588,6 +53226,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAudit_logsInput = {
@@ -49611,6 +53250,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutAudit_logsInput = {
@@ -49640,6 +53280,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAudit_logsInput = {
@@ -49659,6 +53301,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
   }
 
   export type OrganizationCreateWithoutIntegrationsInput = {
@@ -49681,6 +53325,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutIntegrationsInput = {
@@ -49704,6 +53349,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutIntegrationsInput = {
@@ -49908,6 +53554,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutIntegrationsInput = {
@@ -49931,6 +53578,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type IntegrationActionUpsertWithWhereUniqueWithoutIntegrationInput = {
@@ -50849,6 +54497,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutEnabled_toolkitsInput = {
@@ -50872,6 +54521,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutEnabled_toolkitsInput = {
@@ -50956,6 +54606,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutEnabled_toolkitsInput = {
@@ -50979,6 +54630,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ComposioToolkitUpsertWithoutEnabled_orgsInput = {
@@ -51053,6 +54705,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTool_permissionsInput = {
@@ -51076,6 +54729,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTool_permissionsInput = {
@@ -51152,6 +54806,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTool_permissionsInput = {
@@ -51175,6 +54830,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ComposioToolkitToolUpsertWithoutPermissionsInput = {
@@ -51241,6 +54897,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutComposio_accountsInput = {
@@ -51264,6 +54921,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutComposio_accountsInput = {
@@ -51348,6 +55006,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutComposio_accountsInput = {
@@ -51371,6 +55030,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ComposioToolkitUpsertWithoutConnected_accountsInput = {
@@ -51445,6 +55105,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutComposio_triggersInput = {
@@ -51468,6 +55129,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutComposio_triggersInput = {
@@ -51552,6 +55214,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutComposio_triggersInput = {
@@ -51575,6 +55238,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ComposioToolkitUpsertWithoutTriggersInput = {
@@ -51629,6 +55293,518 @@ export namespace Prisma {
     connected_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutToolkitNestedInput
   }
 
+  export type DocumentBoardItemCreateWithoutDocumentInput = {
+    uuid?: string
+    created_at?: Date | string
+    board: DocumentBoardCreateNestedOneWithoutItemsInput
+    adder: UserCreateNestedOneWithoutDocument_board_itemsInput
+  }
+
+  export type DocumentBoardItemUncheckedCreateWithoutDocumentInput = {
+    id?: number
+    uuid?: string
+    board_uuid: string
+    added_by: string
+    created_at?: Date | string
+  }
+
+  export type DocumentBoardItemCreateOrConnectWithoutDocumentInput = {
+    where: DocumentBoardItemWhereUniqueInput
+    create: XOR<DocumentBoardItemCreateWithoutDocumentInput, DocumentBoardItemUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type DocumentBoardItemCreateManyDocumentInputEnvelope = {
+    data: DocumentBoardItemCreateManyDocumentInput | DocumentBoardItemCreateManyDocumentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DocumentBoardItemUpsertWithWhereUniqueWithoutDocumentInput = {
+    where: DocumentBoardItemWhereUniqueInput
+    update: XOR<DocumentBoardItemUpdateWithoutDocumentInput, DocumentBoardItemUncheckedUpdateWithoutDocumentInput>
+    create: XOR<DocumentBoardItemCreateWithoutDocumentInput, DocumentBoardItemUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type DocumentBoardItemUpdateWithWhereUniqueWithoutDocumentInput = {
+    where: DocumentBoardItemWhereUniqueInput
+    data: XOR<DocumentBoardItemUpdateWithoutDocumentInput, DocumentBoardItemUncheckedUpdateWithoutDocumentInput>
+  }
+
+  export type DocumentBoardItemUpdateManyWithWhereWithoutDocumentInput = {
+    where: DocumentBoardItemScalarWhereInput
+    data: XOR<DocumentBoardItemUpdateManyMutationInput, DocumentBoardItemUncheckedUpdateManyWithoutDocumentInput>
+  }
+
+  export type OrganizationCreateWithoutDocument_boardsInput = {
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
+    members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutDocument_boardsInput = {
+    id?: number
+    uuid?: string
+    user_uuid: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutDocument_boardsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutDocument_boardsInput, OrganizationUncheckedCreateWithoutDocument_boardsInput>
+  }
+
+  export type UserCreateWithoutCreated_document_boardsInput = {
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationCreateNestedManyWithoutCreatorInput
+    audit_logs?: AuditLogCreateNestedManyWithoutUserInput
+    conversations?: ConversationCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
+  }
+
+  export type UserUncheckedCreateWithoutCreated_document_boardsInput = {
+    id?: number
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationUncheckedCreateNestedManyWithoutCreatorInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
+  }
+
+  export type UserCreateOrConnectWithoutCreated_document_boardsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreated_document_boardsInput, UserUncheckedCreateWithoutCreated_document_boardsInput>
+  }
+
+  export type DocumentBoardItemCreateWithoutBoardInput = {
+    uuid?: string
+    created_at?: Date | string
+    document: DocumentCreateNestedOneWithoutBoard_itemsInput
+    adder: UserCreateNestedOneWithoutDocument_board_itemsInput
+  }
+
+  export type DocumentBoardItemUncheckedCreateWithoutBoardInput = {
+    id?: number
+    uuid?: string
+    document_uuid: string
+    added_by: string
+    created_at?: Date | string
+  }
+
+  export type DocumentBoardItemCreateOrConnectWithoutBoardInput = {
+    where: DocumentBoardItemWhereUniqueInput
+    create: XOR<DocumentBoardItemCreateWithoutBoardInput, DocumentBoardItemUncheckedCreateWithoutBoardInput>
+  }
+
+  export type DocumentBoardItemCreateManyBoardInputEnvelope = {
+    data: DocumentBoardItemCreateManyBoardInput | DocumentBoardItemCreateManyBoardInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganizationUpsertWithoutDocument_boardsInput = {
+    update: XOR<OrganizationUpdateWithoutDocument_boardsInput, OrganizationUncheckedUpdateWithoutDocument_boardsInput>
+    create: XOR<OrganizationCreateWithoutDocument_boardsInput, OrganizationUncheckedCreateWithoutDocument_boardsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutDocument_boardsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutDocument_boardsInput, OrganizationUncheckedUpdateWithoutDocument_boardsInput>
+  }
+
+  export type OrganizationUpdateWithoutDocument_boardsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
+    members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutDocument_boardsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type UserUpsertWithoutCreated_document_boardsInput = {
+    update: XOR<UserUpdateWithoutCreated_document_boardsInput, UserUncheckedUpdateWithoutCreated_document_boardsInput>
+    create: XOR<UserCreateWithoutCreated_document_boardsInput, UserUncheckedCreateWithoutCreated_document_boardsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreated_document_boardsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreated_document_boardsInput, UserUncheckedUpdateWithoutCreated_document_boardsInput>
+  }
+
+  export type UserUpdateWithoutCreated_document_boardsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUpdateManyWithoutCreatorNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreated_document_boardsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUncheckedUpdateManyWithoutCreatorNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
+  }
+
+  export type DocumentBoardItemUpsertWithWhereUniqueWithoutBoardInput = {
+    where: DocumentBoardItemWhereUniqueInput
+    update: XOR<DocumentBoardItemUpdateWithoutBoardInput, DocumentBoardItemUncheckedUpdateWithoutBoardInput>
+    create: XOR<DocumentBoardItemCreateWithoutBoardInput, DocumentBoardItemUncheckedCreateWithoutBoardInput>
+  }
+
+  export type DocumentBoardItemUpdateWithWhereUniqueWithoutBoardInput = {
+    where: DocumentBoardItemWhereUniqueInput
+    data: XOR<DocumentBoardItemUpdateWithoutBoardInput, DocumentBoardItemUncheckedUpdateWithoutBoardInput>
+  }
+
+  export type DocumentBoardItemUpdateManyWithWhereWithoutBoardInput = {
+    where: DocumentBoardItemScalarWhereInput
+    data: XOR<DocumentBoardItemUpdateManyMutationInput, DocumentBoardItemUncheckedUpdateManyWithoutBoardInput>
+  }
+
+  export type DocumentBoardCreateWithoutItemsInput = {
+    uuid?: string
+    name: string
+    description?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutDocument_boardsInput
+    creator: UserCreateNestedOneWithoutCreated_document_boardsInput
+  }
+
+  export type DocumentBoardUncheckedCreateWithoutItemsInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    name: string
+    description?: string | null
+    created_by: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type DocumentBoardCreateOrConnectWithoutItemsInput = {
+    where: DocumentBoardWhereUniqueInput
+    create: XOR<DocumentBoardCreateWithoutItemsInput, DocumentBoardUncheckedCreateWithoutItemsInput>
+  }
+
+  export type DocumentCreateWithoutBoard_itemsInput = {
+    uuid?: string
+    user_uuid: string
+    filename: string
+    mimetype: string
+    size: number
+    url: string
+    path: string
+    type?: $Enums.DocumentType
+    created_at?: Date | string
+  }
+
+  export type DocumentUncheckedCreateWithoutBoard_itemsInput = {
+    id?: number
+    uuid?: string
+    user_uuid: string
+    filename: string
+    mimetype: string
+    size: number
+    url: string
+    path: string
+    type?: $Enums.DocumentType
+    created_at?: Date | string
+  }
+
+  export type DocumentCreateOrConnectWithoutBoard_itemsInput = {
+    where: DocumentWhereUniqueInput
+    create: XOR<DocumentCreateWithoutBoard_itemsInput, DocumentUncheckedCreateWithoutBoard_itemsInput>
+  }
+
+  export type UserCreateWithoutDocument_board_itemsInput = {
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationCreateNestedManyWithoutCreatorInput
+    audit_logs?: AuditLogCreateNestedManyWithoutUserInput
+    conversations?: ConversationCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
+  }
+
+  export type UserUncheckedCreateWithoutDocument_board_itemsInput = {
+    id?: number
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationUncheckedCreateNestedManyWithoutCreatorInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
+  }
+
+  export type UserCreateOrConnectWithoutDocument_board_itemsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDocument_board_itemsInput, UserUncheckedCreateWithoutDocument_board_itemsInput>
+  }
+
+  export type DocumentBoardUpsertWithoutItemsInput = {
+    update: XOR<DocumentBoardUpdateWithoutItemsInput, DocumentBoardUncheckedUpdateWithoutItemsInput>
+    create: XOR<DocumentBoardCreateWithoutItemsInput, DocumentBoardUncheckedCreateWithoutItemsInput>
+    where?: DocumentBoardWhereInput
+  }
+
+  export type DocumentBoardUpdateToOneWithWhereWithoutItemsInput = {
+    where?: DocumentBoardWhereInput
+    data: XOR<DocumentBoardUpdateWithoutItemsInput, DocumentBoardUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type DocumentBoardUpdateWithoutItemsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutDocument_boardsNestedInput
+    creator?: UserUpdateOneRequiredWithoutCreated_document_boardsNestedInput
+  }
+
+  export type DocumentBoardUncheckedUpdateWithoutItemsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentUpsertWithoutBoard_itemsInput = {
+    update: XOR<DocumentUpdateWithoutBoard_itemsInput, DocumentUncheckedUpdateWithoutBoard_itemsInput>
+    create: XOR<DocumentCreateWithoutBoard_itemsInput, DocumentUncheckedCreateWithoutBoard_itemsInput>
+    where?: DocumentWhereInput
+  }
+
+  export type DocumentUpdateToOneWithWhereWithoutBoard_itemsInput = {
+    where?: DocumentWhereInput
+    data: XOR<DocumentUpdateWithoutBoard_itemsInput, DocumentUncheckedUpdateWithoutBoard_itemsInput>
+  }
+
+  export type DocumentUpdateWithoutBoard_itemsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    mimetype?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    url?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    type?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentUncheckedUpdateWithoutBoard_itemsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    filename?: StringFieldUpdateOperationsInput | string
+    mimetype?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    url?: StringFieldUpdateOperationsInput | string
+    path?: StringFieldUpdateOperationsInput | string
+    type?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutDocument_board_itemsInput = {
+    update: XOR<UserUpdateWithoutDocument_board_itemsInput, UserUncheckedUpdateWithoutDocument_board_itemsInput>
+    create: XOR<UserCreateWithoutDocument_board_itemsInput, UserUncheckedCreateWithoutDocument_board_itemsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutDocument_board_itemsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDocument_board_itemsInput, UserUncheckedUpdateWithoutDocument_board_itemsInput>
+  }
+
+  export type UserUpdateWithoutDocument_board_itemsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUpdateManyWithoutCreatorNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDocument_board_itemsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUncheckedUpdateManyWithoutCreatorNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
+  }
+
   export type OrganizationCreateWithoutAi_providersInput = {
     uuid?: string
     name: string
@@ -51649,6 +55825,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAi_providersInput = {
@@ -51672,6 +55849,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAi_providersInput = {
@@ -51710,6 +55888,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAi_providersInput = {
@@ -51733,6 +55912,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutConversationsInput = {
@@ -51755,6 +55935,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutConversationsInput = {
@@ -51778,6 +55959,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutConversationsInput = {
@@ -51801,6 +55983,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
   }
 
   export type UserUncheckedCreateWithoutConversationsInput = {
@@ -51820,6 +56004,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
   }
 
   export type UserCreateOrConnectWithoutConversationsInput = {
@@ -51966,6 +56152,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutConversationsInput = {
@@ -51989,6 +56176,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutConversationsInput = {
@@ -52018,6 +56206,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutConversationsInput = {
@@ -52037,6 +56227,8 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
   }
 
   export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
@@ -52144,6 +56336,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutScheduled_agentsInput = {
@@ -52167,6 +56360,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutScheduled_agentsInput = {
@@ -52190,6 +56384,8 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
   }
 
   export type UserUncheckedCreateWithoutScheduled_agentsInput = {
@@ -52209,6 +56405,8 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
   }
 
   export type UserCreateOrConnectWithoutScheduled_agentsInput = {
@@ -52285,6 +56483,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutScheduled_agentsInput = {
@@ -52308,6 +56507,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutScheduled_agentsInput = {
@@ -52337,6 +56537,8 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutScheduled_agentsInput = {
@@ -52356,6 +56558,8 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
   }
 
   export type ConversationUpsertWithoutScheduled_agentInput = {
@@ -52627,6 +56831,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAgent_executionsInput = {
@@ -52650,6 +56855,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAgent_executionsInput = {
@@ -52673,6 +56879,8 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
   }
 
   export type UserUncheckedCreateWithoutAgent_executionsInput = {
@@ -52692,6 +56900,8 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
   }
 
   export type UserCreateOrConnectWithoutAgent_executionsInput = {
@@ -52849,6 +57059,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAgent_executionsInput = {
@@ -52872,6 +57083,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutAgent_executionsInput = {
@@ -52901,6 +57113,8 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAgent_executionsInput = {
@@ -52920,6 +57134,8 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
   }
 
   export type ToolCallUpsertWithWhereUniqueWithoutExecutionInput = {
@@ -53126,6 +57342,8 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
   }
 
   export type UserUncheckedCreateWithoutConversation_personalizationsInput = {
@@ -53145,6 +57363,8 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
   }
 
   export type UserCreateOrConnectWithoutConversation_personalizationsInput = {
@@ -53172,6 +57392,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutConversation_personalizationsInput = {
@@ -53195,6 +57416,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutConversation_personalizationsInput = {
@@ -53229,6 +57451,8 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutConversation_personalizationsInput = {
@@ -53248,6 +57472,8 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
   }
 
   export type OrganizationUpsertWithoutConversation_personalizationsInput = {
@@ -53281,6 +57507,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutConversation_personalizationsInput = {
@@ -53304,6 +57531,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationMemberCreateManyUserInput = {
@@ -53397,6 +57625,24 @@ export namespace Prisma {
     updated_at?: Date | string
   }
 
+  export type DocumentBoardCreateManyCreatorInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    name: string
+    description?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type DocumentBoardItemCreateManyAdderInput = {
+    id?: number
+    uuid?: string
+    board_uuid: string
+    document_uuid: string
+    created_at?: Date | string
+  }
+
   export type OrganizationMemberUpdateWithoutUserInput = {
     uuid?: StringFieldUpdateOperationsInput | string
     status?: EnumOrganizationMemberStatusFieldUpdateOperationsInput | $Enums.OrganizationMemberStatus
@@ -53446,6 +57692,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCreatorInput = {
@@ -53469,6 +57716,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateManyWithoutCreatorInput = {
@@ -53697,6 +57945,60 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type DocumentBoardUpdateWithoutCreatorInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutDocument_boardsNestedInput
+    items?: DocumentBoardItemUpdateManyWithoutBoardNestedInput
+  }
+
+  export type DocumentBoardUncheckedUpdateWithoutCreatorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: DocumentBoardItemUncheckedUpdateManyWithoutBoardNestedInput
+  }
+
+  export type DocumentBoardUncheckedUpdateManyWithoutCreatorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentBoardItemUpdateWithoutAdderInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    board?: DocumentBoardUpdateOneRequiredWithoutItemsNestedInput
+    document?: DocumentUpdateOneRequiredWithoutBoard_itemsNestedInput
+  }
+
+  export type DocumentBoardItemUncheckedUpdateWithoutAdderInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    board_uuid?: StringFieldUpdateOperationsInput | string
+    document_uuid?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentBoardItemUncheckedUpdateManyWithoutAdderInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    board_uuid?: StringFieldUpdateOperationsInput | string
+    document_uuid?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrganizationMemberCreateManyOrganizationInput = {
     id?: number
     uuid?: string
@@ -53857,6 +58159,16 @@ export namespace Prisma {
     conversation_uuid: string
     last_run_at?: Date | string | null
     next_run_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type DocumentBoardCreateManyOrganizationInput = {
+    id?: number
+    uuid?: string
+    name: string
+    description?: string | null
+    created_by: string
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -54362,6 +58674,37 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type DocumentBoardUpdateWithoutOrganizationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_document_boardsNestedInput
+    items?: DocumentBoardItemUpdateManyWithoutBoardNestedInput
+  }
+
+  export type DocumentBoardUncheckedUpdateWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: DocumentBoardItemUncheckedUpdateManyWithoutBoardNestedInput
+  }
+
+  export type DocumentBoardUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrganizationMemberCreateManyRoleInput = {
     id?: number
     uuid?: string
@@ -54816,6 +59159,68 @@ export namespace Prisma {
     required_permission_key?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentBoardItemCreateManyDocumentInput = {
+    id?: number
+    uuid?: string
+    board_uuid: string
+    added_by: string
+    created_at?: Date | string
+  }
+
+  export type DocumentBoardItemUpdateWithoutDocumentInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    board?: DocumentBoardUpdateOneRequiredWithoutItemsNestedInput
+    adder?: UserUpdateOneRequiredWithoutDocument_board_itemsNestedInput
+  }
+
+  export type DocumentBoardItemUncheckedUpdateWithoutDocumentInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    board_uuid?: StringFieldUpdateOperationsInput | string
+    added_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentBoardItemUncheckedUpdateManyWithoutDocumentInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    board_uuid?: StringFieldUpdateOperationsInput | string
+    added_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentBoardItemCreateManyBoardInput = {
+    id?: number
+    uuid?: string
+    document_uuid: string
+    added_by: string
+    created_at?: Date | string
+  }
+
+  export type DocumentBoardItemUpdateWithoutBoardInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    document?: DocumentUpdateOneRequiredWithoutBoard_itemsNestedInput
+    adder?: UserUpdateOneRequiredWithoutDocument_board_itemsNestedInput
+  }
+
+  export type DocumentBoardItemUncheckedUpdateWithoutBoardInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    document_uuid?: StringFieldUpdateOperationsInput | string
+    added_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentBoardItemUncheckedUpdateManyWithoutBoardInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    document_uuid?: StringFieldUpdateOperationsInput | string
+    added_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageCreateManyConversationInput = {

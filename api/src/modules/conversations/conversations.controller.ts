@@ -80,6 +80,15 @@ export class ConversationsController {
     return this.conversations.delete(userUuid, organizationUuid, conversationUuid);
   }
 
+  @Get(':conversation_uuid/documents')
+  findDocuments(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Param('conversation_uuid') conversationUuid: string,
+  ) {
+    return this.messages.getConversationDocuments(userUuid, organizationUuid, conversationUuid);
+  }
+
   @Get(':conversation_uuid/messages')
   findMessages(
     @CurrentUser('uuid') userUuid: string,

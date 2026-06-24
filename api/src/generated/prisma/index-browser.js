@@ -371,6 +371,26 @@ exports.Prisma.DocumentScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.DocumentBoardScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  org_uuid: 'org_uuid',
+  name: 'name',
+  description: 'description',
+  created_by: 'created_by',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.DocumentBoardItemScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  board_uuid: 'board_uuid',
+  document_uuid: 'document_uuid',
+  added_by: 'added_by',
+  created_at: 'created_at'
+};
+
 exports.Prisma.AiProviderScalarFieldEnum = {
   id: 'id',
   uuid: 'uuid',
@@ -679,6 +699,8 @@ exports.Prisma.ModelName = {
   ComposioConnectedAccount: 'ComposioConnectedAccount',
   ComposioTrigger: 'ComposioTrigger',
   Document: 'Document',
+  DocumentBoard: 'DocumentBoard',
+  DocumentBoardItem: 'DocumentBoardItem',
   AiProvider: 'AiProvider',
   Conversation: 'Conversation',
   ScheduledAgent: 'ScheduledAgent',

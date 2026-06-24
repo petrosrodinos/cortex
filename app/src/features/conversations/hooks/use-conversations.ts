@@ -8,6 +8,7 @@ import {
   deleteConversation,
   deleteMessage,
   getConversation,
+  getConversationDocuments,
   getConversations,
   getMessages,
   getConversationAgentTools,
@@ -39,6 +40,14 @@ export function useGetMessages(organizationUuid?: string, conversationUuid?: str
   return useQuery({
     queryKey: ['messages', organizationUuid, conversationUuid],
     queryFn: () => getMessages(organizationUuid as string, conversationUuid as string),
+    enabled: !!organizationUuid && !!conversationUuid,
+  });
+}
+
+export function useGetConversationDocuments(organizationUuid?: string, conversationUuid?: string) {
+  return useQuery({
+    queryKey: ['conversation-documents', organizationUuid, conversationUuid],
+    queryFn: () => getConversationDocuments(organizationUuid as string, conversationUuid as string),
     enabled: !!organizationUuid && !!conversationUuid,
   });
 }

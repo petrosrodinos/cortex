@@ -686,7 +686,8 @@ const ConversationsPage: FC = () => {
 
             <ConversationDocumentsModal
               open={documentsOpen}
-              messages={messages}
+              orgUuid={organizationUuid ?? ''}
+              conversationUuid={conversationUuid ?? ''}
               pendingAttachments={isPendingUserMessageVisible ? pendingUserAttachments : []}
               onOpenChange={setDocumentsOpen}
             />

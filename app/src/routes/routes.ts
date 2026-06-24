@@ -24,6 +24,8 @@ export const Routes = {
         settingsUsage: '/dashboard/settings/usage',
         settingsAuditLogs: '/dashboard/settings/audit-logs',
         execution: (executionUuid: string) => `/dashboard/executions/${executionUuid}`,
+        documentBoards: '/dashboard/boards',
+        documentBoard: (boardUuid: string) => `/dashboard/boards/${boardUuid}`,
     },
     admin: {
         root: "/admin",

@@ -193,6 +193,8 @@ model User {
   agent_executions     AgentExecution[]
   conversation_personalizations ConversationPersonalization[]
   scheduled_agents     ScheduledAgent[]
+  created_document_boards DocumentBoard[]
+  document_board_items    DocumentBoardItem[]
 
   @@index([email])
   @@index([phone])
@@ -224,6 +226,7 @@ model Organization {
   agent_executions AgentExecution[]
   conversation_personalizations ConversationPersonalization[]
   scheduled_agents ScheduledAgent[]
+  document_boards  DocumentBoard[]
 
   @@index([uuid])
   @@index([user_uuid])
@@ -588,9 +591,48 @@ model Document {
   type       DocumentType @default(LOGO)
   created_at DateTime     @default(now())
 
+  board_items DocumentBoardItem[]
+
   @@index([user_uuid])
   @@index([uuid])
   @@map("documents")
+}
+
+model DocumentBoard {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @unique @default(uuid())
+  org_uuid    String
+  name        String
+  description String?
+  created_by  String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  organization Organization        @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+  creator      User                @relation(fields: [created_by], references: [uuid])
+  items        DocumentBoardItem[]
+
+  @@index([org_uuid])
+  @@index([created_by])
+  @@map("document_boards")
+}
+
+model DocumentBoardItem {
+  id            Int      @id @default(autoincrement())
+  uuid          String   @unique @default(uuid())
+  board_uuid    String
+  document_uuid String
+  added_by      String
+  created_at    DateTime @default(now())
+
+  board    DocumentBoard @relation(fields: [board_uuid], references: [uuid], onDelete: Cascade)
+  document Document      @relation(fields: [document_uuid], references: [uuid], onDelete: Cascade)
+  adder    User          @relation(fields: [added_by], references: [uuid])
+
+  @@unique([board_uuid, document_uuid])
+  @@index([board_uuid])
+  @@index([added_by])
+  @@map("document_board_items")
 }
 
 model AiProvider {

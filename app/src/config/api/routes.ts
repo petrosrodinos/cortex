@@ -71,6 +71,7 @@ export const ApiRoutes = {
         integrationAction: (organizationUuid: string, integrationUuid: string, actionUuid: string) => `/organizations/${organizationUuid}/integrations/${integrationUuid}/actions/${actionUuid}`,
         conversations: (organizationUuid: string) => `/organizations/${organizationUuid}/conversations`,
         conversation: (organizationUuid: string, conversationUuid: string) => `/organizations/${organizationUuid}/conversations/${conversationUuid}`,
+        conversationDocuments: (organizationUuid: string, conversationUuid: string) => `/organizations/${organizationUuid}/conversations/${conversationUuid}/documents`,
         conversationMessages: (organizationUuid: string, conversationUuid: string) => `/organizations/${organizationUuid}/conversations/${conversationUuid}/messages`,
         conversationMessage: (organizationUuid: string, conversationUuid: string, messageUuid: string) => `/organizations/${organizationUuid}/conversations/${conversationUuid}/messages/${messageUuid}`,
         conversationAgentTools: (organizationUuid: string) => `/organizations/${organizationUuid}/conversations/agent-tools`,
@@ -107,4 +108,8 @@ export const ApiRoutes = {
     documents: (orgUuid: string) => `/organizations/${orgUuid}/documents`,
     documentWidgetContent: (orgUuid: string, documentUuid: string) =>
         `/organizations/${orgUuid}/documents/${documentUuid}/widget-content`,
+    documentBoards: (orgUuid: string) => `/organizations/${orgUuid}/document-boards`,
+    documentBoard: (orgUuid: string, boardUuid: string) => `/organizations/${orgUuid}/document-boards/${boardUuid}`,
+    documentBoardItems: (orgUuid: string, boardUuid: string) => `/organizations/${orgUuid}/document-boards/${boardUuid}/items`,
+    documentBoardItem: (orgUuid: string, boardUuid: string, itemUuid: string) => `/organizations/${orgUuid}/document-boards/${boardUuid}/items/${itemUuid}`,
 }

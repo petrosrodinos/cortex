@@ -108,6 +108,109 @@ export class MessagesService {
     };
   }
 
+  async getConversationDocuments(
+    userUuid: string,
+    organizationUuid: string,
+    conversationUuid: string,
+  ) {
+    await this.organizations.requireActiveMember(userUuid, organizationUuid);
+    await this.getConversation(userUuid, organizationUuid, conversationUuid);
+
+    const messages = await this.prisma.message.findMany({
+      where: { conversation_uuid: conversationUuid },
+      select: { role: true, metadata: true, created_at: true },
+      orderBy: { created_at: 'asc' },
+    });
+
+    type RawEntry =
+      | { kind: 'db'; uuid: string; created_at: Date }
+      | { kind: 'url'; url: string; filename: string; created_at: Date };
+
+    const entries: RawEntry[] = [];
+    const seenUuids = new Set<string>();
+    const seenUrls = new Set<string>();
+
+    for (const message of messages) {
+      if (message.role === MessageRole.USER) {
+        const meta = message.metadata as {
+          attachments?: Array<{ uuid?: string }>;
+        } | null;
+        for (const att of meta?.attachments ?? []) {
+          if (att?.uuid && !seenUuids.has(att.uuid)) {
+            seenUuids.add(att.uuid);
+            entries.push({ kind: 'db', uuid: att.uuid, created_at: message.created_at });
+          }
+        }
+      } else if (message.role === MessageRole.ASSISTANT) {
+        const meta = message.metadata as {
+          generatedDocuments?: Array<{ document_uuid?: string; filename?: string; file_url?: string }>;
+          files?: string[];
+        } | null;
+
+        for (const gd of meta?.generatedDocuments ?? []) {
+          if (gd?.document_uuid && !seenUuids.has(gd.document_uuid)) {
+            seenUuids.add(gd.document_uuid);
+            // Also mark the file_url as seen so it is not added again from `files[]`
+            if (gd.file_url) seenUrls.add(gd.file_url);
+            entries.push({ kind: 'db', uuid: gd.document_uuid, created_at: message.created_at });
+          }
+        }
+
+        for (const fileUrl of meta?.files ?? []) {
+          if (fileUrl && !seenUrls.has(fileUrl)) {
+            seenUrls.add(fileUrl);
+            const filename = fileUrl.split('/').pop()?.split('?')[0] ?? 'file';
+            entries.push({ kind: 'url', url: fileUrl, filename, created_at: message.created_at });
+          }
+        }
+      }
+    }
+
+    if (entries.length === 0) return [];
+
+    const dbUuids = entries.filter((e): e is Extract<RawEntry, { kind: 'db' }> => e.kind === 'db').map((e) => e.uuid);
+
+    const dbDocs = dbUuids.length > 0
+      ? await this.prisma.document.findMany({
+          where: { uuid: { in: dbUuids } },
+          select: { uuid: true, filename: true, mimetype: true, size: true, path: true },
+        })
+      : [];
+
+    const docByUuid = new Map(dbDocs.map((d) => [d.uuid, d]));
+
+    const results = await Promise.all(
+      entries.map(async (entry) => {
+        if (entry.kind === 'db') {
+          const doc = docByUuid.get(entry.uuid);
+          if (!doc) return null;
+          const url = await this.gcs.getSignedUrlForObjectPath(doc.path, 60, {
+            contentType: doc.mimetype,
+          });
+          return {
+            uuid: doc.uuid as string | null,
+            filename: doc.filename,
+            mimetype: doc.mimetype,
+            size: doc.size,
+            url,
+            created_at: entry.created_at,
+          };
+        } else {
+          return {
+            uuid: null as string | null,
+            filename: entry.filename,
+            mimetype: null as string | null,
+            size: null as number | null,
+            url: entry.url,
+            created_at: entry.created_at,
+          };
+        }
+      }),
+    );
+
+    return results.filter(Boolean);
+  }
+
   async sendMessage(
     userUuid: string,
     organizationUuid: string,

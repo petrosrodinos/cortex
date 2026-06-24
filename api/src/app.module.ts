@@ -23,6 +23,7 @@ import { UsersModule } from './modules/users/users.module';
 import { ConversationPersonalizationModule } from './modules/conversation-personalization/conversation-personalization.module';
 import { ComposioModule } from './modules/composio/composio.module';
 import { AgentsModule } from './modules/agents/agents.module';
+import { DocumentBoardsModule } from './modules/document-boards/document-boards.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { AgentsModule } from './modules/agents/agents.module';
     ConversationPersonalizationModule,
     ComposioModule,
     AgentsModule,
+    DocumentBoardsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

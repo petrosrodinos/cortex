@@ -1,0 +1,101 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { CurrentUser } from '@/shared/decorators/current-user.decorator';
+import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
+import { JwtGuard } from '@/shared/guards/jwt.guard';
+import { OrganizationActiveMemberGuard } from '@/shared/guards/organization-active-member.guard';
+import { OrganizationGuard } from '@/shared/guards/organization.guard';
+import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard';
+import { AddBoardItemDto } from './dto/add-board-item.dto';
+import { CreateDocumentBoardDto } from './dto/create-document-board.dto';
+import { UpdateDocumentBoardDto } from './dto/update-document-board.dto';
+import { DocumentBoardsService } from './document-boards.service';
+
+@Controller('organizations/:organization_uuid/document-boards')
+@UseGuards(
+  JwtGuard,
+  OrganizationMatchGuard,
+  OrganizationActiveMemberGuard,
+  OrganizationGuard,
+)
+export class DocumentBoardsController {
+  constructor(private readonly boards: DocumentBoardsService) {}
+
+  @Get()
+  findAll(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+  ) {
+    return this.boards.findAll(userUuid, organizationUuid);
+  }
+
+  @Post()
+  @OrganizationPermission('files:write')
+  create(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Body() dto: CreateDocumentBoardDto,
+  ) {
+    return this.boards.create(userUuid, organizationUuid, dto);
+  }
+
+  @Get(':board_uuid')
+  findOne(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Param('board_uuid') boardUuid: string,
+  ) {
+    return this.boards.findOne(userUuid, organizationUuid, boardUuid);
+  }
+
+  @Patch(':board_uuid')
+  @OrganizationPermission('files:write')
+  update(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Param('board_uuid') boardUuid: string,
+    @Body() dto: UpdateDocumentBoardDto,
+  ) {
+    return this.boards.update(userUuid, organizationUuid, boardUuid, dto);
+  }
+
+  @Delete(':board_uuid')
+  @OrganizationPermission('files:delete')
+  remove(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Param('board_uuid') boardUuid: string,
+  ) {
+    return this.boards.remove(userUuid, organizationUuid, boardUuid);
+  }
+
+  @Post(':board_uuid/items')
+  @OrganizationPermission('files:write')
+  addItem(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Param('board_uuid') boardUuid: string,
+    @Body() dto: AddBoardItemDto,
+  ) {
+    return this.boards.addItem(userUuid, organizationUuid, boardUuid, dto);
+  }
+
+  @Delete(':board_uuid/items/:item_uuid')
+  @OrganizationPermission('files:write')
+  removeItem(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Param('board_uuid') boardUuid: string,
+    @Param('item_uuid') itemUuid: string,
+  ) {
+    return this.boards.removeItem(userUuid, organizationUuid, boardUuid, itemUuid);
+  }
+}
