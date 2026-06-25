@@ -1,17 +1,24 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
-import type { CreateDocumentBoardPayload, UpdateDocumentBoardPayload } from '../interfaces/document-board.interfaces';
+import type { CreateDocumentBoardPayload, DocumentBoardItemsQuery, UpdateDocumentBoardPayload } from '../interfaces/document-board.interfaces';
 import {
   addDocumentToBoard,
   createDocumentBoard,
   deleteDocumentBoard,
   getDocumentBoard,
+  getDocumentBoardItems,
   getDocumentBoards,
   removeDocumentFromBoard,
   updateDocumentBoard,
 } from '../services/document-boards.service';
 
 export const documentBoardsQueryKey = ['document-boards'] as const;
+
+export const documentBoardItemsQueryKey = (
+  orgUuid?: string,
+  boardUuid?: string,
+  query?: DocumentBoardItemsQuery,
+) => [...documentBoardsQueryKey, orgUuid, boardUuid, 'items', query] as const;
 
 export function useGetDocumentBoards(orgUuid?: string) {
   return useQuery({
@@ -25,6 +32,18 @@ export function useGetDocumentBoard(orgUuid?: string, boardUuid?: string) {
   return useQuery({
     queryKey: [...documentBoardsQueryKey, orgUuid, boardUuid],
     queryFn: () => getDocumentBoard(orgUuid as string, boardUuid as string),
+    enabled: !!orgUuid && !!boardUuid,
+  });
+}
+
+export function useGetDocumentBoardItems(
+  orgUuid?: string,
+  boardUuid?: string,
+  query?: DocumentBoardItemsQuery,
+) {
+  return useQuery({
+    queryKey: documentBoardItemsQueryKey(orgUuid, boardUuid, query),
+    queryFn: () => getDocumentBoardItems(orgUuid as string, boardUuid as string, query),
     enabled: !!orgUuid && !!boardUuid,
   });
 }
@@ -85,6 +104,7 @@ export function useAddDocumentToBoard(orgUuid?: string, boardUuid?: string) {
       addDocumentToBoard(orgUuid as string, boardUuid as string, documentUuid, title),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [...documentBoardsQueryKey, orgUuid, boardUuid] });
+      queryClient.invalidateQueries({ queryKey: [...documentBoardsQueryKey, orgUuid, boardUuid, 'items'] });
       toast({ title: 'Document added to board', duration: 2000 });
     },
     onError: (error: Error) => {
@@ -101,6 +121,7 @@ export function useAddDocumentToBoardById(orgUuid?: string) {
       addDocumentToBoard(orgUuid as string, boardUuid, documentUuid, title),
     onSuccess: (_data, { boardUuid }) => {
       queryClient.invalidateQueries({ queryKey: [...documentBoardsQueryKey, orgUuid, boardUuid] });
+      queryClient.invalidateQueries({ queryKey: [...documentBoardsQueryKey, orgUuid, boardUuid, 'items'] });
       toast({ title: 'Added to board', duration: 2000 });
     },
     onError: (error: Error) => {
@@ -117,6 +138,7 @@ export function useRemoveDocumentFromBoard(orgUuid?: string, boardUuid?: string)
       removeDocumentFromBoard(orgUuid as string, boardUuid as string, itemUuid),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [...documentBoardsQueryKey, orgUuid, boardUuid] });
+      queryClient.invalidateQueries({ queryKey: [...documentBoardsQueryKey, orgUuid, boardUuid, 'items'] });
       toast({ title: 'Document removed', duration: 2000 });
     },
     onError: (error: Error) => {

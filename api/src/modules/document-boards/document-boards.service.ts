@@ -9,6 +9,7 @@ import { OrganizationsService } from '@/modules/organizations/organizations.serv
 import { CreateDocumentBoardDto } from './dto/create-document-board.dto';
 import { UpdateDocumentBoardDto } from './dto/update-document-board.dto';
 import { AddBoardItemDto } from './dto/add-board-item.dto';
+import type { DocumentBoardItemsQueryType } from './dto/document-board-items-query.schema';
 
 @Injectable()
 export class DocumentBoardsService {
@@ -35,18 +36,6 @@ export class DocumentBoardsService {
 
     const board = await this.prisma.documentBoard.findFirst({
       where: { uuid: boardUuid, org_uuid: organizationUuid },
-      include: {
-        items: {
-          include: {
-            document: {
-              include: {
-                user: { select: { uuid: true, first_name: true, last_name: true, email: true } },
-              },
-            },
-          },
-          orderBy: { created_at: 'desc' },
-        },
-      },
     });
 
     if (!board) {
@@ -54,6 +43,52 @@ export class DocumentBoardsService {
     }
 
     return board;
+  }
+
+  async findItems(
+    userUuid: string,
+    organizationUuid: string,
+    boardUuid: string,
+    query: DocumentBoardItemsQueryType,
+  ) {
+    await this.organizations.requireActiveMember(userUuid, organizationUuid);
+    await this.requireBoard(organizationUuid, boardUuid);
+
+    const page = Math.max(1, query.page);
+    const limit = Math.min(Math.max(1, query.limit), 100);
+
+    const where = { board_uuid: boardUuid };
+
+    const [total, items] = await Promise.all([
+      this.prisma.documentBoardItem.count({ where }),
+      this.prisma.documentBoardItem.findMany({
+        where,
+        include: {
+          document: {
+            include: {
+              user: { select: { uuid: true, first_name: true, last_name: true, email: true } },
+            },
+          },
+        },
+        orderBy: { created_at: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data: items,
+      pagination: {
+        total,
+        page,
+        limit,
+        total_pages: totalPages,
+        has_next: page < totalPages,
+        has_prev: page > 1,
+      },
+    };
   }
 
   async create(

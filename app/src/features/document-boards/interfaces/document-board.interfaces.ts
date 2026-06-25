@@ -35,8 +35,21 @@ export interface DocumentBoardItem {
   document: BoardDocument;
 }
 
-export interface DocumentBoardDetail extends DocumentBoard {
-  items: DocumentBoardItem[];
+export interface DocumentBoardItemsQuery {
+  page?: number;
+  limit?: number;
+}
+
+export interface DocumentBoardItemsResponse {
+  data: DocumentBoardItem[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    total_pages: number;
+    has_next: boolean;
+    has_prev: boolean;
+  };
 }
 
 export interface CreateDocumentBoardPayload {

@@ -48,11 +48,19 @@ export class DocumentBoardToolsService {
     }
 
     const board = await this.resolveBoard(context, input);
-    const detail = await this.documentBoards.findOne(
-      context.userUuid,
-      context.organizationUuid,
-      board.uuid,
-    );
+    const [detail, itemsResult] = await Promise.all([
+      this.documentBoards.findOne(
+        context.userUuid,
+        context.organizationUuid,
+        board.uuid,
+      ),
+      this.documentBoards.findItems(
+        context.userUuid,
+        context.organizationUuid,
+        board.uuid,
+        { page: 1, limit: 100 },
+      ),
+    ]);
 
     return {
       board: {
@@ -61,7 +69,7 @@ export class DocumentBoardToolsService {
         description: detail.description,
         created_at: detail.created_at,
         updated_at: detail.updated_at,
-        documents: detail.items.map((item) => ({
+        documents: itemsResult.data.map((item) => ({
           item_uuid: item.uuid,
           title: item.title ?? item.document.filename,
           document_uuid: item.document_uuid,

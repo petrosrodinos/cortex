@@ -3,8 +3,9 @@ import { ApiRoutes } from '@/config/api/routes';
 import type {
   CreateDocumentBoardPayload,
   DocumentBoard,
-  DocumentBoardDetail,
   DocumentBoardItem,
+  DocumentBoardItemsQuery,
+  DocumentBoardItemsResponse,
   UpdateDocumentBoardPayload,
 } from '../interfaces/document-board.interfaces';
 
@@ -17,12 +18,27 @@ export const getDocumentBoards = async (orgUuid: string): Promise<DocumentBoard[
   }
 };
 
-export const getDocumentBoard = async (orgUuid: string, boardUuid: string): Promise<DocumentBoardDetail> => {
+export const getDocumentBoard = async (orgUuid: string, boardUuid: string): Promise<DocumentBoard> => {
   try {
     const response = await axiosInstance.get(ApiRoutes.documentBoard(orgUuid, boardUuid));
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.message || 'Failed to load document board.');
+  }
+};
+
+export const getDocumentBoardItems = async (
+  orgUuid: string,
+  boardUuid: string,
+  query?: DocumentBoardItemsQuery,
+): Promise<DocumentBoardItemsResponse> => {
+  try {
+    const response = await axiosInstance.get(ApiRoutes.documentBoardItems(orgUuid, boardUuid), {
+      params: query,
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to load board documents.');
   }
 };
 

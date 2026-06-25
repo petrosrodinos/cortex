@@ -6,6 +6,7 @@ import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import {
   useAddDocumentToBoard,
   useGetDocumentBoard,
+  useGetDocumentBoardItems,
   useRemoveDocumentFromBoard,
 } from '@/features/document-boards/hooks/use-document-boards';
 import { useUploadDocument } from '@/features/files/hooks/use-files';
@@ -17,6 +18,8 @@ import { AddFromConversationModal } from './components/add-from-conversation-mod
 import { BoardDetailDocuments } from './components/board-detail-documents';
 import { BoardDetailSkeleton } from './components/board-detail-skeleton';
 
+const ITEMS_PAGE_SIZE = 20;
+
 const DocumentBoardDetailPage: FC = () => {
   const { boardUuid } = useParams<{ boardUuid: string }>();
   const organizationUuid = useOrganizationStore((state) => state.current_organization?.uuid);
@@ -25,9 +28,17 @@ const DocumentBoardDetailPage: FC = () => {
   const [removeTarget, setRemoveTarget] = useState<string | null>(null);
   const [pendingDocUuid, setPendingDocUuid] = useState<string | null>(null);
   const [titleInput, setTitleInput] = useState('');
+  const [itemsPage, setItemsPage] = useState(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data: board, isLoading } = useGetDocumentBoard(organizationUuid, boardUuid);
+  const itemsQuery = { page: itemsPage, limit: ITEMS_PAGE_SIZE };
+
+  const { data: board, isLoading: isBoardLoading } = useGetDocumentBoard(organizationUuid, boardUuid);
+  const { data: itemsResult, isLoading: isItemsLoading } = useGetDocumentBoardItems(
+    organizationUuid,
+    boardUuid,
+    itemsQuery,
+  );
   const uploadDocument = useUploadDocument(organizationUuid);
   const addDocument = useAddDocumentToBoard(organizationUuid, boardUuid);
   const removeDocument = useRemoveDocumentFromBoard(organizationUuid, boardUuid);
@@ -50,11 +61,16 @@ const DocumentBoardDetailPage: FC = () => {
     if (!pendingDocUuid) return;
     addDocument.mutate(
       { documentUuid: pendingDocUuid, title: titleInput.trim() || undefined },
-      { onSettled: () => setPendingDocUuid(null) },
+      {
+        onSuccess: () => {
+          setItemsPage(1);
+        },
+        onSettled: () => setPendingDocUuid(null),
+      },
     );
   };
 
-  if (isLoading) {
+  if (isBoardLoading) {
     return <BoardDetailSkeleton />;
   }
 
@@ -111,7 +127,12 @@ const DocumentBoardDetailPage: FC = () => {
       </OrganizationPermissionGate>
 
       <BoardDetailDocuments
-        items={board.items}
+        items={itemsResult?.data ?? []}
+        isLoading={isItemsLoading}
+        page={itemsResult?.pagination.page ?? itemsPage}
+        totalPages={itemsResult?.pagination.total_pages ?? 1}
+        total={itemsResult?.pagination.total ?? 0}
+        onPageChange={setItemsPage}
         onRemove={(itemUuid) => setRemoveTarget(itemUuid)}
       />
 

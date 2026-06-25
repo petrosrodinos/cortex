@@ -6,8 +6,10 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
+import { ZodValidationPipe } from '@/shared/pipes/zod.validation.pipe';
 import { CurrentUser } from '@/shared/decorators/current-user.decorator';
 import { OrganizationPermission } from '@/shared/decorators/organization-permission.decorator';
 import { PermissionKeys } from '@/modules/roles/permissions';
@@ -18,6 +20,10 @@ import { OrganizationMatchGuard } from '@/shared/guards/organization-match.guard
 import { AddBoardItemDto } from './dto/add-board-item.dto';
 import { CreateDocumentBoardDto } from './dto/create-document-board.dto';
 import { UpdateDocumentBoardDto } from './dto/update-document-board.dto';
+import {
+  DocumentBoardItemsQuerySchema,
+  type DocumentBoardItemsQueryType,
+} from './dto/document-board-items-query.schema';
 import { DocumentBoardsService } from './document-boards.service';
 
 @Controller('organizations/:organization_uuid/document-boards')
@@ -78,6 +84,18 @@ export class DocumentBoardsController {
     @Param('board_uuid') boardUuid: string,
   ) {
     return this.boards.remove(userUuid, organizationUuid, boardUuid);
+  }
+
+  @Get(':board_uuid/items')
+  @OrganizationPermission(PermissionKeys.DOCUMENTS_READ)
+  findItems(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Param('board_uuid') boardUuid: string,
+    @Query(new ZodValidationPipe(DocumentBoardItemsQuerySchema))
+    query: DocumentBoardItemsQueryType,
+  ) {
+    return this.boards.findItems(userUuid, organizationUuid, boardUuid, query);
   }
 
   @Post(':board_uuid/items')
