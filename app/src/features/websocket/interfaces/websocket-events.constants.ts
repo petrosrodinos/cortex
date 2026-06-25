@@ -23,6 +23,7 @@ export const WEBSOCKET_EVENTS = {
         COMPLETE: 'agent:complete',
         ERROR: 'agent:error',
         APPROVAL_REQUIRED: 'agent:approval_required',
+        CHOICE_REQUIRED: 'agent:choice_required',
     },
 } as const;
 

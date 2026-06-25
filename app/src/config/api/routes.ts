@@ -87,6 +87,8 @@ export const ApiRoutes = {
         executionApprove: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}/approve`,
         executionReject: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}/reject`,
         executionConnectionTiers: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}/connection-tiers`,
+        executionChoices: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}/choices`,
+        executionChoicesCancel: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}/choices/cancel`,
     },
     permissions: {
         root: "/permissions",

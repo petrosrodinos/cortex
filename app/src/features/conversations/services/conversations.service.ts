@@ -174,3 +174,30 @@ export const resolveConnectionTiers = async (
     throw new Error(error?.response?.data?.message || 'Failed to resolve connection tiers.');
   }
 };
+
+export const resolveUserChoice = async (
+  organizationUuid: string,
+  executionUuid: string,
+  selectedIds: string[],
+) => {
+  try {
+    const response = await axiosInstance.post(
+      ApiRoutes.organizations.executionChoices(organizationUuid, executionUuid),
+      { selected_ids: selectedIds },
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to submit choice.');
+  }
+};
+
+export const cancelUserChoice = async (organizationUuid: string, executionUuid: string) => {
+  try {
+    const response = await axiosInstance.post(
+      ApiRoutes.organizations.executionChoicesCancel(organizationUuid, executionUuid),
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || 'Failed to cancel choice.');
+  }
+};

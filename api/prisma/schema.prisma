@@ -135,6 +135,7 @@ enum AgentExecutionStatus {
   FAILED
   AWAITING_APPROVAL
   AWAITING_CONNECTION_TIER
+  AWAITING_USER_CHOICE
 }
 
 enum ToolCallStatus {

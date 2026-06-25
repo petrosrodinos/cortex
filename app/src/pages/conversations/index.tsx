@@ -25,6 +25,8 @@ import {
   useGetMessages,
   useRejectExecution,
   useResolveConnectionTiers,
+  useResolveUserChoice,
+  useCancelUserChoice,
   useSendMessage,
   useUpdateConversation,
   conversationsQueryKey,
@@ -126,6 +128,8 @@ const ConversationsPage: FC = () => {
   const approveExecution = useApproveExecution(organizationUuid);
   const rejectExecution = useRejectExecution(organizationUuid);
   const resolveConnectionTiers = useResolveConnectionTiers(organizationUuid);
+  const resolveUserChoice = useResolveUserChoice(organizationUuid);
+  const cancelUserChoice = useCancelUserChoice(organizationUuid);
   const uploadDocument = useUploadDocument(organizationUuid);
   const createAgent = useCreateAgent(organizationUuid);
   const createSavedPrompt = useCreateSavedPrompt(organizationUuid);
@@ -140,6 +144,7 @@ const ConversationsPage: FC = () => {
     toolCalls,
     approvalRequest,
     connectionTierRequest,
+    userChoiceRequest,
     error: executionError,
   } = execution;
 
@@ -301,7 +306,7 @@ const ConversationsPage: FC = () => {
   }, [organizationUuid, conversationsLoading, conversationUuid, sortedConversations, createConversation, navigate]);
 
   useEffect(() => {
-    if (!isComplete || !conversationUuid || !organizationUuid || approvalRequest || connectionTierRequest) {
+    if (!isComplete || !conversationUuid || !organizationUuid || approvalRequest || connectionTierRequest || userChoiceRequest) {
       return;
     }
 
@@ -309,7 +314,7 @@ const ConversationsPage: FC = () => {
     void queryClient.invalidateQueries({ queryKey: conversationsQueryKey });
     resetExecution();
     setActiveExecutionId(null);
-  }, [isComplete, approvalRequest, connectionTierRequest, conversationUuid, organizationUuid, queryClient, resetExecution]);
+  }, [isComplete, approvalRequest, connectionTierRequest, userChoiceRequest, conversationUuid, organizationUuid, queryClient, resetExecution]);
 
   const pendingAssistantContent = useMemo(() => {
     if (isComplete || assistantContent == null) {
@@ -337,15 +342,16 @@ const ConversationsPage: FC = () => {
     (sendMessage.isPending || isRunning) &&
     !approvalRequest &&
     !connectionTierRequest &&
+    !userChoiceRequest &&
     pendingAssistantContent == null &&
     (isPendingUserMessageVisible || (activeExecutionId != null && !sendMessage.isPending));
 
   const showExecutionProgress =
-    (sendMessage.isPending || isRunning || approvalRequest != null || connectionTierRequest != null) &&
+    (sendMessage.isPending || isRunning || approvalRequest != null || connectionTierRequest != null || userChoiceRequest != null) &&
     pendingAssistantContent == null;
 
   const hasAiProvider = aiProviders.length > 0;
-  const isChatInputDisabled = sendMessage.isPending || isRunning || !hasAiProvider;
+  const isChatInputDisabled = sendMessage.isPending || isRunning || userChoiceRequest != null || !hasAiProvider;
 
   useEffect(() => {
     if (!pendingUserMessage) {
@@ -616,6 +622,24 @@ const ConversationsPage: FC = () => {
     setActiveExecutionId(null);
   };
 
+  const handleSubmitUserChoice = async (selectedIds: string[]) => {
+    const executionId = userChoiceRequest?.executionId ?? activeExecutionId;
+    if (!executionId) {
+      return;
+    }
+
+    await resolveUserChoice.mutateAsync({ executionUuid: executionId, selectedIds });
+  };
+
+  const handleCancelUserChoice = async () => {
+    const executionId = userChoiceRequest?.executionId ?? activeExecutionId;
+    if (!executionId) {
+      return;
+    }
+
+    await cancelUserChoice.mutateAsync(executionId);
+  };
+
   const handleResolveConnectionTiers = async (
     choices: Record<string, IntegrationAppsToolkit['connection_tiers'][number]>,
   ) => {
@@ -813,13 +837,18 @@ const ConversationsPage: FC = () => {
               toolCalls={toolCalls}
               approvalRequest={approvalRequest}
               connectionTierRequest={connectionTierRequest}
+              userChoiceRequest={userChoiceRequest}
               executionError={executionError}
               isApproving={approveExecution.isPending}
               isRejecting={rejectExecution.isPending}
               isResolvingConnectionTiers={resolveConnectionTiers.isPending}
+              isSubmittingUserChoice={resolveUserChoice.isPending}
+              isCancellingUserChoice={cancelUserChoice.isPending}
               onApprove={() => void handleApprove()}
               onReject={() => void handleReject()}
               onResolveConnectionTiers={(choices) => void handleResolveConnectionTiers(choices)}
+              onSubmitUserChoice={(selectedIds) => void handleSubmitUserChoice(selectedIds)}
+              onCancelUserChoice={() => void handleCancelUserChoice()}
               isSendDisabled={isChatInputDisabled}
               onRetryMessage={handleRetryMessage}
               onReplyToMessage={handleReplyToMessage}

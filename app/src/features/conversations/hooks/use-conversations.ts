@@ -4,6 +4,7 @@ import type { ComposioConnectionTier } from '@/features/integration-apps/constan
 import type { UpdateConversationPayload } from '../interfaces/conversation.interfaces';
 import {
   approveExecution,
+  cancelUserChoice,
   createConversation,
   deleteConversation,
   deleteMessage,
@@ -14,6 +15,7 @@ import {
   getConversationAgentTools,
   rejectExecution,
   resolveConnectionTiers,
+  resolveUserChoice,
   sendMessage,
   updateConversation,
 } from '../services/conversations.service';
@@ -188,6 +190,30 @@ export function useResolveConnectionTiers(organizationUuid?: string) {
     }) => resolveConnectionTiers(organizationUuid as string, executionUuid, choices),
     onError: (error: Error) => {
       toast({ title: 'Could not continue', description: error.message, variant: 'error' });
+    },
+  });
+}
+
+export function useResolveUserChoice(organizationUuid?: string) {
+  return useMutation({
+    mutationFn: ({
+      executionUuid,
+      selectedIds,
+    }: {
+      executionUuid: string;
+      selectedIds: string[];
+    }) => resolveUserChoice(organizationUuid as string, executionUuid, selectedIds),
+    onError: (error: Error) => {
+      toast({ title: 'Could not submit choice', description: error.message, variant: 'error' });
+    },
+  });
+}
+
+export function useCancelUserChoice(organizationUuid?: string) {
+  return useMutation({
+    mutationFn: (executionUuid: string) => cancelUserChoice(organizationUuid as string, executionUuid),
+    onError: (error: Error) => {
+      toast({ title: 'Could not cancel choice', description: error.message, variant: 'error' });
     },
   });
 }

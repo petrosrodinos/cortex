@@ -20,6 +20,8 @@ import { CapabilitiesToolProvider } from './agents/tools/providers/capabilities-
 import { ComposioToolProvider } from './agents/tools/providers/composio-tool.provider';
 import { DocumentToolProvider } from './agents/tools/providers/document-tool.provider';
 import { DocumentBoardToolProvider } from './agents/tools/providers/document-board-tool.provider';
+import { InteractionToolsFactory } from './agents/interaction/interaction-tools.factory';
+import { InteractionToolProvider } from './agents/tools/providers/interaction-tool.provider';
 import { LegacyIntegrationToolProvider } from './agents/tools/providers/legacy-integration-tool.provider';
 import { OrganizationToolProvider } from './agents/tools/providers/organization-tool.provider';
 import { OutputToolProvider } from './agents/tools/providers/output-tool.provider';
@@ -99,6 +101,7 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     DocumentBoardToolProvider,
     OutputToolProvider,
     OrganizationToolProvider,
+    InteractionToolProvider,
     UnifiedToolRegistry,
     AgentToolsFactory,
     ImageGeneratorService,
@@ -115,6 +118,7 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
     AgentActorService,
     OrganizationToolsService,
     OrganizationToolsFactory,
+    InteractionToolsFactory,
     DocumentBoardToolsService,
     DocumentBoardToolsFactory,
     SystemPromptBuilder,

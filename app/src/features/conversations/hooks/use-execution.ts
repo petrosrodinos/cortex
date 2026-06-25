@@ -13,6 +13,7 @@ import {
   type AgentExecution,
   type ExecutionApprovalRequest,
   type ExecutionConnectionTierRequest,
+  type ExecutionUserChoiceRequest,
   type ExecutionToolCall,
 } from '../interfaces/conversation.interfaces';
 import {
@@ -58,6 +59,34 @@ function parseConnectionTierRequest(
   return {
     executionId: execution.uuid,
     connectionTierChoices,
+  };
+}
+
+function parseUserChoiceRequest(execution: AgentExecution): ExecutionUserChoiceRequest | null {
+  const choiceRequest = execution.input?.choiceRequest;
+  if (!choiceRequest?.options?.length) {
+    return null;
+  }
+
+  const hasChoiceCheckpoint =
+    !!execution.input?.choiceApprovalRequests?.length &&
+    !!execution.input?.agentMessages &&
+    !!execution.input?.responseMessages;
+
+  const isAwaitingChoice =
+    execution.status === AgentExecutionStatuses.AWAITING_USER_CHOICE ||
+    (execution.status === AgentExecutionStatuses.RUNNING && hasChoiceCheckpoint);
+
+  if (!isAwaitingChoice) {
+    return null;
+  }
+
+  return {
+    executionId: execution.uuid,
+    prompt: choiceRequest.prompt,
+    description: choiceRequest.description,
+    selection_mode: choiceRequest.selection_mode,
+    options: choiceRequest.options,
   };
 }
 
@@ -186,6 +215,23 @@ export function useExecution(
           });
         },
       ),
+      websocketSubscribe<{
+        executionId?: string;
+        choiceRequest?: ExecutionUserChoiceRequest;
+      }>(WEBSOCKET_EVENTS.AGENT.CHOICE_REQUIRED, (payload) => {
+        const payloadExecutionId = payload.executionId ?? executionIdRef.current ?? undefined;
+        if (!matchesExecution(payloadExecutionId) || !payload.choiceRequest) {
+          return;
+        }
+
+        dispatch({
+          type: 'choice_required',
+          request: {
+            executionId: payloadExecutionId ?? executionIdRef.current ?? '',
+            ...payload.choiceRequest,
+          },
+        });
+      }),
     ];
 
     return () => {
@@ -248,6 +294,12 @@ export function useExecution(
             if (request) {
               dispatch({ type: 'connection_tier_required', request });
             }
+            return;
+          }
+
+          const choiceRequest = parseUserChoiceRequest(execution);
+          if (choiceRequest) {
+            dispatch({ type: 'choice_required', request: choiceRequest });
           }
         })
         .catch(() => {});
@@ -269,6 +321,7 @@ export function useExecution(
     error: state.error,
     approvalRequest: state.approvalRequest,
     connectionTierRequest: state.connectionTierRequest,
+    userChoiceRequest: state.userChoiceRequest,
     reset,
   };
 }

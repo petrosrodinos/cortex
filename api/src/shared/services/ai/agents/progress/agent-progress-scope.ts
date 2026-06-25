@@ -26,6 +26,20 @@ export interface AgentApprovalRequiredPayload {
   approvalRequests?: unknown[];
 }
 
+export interface AgentChoiceRequiredPayload {
+  executionId: string;
+  choiceRequest: {
+    prompt: string;
+    description?: string;
+    selection_mode: 'single' | 'multiple';
+    options: Array<{
+      id: string;
+      label: string;
+      description?: string;
+    }>;
+  };
+}
+
 export class AgentProgressScope {
   constructor(
     private readonly wsEvents: WsEventsService,
@@ -102,6 +116,15 @@ export class AgentProgressScope {
       this.organizationUuid,
       this.conversationUuid,
       AGENT_PROGRESS_EVENTS.APPROVAL_REQUIRED,
+      payload,
+    );
+  }
+
+  emitChoiceRequired(payload: AgentChoiceRequiredPayload) {
+    this.wsEvents.emitToConversation(
+      this.organizationUuid,
+      this.conversationUuid,
+      AGENT_PROGRESS_EVENTS.CHOICE_REQUIRED,
       payload,
     );
   }

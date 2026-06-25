@@ -23,6 +23,7 @@ export const AgentExecutionStatuses = {
   FAILED: 'FAILED',
   AWAITING_APPROVAL: 'AWAITING_APPROVAL',
   AWAITING_CONNECTION_TIER: 'AWAITING_CONNECTION_TIER',
+  AWAITING_USER_CHOICE: 'AWAITING_USER_CHOICE',
 } as const;
 
 export type AgentExecutionStatus = (typeof AgentExecutionStatuses)[keyof typeof AgentExecutionStatuses];
@@ -111,6 +112,10 @@ export interface AgentExecution {
       input?: unknown;
     }>;
     connectionTierChoices?: ExecutionConnectionTierChoice[];
+    choiceRequest?: ExecutionUserChoiceRequestPayload;
+    choiceApprovalRequests?: Array<{ approvalId?: string }>;
+    agentMessages?: unknown;
+    responseMessages?: unknown;
     toolkitConnectionTiers?: Record<string, ComposioConnectionTier>;
   } | null;
   output?: {
@@ -146,6 +151,7 @@ export interface AgentProgressState {
   error: string | null;
   approvalRequest: ExecutionApprovalRequest | null;
   connectionTierRequest: ExecutionConnectionTierRequest | null;
+  userChoiceRequest: ExecutionUserChoiceRequest | null;
 }
 
 export interface ExecutionApprovalRequest {
@@ -164,6 +170,25 @@ export interface ExecutionConnectionTierChoice {
 export interface ExecutionConnectionTierRequest {
   executionId: string;
   connectionTierChoices: ExecutionConnectionTierChoice[];
+}
+
+export type UserChoiceSelectionMode = 'single' | 'multiple';
+
+export interface ExecutionUserChoiceOption {
+  id: string;
+  label: string;
+  description?: string;
+}
+
+export interface ExecutionUserChoiceRequestPayload {
+  prompt: string;
+  description?: string;
+  selection_mode: UserChoiceSelectionMode;
+  options: ExecutionUserChoiceOption[];
+}
+
+export interface ExecutionUserChoiceRequest extends ExecutionUserChoiceRequestPayload {
+  executionId: string;
 }
 
 export interface AgentCompleteEvent {

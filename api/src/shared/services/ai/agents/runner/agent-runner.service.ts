@@ -41,6 +41,12 @@ import {
   normalizeToolkitConnectionTierMap,
 } from '../capabilities/toolkit-connection-tiers.utils';
 import { getResearchModeInstructions } from '../../providers/provider-research-tools';
+import {
+  INTERACTION_PRESENT_CHOICES_TOOL,
+  isAwaitingUserChoiceStatus,
+  parseUserChoiceRequest,
+  type UserChoiceRequest,
+} from '../interaction/interaction-tools.types';
 
 interface SavedExecutionInput {
   content?: string;
@@ -56,6 +62,15 @@ interface SavedExecutionInput {
     toolName?: string;
     input?: unknown;
   }>;
+  choiceRequest?: UserChoiceRequest;
+  choiceApprovalRequests?: Array<{
+    approvalId: string;
+    toolName?: string;
+    input?: unknown;
+  }>;
+  userChoiceResponse?: {
+    selected_ids: string[];
+  };
   agentMessages?: ModelMessage[];
   responseMessages?: ModelMessage[];
 }
@@ -66,6 +81,8 @@ export interface AgentRunResult {
   outputType: string;
   awaitingApproval?: boolean;
   approvalRequests?: unknown[];
+  awaitingUserChoice?: boolean;
+  choiceRequest?: UserChoiceRequest;
 }
 
 @Injectable()
@@ -92,7 +109,11 @@ export class AgentRunnerService {
     userMessage: string,
     executionUuid: string,
     options?: {
-      resumeApprovals?: Array<{ approvalId: string; approved: boolean }>;
+      resumeApprovals?: Array<{
+        approvalId: string;
+        approved: boolean;
+        reason?: string;
+      }>;
       documentUuids?: string[];
       integrationUuids?: string[];
       toolkitSlugs?: string[];
@@ -134,6 +155,19 @@ export class AgentRunnerService {
         outputType: 'TEXT',
         awaitingApproval: true,
         approvalRequests: savedInput.approvalRequests ?? [],
+      };
+    }
+
+    if (
+      isAwaitingUserChoiceStatus(existingExecution?.status ?? '') &&
+      !options?.resumeApprovals?.length
+    ) {
+      return {
+        content: '',
+        files: [],
+        outputType: 'TEXT',
+        awaitingUserChoice: true,
+        choiceRequest: savedInput.choiceRequest,
       };
     }
 
@@ -271,7 +305,62 @@ export class AgentRunnerService {
       });
 
       const approvalRequests = this.extractApprovalRequests(result);
-      if (approvalRequests.length > 0 && !options?.resumeApprovals?.length) {
+      const { choiceRequests, standardApprovalRequests } =
+        this.partitionApprovalRequests(approvalRequests);
+
+      if (choiceRequests.length > 0 && !options?.resumeApprovals?.length) {
+        const choiceRequest = parseUserChoiceRequest(choiceRequests[0]?.input);
+        if (!choiceRequest) {
+          throw new Error('Invalid user choice request from agent');
+        }
+
+        const usage =
+          await this.toolDispatcher.syncExecutionUsageTotals(executionUuid);
+
+        const pausedExecution = await this.prisma.agentExecution.update({
+          where: { uuid: executionUuid },
+          data: {
+            status: AgentExecutionStatus.AWAITING_USER_CHOICE,
+            input: {
+              content: savedInput.content ?? userMessage,
+              choiceRequest,
+              choiceApprovalRequests: choiceRequests,
+              agentMessages,
+              responseMessages: result.response.messages,
+              documentUuids,
+              integrationUuids: toolScope.integrationUuids,
+              toolkitSlugs: toolScope.toolkitSlugs,
+              toolkitConnectionTiers: toolScope.toolkitConnectionTiers,
+              aiProvider: savedInput.aiProvider ?? options?.aiProvider,
+              aiModel: savedInput.aiModel ?? options?.aiModel,
+              aiResearchMode: researchMode,
+            } as object,
+            tokens_used: usage.tokensUsed,
+            cost_usd: usage.costUsd,
+          },
+        });
+
+        if (!isAwaitingUserChoiceStatus(pausedExecution.status)) {
+          throw new Error(
+            `Failed to persist awaiting user choice status (got ${pausedExecution.status})`,
+          );
+        }
+
+        progress.emitChoiceRequired({
+          executionId: executionUuid,
+          choiceRequest,
+        });
+
+        return {
+          content: '',
+          files: [],
+          outputType: 'TEXT',
+          awaitingUserChoice: true,
+          choiceRequest,
+        };
+      }
+
+      if (standardApprovalRequests.length > 0 && !options?.resumeApprovals?.length) {
         const usage =
           await this.toolDispatcher.syncExecutionUsageTotals(executionUuid);
 
@@ -281,7 +370,7 @@ export class AgentRunnerService {
             status: AgentExecutionStatus.AWAITING_APPROVAL,
             input: {
               content: savedInput.content ?? userMessage,
-              approvalRequests,
+              approvalRequests: standardApprovalRequests,
               agentMessages,
               responseMessages: result.response.messages,
               documentUuids,
@@ -298,10 +387,10 @@ export class AgentRunnerService {
         });
 
         progress.emitApprovalRequired({
-          toolName: approvalRequests[0]?.toolName,
-          input: approvalRequests[0]?.input,
+          toolName: standardApprovalRequests[0]?.toolName,
+          input: standardApprovalRequests[0]?.input,
           executionId: executionUuid,
-          approvalRequests,
+          approvalRequests: standardApprovalRequests,
         });
 
         return {
@@ -309,7 +398,7 @@ export class AgentRunnerService {
           files: [],
           outputType: 'TEXT',
           awaitingApproval: true,
-          approvalRequests,
+          approvalRequests: standardApprovalRequests,
         };
       }
 
@@ -497,7 +586,11 @@ export class AgentRunnerService {
   private buildMessagesForAgent(
     agentMessages: ModelMessage[],
     savedInput: SavedExecutionInput,
-    resumeApprovals?: Array<{ approvalId: string; approved: boolean }>,
+    resumeApprovals?: Array<{
+      approvalId: string;
+      approved: boolean;
+      reason?: string;
+    }>,
   ): ModelMessage[] {
     if (!resumeApprovals?.length) {
       return agentMessages;
@@ -517,9 +610,27 @@ export class AgentRunnerService {
           type: 'tool-approval-response' as const,
           approvalId: approval.approvalId,
           approved: approval.approved,
+          ...(approval.reason ? { reason: approval.reason } : {}),
         })),
       },
     ];
+  }
+
+  private partitionApprovalRequests(
+    requests: Array<{
+      toolName?: string;
+      input?: unknown;
+      approvalId?: string;
+    }>,
+  ) {
+    const choiceRequests = requests.filter(
+      (request) => request.toolName === INTERACTION_PRESENT_CHOICES_TOOL,
+    );
+    const standardApprovalRequests = requests.filter(
+      (request) => request.toolName !== INTERACTION_PRESENT_CHOICES_TOOL,
+    );
+
+    return { choiceRequests, standardApprovalRequests };
   }
 
   private async buildInstructions(

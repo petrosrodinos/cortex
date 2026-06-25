@@ -11,6 +11,7 @@ import { CreateConversationDto } from './dto/create-conversation.dto';
 import { UpdateConversationDto } from './dto/update-conversation.dto';
 import { SendMessageDto } from './dto/send-message.dto';
 import { ResolveConnectionTiersDto } from './dto/resolve-connection-tiers.dto';
+import { ResolveUserChoiceDto } from './dto/resolve-user-choice.dto';
 import { UsageQuerySchema, type UsageQueryType } from './dto/usage-query.schema';
 import { ConversationsService } from './conversations.service';
 import { MessagesService } from './messages.service';
@@ -216,6 +217,36 @@ export class ExecutionsController {
       organizationUuid,
       executionUuid,
       dto,
+    );
+  }
+
+  @Post(':execution_uuid/choices')
+  @OrganizationPermission(PermissionKeys.EXECUTIONS_READ)
+  resolveUserChoice(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Param('execution_uuid') executionUuid: string,
+    @Body() dto: ResolveUserChoiceDto,
+  ) {
+    return this.executions.resolveUserChoice(
+      userUuid,
+      organizationUuid,
+      executionUuid,
+      dto,
+    );
+  }
+
+  @Post(':execution_uuid/choices/cancel')
+  @OrganizationPermission(PermissionKeys.EXECUTIONS_READ)
+  cancelUserChoice(
+    @CurrentUser('uuid') userUuid: string,
+    @Param('organization_uuid') organizationUuid: string,
+    @Param('execution_uuid') executionUuid: string,
+  ) {
+    return this.executions.cancelUserChoice(
+      userUuid,
+      organizationUuid,
+      executionUuid,
     );
   }
 }

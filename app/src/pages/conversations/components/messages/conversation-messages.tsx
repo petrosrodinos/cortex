@@ -4,6 +4,7 @@ import type { ComposioConnectionTier } from '@/features/integration-apps/constan
 import type {
   ExecutionApprovalRequest,
   ExecutionConnectionTierRequest,
+  ExecutionUserChoiceRequest,
   Message,
   MessageAttachment,
   ToolCallProgress,
@@ -16,6 +17,7 @@ import { ConversationNoMessagesState } from './conversation-no-messages-state';
 import { getMessageAttachments, MessageAttachments } from './message-attachments';
 import { ExecutionApprovalCard } from '../executions/execution-approval-card';
 import { ExecutionConnectionTierCard } from '../executions/execution-connection-tier-card';
+import { ExecutionUserChoiceCard } from '../executions/execution-user-choice-card';
 import { ExecutionProgress } from '../executions/execution-progress';
 import { MessageActionsMenu } from './message-actions-menu';
 import { MessageMarkdown } from '@/components/markdown/message-markdown';
@@ -39,15 +41,20 @@ interface ConversationMessagesProps {
   toolCalls: ToolCallProgress[];
   approvalRequest: ExecutionApprovalRequest | null;
   connectionTierRequest: ExecutionConnectionTierRequest | null;
+  userChoiceRequest: ExecutionUserChoiceRequest | null;
   executionError: string | null;
   isApproving: boolean;
   isRejecting: boolean;
   isResolvingConnectionTiers: boolean;
+  isSubmittingUserChoice: boolean;
+  isCancellingUserChoice: boolean;
   onApprove: () => void;
   onReject: () => void;
   onResolveConnectionTiers: (
     choices: Record<string, ComposioConnectionTier>,
   ) => void;
+  onSubmitUserChoice: (selectedIds: string[]) => void;
+  onCancelUserChoice: () => void;
   isSendDisabled: boolean;
   onRetryMessage: (message: Message) => void;
   onReplyToMessage: (message: Message) => void;
@@ -72,13 +79,18 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
   toolCalls,
   approvalRequest,
   connectionTierRequest,
+  userChoiceRequest,
   executionError,
   isApproving,
   isRejecting,
   isResolvingConnectionTiers,
+  isSubmittingUserChoice,
+  isCancellingUserChoice,
   onApprove,
   onReject,
   onResolveConnectionTiers,
+  onSubmitUserChoice,
+  onCancelUserChoice,
   isSendDisabled,
   onRetryMessage,
   onReplyToMessage,
@@ -103,7 +115,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
 
   useEffect(() => {
     scrollToBottom('smooth');
-  }, [messages, pendingUserMessage, pendingUserAttachments, pendingAssistantContent, showTypingIndicator, showExecutionProgress, toolCalls, approvalRequest, executionError]);
+  }, [messages, pendingUserMessage, pendingUserAttachments, pendingAssistantContent, showTypingIndicator, showExecutionProgress, toolCalls, approvalRequest, userChoiceRequest, executionError]);
 
   if (isLoading) {
     return <ConversationMessagesSkeleton />;
@@ -116,6 +128,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
     showTypingIndicator ||
     showExecutionProgress ||
     approvalRequest != null ||
+    userChoiceRequest != null ||
     executionError != null;
 
   if (!hasMessages) {
@@ -277,6 +290,16 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
           request={connectionTierRequest}
           isSubmitting={isResolvingConnectionTiers}
           onSubmit={onResolveConnectionTiers}
+        />
+      )}
+
+      {userChoiceRequest && (
+        <ExecutionUserChoiceCard
+          request={userChoiceRequest}
+          isSubmitting={isSubmittingUserChoice}
+          isCancelling={isCancellingUserChoice}
+          onSubmit={onSubmitUserChoice}
+          onCancel={onCancelUserChoice}
         />
       )}
 

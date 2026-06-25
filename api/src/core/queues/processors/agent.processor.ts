@@ -17,7 +17,11 @@ export interface AgentRunJobData {
   aiProvider?: AiProviderType | null;
   aiModel?: string | null;
   aiResearchMode?: AiResearchMode | null;
-  resumeApprovals?: Array<{ approvalId: string; approved: boolean }>;
+  resumeApprovals?: Array<{
+    approvalId: string;
+    approved: boolean;
+    reason?: string;
+  }>;
 }
 
 @Processor(AGENT_RUN_QUEUE)

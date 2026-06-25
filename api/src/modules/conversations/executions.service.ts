@@ -14,12 +14,18 @@ import { AGENT_RUN_QUEUE } from '@/core/queues/queues.constants';
 import type { AgentRunJobData } from '@/core/queues/processors/agent.processor';
 import type { UsageQueryType } from './dto/usage-query.schema';
 import { ResolveConnectionTiersDto } from './dto/resolve-connection-tiers.dto';
+import { ResolveUserChoiceDto } from './dto/resolve-user-choice.dto';
 import { CapabilitiesToolsService } from '@/shared/services/ai/agents/capabilities/capabilities-tools.service';
 import {
   normalizeToolkitConnectionTierMap,
   type ToolkitConnectionTierChoice,
 } from '@/shared/services/ai/agents/capabilities/toolkit-connection-tiers.utils';
 import { ComposioConnectionTier } from 'generated/prisma';
+import {
+  canResolveUserChoice,
+  validateUserChoiceSelection,
+  type UserChoiceRequest,
+} from '@/shared/services/ai/agents/interaction/interaction-tools.types';
 
 type UsageScope = {
   canViewOrgUsage: boolean;
@@ -146,6 +152,174 @@ export class ExecutionsService {
     });
 
     return { rejected: true, executionId: execution.uuid };
+  }
+
+  async resolveUserChoice(
+    userUuid: string,
+    organizationUuid: string,
+    executionUuid: string,
+    dto: ResolveUserChoiceDto,
+  ) {
+    const execution = await this.getExecution(
+      userUuid,
+      organizationUuid,
+      executionUuid,
+    );
+
+    const input = (execution.input ?? {}) as {
+      content?: string;
+      documentUuids?: string[];
+      integrationUuids?: string[];
+      toolkitSlugs?: string[];
+      toolkitConnectionTiers?: Record<string, ComposioConnectionTier>;
+      choiceRequest?: UserChoiceRequest;
+      choiceApprovalRequests?: Array<{ approvalId: string }>;
+      userChoiceResponse?: { selected_ids: string[] };
+      agentMessages?: unknown;
+      responseMessages?: unknown;
+      aiProvider?: AiProviderType | null;
+      aiModel?: string | null;
+      aiResearchMode?: AiResearchMode | null;
+    };
+
+    if (
+      execution.status === AgentExecutionStatus.PENDING &&
+      input.userChoiceResponse?.selected_ids?.length &&
+      input.choiceRequest
+    ) {
+      return { resolved: true, executionId: execution.uuid };
+    }
+
+    if (!canResolveUserChoice(execution.status, input)) {
+      throw new BadRequestException(
+        `Execution is not awaiting user choice (status: ${execution.status})`,
+      );
+    }
+
+    if (!input.choiceRequest) {
+      throw new BadRequestException('Choice request is missing from execution');
+    }
+
+    try {
+      validateUserChoiceSelection(input.choiceRequest, dto.selected_ids);
+    } catch (error) {
+      throw new BadRequestException(
+        error instanceof Error ? error.message : 'Invalid user choice selection',
+      );
+    }
+
+    await this.prisma.agentExecution.update({
+      where: { uuid: execution.uuid },
+      data: {
+        status: AgentExecutionStatus.PENDING,
+        input: {
+          ...input,
+          userChoiceResponse: { selected_ids: dto.selected_ids },
+        } as object,
+      },
+    });
+
+    await this.agentQueue.add(
+      'resume',
+      {
+        organizationUuid,
+        userUuid,
+        conversationId: execution.conversation_uuid,
+        userMessage: input.content ?? '',
+        executionUuid: execution.uuid,
+        documentUuids: input.documentUuids ?? [],
+        integrationUuids: input.integrationUuids,
+        toolkitSlugs: input.toolkitSlugs,
+        toolkitConnectionTiers: input.toolkitConnectionTiers,
+        aiProvider: input.aiProvider,
+        aiModel: input.aiModel,
+        aiResearchMode: input.aiResearchMode,
+        resumeApprovals: (input.choiceApprovalRequests ?? []).map((request) => ({
+          approvalId: request.approvalId,
+          approved: true,
+        })),
+      },
+      {
+        jobId: `resume-${execution.uuid}`,
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 2000 },
+        removeOnComplete: 100,
+        removeOnFail: 200,
+      },
+    );
+
+    return { resolved: true, executionId: execution.uuid };
+  }
+
+  async cancelUserChoice(
+    userUuid: string,
+    organizationUuid: string,
+    executionUuid: string,
+  ) {
+    const execution = await this.getExecution(
+      userUuid,
+      organizationUuid,
+      executionUuid,
+    );
+
+    const input = (execution.input ?? {}) as {
+      content?: string;
+      documentUuids?: string[];
+      integrationUuids?: string[];
+      toolkitSlugs?: string[];
+      toolkitConnectionTiers?: Record<string, ComposioConnectionTier>;
+      choiceRequest?: UserChoiceRequest;
+      choiceApprovalRequests?: Array<{ approvalId: string }>;
+      userChoiceResponse?: { selected_ids: string[] };
+      agentMessages?: unknown;
+      responseMessages?: unknown;
+      aiProvider?: AiProviderType | null;
+      aiModel?: string | null;
+      aiResearchMode?: AiResearchMode | null;
+    };
+
+    if (!canResolveUserChoice(execution.status, input)) {
+      throw new BadRequestException(
+        `Execution is not awaiting user choice (status: ${execution.status})`,
+      );
+    }
+
+    await this.prisma.agentExecution.update({
+      where: { uuid: execution.uuid },
+      data: { status: AgentExecutionStatus.PENDING },
+    });
+
+    await this.agentQueue.add(
+      'resume',
+      {
+        organizationUuid,
+        userUuid,
+        conversationId: execution.conversation_uuid,
+        userMessage: input.content ?? '',
+        executionUuid: execution.uuid,
+        documentUuids: input.documentUuids ?? [],
+        integrationUuids: input.integrationUuids,
+        toolkitSlugs: input.toolkitSlugs,
+        toolkitConnectionTiers: input.toolkitConnectionTiers,
+        aiProvider: input.aiProvider,
+        aiModel: input.aiModel,
+        aiResearchMode: input.aiResearchMode,
+        resumeApprovals: (input.choiceApprovalRequests ?? []).map((request) => ({
+          approvalId: request.approvalId,
+          approved: false,
+          reason: 'User cancelled selection',
+        })),
+      },
+      {
+        jobId: `resume-${execution.uuid}`,
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 2000 },
+        removeOnComplete: 100,
+        removeOnFail: 200,
+      },
+    );
+
+    return { cancelled: true, executionId: execution.uuid };
   }
 
   async resolveConnectionTiers(

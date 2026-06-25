@@ -4,6 +4,7 @@ import { CapabilitiesToolProvider } from '../providers/capabilities-tool.provide
 import { ComposioToolProvider } from '../providers/composio-tool.provider';
 import { DocumentToolProvider } from '../providers/document-tool.provider';
 import { DocumentBoardToolProvider } from '../providers/document-board-tool.provider';
+import { InteractionToolProvider } from '../providers/interaction-tool.provider';
 import { LegacyIntegrationToolProvider } from '../providers/legacy-integration-tool.provider';
 import { OrganizationToolProvider } from '../providers/organization-tool.provider';
 import { OutputToolProvider } from '../providers/output-tool.provider';
@@ -26,6 +27,7 @@ export class UnifiedToolRegistry {
     documentBoards: DocumentBoardToolProvider,
     outputs: OutputToolProvider,
     organization: OrganizationToolProvider,
+    interaction: InteractionToolProvider,
   ) {
     this.providers = [
       legacyIntegrations,
@@ -36,6 +38,7 @@ export class UnifiedToolRegistry {
       documentBoards,
       outputs,
       organization,
+      interaction,
     ];
   }
 

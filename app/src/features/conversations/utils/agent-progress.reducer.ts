@@ -2,6 +2,7 @@ import type {
   AgentProgressState,
   ExecutionApprovalRequest,
   ExecutionConnectionTierRequest,
+  ExecutionUserChoiceRequest,
   ToolCallProgress,
 } from '../interfaces/conversation.interfaces';
 
@@ -13,6 +14,7 @@ export const initialAgentProgressState: AgentProgressState = {
   error: null,
   approvalRequest: null,
   connectionTierRequest: null,
+  userChoiceRequest: null,
 };
 
 export type AgentProgressAction =
@@ -32,6 +34,7 @@ export type AgentProgressAction =
   | { type: 'error'; error: string }
   | { type: 'approval_required'; request: ExecutionApprovalRequest }
   | { type: 'connection_tier_required'; request: ExecutionConnectionTierRequest }
+  | { type: 'choice_required'; request: ExecutionUserChoiceRequest }
   | { type: 'sync_tool_calls'; toolCalls: ToolCallProgress[] };
 
 function upsertToolCall(toolCalls: ToolCallProgress[], next: ToolCallProgress): ToolCallProgress[] {
@@ -100,6 +103,7 @@ export function agentProgressReducer(
         isRunning: false,
         approvalRequest: null,
         connectionTierRequest: null,
+        userChoiceRequest: null,
       };
 
     case 'error':
@@ -109,6 +113,7 @@ export function agentProgressReducer(
         isRunning: false,
         approvalRequest: null,
         connectionTierRequest: null,
+        userChoiceRequest: null,
       };
 
     case 'approval_required':
@@ -117,6 +122,7 @@ export function agentProgressReducer(
         isRunning: false,
         approvalRequest: action.request,
         connectionTierRequest: null,
+        userChoiceRequest: null,
       };
 
     case 'connection_tier_required':
@@ -125,6 +131,16 @@ export function agentProgressReducer(
         isRunning: false,
         connectionTierRequest: action.request,
         approvalRequest: null,
+        userChoiceRequest: null,
+      };
+
+    case 'choice_required':
+      return {
+        ...state,
+        isRunning: false,
+        userChoiceRequest: action.request,
+        approvalRequest: null,
+        connectionTierRequest: null,
       };
 
     case 'sync_tool_calls': {
