@@ -47,6 +47,10 @@ describe('ComposioToolProvider', () => {
           description: 'Search Composio tools',
           execute: jest.fn().mockResolvedValue({ tools: [] }),
         },
+        COMPOSIO_MULTI_EXECUTE_TOOL: {
+          description: 'Execute Composio tools',
+          execute: jest.fn().mockResolvedValue({ ok: true }),
+        },
         slack_send_message: {
           description: 'Send a message',
           execute: jest.fn().mockResolvedValue({ ok: true }),
@@ -102,6 +106,7 @@ describe('ComposioToolProvider', () => {
     );
     expect(Object.keys(tools)).toEqual([
       'COMPOSIO_SEARCH_TOOLS',
+      'COMPOSIO_MULTI_EXECUTE_TOOL',
       'slack_send_message',
     ]);
     expect((tools.slack_send_message as any).needsApproval).toBe(true);
@@ -145,7 +150,25 @@ describe('ComposioToolProvider', () => {
       provider.buildTools({ ...context, userPermissions: [] }),
     ).resolves.toEqual({
       COMPOSIO_SEARCH_TOOLS: expect.any(Object),
+      COMPOSIO_MULTI_EXECUTE_TOOL: expect.any(Object),
     });
+  });
+
+  it('requires approval for COMPOSIO_MULTI_EXECUTE_TOOL when a target tool requires approval', async () => {
+    const { provider, context } = createProvider();
+    const tools = await provider.buildTools(context);
+    const multiExecute = tools.COMPOSIO_MULTI_EXECUTE_TOOL as any;
+
+    expect(
+      multiExecute.needsApproval({
+        tools: [{ tool_slug: 'slack_send_message', arguments: { text: 'hello' } }],
+      }),
+    ).toBe(true);
+    expect(
+      multiExecute.needsApproval({
+        tools: [{ tool_slug: 'slack_admin_action', arguments: {} }],
+      }),
+    ).toBe(false);
   });
 
   it('rechecks permission during execution', async () => {

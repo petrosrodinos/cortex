@@ -32,6 +32,13 @@ type ExecutableTool = {
   needsApproval?: boolean;
 };
 
+type EnabledToolPermission = {
+  requiresApproval: boolean;
+  requiredPermissionKey?: string;
+};
+
+const COMPOSIO_MULTI_EXECUTE_TOOL = 'COMPOSIO_MULTI_EXECUTE_TOOL';
+
 @Injectable()
 export class ComposioToolProvider implements AgentToolProvider {
   readonly name = 'composio';
@@ -66,13 +73,21 @@ export class ComposioToolProvider implements AgentToolProvider {
 
     for (const [toolName, rawTool] of Object.entries(rawTools)) {
       if (this.isMetaTool(toolName)) {
-        tools[toolName] = this.wrapTool(
-          toolName,
-          rawTool as ExecutableTool,
-          context,
-          sessionId,
-          { requiresApproval: false },
-        );
+        tools[toolName] = this.isMultiExecuteMetaTool(toolName)
+          ? this.wrapMultiExecuteTool(
+              toolName,
+              rawTool as ExecutableTool,
+              context,
+              sessionId,
+              enabledTools,
+            )
+          : this.wrapTool(
+              toolName,
+              rawTool as ExecutableTool,
+              context,
+              sessionId,
+              { requiresApproval: false },
+            );
         continue;
       }
 
@@ -107,6 +122,47 @@ export class ComposioToolProvider implements AgentToolProvider {
     return toolName.toUpperCase().startsWith('COMPOSIO_');
   }
 
+  private isMultiExecuteMetaTool(toolName: string) {
+    return toolName.toUpperCase() === COMPOSIO_MULTI_EXECUTE_TOOL;
+  }
+
+  private wrapMultiExecuteTool(
+    toolName: string,
+    executable: ExecutableTool,
+    context: AgentToolProviderContext,
+    sessionId: string,
+    enabledTools: Map<string, EnabledToolPermission>,
+  ): ToolSet[string] {
+    return {
+      ...(executable as object),
+      ...(executable.description !== undefined
+        ? { description: executable.description }
+        : {}),
+      needsApproval: (input: unknown) =>
+        this.requiresApprovalForTargetSlugs(
+          this.extractMultiExecuteToolSlugs(input),
+          enabledTools,
+        ),
+      execute: async (input: unknown, options?: unknown) => {
+        this.assertTargetToolPermissions(
+          this.extractMultiExecuteToolSlugs(input),
+          enabledTools,
+          context.userPermissions,
+          toolName,
+        );
+
+        return this.executeWrappedTool(
+          toolName,
+          executable,
+          context,
+          sessionId,
+          input,
+          options,
+        );
+      },
+    } as unknown as ToolSet[string];
+  }
+
   private wrapTool(
     toolName: string,
     executable: ExecutableTool,
@@ -135,99 +191,168 @@ export class ComposioToolProvider implements AgentToolProvider {
           );
         }
 
-        const callId = context.progress?.toolStart(toolName, input);
-        const started = Date.now();
-        let preparedInput: Record<string, unknown> =
-          typeof input === 'object' && input !== null && !Array.isArray(input)
-            ? { ...(input as Record<string, unknown>) }
-            : {};
-
-        try {
-          preparedInput = await this.prepareEmailSendInput(
-            context,
-            toolName,
-            input,
-          );
-
-          const result = executable.execute
-            ? await executable.execute(preparedInput, options)
-            : undefined;
-          const serializedResult = toJsonValue(result);
-          const durationMs = Date.now() - started;
-
-          await this.prisma.toolCall.create({
-            data: {
-              ...(callId ? { uuid: callId } : {}),
-              execution_uuid: context.executionUuid,
-              provider_type: 'COMPOSIO',
-              composio_tool_slug: toolName,
-              composio_session_id: sessionId,
-              tool_name: toolName,
-              input: preparedInput as object,
-              output: serializedResult as object,
-              status: ToolCallStatus.SUCCESS,
-              duration_ms: durationMs,
-            },
-          });
-
-          if (callId) {
-            context.progress?.toolComplete(callId, {
-              toolName,
-              result: serializedResult,
-              durationMs,
-              success: true,
-            });
-          }
-
-          return result;
-        } catch (error) {
-          const durationMs = Date.now() - started;
-          let message: string;
-
-          if (error instanceof BadRequestException) {
-            const response = error.getResponse();
-            message =
-              typeof response === 'string'
-                ? response
-                : error instanceof Error
-                  ? error.message
-                  : 'Composio tool failed';
-          } else {
-            message = enrichEmailSenderConfigError(
-              toolName,
-              error instanceof Error ? error.message : 'Composio tool failed',
-            );
-          }
-
-          await this.prisma.toolCall.create({
-            data: {
-              ...(callId ? { uuid: callId } : {}),
-              execution_uuid: context.executionUuid,
-              provider_type: 'COMPOSIO',
-              composio_tool_slug: toolName,
-              composio_session_id: sessionId,
-              tool_name: toolName,
-              input: preparedInput as object,
-              output: { error: message },
-              status: ToolCallStatus.FAILED,
-              error: message,
-              duration_ms: durationMs,
-            },
-          });
-
-          if (callId) {
-            context.progress?.toolComplete(callId, {
-              toolName,
-              result: message,
-              durationMs,
-              success: false,
-            });
-          }
-
-          throw error;
-        }
+        return this.executeWrappedTool(
+          toolName,
+          executable,
+          context,
+          sessionId,
+          input,
+          options,
+        );
       },
     } as ToolSet[string];
+  }
+
+  private async executeWrappedTool(
+    toolName: string,
+    executable: ExecutableTool,
+    context: AgentToolProviderContext,
+    sessionId: string,
+    input: unknown,
+    options?: unknown,
+  ) {
+    const callId = context.progress?.toolStart(toolName, input);
+    const started = Date.now();
+    let preparedInput: Record<string, unknown> =
+      typeof input === 'object' && input !== null && !Array.isArray(input)
+        ? { ...(input as Record<string, unknown>) }
+        : {};
+
+    try {
+      preparedInput = await this.prepareEmailSendInput(
+        context,
+        toolName,
+        input,
+      );
+
+      const result = executable.execute
+        ? await executable.execute(preparedInput, options)
+        : undefined;
+      const serializedResult = toJsonValue(result);
+      const durationMs = Date.now() - started;
+
+      await this.prisma.toolCall.create({
+        data: {
+          ...(callId ? { uuid: callId } : {}),
+          execution_uuid: context.executionUuid,
+          provider_type: 'COMPOSIO',
+          composio_tool_slug: toolName,
+          composio_session_id: sessionId,
+          tool_name: toolName,
+          input: preparedInput as object,
+          output: serializedResult as object,
+          status: ToolCallStatus.SUCCESS,
+          duration_ms: durationMs,
+        },
+      });
+
+      if (callId) {
+        context.progress?.toolComplete(callId, {
+          toolName,
+          result: serializedResult,
+          durationMs,
+          success: true,
+        });
+      }
+
+      return result;
+    } catch (error) {
+      const durationMs = Date.now() - started;
+      let message: string;
+
+      if (error instanceof BadRequestException) {
+        const response = error.getResponse();
+        message =
+          typeof response === 'string'
+            ? response
+            : error instanceof Error
+              ? error.message
+              : 'Composio tool failed';
+      } else {
+        message = enrichEmailSenderConfigError(
+          toolName,
+          error instanceof Error ? error.message : 'Composio tool failed',
+        );
+      }
+
+      await this.prisma.toolCall.create({
+        data: {
+          ...(callId ? { uuid: callId } : {}),
+          execution_uuid: context.executionUuid,
+          provider_type: 'COMPOSIO',
+          composio_tool_slug: toolName,
+          composio_session_id: sessionId,
+          tool_name: toolName,
+          input: preparedInput as object,
+          output: { error: message },
+          status: ToolCallStatus.FAILED,
+          error: message,
+          duration_ms: durationMs,
+        },
+      });
+
+      if (callId) {
+        context.progress?.toolComplete(callId, {
+          toolName,
+          result: message,
+          durationMs,
+          success: false,
+        });
+      }
+
+      throw error;
+    }
+  }
+
+  private extractMultiExecuteToolSlugs(input: unknown): string[] {
+    if (!input || typeof input !== 'object' || Array.isArray(input)) {
+      return [];
+    }
+
+    const tools = (input as Record<string, unknown>).tools;
+    if (!Array.isArray(tools)) {
+      return [];
+    }
+
+    return tools
+      .map((item) => {
+        if (!item || typeof item !== 'object' || Array.isArray(item)) {
+          return '';
+        }
+
+        const slug = (item as Record<string, unknown>).tool_slug;
+        return typeof slug === 'string' ? slug : '';
+      })
+      .filter(Boolean);
+  }
+
+  private requiresApprovalForTargetSlugs(
+    slugs: string[],
+    enabledTools: Map<string, EnabledToolPermission>,
+  ): boolean {
+    return slugs.some((slug) => {
+      const permission = enabledTools.get(this.normalizeToolSlug(slug));
+      return permission?.requiresApproval ?? false;
+    });
+  }
+
+  private assertTargetToolPermissions(
+    slugs: string[],
+    enabledTools: Map<string, EnabledToolPermission>,
+    userPermissions: string[],
+    toolName: string,
+  ) {
+    for (const slug of slugs) {
+      const permission = enabledTools.get(this.normalizeToolSlug(slug));
+      if (
+        permission?.requiredPermissionKey &&
+        !userPermissions.includes(permission.requiredPermissionKey)
+      ) {
+        throw new ForbiddenException(
+          `Missing permission for tool ${toolName} target ${slug}`,
+        );
+      }
+    }
   }
 
   private async loadEnabledTools(context: AgentToolProviderContext) {
@@ -263,10 +388,7 @@ export class ComposioToolProvider implements AgentToolProvider {
         },
       });
 
-    const result = new Map<
-      string,
-      { requiresApproval: boolean; requiredPermissionKey?: string }
-    >();
+    const result = new Map<string, EnabledToolPermission>();
 
     for (const enabledToolkit of enabledToolkits) {
       for (const tool of enabledToolkit.toolkit.tools) {
