@@ -4,20 +4,40 @@ import { Button, Dropdown, Label } from '@heroui/react';
 import type { MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { useGetConversationDocuments } from '@/features/conversations/hooks/use-conversations';
 import type { ConversationDocument } from '@/features/conversations/services/conversations.service';
+import type { SavedPrompt } from '@/features/saved-prompts/interfaces/saved-prompts.interfaces';
 import {
   useAddDocumentToBoardById,
   useGetDocumentBoards,
 } from '@/features/document-boards/hooks/use-document-boards';
 import type { DocumentBoard } from '@/features/document-boards/interfaces/document-board.interfaces';
 import { formatDateTime } from '@/lib/date';
+import { cn } from '@/lib/utils';
 import { ConversationDocumentsSkeleton } from './conversation-documents-skeleton';
+import { ConversationPromptsPanel } from './conversation-prompts-panel';
+
+const libraryTabs = {
+  documents: 'documents',
+  prompts: 'prompts',
+} as const;
+
+type LibraryTabKey = (typeof libraryTabs)[keyof typeof libraryTabs];
+
+const LIBRARY_TAB_ITEMS: { key: LibraryTabKey; label: string }[] = [
+  { key: libraryTabs.documents, label: 'Documents' },
+  { key: libraryTabs.prompts, label: 'Prompts' },
+];
 
 interface ConversationDocumentsModalProps {
   open: boolean;
   orgUuid: string;
   conversationUuid: string;
   pendingAttachments?: MessageAttachment[];
+  initialTab?: LibraryTabKey;
   onOpenChange: (open: boolean) => void;
+  onCreatePrompt: () => void;
+  onEditPrompt: (prompt: SavedPrompt) => void;
+  onUsePrompt: (prompt: SavedPrompt) => void;
+  onCreateAgentFromPrompt: (prompt: SavedPrompt) => void;
 }
 
 function DocumentIcon({ mimetype, filename }: { mimetype: string | null; filename: string }) {
@@ -241,13 +261,25 @@ export const ConversationDocumentsModal: FC<ConversationDocumentsModalProps> = (
   orgUuid,
   conversationUuid,
   pendingAttachments = [],
+  initialTab = libraryTabs.documents,
   onOpenChange,
+  onCreatePrompt,
+  onEditPrompt,
+  onUsePrompt,
+  onCreateAgentFromPrompt,
 }) => {
+  const [selectedTab, setSelectedTab] = useState<LibraryTabKey>(initialTab);
   const { data: documents = [], isLoading } = useGetConversationDocuments(
     open ? orgUuid : undefined,
     open ? conversationUuid : undefined,
   );
   const { data: boards = [] } = useGetDocumentBoards(open ? orgUuid : undefined);
+
+  useEffect(() => {
+    if (open) {
+      setSelectedTab(initialTab);
+    }
+  }, [open, initialTab]);
 
   if (!open) return null;
 
@@ -257,23 +289,23 @@ export const ConversationDocumentsModal: FC<ConversationDocumentsModalProps> = (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <button
         type="button"
-        aria-label="Close documents"
+        aria-label="Close library"
         className="absolute inset-0 bg-[color-mix(in_oklch,black_42%,transparent)]"
         onClick={() => onOpenChange(false)}
       />
       <section
         role="dialog"
         aria-modal="true"
-        aria-labelledby="conversation-documents-title"
+        aria-labelledby="conversation-library-title"
         className="relative flex max-h-[min(80dvh,640px)] w-full max-w-lg flex-col overflow-hidden rounded-lg border border-border bg-surface shadow-xl"
         style={{ boxShadow: '0 24px 60px -20px color-mix(in oklch, black 55%, transparent)' }}
       >
         <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3">
           <div className="min-w-0">
-            <h2 id="conversation-documents-title" className="text-sm font-semibold text-foreground">
-              Documents
+            <h2 id="conversation-library-title" className="text-sm font-semibold text-foreground">
+              Library
             </h2>
-            <p className="mt-0.5 text-xs text-muted">Files shared or generated in this conversation.</p>
+            <p className="mt-0.5 text-xs text-muted">Documents and saved prompts for this chat.</p>
           </div>
           <button
             type="button"
@@ -285,36 +317,68 @@ export const ConversationDocumentsModal: FC<ConversationDocumentsModalProps> = (
           </button>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4">
-          {isLoading ? (
-            <ConversationDocumentsSkeleton />
-          ) : documents.length === 0 && pendingItems.length === 0 ? (
-            <p className="text-sm text-muted">No files in this conversation yet.</p>
+        <div className="flex shrink-0 gap-1 border-b border-border px-4">
+          {LIBRARY_TAB_ITEMS.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setSelectedTab(tab.key)}
+              className={cn(
+                '-mb-px border-b-2 px-4 py-2.5 text-sm font-medium transition-colors',
+                selectedTab === tab.key
+                  ? 'border-accent text-foreground'
+                  : 'border-transparent text-muted hover:text-foreground',
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto p-4">
+          {selectedTab === libraryTabs.documents ? (
+            <>
+              {isLoading ? (
+                <ConversationDocumentsSkeleton />
+              ) : documents.length === 0 && pendingItems.length === 0 ? (
+                <p className="text-sm text-muted">No files in this conversation yet.</p>
+              ) : (
+                <ul className="space-y-2">
+                  {documents.map((doc, i) => (
+                    <DocumentItem
+                      key={doc.uuid ?? `url-${i}`}
+                      doc={doc}
+                      boards={boards}
+                      orgUuid={orgUuid}
+                    />
+                  ))}
+                  {pendingItems.map((att) => (
+                    <li key={att.uuid} className="rounded-lg border border-border bg-surface-secondary/40 p-3 opacity-60">
+                      <div className="flex items-start gap-3">
+                        <File className="h-4 w-4 shrink-0 text-muted" />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-foreground break-all">{att.filename}</p>
+                          <p className="mt-0.5 text-xs text-muted">Uploading…</p>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
           ) : (
-            <ul className="space-y-2">
-              {documents.map((doc, i) => (
-                <DocumentItem
-                  key={doc.uuid ?? `url-${i}`}
-                  doc={doc}
-                  boards={boards}
-                  orgUuid={orgUuid}
-                />
-              ))}
-              {pendingItems.map((att) => (
-                <li key={att.uuid} className="rounded-lg border border-border bg-surface-secondary/40 p-3 opacity-60">
-                  <div className="flex items-start gap-3">
-                    <File className="h-4 w-4 shrink-0 text-muted" />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-foreground break-all">{att.filename}</p>
-                      <p className="mt-0.5 text-xs text-muted">Uploading…</p>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <ConversationPromptsPanel
+              orgUuid={orgUuid}
+              onCreatePrompt={onCreatePrompt}
+              onEditPrompt={onEditPrompt}
+              onUsePrompt={onUsePrompt}
+              onCreateAgentFromPrompt={onCreateAgentFromPrompt}
+            />
           )}
         </div>
       </section>
     </div>
   );
 };
+
+export { libraryTabs, type LibraryTabKey };

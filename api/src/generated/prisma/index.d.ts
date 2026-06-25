@@ -139,6 +139,11 @@ export type Conversation = $Result.DefaultSelection<Prisma.$ConversationPayload>
  */
 export type ScheduledAgent = $Result.DefaultSelection<Prisma.$ScheduledAgentPayload>
 /**
+ * Model SavedPrompt
+ * 
+ */
+export type SavedPrompt = $Result.DefaultSelection<Prisma.$SavedPromptPayload>
+/**
  * Model Message
  * 
  */
@@ -853,6 +858,16 @@ export class PrismaClient<
   get scheduledAgent(): Prisma.ScheduledAgentDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.savedPrompt`: Exposes CRUD operations for the **SavedPrompt** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SavedPrompts
+    * const savedPrompts = await prisma.savedPrompt.findMany()
+    * ```
+    */
+  get savedPrompt(): Prisma.SavedPromptDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.message`: Exposes CRUD operations for the **Message** model.
     * Example usage:
     * ```ts
@@ -1350,6 +1365,7 @@ export namespace Prisma {
     AiProvider: 'AiProvider',
     Conversation: 'Conversation',
     ScheduledAgent: 'ScheduledAgent',
+    SavedPrompt: 'SavedPrompt',
     Message: 'Message',
     AgentExecution: 'AgentExecution',
     ToolCall: 'ToolCall',
@@ -1369,7 +1385,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "databaseIntegration" | "openApiIntegration" | "mcpIntegration" | "integrationAction" | "composioToolkit" | "composioToolkitTool" | "composioSyncRun" | "organisationEnabledToolkit" | "organisationToolPermission" | "composioConnectedAccount" | "composioTrigger" | "document" | "documentBoard" | "documentBoardItem" | "aiProvider" | "conversation" | "scheduledAgent" | "message" | "agentExecution" | "toolCall" | "conversationPersonalization"
+      modelProps: "user" | "organization" | "organizationMember" | "organizationRole" | "permission" | "rolePermission" | "auditLog" | "integration" | "databaseIntegration" | "openApiIntegration" | "mcpIntegration" | "integrationAction" | "composioToolkit" | "composioToolkitTool" | "composioSyncRun" | "organisationEnabledToolkit" | "organisationToolPermission" | "composioConnectedAccount" | "composioTrigger" | "document" | "documentBoard" | "documentBoardItem" | "aiProvider" | "conversation" | "scheduledAgent" | "savedPrompt" | "message" | "agentExecution" | "toolCall" | "conversationPersonalization"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3223,6 +3239,80 @@ export namespace Prisma {
           }
         }
       }
+      SavedPrompt: {
+        payload: Prisma.$SavedPromptPayload<ExtArgs>
+        fields: Prisma.SavedPromptFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SavedPromptFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SavedPromptPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SavedPromptFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SavedPromptPayload>
+          }
+          findFirst: {
+            args: Prisma.SavedPromptFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SavedPromptPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SavedPromptFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SavedPromptPayload>
+          }
+          findMany: {
+            args: Prisma.SavedPromptFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SavedPromptPayload>[]
+          }
+          create: {
+            args: Prisma.SavedPromptCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SavedPromptPayload>
+          }
+          createMany: {
+            args: Prisma.SavedPromptCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SavedPromptCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SavedPromptPayload>[]
+          }
+          delete: {
+            args: Prisma.SavedPromptDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SavedPromptPayload>
+          }
+          update: {
+            args: Prisma.SavedPromptUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SavedPromptPayload>
+          }
+          deleteMany: {
+            args: Prisma.SavedPromptDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SavedPromptUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SavedPromptUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SavedPromptPayload>[]
+          }
+          upsert: {
+            args: Prisma.SavedPromptUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SavedPromptPayload>
+          }
+          aggregate: {
+            args: Prisma.SavedPromptAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSavedPrompt>
+          }
+          groupBy: {
+            args: Prisma.SavedPromptGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SavedPromptGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SavedPromptCountArgs<ExtArgs>
+            result: $Utils.Optional<SavedPromptCountAggregateOutputType> | number
+          }
+        }
+      }
       Message: {
         payload: Prisma.$MessagePayload<ExtArgs>
         fields: Prisma.MessageFieldRefs
@@ -3652,6 +3742,7 @@ export namespace Prisma {
     aiProvider?: AiProviderOmit
     conversation?: ConversationOmit
     scheduledAgent?: ScheduledAgentOmit
+    savedPrompt?: SavedPromptOmit
     message?: MessageOmit
     agentExecution?: AgentExecutionOmit
     toolCall?: ToolCallOmit
@@ -3743,6 +3834,7 @@ export namespace Prisma {
     agent_executions: number
     conversation_personalizations: number
     scheduled_agents: number
+    saved_prompts: number
     created_document_boards: number
     document_board_items: number
     documents: number
@@ -3756,6 +3848,7 @@ export namespace Prisma {
     agent_executions?: boolean | UserCountOutputTypeCountAgent_executionsArgs
     conversation_personalizations?: boolean | UserCountOutputTypeCountConversation_personalizationsArgs
     scheduled_agents?: boolean | UserCountOutputTypeCountScheduled_agentsArgs
+    saved_prompts?: boolean | UserCountOutputTypeCountSaved_promptsArgs
     created_document_boards?: boolean | UserCountOutputTypeCountCreated_document_boardsArgs
     document_board_items?: boolean | UserCountOutputTypeCountDocument_board_itemsArgs
     documents?: boolean | UserCountOutputTypeCountDocumentsArgs
@@ -3824,6 +3917,13 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountSaved_promptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SavedPromptWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountCreated_document_boardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DocumentBoardWhereInput
   }
@@ -3861,6 +3961,7 @@ export namespace Prisma {
     agent_executions: number
     conversation_personalizations: number
     scheduled_agents: number
+    saved_prompts: number
     document_boards: number
   }
 
@@ -3878,6 +3979,7 @@ export namespace Prisma {
     agent_executions?: boolean | OrganizationCountOutputTypeCountAgent_executionsArgs
     conversation_personalizations?: boolean | OrganizationCountOutputTypeCountConversation_personalizationsArgs
     scheduled_agents?: boolean | OrganizationCountOutputTypeCountScheduled_agentsArgs
+    saved_prompts?: boolean | OrganizationCountOutputTypeCountSaved_promptsArgs
     document_boards?: boolean | OrganizationCountOutputTypeCountDocument_boardsArgs
   }
 
@@ -3981,6 +4083,13 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountScheduled_agentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ScheduledAgentWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountSaved_promptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SavedPromptWhereInput
   }
 
   /**
@@ -4604,6 +4713,7 @@ export namespace Prisma {
     agent_executions?: boolean | User$agent_executionsArgs<ExtArgs>
     conversation_personalizations?: boolean | User$conversation_personalizationsArgs<ExtArgs>
     scheduled_agents?: boolean | User$scheduled_agentsArgs<ExtArgs>
+    saved_prompts?: boolean | User$saved_promptsArgs<ExtArgs>
     created_document_boards?: boolean | User$created_document_boardsArgs<ExtArgs>
     document_board_items?: boolean | User$document_board_itemsArgs<ExtArgs>
     documents?: boolean | User$documentsArgs<ExtArgs>
@@ -4658,6 +4768,7 @@ export namespace Prisma {
     agent_executions?: boolean | User$agent_executionsArgs<ExtArgs>
     conversation_personalizations?: boolean | User$conversation_personalizationsArgs<ExtArgs>
     scheduled_agents?: boolean | User$scheduled_agentsArgs<ExtArgs>
+    saved_prompts?: boolean | User$saved_promptsArgs<ExtArgs>
     created_document_boards?: boolean | User$created_document_boardsArgs<ExtArgs>
     document_board_items?: boolean | User$document_board_itemsArgs<ExtArgs>
     documents?: boolean | User$documentsArgs<ExtArgs>
@@ -4676,6 +4787,7 @@ export namespace Prisma {
       agent_executions: Prisma.$AgentExecutionPayload<ExtArgs>[]
       conversation_personalizations: Prisma.$ConversationPersonalizationPayload<ExtArgs>[]
       scheduled_agents: Prisma.$ScheduledAgentPayload<ExtArgs>[]
+      saved_prompts: Prisma.$SavedPromptPayload<ExtArgs>[]
       created_document_boards: Prisma.$DocumentBoardPayload<ExtArgs>[]
       document_board_items: Prisma.$DocumentBoardItemPayload<ExtArgs>[]
       documents: Prisma.$DocumentPayload<ExtArgs>[]
@@ -5092,6 +5204,7 @@ export namespace Prisma {
     agent_executions<T extends User$agent_executionsArgs<ExtArgs> = {}>(args?: Subset<T, User$agent_executionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     conversation_personalizations<T extends User$conversation_personalizationsArgs<ExtArgs> = {}>(args?: Subset<T, User$conversation_personalizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     scheduled_agents<T extends User$scheduled_agentsArgs<ExtArgs> = {}>(args?: Subset<T, User$scheduled_agentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    saved_prompts<T extends User$saved_promptsArgs<ExtArgs> = {}>(args?: Subset<T, User$saved_promptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SavedPromptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     created_document_boards<T extends User$created_document_boardsArgs<ExtArgs> = {}>(args?: Subset<T, User$created_document_boardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     document_board_items<T extends User$document_board_itemsArgs<ExtArgs> = {}>(args?: Subset<T, User$document_board_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     documents<T extends User$documentsArgs<ExtArgs> = {}>(args?: Subset<T, User$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5690,6 +5803,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.saved_prompts
+   */
+  export type User$saved_promptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptInclude<ExtArgs> | null
+    where?: SavedPromptWhereInput
+    orderBy?: SavedPromptOrderByWithRelationInput | SavedPromptOrderByWithRelationInput[]
+    cursor?: SavedPromptWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SavedPromptScalarFieldEnum | SavedPromptScalarFieldEnum[]
+  }
+
+  /**
    * User.created_document_boards
    */
   export type User$created_document_boardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6016,6 +6153,7 @@ export namespace Prisma {
     agent_executions?: boolean | Organization$agent_executionsArgs<ExtArgs>
     conversation_personalizations?: boolean | Organization$conversation_personalizationsArgs<ExtArgs>
     scheduled_agents?: boolean | Organization$scheduled_agentsArgs<ExtArgs>
+    saved_prompts?: boolean | Organization$saved_promptsArgs<ExtArgs>
     document_boards?: boolean | Organization$document_boardsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
@@ -6071,6 +6209,7 @@ export namespace Prisma {
     agent_executions?: boolean | Organization$agent_executionsArgs<ExtArgs>
     conversation_personalizations?: boolean | Organization$conversation_personalizationsArgs<ExtArgs>
     scheduled_agents?: boolean | Organization$scheduled_agentsArgs<ExtArgs>
+    saved_prompts?: boolean | Organization$saved_promptsArgs<ExtArgs>
     document_boards?: boolean | Organization$document_boardsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -6098,6 +6237,7 @@ export namespace Prisma {
       agent_executions: Prisma.$AgentExecutionPayload<ExtArgs>[]
       conversation_personalizations: Prisma.$ConversationPersonalizationPayload<ExtArgs>[]
       scheduled_agents: Prisma.$ScheduledAgentPayload<ExtArgs>[]
+      saved_prompts: Prisma.$SavedPromptPayload<ExtArgs>[]
       document_boards: Prisma.$DocumentBoardPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -6517,6 +6657,7 @@ export namespace Prisma {
     agent_executions<T extends Organization$agent_executionsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$agent_executionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentExecutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     conversation_personalizations<T extends Organization$conversation_personalizationsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$conversation_personalizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPersonalizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     scheduled_agents<T extends Organization$scheduled_agentsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$scheduled_agentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduledAgentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    saved_prompts<T extends Organization$saved_promptsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$saved_promptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SavedPromptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     document_boards<T extends Organization$document_boardsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$document_boardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentBoardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -7260,6 +7401,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ScheduledAgentScalarFieldEnum | ScheduledAgentScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.saved_prompts
+   */
+  export type Organization$saved_promptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptInclude<ExtArgs> | null
+    where?: SavedPromptWhereInput
+    orderBy?: SavedPromptOrderByWithRelationInput | SavedPromptOrderByWithRelationInput[]
+    cursor?: SavedPromptWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SavedPromptScalarFieldEnum | SavedPromptScalarFieldEnum[]
   }
 
   /**
@@ -34325,6 +34490,1145 @@ export namespace Prisma {
 
 
   /**
+   * Model SavedPrompt
+   */
+
+  export type AggregateSavedPrompt = {
+    _count: SavedPromptCountAggregateOutputType | null
+    _avg: SavedPromptAvgAggregateOutputType | null
+    _sum: SavedPromptSumAggregateOutputType | null
+    _min: SavedPromptMinAggregateOutputType | null
+    _max: SavedPromptMaxAggregateOutputType | null
+  }
+
+  export type SavedPromptAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SavedPromptSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SavedPromptMinAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    org_uuid: string | null
+    user_uuid: string | null
+    title: string | null
+    content: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type SavedPromptMaxAggregateOutputType = {
+    id: number | null
+    uuid: string | null
+    org_uuid: string | null
+    user_uuid: string | null
+    title: string | null
+    content: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type SavedPromptCountAggregateOutputType = {
+    id: number
+    uuid: number
+    org_uuid: number
+    user_uuid: number
+    title: number
+    content: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type SavedPromptAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type SavedPromptSumAggregateInputType = {
+    id?: true
+  }
+
+  export type SavedPromptMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    user_uuid?: true
+    title?: true
+    content?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type SavedPromptMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    user_uuid?: true
+    title?: true
+    content?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type SavedPromptCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    org_uuid?: true
+    user_uuid?: true
+    title?: true
+    content?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type SavedPromptAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SavedPrompt to aggregate.
+     */
+    where?: SavedPromptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SavedPrompts to fetch.
+     */
+    orderBy?: SavedPromptOrderByWithRelationInput | SavedPromptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SavedPromptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SavedPrompts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SavedPrompts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SavedPrompts
+    **/
+    _count?: true | SavedPromptCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SavedPromptAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SavedPromptSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SavedPromptMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SavedPromptMaxAggregateInputType
+  }
+
+  export type GetSavedPromptAggregateType<T extends SavedPromptAggregateArgs> = {
+        [P in keyof T & keyof AggregateSavedPrompt]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSavedPrompt[P]>
+      : GetScalarType<T[P], AggregateSavedPrompt[P]>
+  }
+
+
+
+
+  export type SavedPromptGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SavedPromptWhereInput
+    orderBy?: SavedPromptOrderByWithAggregationInput | SavedPromptOrderByWithAggregationInput[]
+    by: SavedPromptScalarFieldEnum[] | SavedPromptScalarFieldEnum
+    having?: SavedPromptScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SavedPromptCountAggregateInputType | true
+    _avg?: SavedPromptAvgAggregateInputType
+    _sum?: SavedPromptSumAggregateInputType
+    _min?: SavedPromptMinAggregateInputType
+    _max?: SavedPromptMaxAggregateInputType
+  }
+
+  export type SavedPromptGroupByOutputType = {
+    id: number
+    uuid: string
+    org_uuid: string
+    user_uuid: string
+    title: string
+    content: string
+    created_at: Date
+    updated_at: Date
+    _count: SavedPromptCountAggregateOutputType | null
+    _avg: SavedPromptAvgAggregateOutputType | null
+    _sum: SavedPromptSumAggregateOutputType | null
+    _min: SavedPromptMinAggregateOutputType | null
+    _max: SavedPromptMaxAggregateOutputType | null
+  }
+
+  type GetSavedPromptGroupByPayload<T extends SavedPromptGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SavedPromptGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SavedPromptGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SavedPromptGroupByOutputType[P]>
+            : GetScalarType<T[P], SavedPromptGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SavedPromptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    user_uuid?: boolean
+    title?: boolean
+    content?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["savedPrompt"]>
+
+  export type SavedPromptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    user_uuid?: boolean
+    title?: boolean
+    content?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["savedPrompt"]>
+
+  export type SavedPromptSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    user_uuid?: boolean
+    title?: boolean
+    content?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["savedPrompt"]>
+
+  export type SavedPromptSelectScalar = {
+    id?: boolean
+    uuid?: boolean
+    org_uuid?: boolean
+    user_uuid?: boolean
+    title?: boolean
+    content?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type SavedPromptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "uuid" | "org_uuid" | "user_uuid" | "title" | "content" | "created_at" | "updated_at", ExtArgs["result"]["savedPrompt"]>
+  export type SavedPromptInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SavedPromptIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SavedPromptIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $SavedPromptPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SavedPrompt"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      uuid: string
+      org_uuid: string
+      user_uuid: string
+      title: string
+      content: string
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["savedPrompt"]>
+    composites: {}
+  }
+
+  type SavedPromptGetPayload<S extends boolean | null | undefined | SavedPromptDefaultArgs> = $Result.GetResult<Prisma.$SavedPromptPayload, S>
+
+  type SavedPromptCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SavedPromptFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SavedPromptCountAggregateInputType | true
+    }
+
+  export interface SavedPromptDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SavedPrompt'], meta: { name: 'SavedPrompt' } }
+    /**
+     * Find zero or one SavedPrompt that matches the filter.
+     * @param {SavedPromptFindUniqueArgs} args - Arguments to find a SavedPrompt
+     * @example
+     * // Get one SavedPrompt
+     * const savedPrompt = await prisma.savedPrompt.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SavedPromptFindUniqueArgs>(args: SelectSubset<T, SavedPromptFindUniqueArgs<ExtArgs>>): Prisma__SavedPromptClient<$Result.GetResult<Prisma.$SavedPromptPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SavedPrompt that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SavedPromptFindUniqueOrThrowArgs} args - Arguments to find a SavedPrompt
+     * @example
+     * // Get one SavedPrompt
+     * const savedPrompt = await prisma.savedPrompt.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SavedPromptFindUniqueOrThrowArgs>(args: SelectSubset<T, SavedPromptFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SavedPromptClient<$Result.GetResult<Prisma.$SavedPromptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SavedPrompt that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SavedPromptFindFirstArgs} args - Arguments to find a SavedPrompt
+     * @example
+     * // Get one SavedPrompt
+     * const savedPrompt = await prisma.savedPrompt.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SavedPromptFindFirstArgs>(args?: SelectSubset<T, SavedPromptFindFirstArgs<ExtArgs>>): Prisma__SavedPromptClient<$Result.GetResult<Prisma.$SavedPromptPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SavedPrompt that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SavedPromptFindFirstOrThrowArgs} args - Arguments to find a SavedPrompt
+     * @example
+     * // Get one SavedPrompt
+     * const savedPrompt = await prisma.savedPrompt.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SavedPromptFindFirstOrThrowArgs>(args?: SelectSubset<T, SavedPromptFindFirstOrThrowArgs<ExtArgs>>): Prisma__SavedPromptClient<$Result.GetResult<Prisma.$SavedPromptPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SavedPrompts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SavedPromptFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SavedPrompts
+     * const savedPrompts = await prisma.savedPrompt.findMany()
+     * 
+     * // Get first 10 SavedPrompts
+     * const savedPrompts = await prisma.savedPrompt.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const savedPromptWithIdOnly = await prisma.savedPrompt.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SavedPromptFindManyArgs>(args?: SelectSubset<T, SavedPromptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SavedPromptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SavedPrompt.
+     * @param {SavedPromptCreateArgs} args - Arguments to create a SavedPrompt.
+     * @example
+     * // Create one SavedPrompt
+     * const SavedPrompt = await prisma.savedPrompt.create({
+     *   data: {
+     *     // ... data to create a SavedPrompt
+     *   }
+     * })
+     * 
+     */
+    create<T extends SavedPromptCreateArgs>(args: SelectSubset<T, SavedPromptCreateArgs<ExtArgs>>): Prisma__SavedPromptClient<$Result.GetResult<Prisma.$SavedPromptPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SavedPrompts.
+     * @param {SavedPromptCreateManyArgs} args - Arguments to create many SavedPrompts.
+     * @example
+     * // Create many SavedPrompts
+     * const savedPrompt = await prisma.savedPrompt.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SavedPromptCreateManyArgs>(args?: SelectSubset<T, SavedPromptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SavedPrompts and returns the data saved in the database.
+     * @param {SavedPromptCreateManyAndReturnArgs} args - Arguments to create many SavedPrompts.
+     * @example
+     * // Create many SavedPrompts
+     * const savedPrompt = await prisma.savedPrompt.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SavedPrompts and only return the `id`
+     * const savedPromptWithIdOnly = await prisma.savedPrompt.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SavedPromptCreateManyAndReturnArgs>(args?: SelectSubset<T, SavedPromptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SavedPromptPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SavedPrompt.
+     * @param {SavedPromptDeleteArgs} args - Arguments to delete one SavedPrompt.
+     * @example
+     * // Delete one SavedPrompt
+     * const SavedPrompt = await prisma.savedPrompt.delete({
+     *   where: {
+     *     // ... filter to delete one SavedPrompt
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SavedPromptDeleteArgs>(args: SelectSubset<T, SavedPromptDeleteArgs<ExtArgs>>): Prisma__SavedPromptClient<$Result.GetResult<Prisma.$SavedPromptPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SavedPrompt.
+     * @param {SavedPromptUpdateArgs} args - Arguments to update one SavedPrompt.
+     * @example
+     * // Update one SavedPrompt
+     * const savedPrompt = await prisma.savedPrompt.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SavedPromptUpdateArgs>(args: SelectSubset<T, SavedPromptUpdateArgs<ExtArgs>>): Prisma__SavedPromptClient<$Result.GetResult<Prisma.$SavedPromptPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SavedPrompts.
+     * @param {SavedPromptDeleteManyArgs} args - Arguments to filter SavedPrompts to delete.
+     * @example
+     * // Delete a few SavedPrompts
+     * const { count } = await prisma.savedPrompt.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SavedPromptDeleteManyArgs>(args?: SelectSubset<T, SavedPromptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SavedPrompts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SavedPromptUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SavedPrompts
+     * const savedPrompt = await prisma.savedPrompt.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SavedPromptUpdateManyArgs>(args: SelectSubset<T, SavedPromptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SavedPrompts and returns the data updated in the database.
+     * @param {SavedPromptUpdateManyAndReturnArgs} args - Arguments to update many SavedPrompts.
+     * @example
+     * // Update many SavedPrompts
+     * const savedPrompt = await prisma.savedPrompt.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SavedPrompts and only return the `id`
+     * const savedPromptWithIdOnly = await prisma.savedPrompt.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SavedPromptUpdateManyAndReturnArgs>(args: SelectSubset<T, SavedPromptUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SavedPromptPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SavedPrompt.
+     * @param {SavedPromptUpsertArgs} args - Arguments to update or create a SavedPrompt.
+     * @example
+     * // Update or create a SavedPrompt
+     * const savedPrompt = await prisma.savedPrompt.upsert({
+     *   create: {
+     *     // ... data to create a SavedPrompt
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SavedPrompt we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SavedPromptUpsertArgs>(args: SelectSubset<T, SavedPromptUpsertArgs<ExtArgs>>): Prisma__SavedPromptClient<$Result.GetResult<Prisma.$SavedPromptPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SavedPrompts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SavedPromptCountArgs} args - Arguments to filter SavedPrompts to count.
+     * @example
+     * // Count the number of SavedPrompts
+     * const count = await prisma.savedPrompt.count({
+     *   where: {
+     *     // ... the filter for the SavedPrompts we want to count
+     *   }
+     * })
+    **/
+    count<T extends SavedPromptCountArgs>(
+      args?: Subset<T, SavedPromptCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SavedPromptCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SavedPrompt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SavedPromptAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SavedPromptAggregateArgs>(args: Subset<T, SavedPromptAggregateArgs>): Prisma.PrismaPromise<GetSavedPromptAggregateType<T>>
+
+    /**
+     * Group by SavedPrompt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SavedPromptGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SavedPromptGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SavedPromptGroupByArgs['orderBy'] }
+        : { orderBy?: SavedPromptGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SavedPromptGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSavedPromptGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SavedPrompt model
+   */
+  readonly fields: SavedPromptFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SavedPrompt.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SavedPromptClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SavedPrompt model
+   */
+  interface SavedPromptFieldRefs {
+    readonly id: FieldRef<"SavedPrompt", 'Int'>
+    readonly uuid: FieldRef<"SavedPrompt", 'String'>
+    readonly org_uuid: FieldRef<"SavedPrompt", 'String'>
+    readonly user_uuid: FieldRef<"SavedPrompt", 'String'>
+    readonly title: FieldRef<"SavedPrompt", 'String'>
+    readonly content: FieldRef<"SavedPrompt", 'String'>
+    readonly created_at: FieldRef<"SavedPrompt", 'DateTime'>
+    readonly updated_at: FieldRef<"SavedPrompt", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SavedPrompt findUnique
+   */
+  export type SavedPromptFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptInclude<ExtArgs> | null
+    /**
+     * Filter, which SavedPrompt to fetch.
+     */
+    where: SavedPromptWhereUniqueInput
+  }
+
+  /**
+   * SavedPrompt findUniqueOrThrow
+   */
+  export type SavedPromptFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptInclude<ExtArgs> | null
+    /**
+     * Filter, which SavedPrompt to fetch.
+     */
+    where: SavedPromptWhereUniqueInput
+  }
+
+  /**
+   * SavedPrompt findFirst
+   */
+  export type SavedPromptFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptInclude<ExtArgs> | null
+    /**
+     * Filter, which SavedPrompt to fetch.
+     */
+    where?: SavedPromptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SavedPrompts to fetch.
+     */
+    orderBy?: SavedPromptOrderByWithRelationInput | SavedPromptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SavedPrompts.
+     */
+    cursor?: SavedPromptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SavedPrompts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SavedPrompts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SavedPrompts.
+     */
+    distinct?: SavedPromptScalarFieldEnum | SavedPromptScalarFieldEnum[]
+  }
+
+  /**
+   * SavedPrompt findFirstOrThrow
+   */
+  export type SavedPromptFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptInclude<ExtArgs> | null
+    /**
+     * Filter, which SavedPrompt to fetch.
+     */
+    where?: SavedPromptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SavedPrompts to fetch.
+     */
+    orderBy?: SavedPromptOrderByWithRelationInput | SavedPromptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SavedPrompts.
+     */
+    cursor?: SavedPromptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SavedPrompts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SavedPrompts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SavedPrompts.
+     */
+    distinct?: SavedPromptScalarFieldEnum | SavedPromptScalarFieldEnum[]
+  }
+
+  /**
+   * SavedPrompt findMany
+   */
+  export type SavedPromptFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptInclude<ExtArgs> | null
+    /**
+     * Filter, which SavedPrompts to fetch.
+     */
+    where?: SavedPromptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SavedPrompts to fetch.
+     */
+    orderBy?: SavedPromptOrderByWithRelationInput | SavedPromptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SavedPrompts.
+     */
+    cursor?: SavedPromptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SavedPrompts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SavedPrompts.
+     */
+    skip?: number
+    distinct?: SavedPromptScalarFieldEnum | SavedPromptScalarFieldEnum[]
+  }
+
+  /**
+   * SavedPrompt create
+   */
+  export type SavedPromptCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SavedPrompt.
+     */
+    data: XOR<SavedPromptCreateInput, SavedPromptUncheckedCreateInput>
+  }
+
+  /**
+   * SavedPrompt createMany
+   */
+  export type SavedPromptCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SavedPrompts.
+     */
+    data: SavedPromptCreateManyInput | SavedPromptCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SavedPrompt createManyAndReturn
+   */
+  export type SavedPromptCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * The data used to create many SavedPrompts.
+     */
+    data: SavedPromptCreateManyInput | SavedPromptCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SavedPrompt update
+   */
+  export type SavedPromptUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SavedPrompt.
+     */
+    data: XOR<SavedPromptUpdateInput, SavedPromptUncheckedUpdateInput>
+    /**
+     * Choose, which SavedPrompt to update.
+     */
+    where: SavedPromptWhereUniqueInput
+  }
+
+  /**
+   * SavedPrompt updateMany
+   */
+  export type SavedPromptUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SavedPrompts.
+     */
+    data: XOR<SavedPromptUpdateManyMutationInput, SavedPromptUncheckedUpdateManyInput>
+    /**
+     * Filter which SavedPrompts to update
+     */
+    where?: SavedPromptWhereInput
+    /**
+     * Limit how many SavedPrompts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SavedPrompt updateManyAndReturn
+   */
+  export type SavedPromptUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * The data used to update SavedPrompts.
+     */
+    data: XOR<SavedPromptUpdateManyMutationInput, SavedPromptUncheckedUpdateManyInput>
+    /**
+     * Filter which SavedPrompts to update
+     */
+    where?: SavedPromptWhereInput
+    /**
+     * Limit how many SavedPrompts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SavedPrompt upsert
+   */
+  export type SavedPromptUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SavedPrompt to update in case it exists.
+     */
+    where: SavedPromptWhereUniqueInput
+    /**
+     * In case the SavedPrompt found by the `where` argument doesn't exist, create a new SavedPrompt with this data.
+     */
+    create: XOR<SavedPromptCreateInput, SavedPromptUncheckedCreateInput>
+    /**
+     * In case the SavedPrompt was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SavedPromptUpdateInput, SavedPromptUncheckedUpdateInput>
+  }
+
+  /**
+   * SavedPrompt delete
+   */
+  export type SavedPromptDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptInclude<ExtArgs> | null
+    /**
+     * Filter which SavedPrompt to delete.
+     */
+    where: SavedPromptWhereUniqueInput
+  }
+
+  /**
+   * SavedPrompt deleteMany
+   */
+  export type SavedPromptDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SavedPrompts to delete
+     */
+    where?: SavedPromptWhereInput
+    /**
+     * Limit how many SavedPrompts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SavedPrompt without action
+   */
+  export type SavedPromptDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SavedPrompt
+     */
+    select?: SavedPromptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SavedPrompt
+     */
+    omit?: SavedPromptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SavedPromptInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Message
    */
 
@@ -39608,6 +40912,20 @@ export namespace Prisma {
   export type ScheduledAgentScalarFieldEnum = (typeof ScheduledAgentScalarFieldEnum)[keyof typeof ScheduledAgentScalarFieldEnum]
 
 
+  export const SavedPromptScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    org_uuid: 'org_uuid',
+    user_uuid: 'user_uuid',
+    title: 'title',
+    content: 'content',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type SavedPromptScalarFieldEnum = (typeof SavedPromptScalarFieldEnum)[keyof typeof SavedPromptScalarFieldEnum]
+
+
   export const MessageScalarFieldEnum: {
     id: 'id',
     uuid: 'uuid',
@@ -40158,6 +41476,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionListRelationFilter
     conversation_personalizations?: ConversationPersonalizationListRelationFilter
     scheduled_agents?: ScheduledAgentListRelationFilter
+    saved_prompts?: SavedPromptListRelationFilter
     created_document_boards?: DocumentBoardListRelationFilter
     document_board_items?: DocumentBoardItemListRelationFilter
     documents?: DocumentListRelationFilter
@@ -40181,6 +41500,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionOrderByRelationAggregateInput
     conversation_personalizations?: ConversationPersonalizationOrderByRelationAggregateInput
     scheduled_agents?: ScheduledAgentOrderByRelationAggregateInput
+    saved_prompts?: SavedPromptOrderByRelationAggregateInput
     created_document_boards?: DocumentBoardOrderByRelationAggregateInput
     document_board_items?: DocumentBoardItemOrderByRelationAggregateInput
     documents?: DocumentOrderByRelationAggregateInput
@@ -40207,6 +41527,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionListRelationFilter
     conversation_personalizations?: ConversationPersonalizationListRelationFilter
     scheduled_agents?: ScheduledAgentListRelationFilter
+    saved_prompts?: SavedPromptListRelationFilter
     created_document_boards?: DocumentBoardListRelationFilter
     document_board_items?: DocumentBoardItemListRelationFilter
     documents?: DocumentListRelationFilter
@@ -40272,6 +41593,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionListRelationFilter
     conversation_personalizations?: ConversationPersonalizationListRelationFilter
     scheduled_agents?: ScheduledAgentListRelationFilter
+    saved_prompts?: SavedPromptListRelationFilter
     document_boards?: DocumentBoardListRelationFilter
   }
 
@@ -40298,6 +41620,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionOrderByRelationAggregateInput
     conversation_personalizations?: ConversationPersonalizationOrderByRelationAggregateInput
     scheduled_agents?: ScheduledAgentOrderByRelationAggregateInput
+    saved_prompts?: SavedPromptOrderByRelationAggregateInput
     document_boards?: DocumentBoardOrderByRelationAggregateInput
   }
 
@@ -40327,6 +41650,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionListRelationFilter
     conversation_personalizations?: ConversationPersonalizationListRelationFilter
     scheduled_agents?: ScheduledAgentListRelationFilter
+    saved_prompts?: SavedPromptListRelationFilter
     document_boards?: DocumentBoardListRelationFilter
   }, "id" | "uuid" | "slug">
 
@@ -42317,6 +43641,81 @@ export namespace Prisma {
     updated_at?: DateTimeWithAggregatesFilter<"ScheduledAgent"> | Date | string
   }
 
+  export type SavedPromptWhereInput = {
+    AND?: SavedPromptWhereInput | SavedPromptWhereInput[]
+    OR?: SavedPromptWhereInput[]
+    NOT?: SavedPromptWhereInput | SavedPromptWhereInput[]
+    id?: IntFilter<"SavedPrompt"> | number
+    uuid?: StringFilter<"SavedPrompt"> | string
+    org_uuid?: StringFilter<"SavedPrompt"> | string
+    user_uuid?: StringFilter<"SavedPrompt"> | string
+    title?: StringFilter<"SavedPrompt"> | string
+    content?: StringFilter<"SavedPrompt"> | string
+    created_at?: DateTimeFilter<"SavedPrompt"> | Date | string
+    updated_at?: DateTimeFilter<"SavedPrompt"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type SavedPromptOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type SavedPromptWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    uuid?: string
+    AND?: SavedPromptWhereInput | SavedPromptWhereInput[]
+    OR?: SavedPromptWhereInput[]
+    NOT?: SavedPromptWhereInput | SavedPromptWhereInput[]
+    org_uuid?: StringFilter<"SavedPrompt"> | string
+    user_uuid?: StringFilter<"SavedPrompt"> | string
+    title?: StringFilter<"SavedPrompt"> | string
+    content?: StringFilter<"SavedPrompt"> | string
+    created_at?: DateTimeFilter<"SavedPrompt"> | Date | string
+    updated_at?: DateTimeFilter<"SavedPrompt"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "uuid">
+
+  export type SavedPromptOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: SavedPromptCountOrderByAggregateInput
+    _avg?: SavedPromptAvgOrderByAggregateInput
+    _max?: SavedPromptMaxOrderByAggregateInput
+    _min?: SavedPromptMinOrderByAggregateInput
+    _sum?: SavedPromptSumOrderByAggregateInput
+  }
+
+  export type SavedPromptScalarWhereWithAggregatesInput = {
+    AND?: SavedPromptScalarWhereWithAggregatesInput | SavedPromptScalarWhereWithAggregatesInput[]
+    OR?: SavedPromptScalarWhereWithAggregatesInput[]
+    NOT?: SavedPromptScalarWhereWithAggregatesInput | SavedPromptScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"SavedPrompt"> | number
+    uuid?: StringWithAggregatesFilter<"SavedPrompt"> | string
+    org_uuid?: StringWithAggregatesFilter<"SavedPrompt"> | string
+    user_uuid?: StringWithAggregatesFilter<"SavedPrompt"> | string
+    title?: StringWithAggregatesFilter<"SavedPrompt"> | string
+    content?: StringWithAggregatesFilter<"SavedPrompt"> | string
+    created_at?: DateTimeWithAggregatesFilter<"SavedPrompt"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"SavedPrompt"> | Date | string
+  }
+
   export type MessageWhereInput = {
     AND?: MessageWhereInput | MessageWhereInput[]
     OR?: MessageWhereInput[]
@@ -42734,6 +44133,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
     documents?: DocumentCreateNestedManyWithoutUserInput
@@ -42757,6 +44157,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
@@ -42779,6 +44180,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
@@ -42802,6 +44204,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
@@ -42866,6 +44269,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -42891,6 +44295,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -42915,6 +44320,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -42940,6 +44346,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -45001,6 +46408,78 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SavedPromptCreateInput = {
+    uuid?: string
+    title: string
+    content: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutSaved_promptsInput
+    user: UserCreateNestedOneWithoutSaved_promptsInput
+  }
+
+  export type SavedPromptUncheckedCreateInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    user_uuid: string
+    title: string
+    content: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type SavedPromptUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutSaved_promptsNestedInput
+    user?: UserUpdateOneRequiredWithoutSaved_promptsNestedInput
+  }
+
+  export type SavedPromptUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SavedPromptCreateManyInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    user_uuid: string
+    title: string
+    content: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type SavedPromptUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SavedPromptUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type MessageCreateInput = {
     uuid?: string
     role: $Enums.MessageRole
@@ -45523,6 +47002,12 @@ export namespace Prisma {
     none?: ScheduledAgentWhereInput
   }
 
+  export type SavedPromptListRelationFilter = {
+    every?: SavedPromptWhereInput
+    some?: SavedPromptWhereInput
+    none?: SavedPromptWhereInput
+  }
+
   export type DocumentBoardListRelationFilter = {
     every?: DocumentBoardWhereInput
     some?: DocumentBoardWhereInput
@@ -45571,6 +47056,10 @@ export namespace Prisma {
   }
 
   export type ScheduledAgentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SavedPromptOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -47500,6 +48989,47 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type SavedPromptCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type SavedPromptAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type SavedPromptMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type SavedPromptMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    org_uuid?: SortOrder
+    user_uuid?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type SavedPromptSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
   export type EnumMessageRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.MessageRole | EnumMessageRoleFieldRefInput<$PrismaModel>
     in?: $Enums.MessageRole[] | ListEnumMessageRoleFieldRefInput<$PrismaModel>
@@ -47899,6 +49429,13 @@ export namespace Prisma {
     connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
   }
 
+  export type SavedPromptCreateNestedManyWithoutUserInput = {
+    create?: XOR<SavedPromptCreateWithoutUserInput, SavedPromptUncheckedCreateWithoutUserInput> | SavedPromptCreateWithoutUserInput[] | SavedPromptUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SavedPromptCreateOrConnectWithoutUserInput | SavedPromptCreateOrConnectWithoutUserInput[]
+    createMany?: SavedPromptCreateManyUserInputEnvelope
+    connect?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+  }
+
   export type DocumentBoardCreateNestedManyWithoutCreatorInput = {
     create?: XOR<DocumentBoardCreateWithoutCreatorInput, DocumentBoardUncheckedCreateWithoutCreatorInput> | DocumentBoardCreateWithoutCreatorInput[] | DocumentBoardUncheckedCreateWithoutCreatorInput[]
     connectOrCreate?: DocumentBoardCreateOrConnectWithoutCreatorInput | DocumentBoardCreateOrConnectWithoutCreatorInput[]
@@ -47967,6 +49504,13 @@ export namespace Prisma {
     connectOrCreate?: ScheduledAgentCreateOrConnectWithoutUserInput | ScheduledAgentCreateOrConnectWithoutUserInput[]
     createMany?: ScheduledAgentCreateManyUserInputEnvelope
     connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+  }
+
+  export type SavedPromptUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SavedPromptCreateWithoutUserInput, SavedPromptUncheckedCreateWithoutUserInput> | SavedPromptCreateWithoutUserInput[] | SavedPromptUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SavedPromptCreateOrConnectWithoutUserInput | SavedPromptCreateOrConnectWithoutUserInput[]
+    createMany?: SavedPromptCreateManyUserInputEnvelope
+    connect?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
   }
 
   export type DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput = {
@@ -48102,6 +49646,20 @@ export namespace Prisma {
     update?: ScheduledAgentUpdateWithWhereUniqueWithoutUserInput | ScheduledAgentUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: ScheduledAgentUpdateManyWithWhereWithoutUserInput | ScheduledAgentUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
+  }
+
+  export type SavedPromptUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SavedPromptCreateWithoutUserInput, SavedPromptUncheckedCreateWithoutUserInput> | SavedPromptCreateWithoutUserInput[] | SavedPromptUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SavedPromptCreateOrConnectWithoutUserInput | SavedPromptCreateOrConnectWithoutUserInput[]
+    upsert?: SavedPromptUpsertWithWhereUniqueWithoutUserInput | SavedPromptUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SavedPromptCreateManyUserInputEnvelope
+    set?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    disconnect?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    delete?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    connect?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    update?: SavedPromptUpdateWithWhereUniqueWithoutUserInput | SavedPromptUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SavedPromptUpdateManyWithWhereWithoutUserInput | SavedPromptUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SavedPromptScalarWhereInput | SavedPromptScalarWhereInput[]
   }
 
   export type DocumentBoardUpdateManyWithoutCreatorNestedInput = {
@@ -48252,6 +49810,20 @@ export namespace Prisma {
     deleteMany?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
   }
 
+  export type SavedPromptUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SavedPromptCreateWithoutUserInput, SavedPromptUncheckedCreateWithoutUserInput> | SavedPromptCreateWithoutUserInput[] | SavedPromptUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SavedPromptCreateOrConnectWithoutUserInput | SavedPromptCreateOrConnectWithoutUserInput[]
+    upsert?: SavedPromptUpsertWithWhereUniqueWithoutUserInput | SavedPromptUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SavedPromptCreateManyUserInputEnvelope
+    set?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    disconnect?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    delete?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    connect?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    update?: SavedPromptUpdateWithWhereUniqueWithoutUserInput | SavedPromptUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SavedPromptUpdateManyWithWhereWithoutUserInput | SavedPromptUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SavedPromptScalarWhereInput | SavedPromptScalarWhereInput[]
+  }
+
   export type DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput = {
     create?: XOR<DocumentBoardCreateWithoutCreatorInput, DocumentBoardUncheckedCreateWithoutCreatorInput> | DocumentBoardCreateWithoutCreatorInput[] | DocumentBoardUncheckedCreateWithoutCreatorInput[]
     connectOrCreate?: DocumentBoardCreateOrConnectWithoutCreatorInput | DocumentBoardCreateOrConnectWithoutCreatorInput[]
@@ -48391,6 +49963,13 @@ export namespace Prisma {
     connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
   }
 
+  export type SavedPromptCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<SavedPromptCreateWithoutOrganizationInput, SavedPromptUncheckedCreateWithoutOrganizationInput> | SavedPromptCreateWithoutOrganizationInput[] | SavedPromptUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SavedPromptCreateOrConnectWithoutOrganizationInput | SavedPromptCreateOrConnectWithoutOrganizationInput[]
+    createMany?: SavedPromptCreateManyOrganizationInputEnvelope
+    connect?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+  }
+
   export type DocumentBoardCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<DocumentBoardCreateWithoutOrganizationInput, DocumentBoardUncheckedCreateWithoutOrganizationInput> | DocumentBoardCreateWithoutOrganizationInput[] | DocumentBoardUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: DocumentBoardCreateOrConnectWithoutOrganizationInput | DocumentBoardCreateOrConnectWithoutOrganizationInput[]
@@ -48487,6 +50066,13 @@ export namespace Prisma {
     connectOrCreate?: ScheduledAgentCreateOrConnectWithoutOrganizationInput | ScheduledAgentCreateOrConnectWithoutOrganizationInput[]
     createMany?: ScheduledAgentCreateManyOrganizationInputEnvelope
     connect?: ScheduledAgentWhereUniqueInput | ScheduledAgentWhereUniqueInput[]
+  }
+
+  export type SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<SavedPromptCreateWithoutOrganizationInput, SavedPromptUncheckedCreateWithoutOrganizationInput> | SavedPromptCreateWithoutOrganizationInput[] | SavedPromptUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SavedPromptCreateOrConnectWithoutOrganizationInput | SavedPromptCreateOrConnectWithoutOrganizationInput[]
+    createMany?: SavedPromptCreateManyOrganizationInputEnvelope
+    connect?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
   }
 
   export type DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput = {
@@ -48686,6 +50272,20 @@ export namespace Prisma {
     deleteMany?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
   }
 
+  export type SavedPromptUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<SavedPromptCreateWithoutOrganizationInput, SavedPromptUncheckedCreateWithoutOrganizationInput> | SavedPromptCreateWithoutOrganizationInput[] | SavedPromptUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SavedPromptCreateOrConnectWithoutOrganizationInput | SavedPromptCreateOrConnectWithoutOrganizationInput[]
+    upsert?: SavedPromptUpsertWithWhereUniqueWithoutOrganizationInput | SavedPromptUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: SavedPromptCreateManyOrganizationInputEnvelope
+    set?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    disconnect?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    delete?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    connect?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    update?: SavedPromptUpdateWithWhereUniqueWithoutOrganizationInput | SavedPromptUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: SavedPromptUpdateManyWithWhereWithoutOrganizationInput | SavedPromptUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: SavedPromptScalarWhereInput | SavedPromptScalarWhereInput[]
+  }
+
   export type DocumentBoardUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<DocumentBoardCreateWithoutOrganizationInput, DocumentBoardUncheckedCreateWithoutOrganizationInput> | DocumentBoardCreateWithoutOrganizationInput[] | DocumentBoardUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: DocumentBoardCreateOrConnectWithoutOrganizationInput | DocumentBoardCreateOrConnectWithoutOrganizationInput[]
@@ -48880,6 +50480,20 @@ export namespace Prisma {
     update?: ScheduledAgentUpdateWithWhereUniqueWithoutOrganizationInput | ScheduledAgentUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: ScheduledAgentUpdateManyWithWhereWithoutOrganizationInput | ScheduledAgentUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: ScheduledAgentScalarWhereInput | ScheduledAgentScalarWhereInput[]
+  }
+
+  export type SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<SavedPromptCreateWithoutOrganizationInput, SavedPromptUncheckedCreateWithoutOrganizationInput> | SavedPromptCreateWithoutOrganizationInput[] | SavedPromptUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SavedPromptCreateOrConnectWithoutOrganizationInput | SavedPromptCreateOrConnectWithoutOrganizationInput[]
+    upsert?: SavedPromptUpsertWithWhereUniqueWithoutOrganizationInput | SavedPromptUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: SavedPromptCreateManyOrganizationInputEnvelope
+    set?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    disconnect?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    delete?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    connect?: SavedPromptWhereUniqueInput | SavedPromptWhereUniqueInput[]
+    update?: SavedPromptUpdateWithWhereUniqueWithoutOrganizationInput | SavedPromptUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: SavedPromptUpdateManyWithWhereWithoutOrganizationInput | SavedPromptUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: SavedPromptScalarWhereInput | SavedPromptScalarWhereInput[]
   }
 
   export type DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput = {
@@ -50208,6 +51822,34 @@ export namespace Prisma {
     update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutScheduled_agentInput, ConversationUpdateWithoutScheduled_agentInput>, ConversationUncheckedUpdateWithoutScheduled_agentInput>
   }
 
+  export type OrganizationCreateNestedOneWithoutSaved_promptsInput = {
+    create?: XOR<OrganizationCreateWithoutSaved_promptsInput, OrganizationUncheckedCreateWithoutSaved_promptsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutSaved_promptsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutSaved_promptsInput = {
+    create?: XOR<UserCreateWithoutSaved_promptsInput, UserUncheckedCreateWithoutSaved_promptsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSaved_promptsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutSaved_promptsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutSaved_promptsInput, OrganizationUncheckedCreateWithoutSaved_promptsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutSaved_promptsInput
+    upsert?: OrganizationUpsertWithoutSaved_promptsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutSaved_promptsInput, OrganizationUpdateWithoutSaved_promptsInput>, OrganizationUncheckedUpdateWithoutSaved_promptsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutSaved_promptsNestedInput = {
+    create?: XOR<UserCreateWithoutSaved_promptsInput, UserUncheckedCreateWithoutSaved_promptsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSaved_promptsInput
+    upsert?: UserUpsertWithoutSaved_promptsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSaved_promptsInput, UserUpdateWithoutSaved_promptsInput>, UserUncheckedUpdateWithoutSaved_promptsInput>
+  }
+
   export type ConversationCreateNestedOneWithoutMessagesInput = {
     create?: XOR<ConversationCreateWithoutMessagesInput, ConversationUncheckedCreateWithoutMessagesInput>
     connectOrCreate?: ConversationCreateOrConnectWithoutMessagesInput
@@ -51155,6 +52797,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -51179,6 +52822,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -51384,6 +53028,35 @@ export namespace Prisma {
 
   export type ScheduledAgentCreateManyUserInputEnvelope = {
     data: ScheduledAgentCreateManyUserInput | ScheduledAgentCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SavedPromptCreateWithoutUserInput = {
+    uuid?: string
+    title: string
+    content: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization: OrganizationCreateNestedOneWithoutSaved_promptsInput
+  }
+
+  export type SavedPromptUncheckedCreateWithoutUserInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    title: string
+    content: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type SavedPromptCreateOrConnectWithoutUserInput = {
+    where: SavedPromptWhereUniqueInput
+    create: XOR<SavedPromptCreateWithoutUserInput, SavedPromptUncheckedCreateWithoutUserInput>
+  }
+
+  export type SavedPromptCreateManyUserInputEnvelope = {
+    data: SavedPromptCreateManyUserInput | SavedPromptCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -51711,6 +53384,36 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"ScheduledAgent"> | Date | string
   }
 
+  export type SavedPromptUpsertWithWhereUniqueWithoutUserInput = {
+    where: SavedPromptWhereUniqueInput
+    update: XOR<SavedPromptUpdateWithoutUserInput, SavedPromptUncheckedUpdateWithoutUserInput>
+    create: XOR<SavedPromptCreateWithoutUserInput, SavedPromptUncheckedCreateWithoutUserInput>
+  }
+
+  export type SavedPromptUpdateWithWhereUniqueWithoutUserInput = {
+    where: SavedPromptWhereUniqueInput
+    data: XOR<SavedPromptUpdateWithoutUserInput, SavedPromptUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SavedPromptUpdateManyWithWhereWithoutUserInput = {
+    where: SavedPromptScalarWhereInput
+    data: XOR<SavedPromptUpdateManyMutationInput, SavedPromptUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SavedPromptScalarWhereInput = {
+    AND?: SavedPromptScalarWhereInput | SavedPromptScalarWhereInput[]
+    OR?: SavedPromptScalarWhereInput[]
+    NOT?: SavedPromptScalarWhereInput | SavedPromptScalarWhereInput[]
+    id?: IntFilter<"SavedPrompt"> | number
+    uuid?: StringFilter<"SavedPrompt"> | string
+    org_uuid?: StringFilter<"SavedPrompt"> | string
+    user_uuid?: StringFilter<"SavedPrompt"> | string
+    title?: StringFilter<"SavedPrompt"> | string
+    content?: StringFilter<"SavedPrompt"> | string
+    created_at?: DateTimeFilter<"SavedPrompt"> | Date | string
+    updated_at?: DateTimeFilter<"SavedPrompt"> | Date | string
+  }
+
   export type DocumentBoardUpsertWithWhereUniqueWithoutCreatorInput = {
     where: DocumentBoardWhereUniqueInput
     update: XOR<DocumentBoardUpdateWithoutCreatorInput, DocumentBoardUncheckedUpdateWithoutCreatorInput>
@@ -51818,6 +53521,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
     documents?: DocumentCreateNestedManyWithoutUserInput
@@ -51840,6 +53544,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
@@ -52317,6 +54022,35 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SavedPromptCreateWithoutOrganizationInput = {
+    uuid?: string
+    title: string
+    content: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    user: UserCreateNestedOneWithoutSaved_promptsInput
+  }
+
+  export type SavedPromptUncheckedCreateWithoutOrganizationInput = {
+    id?: number
+    uuid?: string
+    user_uuid: string
+    title: string
+    content: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type SavedPromptCreateOrConnectWithoutOrganizationInput = {
+    where: SavedPromptWhereUniqueInput
+    create: XOR<SavedPromptCreateWithoutOrganizationInput, SavedPromptUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type SavedPromptCreateManyOrganizationInputEnvelope = {
+    data: SavedPromptCreateManyOrganizationInput | SavedPromptCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type DocumentBoardCreateWithoutOrganizationInput = {
     uuid?: string
     name: string
@@ -52375,6 +54109,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
@@ -52397,6 +54132,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
@@ -52721,6 +54457,22 @@ export namespace Prisma {
     data: XOR<ScheduledAgentUpdateManyMutationInput, ScheduledAgentUncheckedUpdateManyWithoutOrganizationInput>
   }
 
+  export type SavedPromptUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: SavedPromptWhereUniqueInput
+    update: XOR<SavedPromptUpdateWithoutOrganizationInput, SavedPromptUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<SavedPromptCreateWithoutOrganizationInput, SavedPromptUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type SavedPromptUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: SavedPromptWhereUniqueInput
+    data: XOR<SavedPromptUpdateWithoutOrganizationInput, SavedPromptUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type SavedPromptUpdateManyWithWhereWithoutOrganizationInput = {
+    where: SavedPromptScalarWhereInput
+    data: XOR<SavedPromptUpdateManyMutationInput, SavedPromptUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
   export type DocumentBoardUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: DocumentBoardWhereUniqueInput
     update: XOR<DocumentBoardUpdateWithoutOrganizationInput, DocumentBoardUncheckedUpdateWithoutOrganizationInput>
@@ -52757,6 +54509,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -52781,6 +54534,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -52805,6 +54559,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
     documents?: DocumentCreateNestedManyWithoutUserInput
@@ -52827,6 +54582,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
@@ -52890,6 +54646,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -52914,6 +54671,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -52944,6 +54702,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
@@ -52966,6 +54725,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
@@ -53019,6 +54779,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -53043,6 +54804,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -53132,6 +54894,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -53156,6 +54919,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -53354,6 +55118,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -53378,6 +55143,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -53402,6 +55168,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
     documents?: DocumentCreateNestedManyWithoutUserInput
@@ -53424,6 +55191,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
@@ -53465,6 +55233,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -53489,6 +55258,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -53519,6 +55289,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
@@ -53541,6 +55312,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
@@ -53566,6 +55338,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -53590,6 +55363,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -53795,6 +55569,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -53819,6 +55594,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -54738,6 +56514,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -54762,6 +56539,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -54847,6 +56625,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -54871,6 +56650,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -54946,6 +56726,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -54970,6 +56751,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -55047,6 +56829,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -55071,6 +56854,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -55138,6 +56922,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -55162,6 +56947,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -55247,6 +57033,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -55271,6 +57058,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -55346,6 +57134,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -55370,6 +57159,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -55455,6 +57245,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -55479,6 +57270,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -55551,6 +57343,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
   }
@@ -55573,6 +57366,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
   }
@@ -55637,6 +57431,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
   }
@@ -55659,6 +57454,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
   }
@@ -55700,6 +57496,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDocument_boardsInput = {
@@ -55724,6 +57521,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDocument_boardsInput = {
@@ -55748,6 +57546,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutUserInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
     documents?: DocumentCreateNestedManyWithoutUserInput
   }
@@ -55770,6 +57569,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutUserInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
   }
@@ -55838,6 +57638,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDocument_boardsInput = {
@@ -55862,6 +57663,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutCreated_document_boardsInput = {
@@ -55892,6 +57694,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutUserNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
   }
@@ -55914,6 +57717,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutUserNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -56007,6 +57811,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     documents?: DocumentCreateNestedManyWithoutUserInput
   }
@@ -56029,6 +57834,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
   }
@@ -56134,6 +57940,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
   }
@@ -56156,6 +57963,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -56180,6 +57988,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -56204,6 +58013,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -56243,6 +58053,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -56267,6 +58078,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -56290,6 +58102,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -56314,6 +58127,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -56338,6 +58152,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
     documents?: DocumentCreateNestedManyWithoutUserInput
@@ -56360,6 +58175,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
@@ -56509,6 +58325,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -56533,6 +58350,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -56563,6 +58381,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
@@ -56585,6 +58404,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
@@ -56695,6 +58515,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -56719,6 +58540,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -56743,6 +58565,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
     documents?: DocumentCreateNestedManyWithoutUserInput
@@ -56765,6 +58588,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
@@ -56844,6 +58668,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -56868,6 +58693,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -56898,6 +58724,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
@@ -56920,6 +58747,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
@@ -56967,6 +58795,226 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
     executions?: AgentExecutionUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type OrganizationCreateWithoutSaved_promptsInput = {
+    uuid?: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    creator: UserCreateNestedOneWithoutCreated_organizationsInput
+    members?: OrganizationMemberCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutSaved_promptsInput = {
+    id?: number
+    uuid?: string
+    user_uuid: string
+    name: string
+    slug: string
+    logo_url?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    members?: OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+    roles?: OrganizationRoleUncheckedCreateNestedManyWithoutOrganizationInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+    integrations?: IntegrationUncheckedCreateNestedManyWithoutOrganizationInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedCreateNestedManyWithoutOrganizationInput
+    tool_permissions?: OrganisationToolPermissionUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_accounts?: ComposioConnectedAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    composio_triggers?: ComposioTriggerUncheckedCreateNestedManyWithoutOrganizationInput
+    ai_providers?: AiProviderUncheckedCreateNestedManyWithoutOrganizationInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutSaved_promptsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutSaved_promptsInput, OrganizationUncheckedCreateWithoutSaved_promptsInput>
+  }
+
+  export type UserCreateWithoutSaved_promptsInput = {
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationCreateNestedManyWithoutCreatorInput
+    audit_logs?: AuditLogCreateNestedManyWithoutUserInput
+    conversations?: ConversationCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
+    documents?: DocumentCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSaved_promptsInput = {
+    id?: number
+    uuid?: string
+    email: string
+    phone?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    password: string
+    role: $Enums.AuthRole
+    created_at?: Date | string
+    updated_at?: Date | string
+    organization_members?: OrganizationMemberUncheckedCreateNestedManyWithoutUserInput
+    created_organizations?: OrganizationUncheckedCreateNestedManyWithoutCreatorInput
+    audit_logs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
+    agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
+    scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
+    document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSaved_promptsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSaved_promptsInput, UserUncheckedCreateWithoutSaved_promptsInput>
+  }
+
+  export type OrganizationUpsertWithoutSaved_promptsInput = {
+    update: XOR<OrganizationUpdateWithoutSaved_promptsInput, OrganizationUncheckedUpdateWithoutSaved_promptsInput>
+    create: XOR<OrganizationCreateWithoutSaved_promptsInput, OrganizationUncheckedCreateWithoutSaved_promptsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutSaved_promptsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutSaved_promptsInput, OrganizationUncheckedUpdateWithoutSaved_promptsInput>
+  }
+
+  export type OrganizationUpdateWithoutSaved_promptsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutCreated_organizationsNestedInput
+    members?: OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutSaved_promptsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+    roles?: OrganizationRoleUncheckedUpdateManyWithoutOrganizationNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+    integrations?: IntegrationUncheckedUpdateManyWithoutOrganizationNestedInput
+    enabled_toolkits?: OrganisationEnabledToolkitUncheckedUpdateManyWithoutOrganizationNestedInput
+    tool_permissions?: OrganisationToolPermissionUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_accounts?: ComposioConnectedAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    composio_triggers?: ComposioTriggerUncheckedUpdateManyWithoutOrganizationNestedInput
+    ai_providers?: AiProviderUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type UserUpsertWithoutSaved_promptsInput = {
+    update: XOR<UserUpdateWithoutSaved_promptsInput, UserUncheckedUpdateWithoutSaved_promptsInput>
+    create: XOR<UserCreateWithoutSaved_promptsInput, UserUncheckedCreateWithoutSaved_promptsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSaved_promptsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSaved_promptsInput, UserUncheckedUpdateWithoutSaved_promptsInput>
+  }
+
+  export type UserUpdateWithoutSaved_promptsInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUpdateManyWithoutCreatorNestedInput
+    audit_logs?: AuditLogUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSaved_promptsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    first_name?: NullableStringFieldUpdateOperationsInput | string | null
+    last_name?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumAuthRoleFieldUpdateOperationsInput | $Enums.AuthRole
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization_members?: OrganizationMemberUncheckedUpdateManyWithoutUserNestedInput
+    created_organizations?: OrganizationUncheckedUpdateManyWithoutCreatorNestedInput
+    audit_logs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
+    agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
+    conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
+    scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
+    document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ConversationCreateWithoutMessagesInput = {
@@ -57194,6 +59242,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -57218,6 +59267,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -57242,6 +59292,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
     documents?: DocumentCreateNestedManyWithoutUserInput
@@ -57264,6 +59315,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     conversation_personalizations?: ConversationPersonalizationUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
@@ -57424,6 +59476,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -57448,6 +59501,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -57478,6 +59532,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
@@ -57500,6 +59555,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
@@ -57709,6 +59765,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemCreateNestedManyWithoutAdderInput
     documents?: DocumentCreateNestedManyWithoutUserInput
@@ -57731,6 +59788,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutUserInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutUserInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutUserInput
     created_document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutCreatorInput
     document_board_items?: DocumentBoardItemUncheckedCreateNestedManyWithoutAdderInput
     documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
@@ -57761,6 +59819,7 @@ export namespace Prisma {
     conversations?: ConversationCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardCreateNestedManyWithoutOrganizationInput
   }
 
@@ -57785,6 +59844,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedCreateNestedManyWithoutOrganizationInput
     agent_executions?: AgentExecutionUncheckedCreateNestedManyWithoutOrganizationInput
     scheduled_agents?: ScheduledAgentUncheckedCreateNestedManyWithoutOrganizationInput
+    saved_prompts?: SavedPromptUncheckedCreateNestedManyWithoutOrganizationInput
     document_boards?: DocumentBoardUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
@@ -57820,6 +59880,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUpdateManyWithoutAdderNestedInput
     documents?: DocumentUpdateManyWithoutUserNestedInput
@@ -57842,6 +59903,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutUserNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutUserNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutUserNestedInput
     created_document_boards?: DocumentBoardUncheckedUpdateManyWithoutCreatorNestedInput
     document_board_items?: DocumentBoardItemUncheckedUpdateManyWithoutAdderNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
@@ -57878,6 +59940,7 @@ export namespace Prisma {
     conversations?: ConversationUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -57902,6 +59965,7 @@ export namespace Prisma {
     conversations?: ConversationUncheckedUpdateManyWithoutOrganizationNestedInput
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -57996,6 +60060,16 @@ export namespace Prisma {
     updated_at?: Date | string
   }
 
+  export type SavedPromptCreateManyUserInput = {
+    id?: number
+    uuid?: string
+    org_uuid: string
+    title: string
+    content: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
   export type DocumentBoardCreateManyCreatorInput = {
     id?: number
     uuid?: string
@@ -58076,6 +60150,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -58100,6 +60175,7 @@ export namespace Prisma {
     agent_executions?: AgentExecutionUncheckedUpdateManyWithoutOrganizationNestedInput
     conversation_personalizations?: ConversationPersonalizationUncheckedUpdateManyWithoutOrganizationNestedInput
     scheduled_agents?: ScheduledAgentUncheckedUpdateManyWithoutOrganizationNestedInput
+    saved_prompts?: SavedPromptUncheckedUpdateManyWithoutOrganizationNestedInput
     document_boards?: DocumentBoardUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
@@ -58325,6 +60401,35 @@ export namespace Prisma {
     conversation_uuid?: StringFieldUpdateOperationsInput | string
     last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SavedPromptUpdateWithoutUserInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutSaved_promptsNestedInput
+  }
+
+  export type SavedPromptUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SavedPromptUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    org_uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -58583,6 +60688,16 @@ export namespace Prisma {
     conversation_uuid: string
     last_run_at?: Date | string | null
     next_run_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type SavedPromptCreateManyOrganizationInput = {
+    id?: number
+    uuid?: string
+    user_uuid: string
+    title: string
+    content: string
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -59094,6 +61209,35 @@ export namespace Prisma {
     conversation_uuid?: StringFieldUpdateOperationsInput | string
     last_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     next_run_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SavedPromptUpdateWithoutOrganizationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSaved_promptsNestedInput
+  }
+
+  export type SavedPromptUncheckedUpdateWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SavedPromptUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    uuid?: StringFieldUpdateOperationsInput | string
+    user_uuid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }

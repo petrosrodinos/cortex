@@ -52,6 +52,7 @@ interface ConversationMessagesProps {
   onRetryMessage: (message: Message) => void;
   onReplyToMessage: (message: Message) => void;
   onCreateAgentFromMessage?: (message: Message) => void;
+  onSavePromptFromMessage?: (message: Message) => void;
   onDeleteMessage?: (message: Message) => void;
   isDeletingMessage?: boolean;
   readOnly?: boolean;
@@ -82,6 +83,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
   onRetryMessage,
   onReplyToMessage,
   onCreateAgentFromMessage,
+  onSavePromptFromMessage,
   onDeleteMessage,
   isDeletingMessage = false,
   readOnly = false,
@@ -171,6 +173,7 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
                 onRetry={onRetryMessage}
                 onDelete={onDeleteMessage}
                 onCreateAgent={onCreateAgentFromMessage}
+                onSavePrompt={onSavePromptFromMessage}
               />
             </div>
           </div>

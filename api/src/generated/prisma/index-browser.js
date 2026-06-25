@@ -438,6 +438,17 @@ exports.Prisma.ScheduledAgentScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.SavedPromptScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  org_uuid: 'org_uuid',
+  user_uuid: 'user_uuid',
+  title: 'title',
+  content: 'content',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.MessageScalarFieldEnum = {
   id: 'id',
   uuid: 'uuid',
@@ -705,6 +716,7 @@ exports.Prisma.ModelName = {
   AiProvider: 'AiProvider',
   Conversation: 'Conversation',
   ScheduledAgent: 'ScheduledAgent',
+  SavedPrompt: 'SavedPrompt',
   Message: 'Message',
   AgentExecution: 'AgentExecution',
   ToolCall: 'ToolCall',

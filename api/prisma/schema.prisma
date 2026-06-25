@@ -193,6 +193,7 @@ model User {
   agent_executions     AgentExecution[]
   conversation_personalizations ConversationPersonalization[]
   scheduled_agents     ScheduledAgent[]
+  saved_prompts        SavedPrompt[]
   created_document_boards DocumentBoard[]
   document_board_items    DocumentBoardItem[]
   documents               Document[]
@@ -227,6 +228,7 @@ model Organization {
   agent_executions AgentExecution[]
   conversation_personalizations ConversationPersonalization[]
   scheduled_agents ScheduledAgent[]
+  saved_prompts    SavedPrompt[]
   document_boards  DocumentBoard[]
 
   @@index([uuid])
@@ -707,6 +709,24 @@ model ScheduledAgent {
   @@index([user_uuid])
   @@index([is_enabled])
   @@map("scheduled_agents")
+}
+
+model SavedPrompt {
+  id         Int      @id @default(autoincrement())
+  uuid       String   @unique @default(uuid())
+  org_uuid   String
+  user_uuid  String
+  title      String
+  content    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  organization Organization @relation(fields: [org_uuid], references: [uuid], onDelete: Cascade)
+  user         User         @relation(fields: [user_uuid], references: [uuid], onDelete: Cascade)
+
+  @@index([org_uuid])
+  @@index([user_uuid])
+  @@map("saved_prompts")
 }
 
 model Message {

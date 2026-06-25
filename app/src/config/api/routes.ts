@@ -78,6 +78,9 @@ export const ApiRoutes = {
         agents: (organizationUuid: string) => `/organizations/${organizationUuid}/agents`,
         agent: (organizationUuid: string, agentUuid: string) =>
             `/organizations/${organizationUuid}/agents/${agentUuid}`,
+        savedPrompts: (organizationUuid: string) => `/organizations/${organizationUuid}/saved-prompts`,
+        savedPrompt: (organizationUuid: string, promptUuid: string) =>
+            `/organizations/${organizationUuid}/saved-prompts/${promptUuid}`,
         conversationPersonalization: (organizationUuid: string) => `/organizations/${organizationUuid}/conversation-personalization`,
         executions: (organizationUuid: string) => `/organizations/${organizationUuid}/executions`,
         execution: (organizationUuid: string, executionUuid: string) => `/organizations/${organizationUuid}/executions/${executionUuid}`,

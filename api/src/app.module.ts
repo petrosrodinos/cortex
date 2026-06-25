@@ -24,6 +24,7 @@ import { ConversationPersonalizationModule } from './modules/conversation-person
 import { ComposioModule } from './modules/composio/composio.module';
 import { AgentsModule } from './modules/agents/agents.module';
 import { DocumentBoardsModule } from './modules/document-boards/document-boards.module';
+import { SavedPromptsModule } from './modules/saved-prompts/saved-prompts.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { DocumentBoardsModule } from './modules/document-boards/document-boards.
     ComposioModule,
     AgentsModule,
     DocumentBoardsModule,
+    SavedPromptsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

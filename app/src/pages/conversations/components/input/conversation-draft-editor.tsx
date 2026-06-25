@@ -34,6 +34,10 @@ export function createEmptyDraft(): DraftPart[] {
   return [{ type: 'text', value: '' }];
 }
 
+export function plainTextToDraftParts(text: string): DraftPart[] {
+  return [{ type: 'text', value: text }];
+}
+
 export function draftPartsToPlainText(parts: DraftPart[]): string {
   return parts
     .filter((part): part is { type: 'text'; value: string } => part.type === 'text')

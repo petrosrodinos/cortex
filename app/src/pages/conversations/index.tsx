@@ -32,12 +32,19 @@ import {
 import { useExecution } from '@/features/conversations/hooks/use-execution';
 import { useCreateAgent } from '@/features/agents/hooks/use-agents';
 import type { AgentFormValues } from '@/features/agents/validation-schemas/agent.schema';
+import {
+  useCreateSavedPrompt,
+  useUpdateSavedPrompt,
+} from '@/features/saved-prompts/hooks/use-saved-prompts';
+import type { SavedPrompt } from '@/features/saved-prompts/interfaces/saved-prompts.interfaces';
+import type { SavedPromptFormValues } from '@/features/saved-prompts/validation-schemas/saved-prompt.schema';
 import { MessageRoles, ConversationKinds, type Message, type MessageAttachment } from '@/features/conversations/interfaces/conversation.interfaces';
 import { useUploadDocument } from '@/features/files/hooks/use-files';
 import { cn } from '@/lib/utils';
 import { ConversationEmptyState } from './components/shared/conversation-empty-state';
 import { ConversationAiProviderRequired } from './components/shared/conversation-ai-provider-required';
-import { ConversationDocumentsModal } from './components/shared/conversation-documents-modal';
+import { ConversationDocumentsModal, libraryTabs, type LibraryTabKey } from './components/shared/conversation-documents-modal';
+import { SavedPromptFormModal } from './components/shared/saved-prompt-form-modal';
 import { ConversationHeader } from './components/shared/conversation-header';
 import { ConversationInput, type AttachedFile } from './components/input/conversation-input';
 import { getToolEligibleIntegrations } from './components/input/integration-tools-list';
@@ -46,6 +53,7 @@ import {
   draftPartsToPlainText,
   getDraftIntegrationUuids,
   getDraftToolkitBindings,
+  plainTextToDraftParts,
   type ConversationDraftEditorHandle,
   type DraftPart,
 } from './components/input/conversation-draft-editor';
@@ -70,6 +78,7 @@ import {
   type ConversationReplyTarget,
 } from './utils/conversation-reply.utils';
 import { AgentModal } from '@/pages/agents/components/agent-modal';
+import { toast } from '@/hooks/use-toast';
 
 const ConversationsPage: FC = () => {
   const navigate = useNavigate();
@@ -88,6 +97,13 @@ const ConversationsPage: FC = () => {
   const [deleteMessageTarget, setDeleteMessageTarget] = useState<Message | null>(null);
   const [createAgentMessage, setCreateAgentMessage] = useState<Message | null>(null);
   const [documentsOpen, setDocumentsOpen] = useState(false);
+  const [libraryInitialTab, setLibraryInitialTab] = useState<LibraryTabKey>(libraryTabs.documents);
+  const [promptFormState, setPromptFormState] = useState<{
+    mode: 'create' | 'edit';
+    initialValues?: Partial<SavedPromptFormValues>;
+    formKey?: string;
+    editingPromptUuid?: string;
+  } | null>(null);
   const [chatsPanelCollapsed, setChatsPanelCollapsed] = useState(getInitialConversationsSidebarCollapsed);
   const autoCreateStarted = useRef(false);
   const draftEditorRef = useRef<ConversationDraftEditorHandle>(null);
@@ -112,6 +128,8 @@ const ConversationsPage: FC = () => {
   const resolveConnectionTiers = useResolveConnectionTiers(organizationUuid);
   const uploadDocument = useUploadDocument(organizationUuid);
   const createAgent = useCreateAgent(organizationUuid);
+  const createSavedPrompt = useCreateSavedPrompt(organizationUuid);
+  const updateSavedPrompt = useUpdateSavedPrompt(organizationUuid);
 
   const execution = useExecution(organizationUuid, conversationUuid, activeExecutionId);
   const {
@@ -505,9 +523,76 @@ const ConversationsPage: FC = () => {
     setCreateAgentMessage(message);
   };
 
+  const handleCreateAgentFromPrompt = (prompt: SavedPrompt) => {
+    setDocumentsOpen(false);
+    setCreateAgentMessage({
+      uuid: prompt.uuid,
+      content: prompt.content,
+    } as Message);
+  };
+
   const handleCreateAgentSubmit = (values: AgentFormValues) => {
     createAgent.mutate(values, {
       onSuccess: () => setCreateAgentMessage(null),
+    });
+  };
+
+  const handleOpenDocuments = () => {
+    setLibraryInitialTab(libraryTabs.documents);
+    setDocumentsOpen(true);
+  };
+
+  const handleCreatePrompt = () => {
+    setPromptFormState({ mode: 'create' });
+  };
+
+  const handleEditPrompt = (prompt: SavedPrompt) => {
+    setPromptFormState({
+      mode: 'edit',
+      initialValues: { title: prompt.title, content: prompt.content },
+      formKey: prompt.uuid,
+      editingPromptUuid: prompt.uuid,
+    });
+  };
+
+  const handleSavePromptFromMessage = (message: Message) => {
+    setPromptFormState({
+      mode: 'create',
+      initialValues: { content: message.content ?? '' },
+      formKey: message.uuid,
+    });
+  };
+
+  const handleUsePrompt = (prompt: SavedPrompt) => {
+    setDraftParts(plainTextToDraftParts(prompt.content));
+    setDocumentsOpen(false);
+    window.requestAnimationFrame(() => {
+      draftEditorRef.current?.focus();
+    });
+    toast({
+      title: 'Prompt inserted',
+      description: 'The saved prompt was added to your message draft.',
+      duration: 2000,
+    });
+  };
+
+  const handlePromptFormSubmit = (values: SavedPromptFormValues) => {
+    if (!promptFormState) return;
+
+    if (promptFormState.mode === 'edit' && promptFormState.editingPromptUuid) {
+      updateSavedPrompt.mutate(
+        { promptUuid: promptFormState.editingPromptUuid, payload: values },
+        { onSuccess: () => setPromptFormState(null) },
+      );
+      return;
+    }
+
+    createSavedPrompt.mutate(values, {
+      onSuccess: () => {
+        setPromptFormState(null);
+        setLibraryInitialTab(libraryTabs.prompts);
+        setDocumentsOpen(true);
+      },
     });
   };
 
@@ -689,7 +774,7 @@ const ConversationsPage: FC = () => {
               readOnly={isAgentConversation}
               onRename={(title) => handleRename(conversationUuid, title)}
               onDelete={() => handleDeleteRequest(conversationUuid)}
-              onOpenDocuments={() => setDocumentsOpen(true)}
+              onOpenDocuments={handleOpenDocuments}
               onOpenChats={chatListDrawer.open}
               chatsPanelCollapsed={chatsPanelCollapsed}
               onToggleChatsPanel={() => setChatsPanelCollapsed((value) => !value)}
@@ -700,7 +785,12 @@ const ConversationsPage: FC = () => {
               orgUuid={organizationUuid ?? ''}
               conversationUuid={conversationUuid ?? ''}
               pendingAttachments={isPendingUserMessageVisible ? pendingUserAttachments : []}
+              initialTab={libraryInitialTab}
               onOpenChange={setDocumentsOpen}
+              onCreatePrompt={handleCreatePrompt}
+              onEditPrompt={handleEditPrompt}
+              onUsePrompt={handleUsePrompt}
+              onCreateAgentFromPrompt={handleCreateAgentFromPrompt}
             />
 
             {isAgentConversation ? (
@@ -734,6 +824,7 @@ const ConversationsPage: FC = () => {
               onRetryMessage={handleRetryMessage}
               onReplyToMessage={handleReplyToMessage}
               onCreateAgentFromMessage={handleCreateAgentFromMessage}
+              onSavePromptFromMessage={handleSavePromptFromMessage}
               onDeleteMessage={handleDeleteMessageRequest}
               isDeletingMessage={deleteMessage.isPending}
               readOnly={isAgentConversation}
@@ -804,6 +895,17 @@ const ConversationsPage: FC = () => {
           isSubmitting={createAgent.isPending}
           onClose={() => setCreateAgentMessage(null)}
           onSubmit={handleCreateAgentSubmit}
+        />
+      ) : null}
+
+      {promptFormState ? (
+        <SavedPromptFormModal
+          mode={promptFormState.mode}
+          formKey={promptFormState.formKey}
+          initialValues={promptFormState.initialValues}
+          isSubmitting={createSavedPrompt.isPending || updateSavedPrompt.isPending}
+          onClose={() => setPromptFormState(null)}
+          onSubmit={handlePromptFormSubmit}
         />
       ) : null}
     </div>

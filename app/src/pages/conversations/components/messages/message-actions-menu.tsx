@@ -1,6 +1,6 @@
 import type { FC, Key } from 'react';
 import { Button, Dropdown, Label } from '@heroui/react';
-import { Bot, Copy, CornerDownRight, MoreHorizontal, RotateCcw, Trash2 } from 'lucide-react';
+import { Bot, Bookmark, Copy, CornerDownRight, MoreHorizontal, RotateCcw, Trash2 } from 'lucide-react';
 import { OrganizationPermissionGate } from '@/components/permissions/organization-permission-gate';
 import { PermissionKeys } from '@/features/permissions/interfaces/permission.interfaces';
 import type { Message } from '@/features/conversations/interfaces/conversation.interfaces';
@@ -20,6 +20,7 @@ interface MessageActionsMenuProps {
   onRetry?: (message: Message) => void;
   onDelete?: (message: Message) => void;
   onCreateAgent?: (message: Message) => void;
+  onSavePrompt?: (message: Message) => void;
   className?: string;
 }
 
@@ -33,6 +34,7 @@ export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
   onRetry,
   onDelete,
   onCreateAgent,
+  onSavePrompt,
   className,
 }) => {
   const isSuperAdmin = useAuthStore((state) => state.role) === RoleTypes.SUPER_ADMIN;
@@ -73,6 +75,11 @@ export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
 
     if (key === 'create-agent') {
       onCreateAgent?.(message);
+      return;
+    }
+
+    if (key === 'save-prompt') {
+      onSavePrompt?.(message);
     }
   };
 
@@ -110,6 +117,12 @@ export const MessageActionsMenu: FC<MessageActionsMenuProps> = ({
             <Dropdown.Item id="create-agent" textValue="Create agent" className="rounded-lg px-2 py-2">
               <Bot className="h-4 w-4 shrink-0 text-muted" />
               <Label className="text-sm">Create agent</Label>
+            </Dropdown.Item>
+          ) : null}
+          {hasContent && onSavePrompt ? (
+            <Dropdown.Item id="save-prompt" textValue="Save prompt" className="rounded-lg px-2 py-2">
+              <Bookmark className="h-4 w-4 shrink-0 text-muted" />
+              <Label className="text-sm">Save prompt</Label>
             </Dropdown.Item>
           ) : null}
           {message.role === MessageRoles.USER && canRetry && onRetry ? (
