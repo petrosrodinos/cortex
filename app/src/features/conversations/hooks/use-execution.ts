@@ -23,6 +23,7 @@ import {
 import { isDisplayableToolName } from '../utils/agent-progress-labels';
 
 const EXECUTION_POLL_INTERVAL_MS = 1000;
+const STALE_PENDING_TIMEOUT_MS = 90_000;
 
 function conversationRoom(organizationUuid: string, conversationUuid: string) {
   return `org:${organizationUuid}:conversation:${conversationUuid}`;
@@ -111,10 +112,12 @@ export function useExecution(
   const [state, dispatch] = useReducer(agentProgressReducer, initialAgentProgressState);
   const completedRef = useRef(false);
   const executionIdRef = useRef<string | null>(null);
+  const executionStartedAtRef = useRef<number | null>(null);
 
   const reset = useCallback(() => {
     completedRef.current = false;
     executionIdRef.current = null;
+    executionStartedAtRef.current = null;
     dispatch({ type: 'reset' });
   }, []);
 
@@ -248,10 +251,23 @@ export function useExecution(
     }
 
     completedRef.current = false;
+    executionStartedAtRef.current = Date.now();
     dispatch({ type: 'running' });
 
     const pollExecution = () => {
       if (completedRef.current || executionIdRef.current !== executionId) {
+        return;
+      }
+
+      if (
+        executionStartedAtRef.current != null &&
+        Date.now() - executionStartedAtRef.current > STALE_PENDING_TIMEOUT_MS
+      ) {
+        completedRef.current = true;
+        dispatch({
+          type: 'error',
+          error: 'The assistant took too long to respond. Please try again.',
+        });
         return;
       }
 
@@ -282,27 +298,53 @@ export function useExecution(
           }
 
           if (execution.status === AgentExecutionStatuses.AWAITING_APPROVAL) {
+            completedRef.current = true;
             const request = parseApprovalRequest(execution);
             if (request) {
               dispatch({ type: 'approval_required', request });
+              return;
             }
+            dispatch({
+              type: 'error',
+              error: execution.error ?? 'Agent execution requires approval',
+            });
             return;
           }
 
           if (execution.status === AgentExecutionStatuses.AWAITING_CONNECTION_TIER) {
+            completedRef.current = true;
             const request = parseConnectionTierRequest(execution);
             if (request) {
               dispatch({ type: 'connection_tier_required', request });
+              return;
             }
+            dispatch({
+              type: 'error',
+              error: execution.error ?? 'Agent execution requires a connection tier',
+            });
             return;
           }
 
           const choiceRequest = parseUserChoiceRequest(execution);
           if (choiceRequest) {
+            completedRef.current = true;
             dispatch({ type: 'choice_required', request: choiceRequest });
           }
         })
-        .catch(() => {});
+        .catch((error: unknown) => {
+          if (completedRef.current || executionIdRef.current !== executionId) {
+            return;
+          }
+
+          completedRef.current = true;
+          dispatch({
+            type: 'error',
+            error:
+              error instanceof Error
+                ? error.message
+                : 'Failed to load agent execution status',
+          });
+        });
     };
 
     pollExecution();

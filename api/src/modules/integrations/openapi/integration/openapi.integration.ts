@@ -6,10 +6,12 @@ import { Integration, IntegrationProvider, OpenApiAuthType } from 'generated/pri
 import { AiTool, IntegrationActionSeed } from '../../framework/interfaces/ai-tool.interface';
 import { BaseIntegration } from '../../framework/base/base-integration';
 import { OpenApiAuthConfig, OpenApiAuthService } from '../auth/openapi-auth.service';
-import { GeneratedOpenApiTool } from '../types/openapi.types';
+import { resolveOpenApiServerUrl } from '../parser/openapi-parser.service';
+import { GeneratedOpenApiTool, ParsedOperation } from '../types/openapi.types';
 
 type OpenApiIntegrationRecord = {
   integration_uuid: string;
+  spec_url?: string | null;
   base_url: string;
   auth_type: OpenApiAuthType;
   auth_config: string;
@@ -65,8 +67,11 @@ export class OpenApiIntegration extends BaseIntegration {
 
       const authConfig = JSON.parse(this.encryption_service.decrypt(openapi.auth_config)) as OpenApiAuthConfig;
       const credentials = this.decryptConfig(integration);
-      const auth = this.authService.buildRequestAuth(authConfig, credentials);
-      const request = this.buildRequest(openapi.base_url, tool, input ?? {}, auth);
+      const auth = this.operationRequiresAuth(tool.operation)
+        ? this.authService.buildRequestAuth(authConfig, credentials)
+        : { headers: {}, params: {} };
+      const baseUrl = resolveOpenApiServerUrl(openapi.base_url, openapi.spec_url);
+      const request = this.buildRequest(baseUrl, tool, input ?? {}, auth);
       const response = await axios.request({ ...request, timeout: 15_000 });
 
       return { success: true, status: response.status, data: response.data };
@@ -82,6 +87,10 @@ export class OpenApiIntegration extends BaseIntegration {
   protected resolveActionKey(toolName: string) {
     const [, key] = toolName.split('__');
     return key || toolName;
+  }
+
+  private operationRequiresAuth(operation: ParsedOperation) {
+    return Array.isArray(operation.security) && operation.security.length > 0;
   }
 
   private async requireOpenApiIntegration(integrationUuid: string): Promise<OpenApiIntegrationRecord> {

@@ -6,6 +6,26 @@ import { ParsedOperation, ParsedOperationParameter, ParsedSpec } from '../types/
 
 const HTTP_METHODS = new Set(['get', 'post', 'put', 'patch', 'delete', 'head', 'options']);
 
+export function resolveOpenApiServerUrl(serverUrl: string, specUrl?: string | null) {
+  const trimmed = serverUrl.trim();
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed.replace(/\/+$/g, '');
+  }
+
+  if (!specUrl) {
+    throw new BadRequestException(
+      'OpenAPI server URL is relative but no spec URL was provided to resolve it against',
+    );
+  }
+
+  try {
+    return new URL(trimmed, specUrl).href.replace(/\/+$/g, '');
+  } catch {
+    throw new BadRequestException('OpenAPI server URL could not be resolved');
+  }
+}
+
 @Injectable()
 export class OpenApiParserService {
   async parse(input: { specUrl?: string; rawJson?: Record<string, any> | string }): Promise<ParsedSpec> {
@@ -15,7 +35,7 @@ export class OpenApiParserService {
     const operations = this.extractOperations(dereferenced);
 
     return {
-      baseUrl: this.extractBaseUrl(dereferenced),
+      baseUrl: this.extractBaseUrl(dereferenced, input.specUrl),
       specJson: dereferenced,
       operations,
       securitySchemes: dereferenced.components?.securitySchemes ?? {},
@@ -56,14 +76,14 @@ export class OpenApiParserService {
     throw new BadRequestException('Only OpenAPI 3.x and Swagger 2.x specs are supported');
   }
 
-  private extractBaseUrl(spec: Record<string, any>) {
+  private extractBaseUrl(spec: Record<string, any>, specUrl?: string) {
     const serverUrl = spec.servers?.find?.((server: any) => typeof server?.url === 'string')?.url;
 
     if (!serverUrl) {
       throw new BadRequestException('OpenAPI spec must define at least one server URL');
     }
 
-    return serverUrl;
+    return resolveOpenApiServerUrl(serverUrl, specUrl);
   }
 
   private extractOperations(spec: Record<string, any>): ParsedOperation[] {

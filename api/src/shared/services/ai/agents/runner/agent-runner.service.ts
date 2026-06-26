@@ -123,74 +123,73 @@ export class AgentRunnerService {
       aiResearchMode?: AiResearchMode | null;
     },
   ): Promise<AgentRunResult> {
-    const existingExecution = await this.prisma.agentExecution.findUnique({
-      where: { uuid: executionUuid },
-    });
-    const savedInput = (existingExecution?.input ?? {}) as SavedExecutionInput;
-
-    if (
-      existingExecution?.status === AgentExecutionStatus.COMPLETED &&
-      existingExecution.output
-    ) {
-      const output = existingExecution.output as {
-        content?: string;
-        files?: string[];
-        outputType?: string;
-      };
-
-      return {
-        content: output.content ?? '',
-        files: output.files ?? [],
-        outputType: output.outputType ?? 'TEXT',
-      };
-    }
-
-    if (
-      existingExecution?.status === AgentExecutionStatus.AWAITING_APPROVAL &&
-      !options?.resumeApprovals?.length
-    ) {
-      return {
-        content: '',
-        files: [],
-        outputType: 'TEXT',
-        awaitingApproval: true,
-        approvalRequests: savedInput.approvalRequests ?? [],
-      };
-    }
-
-    if (
-      isAwaitingUserChoiceStatus(existingExecution?.status ?? '') &&
-      !options?.resumeApprovals?.length
-    ) {
-      return {
-        content: '',
-        files: [],
-        outputType: 'TEXT',
-        awaitingUserChoice: true,
-        choiceRequest: savedInput.choiceRequest,
-      };
-    }
-
-    if (existingExecution?.status === AgentExecutionStatus.AWAITING_CONNECTION_TIER) {
-      return {
-        content: '',
-        files: [],
-        outputType: 'TEXT',
-      };
-    }
-
-    await this.prisma.agentExecution.update({
-      where: { uuid: executionUuid },
-      data: { status: AgentExecutionStatus.RUNNING, started_at: new Date() },
-    });
-
-    const progress = this.progressEmitter.createScope(
+    let progress = this.progressEmitter.createScope(
       organizationUuid,
       conversationId,
       executionUuid,
     );
 
     try {
+      const existingExecution = await this.prisma.agentExecution.findUnique({
+        where: { uuid: executionUuid },
+      });
+      const savedInput = (existingExecution?.input ?? {}) as SavedExecutionInput;
+
+      if (
+        existingExecution?.status === AgentExecutionStatus.COMPLETED &&
+        existingExecution.output
+      ) {
+        const output = existingExecution.output as {
+          content?: string;
+          files?: string[];
+          outputType?: string;
+        };
+
+        return {
+          content: output.content ?? '',
+          files: output.files ?? [],
+          outputType: output.outputType ?? 'TEXT',
+        };
+      }
+
+      if (
+        existingExecution?.status === AgentExecutionStatus.AWAITING_APPROVAL &&
+        !options?.resumeApprovals?.length
+      ) {
+        return {
+          content: '',
+          files: [],
+          outputType: 'TEXT',
+          awaitingApproval: true,
+          approvalRequests: savedInput.approvalRequests ?? [],
+        };
+      }
+
+      if (
+        isAwaitingUserChoiceStatus(existingExecution?.status ?? '') &&
+        !options?.resumeApprovals?.length
+      ) {
+        return {
+          content: '',
+          files: [],
+          outputType: 'TEXT',
+          awaitingUserChoice: true,
+          choiceRequest: savedInput.choiceRequest,
+        };
+      }
+
+      if (existingExecution?.status === AgentExecutionStatus.AWAITING_CONNECTION_TIER) {
+        return {
+          content: '',
+          files: [],
+          outputType: 'TEXT',
+        };
+      }
+
+      await this.prisma.agentExecution.update({
+        where: { uuid: executionUuid },
+        data: { status: AgentExecutionStatus.RUNNING, started_at: new Date() },
+      });
       const noAiConnectorMessage =
         await this.systemPromptBuilder.getNoAiConnectorMessage(
           organizationUuid,
@@ -493,8 +492,11 @@ export class AgentRunnerService {
           costUsd: 0,
         }));
 
-      await this.prisma.agentExecution.update({
-        where: { uuid: executionUuid },
+      await this.prisma.agentExecution.updateMany({
+        where: {
+          uuid: executionUuid,
+          status: { not: AgentExecutionStatus.COMPLETED },
+        },
         data: {
           status: AgentExecutionStatus.FAILED,
           completed_at: new Date(),

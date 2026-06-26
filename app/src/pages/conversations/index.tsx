@@ -316,6 +316,17 @@ const ConversationsPage: FC = () => {
     setActiveExecutionId(null);
   }, [isComplete, approvalRequest, connectionTierRequest, userChoiceRequest, conversationUuid, organizationUuid, queryClient, resetExecution]);
 
+  useEffect(() => {
+    if (!executionError || !conversationUuid || !organizationUuid) {
+      return;
+    }
+
+    resetExecution();
+    setActiveExecutionId(null);
+    setPendingUserMessage(null);
+    setPendingUserAttachments([]);
+  }, [executionError, conversationUuid, organizationUuid, resetExecution]);
+
   const pendingAssistantContent = useMemo(() => {
     if (isComplete || assistantContent == null) {
       return null;

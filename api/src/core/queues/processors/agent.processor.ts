@@ -1,6 +1,10 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
+import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
+import { AgentExecutionStatus } from 'generated/prisma';
+import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { AgentRunnerService } from '@/shared/services/ai/agents/runner/agent-runner.service';
+import { AgentProgressEmitterService } from '@/shared/services/ai/agents/progress/agent-progress-emitter.service';
 import { AiProviderType, AiResearchMode } from 'generated/prisma';
 import { AGENT_RUN_QUEUE } from '../queues.constants';
 
@@ -26,7 +30,13 @@ export interface AgentRunJobData {
 
 @Processor(AGENT_RUN_QUEUE)
 export class AgentProcessor extends WorkerHost {
-  constructor(private readonly agentRunner: AgentRunnerService) {
+  private readonly logger = new Logger(AgentProcessor.name);
+
+  constructor(
+    private readonly agentRunner: AgentRunnerService,
+    private readonly prisma: PrismaService,
+    private readonly progressEmitter: AgentProgressEmitterService,
+  ) {
     super();
   }
 
@@ -48,5 +58,47 @@ export class AgentProcessor extends WorkerHost {
         aiResearchMode: job.data.aiResearchMode,
       },
     );
+  }
+
+  @OnWorkerEvent('failed')
+  async onFailed(job: Job<AgentRunJobData> | undefined, error: Error) {
+    if (!job?.data?.executionUuid) {
+      return;
+    }
+
+    const message = error?.message ?? 'Agent execution failed';
+
+    try {
+      const updated = await this.prisma.agentExecution.updateMany({
+        where: {
+          uuid: job.data.executionUuid,
+          status: {
+            in: [AgentExecutionStatus.PENDING, AgentExecutionStatus.RUNNING],
+          },
+        },
+        data: {
+          status: AgentExecutionStatus.FAILED,
+          completed_at: new Date(),
+          error: message,
+        },
+      });
+
+      if (updated.count === 0) {
+        return;
+      }
+
+      this.progressEmitter
+        .createScope(
+          job.data.organizationUuid,
+          job.data.conversationId,
+          job.data.executionUuid,
+        )
+        .emitError(message);
+    } catch (markFailedError) {
+      this.logger.error(
+        `Failed to mark execution ${job.data.executionUuid} as failed`,
+        markFailedError instanceof Error ? markFailedError.stack : undefined,
+      );
+    }
   }
 }

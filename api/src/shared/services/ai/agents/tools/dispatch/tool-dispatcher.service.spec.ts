@@ -129,6 +129,31 @@ describe('ToolDispatcherService', () => {
     });
   });
 
+  it('treats integration success:false responses as failed tool calls', async () => {
+    const { service, prisma, registry } = createService({
+      registryResult: { success: false, error: 'Invalid URL' },
+    });
+
+    await expect(
+      service.dispatch(
+        'org-uuid',
+        'user-uuid',
+        'openapi_abcdef12__loginUser',
+        { username: 'petrosrod', password: '12345' },
+        'execution-uuid',
+        [],
+      ),
+    ).resolves.toMatchObject({ success: false, error: 'Invalid URL' });
+
+    expect(registry.executeTool).toHaveBeenCalled();
+    expect(prisma.toolCall.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        status: ToolCallStatus.FAILED,
+        error: 'Invalid URL',
+      }),
+    });
+  });
+
   it('uses prepared tool name and input for idempotency cache hits', async () => {
     const { service, prisma, registry, idempotency } = createService({
       cached: { cached: true },

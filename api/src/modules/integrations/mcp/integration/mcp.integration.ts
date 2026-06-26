@@ -6,6 +6,7 @@ import { AiTool } from '../../framework/interfaces/ai-tool.interface';
 import { BaseIntegration } from '../../framework/base/base-integration';
 import { McpConnectionManagerService } from '../client/mcp-connection-manager.service';
 import { DiscoveredMcpTool, McpAuthConfig, McpConnectionConfig, McpCredentials } from '../types/mcp.types';
+import { normalizeMcpInputSchema } from '../utils/normalize-mcp-input-schema.util';
 
 type McpIntegrationRecord = {
   integration_uuid: string;
@@ -44,7 +45,7 @@ export class McpIntegration extends BaseIntegration {
       function: {
         name: tool.name,
         description: tool.description,
-        parameters: tool.parameters,
+        parameters: normalizeMcpInputSchema(tool.parameters),
       },
     }));
   }

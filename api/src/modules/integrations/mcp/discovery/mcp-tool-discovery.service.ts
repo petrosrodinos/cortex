@@ -3,11 +3,11 @@ import { McpClientFactory } from '../client/mcp-client.factory';
 import {
   buildMcpToolName,
   DiscoveredMcpTool,
-  JsonSchemaObject,
   MCP_TOOL_LIMIT,
   McpConnectionConfig,
   McpDiscoveryResult,
 } from '../types/mcp.types';
+import { normalizeMcpInputSchema } from '../utils/normalize-mcp-input-schema.util';
 
 @Injectable()
 export class McpToolDiscoveryService {
@@ -17,20 +17,17 @@ export class McpToolDiscoveryService {
     const client = await this.clientFactory.createClient(config);
 
     try {
-      const toolSet = await client.tools();
+      const toolList = await client.listTools();
       const serverName = client.serverInfo?.name;
-      const entries = Object.entries(toolSet).slice(0, MCP_TOOL_LIMIT);
+      const entries = toolList.tools.slice(0, MCP_TOOL_LIMIT);
 
-      const tools = entries.map(([serverToolName, tool]) => {
-        const parameters =
-          (tool as { parameters?: JsonSchemaObject }).parameters ??
-          (tool as { inputSchema?: JsonSchemaObject }).inputSchema ??
-          { type: 'object', properties: {} };
+      const tools = entries.map((tool) => {
+        const parameters = normalizeMcpInputSchema(tool.inputSchema);
 
         return {
-          name: integrationUuid ? buildMcpToolName(integrationUuid, serverToolName) : serverToolName,
-          serverToolName,
-          description: tool.description ?? serverToolName,
+          name: integrationUuid ? buildMcpToolName(integrationUuid, tool.name) : tool.name,
+          serverToolName: tool.name,
+          description: tool.description ?? tool.name,
           parameters,
         } satisfies DiscoveredMcpTool;
       });

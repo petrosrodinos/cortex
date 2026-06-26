@@ -5,6 +5,7 @@ import { ArrowLeft, CheckCircle2, FlaskConical, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Input as HeroInput, Label, TextField } from '@heroui/react';
 import { PROVIDER_CONFIG_FIELDS, type ProviderConfigField } from '@/features/integrations/constants/provider-config-fields';
 import type { IntegrationProvider } from '@/features/integrations/common/interfaces/integration.interface';
 import {
@@ -26,9 +27,25 @@ import {
   createIntegrationSchema,
   type CreateIntegrationFormData,
 } from '@/features/integrations/validation-schemas/integration.schema';
-import { PROVIDER_ICON_META, providerLabels, openApiAuthLabels, mcpAuthLabels, databaseOperationLabels } from '@/features/integrations/constants/provider-metadata';
+import { PROVIDER_ICON_META, providerLabels, mcpAuthLabels, databaseOperationLabels } from '@/features/integrations/constants/provider-metadata';
 import { isDatabaseProvider, isOpenApiProvider, isMcpProvider } from '@/features/integrations/utils/integration.utils';
 import { ProviderSetupGuide } from './provider-setup-guide';
+import {
+  createCustomHeaderPair,
+  customHeadersFromPairs,
+  type CustomHeaderPair,
+} from './custom-headers-editor';
+import { OpenApiIntegrationFields } from './openapi-integration-fields';
+import { INTEGRATION_INPUT_CLASSNAME } from './integration-field-styles';
+
+const OPENAPI_CONFIG_FIELD_KEYS = new Set([
+  'specUrl',
+  'apiKeyName',
+  'apiKeyLocation',
+  'apiKey',
+  'token',
+  'customHeaders',
+]);
 
 interface AddIntegrationModalProps {
   organizationUuid: string;
@@ -46,6 +63,9 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
   const [openApiMode, setOpenApiMode] = useState<'url' | 'json'>('url');
   const [openApiRawJson, setOpenApiRawJson] = useState('');
   const [openApiAuthType, setOpenApiAuthType] = useState<OpenApiAuthType>(OpenApiAuthTypes.NONE);
+  const [openApiCustomHeaderPairs, setOpenApiCustomHeaderPairs] = useState<CustomHeaderPair[]>([
+    createCustomHeaderPair(),
+  ]);
   const [mcpTransportType, setMcpTransportType] = useState<McpTransportType>(McpTransportTypes.HTTP);
   const [mcpAuthType, setMcpAuthType] = useState<McpAuthType>(McpAuthTypes.NONE);
 
@@ -99,7 +119,7 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
         rawJson: openApiMode === 'json' ? openApiRawJson : undefined,
         authType: openApiAuthType,
         authConfig: buildOpenApiAuthConfig(openApiAuthType, config),
-        credentials: buildOpenApiCredentials(openApiAuthType, config),
+        credentials: buildOpenApiCredentials(openApiAuthType, config, openApiCustomHeaderPairs),
       });
       onClose();
       return;
@@ -199,10 +219,25 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Production GitHub" />
-                  </FormControl>
+                  {isOpenApi ? (
+                    <TextField
+                      name={field.name}
+                      value={field.value}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      fullWidth
+                    >
+                      <Label>Name</Label>
+                      <HeroInput className={INTEGRATION_INPUT_CLASSNAME} placeholder="Production GitHub" />
+                    </TextField>
+                  ) : (
+                    <>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Production GitHub" />
+                      </FormControl>
+                    </>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -213,10 +248,25 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Main engineering org" />
-                  </FormControl>
+                  {isOpenApi ? (
+                    <TextField
+                      name={field.name}
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      fullWidth
+                    >
+                      <Label>Description</Label>
+                      <HeroInput className={INTEGRATION_INPUT_CLASSNAME} placeholder="Main engineering org" />
+                    </TextField>
+                  ) : (
+                    <>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Main engineering org" />
+                      </FormControl>
+                    </>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -228,7 +278,7 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
               {configFields
                 .filter(
                   (field) =>
-                    (!isOpenApi || openApiVisibleField(field.key, openApiAuthType, openApiMode)) &&
+                    (!isOpenApi || !OPENAPI_CONFIG_FIELD_KEYS.has(field.key)) &&
                     (!isMcp || mcpVisibleField(field.key, mcpAuthType)),
                 )
                 .map((configField) => (
@@ -311,71 +361,20 @@ export function AddIntegrationModal({ organizationUuid, provider, onClose }: Add
             ) : null}
 
             {isOpenApi ? (
-              <div className="grid gap-3 rounded-lg border border-border p-3">
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <label className="flex items-center gap-2 text-sm text-muted">
-                    <input
-                      type="radio"
-                      checked={openApiMode === 'url'}
-                      onChange={() => setOpenApiMode('url')}
-                      className="h-4 w-4 accent-[var(--accent)]"
-                    />
-                    Paste URL
-                  </label>
-                  <label className="flex items-center gap-2 text-sm text-muted">
-                    <input
-                      type="radio"
-                      checked={openApiMode === 'json'}
-                      onChange={() => setOpenApiMode('json')}
-                      className="h-4 w-4 accent-[var(--accent)]"
-                    />
-                    Paste JSON
-                  </label>
-                </div>
-
-                {openApiMode === 'json' ? (
-                  <textarea
-                    value={openApiRawJson}
-                    onChange={(event) => setOpenApiRawJson(event.target.value)}
-                    rows={8}
-                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
-                    placeholder='{"openapi":"3.0.3","paths":{}}'
-                  />
-                ) : null}
-
-                <div className="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-end">
-                  <label className="grid gap-1 text-sm">
-                    <span className="text-sm font-medium text-foreground">Auth type</span>
-                    <select
-                      value={openApiAuthType}
-                      onChange={(event) => setOpenApiAuthType(event.target.value as OpenApiAuthType)}
-                      className="h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-accent"
-                    >
-                      {Object.values(OpenApiAuthTypes).map((authType) => (
-                        <option key={authType} value={authType}>
-                          {openApiAuthLabels[authType]}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={parseOpenApiSpec}
-                    loading={parseOpenApiMutation.isPending}
-                    className="sm:w-auto"
-                  >
-                    <FlaskConical className="h-4 w-4" />
-                    Parse spec
-                  </Button>
-                </div>
-
-                {parseOpenApiMutation.data ? (
-                  <div className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-300">
-                    {parseOpenApiMutation.data.operationsCount} endpoints found at {parseOpenApiMutation.data.baseUrl}
-                  </div>
-                ) : null}
-              </div>
+              <OpenApiIntegrationFields
+                control={form.control}
+                mode={openApiMode}
+                onModeChange={setOpenApiMode}
+                rawJson={openApiRawJson}
+                onRawJsonChange={setOpenApiRawJson}
+                authType={openApiAuthType}
+                onAuthTypeChange={setOpenApiAuthType}
+                customHeaderPairs={openApiCustomHeaderPairs}
+                onCustomHeaderPairsChange={setOpenApiCustomHeaderPairs}
+                onParseSpec={parseOpenApiSpec}
+                parsePending={parseOpenApiMutation.isPending}
+                parseResult={parseOpenApiMutation.data}
+              />
             ) : null}
 
             {isDatabase ? (
@@ -520,14 +519,6 @@ function normalizeDatabaseOps(operations?: DatabaseOperation[]) {
   return Array.from(new Set([DatabaseOperations.READ, ...(operations ?? [])]));
 }
 
-function openApiVisibleField(key: string, authType: OpenApiAuthType, mode: 'url' | 'json') {
-  if (key === 'specUrl') return mode === 'url';
-  if (authType === OpenApiAuthTypes.API_KEY) return ['apiKeyName', 'apiKeyLocation', 'apiKey'].includes(key);
-  if (authType === OpenApiAuthTypes.BEARER || authType === OpenApiAuthTypes.OAUTH2) return key === 'token';
-  if (authType === OpenApiAuthTypes.CUSTOM_HEADERS) return key === 'customHeaders';
-  return false;
-}
-
 function buildOpenApiAuthConfig(authType: OpenApiAuthType, config: Record<string, unknown>) {
   if (authType === OpenApiAuthTypes.API_KEY) {
     return {
@@ -539,10 +530,14 @@ function buildOpenApiAuthConfig(authType: OpenApiAuthType, config: Record<string
   return { type: authType };
 }
 
-function buildOpenApiCredentials(authType: OpenApiAuthType, config: Record<string, unknown>) {
+function buildOpenApiCredentials(
+  authType: OpenApiAuthType,
+  config: Record<string, unknown>,
+  customHeaderPairs: CustomHeaderPair[],
+) {
   if (authType === OpenApiAuthTypes.API_KEY) return { apiKey: config.apiKey };
   if (authType === OpenApiAuthTypes.BEARER || authType === OpenApiAuthTypes.OAUTH2) return { token: config.token };
-  if (authType === OpenApiAuthTypes.CUSTOM_HEADERS) return { headers: parseCustomHeaders(String(config.customHeaders ?? '{}')) };
+  if (authType === OpenApiAuthTypes.CUSTOM_HEADERS) return { headers: customHeadersFromPairs(customHeaderPairs) };
   return {};
 }
 

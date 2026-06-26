@@ -127,6 +127,7 @@ import { EncryptionService } from '@/shared/utils/encryption.service';
   ],
   exports: [
     AgentRunnerService,
+    AgentProgressEmitterService,
     ConversationMemoryService,
     AiProviderFactoryService,
     CapabilitiesToolsService,

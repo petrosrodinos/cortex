@@ -101,6 +101,18 @@ export class ToolDispatcherService {
         prepared.toolName,
         executionInput,
       );
+
+      if (
+        result &&
+        typeof result === 'object' &&
+        'success' in result &&
+        (result as { success?: boolean }).success === false
+      ) {
+        throw new Error(
+          (result as { error?: string }).error ?? 'Tool execution failed',
+        );
+      }
+
       const serializedResult = toJsonValue(result);
       const durationMs = Date.now() - started;
       const tokensUsed = 0;
