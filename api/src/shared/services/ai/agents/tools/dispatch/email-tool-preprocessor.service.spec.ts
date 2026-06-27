@@ -52,8 +52,40 @@ describe('EmailToolPreprocessorService', () => {
       expect.objectContaining({
         filename: 'members.xlsx',
         content: Buffer.from('excel').toString('base64'),
+        content_type:
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       }),
     ]);
     expect(result.input.attachment_document_uuids).toBeUndefined();
+  });
+
+  it('keeps composio send_email tools and adds attachments inline', async () => {
+    prisma.document.findMany.mockResolvedValue([
+      {
+        uuid: 'doc-1',
+        filename: 'report.pdf',
+        path: 'docs/report.pdf',
+        mimetype: 'application/pdf',
+      },
+    ]);
+    gcs.downloadImage.mockResolvedValue({ buffer: Buffer.from('pdf') });
+
+    const result = await service.prepare('user-uuid', 'resend_send_email', {
+      to: 'person@example.com',
+      subject: 'Report',
+      body: 'See attached',
+      attachment_document_uuids: ['doc-1'],
+    });
+
+    expect(result.toolName).toBe('resend_send_email');
+    expect(result.input.attachments).toEqual([
+      {
+        filename: 'report.pdf',
+        content: Buffer.from('pdf').toString('base64'),
+        content_type: 'application/pdf',
+        type: 'application/pdf',
+      },
+    ]);
   });
 });

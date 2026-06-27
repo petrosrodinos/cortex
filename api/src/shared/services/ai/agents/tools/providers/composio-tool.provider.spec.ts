@@ -4,6 +4,17 @@ import { ComposioConnectionTier, ToolCallStatus } from 'generated/prisma';
 import { ComposioToolProvider } from './composio-tool.provider';
 
 describe('ComposioToolProvider', () => {
+  const emailToolPreprocessor = {
+    prepare: jest.fn(async (_userUuid, toolName, input) => ({
+      toolName,
+      input,
+    })),
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const createProvider = () => {
     const prisma: any = {
       organisationEnabledToolkit: {
@@ -81,9 +92,14 @@ describe('ComposioToolProvider', () => {
     };
 
     return {
-      provider: new ComposioToolProvider(prisma, sessions as any, {
-        getClient: jest.fn(),
-      } as any),
+      provider: new ComposioToolProvider(
+        prisma,
+        sessions as any,
+        {
+          getClient: jest.fn(),
+        } as any,
+        emailToolPreprocessor as any,
+      ),
       prisma,
       sessions,
       session,
@@ -241,6 +257,7 @@ describe('ComposioToolProvider', () => {
       prisma,
       sessions as any,
       composioClient as any,
+      emailToolPreprocessor as any,
     );
     const tools = await provider.buildTools({
       organizationUuid: 'org-uuid',
@@ -260,6 +277,14 @@ describe('ComposioToolProvider', () => {
       body: 'Hello',
     });
 
+    expect(emailToolPreprocessor.prepare).toHaveBeenCalledWith(
+      'user-uuid',
+      'resend_send_email',
+      expect.objectContaining({
+        from: 'info@logiqdev.com',
+        to: 'petros1petros2@gmail.com',
+      }),
+    );
     expect(execute).toHaveBeenCalledWith(
       expect.objectContaining({
         from: 'info@logiqdev.com',
@@ -330,6 +355,7 @@ describe('ComposioToolProvider', () => {
       prisma,
       sessions as any,
       composioClient as any,
+      emailToolPreprocessor as any,
     );
     const tools = await provider.buildTools({
       organizationUuid: 'org-uuid',
@@ -351,6 +377,11 @@ describe('ComposioToolProvider', () => {
     ).rejects.toThrow(/Ask the user which verified sender address/i);
 
     expect(execute).not.toHaveBeenCalled();
+    expect(emailToolPreprocessor.prepare).not.toHaveBeenCalledWith(
+      'user-uuid',
+      'resend_send_email',
+      expect.anything(),
+    );
     expect(prisma.toolCall.create).toHaveBeenCalledWith({
       data: expect.objectContaining({
         status: ToolCallStatus.FAILED,

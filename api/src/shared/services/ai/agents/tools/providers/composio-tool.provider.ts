@@ -25,6 +25,10 @@ import {
   resolveConnectedTransactionalSenderEmail,
   stripPersonalEmailFromSenderFields,
 } from '../email-tool.utils';
+import {
+  EMAIL_ATTACHMENT_DOCUMENT_UUIDS_DESCRIPTION,
+  EmailToolPreprocessorService,
+} from '../dispatch/email-tool-preprocessor.service';
 
 type ExecutableTool = {
   description?: string;
@@ -47,6 +51,7 @@ export class ComposioToolProvider implements AgentToolProvider {
     private readonly prisma: PrismaService,
     private readonly sessions: ComposioSessionService,
     private readonly composioClient: ComposioClientService,
+    private readonly emailToolPreprocessor: EmailToolPreprocessorService,
   ) {}
 
   async buildTools(context: AgentToolProviderContext): Promise<ToolSet> {
@@ -174,7 +179,9 @@ export class ComposioToolProvider implements AgentToolProvider {
     },
   ): ToolSet[string] {
     const description = isEmailSendToolName(toolName)
-      ? appendEmailSendToolDescription(executable.description)
+      ? appendEmailSendToolDescription(
+          `${executable.description ?? 'Send email'} Use the to field for any recipient email address. ${EMAIL_ATTACHMENT_DOCUMENT_UUIDS_DESCRIPTION}.`,
+        )
       : executable.description;
 
     return {
@@ -224,6 +231,12 @@ export class ComposioToolProvider implements AgentToolProvider {
         toolName,
         input,
       );
+      const preprocessed = await this.emailToolPreprocessor.prepare(
+        context.userUuid,
+        toolName,
+        preparedInput,
+      );
+      preparedInput = preprocessed.input;
 
       const result = executable.execute
         ? await executable.execute(preparedInput, options)

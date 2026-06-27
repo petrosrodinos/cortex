@@ -2,8 +2,18 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { GcsService } from '@/integrations/storage/gcs/services/gcs.service';
 import { formatEmailBody } from '../../organization/email-body-formatter';
+import { isEmailSendToolName } from '../email-tool.utils';
 
 const EMAIL_SEND_ACTION_KEYS = new Set(['send_email', 'send_message']);
+
+export const EMAIL_ATTACHMENT_DOCUMENT_UUIDS_DESCRIPTION =
+  'Optional document UUIDs from output__create_* tools to attach to the email';
+
+type LoadedEmailAttachment = {
+  filename: string;
+  content: string;
+  contentType?: string;
+};
 
 export function extractIntegrationActionKey(toolName: string): string | null {
   if (toolName.startsWith('db__')) {
@@ -24,9 +34,52 @@ export function extractIntegrationActionKey(toolName: string): string | null {
   return parts.length > 1 ? parts.slice(1).join('__') : null;
 }
 
+export function extractComposioEmailActionKey(toolName: string): string | null {
+  const match = toolName.match(
+    /^[a-z0-9]+_(send_email|send_message|send_html_email|send_bulk_email|send_email_with_attachments)$/i,
+  );
+  return match?.[1]?.toLowerCase() ?? null;
+}
+
 export function isEmailSendIntegrationTool(toolName: string): boolean {
   const actionKey = extractIntegrationActionKey(toolName);
-  return actionKey !== null && EMAIL_SEND_ACTION_KEYS.has(actionKey);
+  if (actionKey !== null && EMAIL_SEND_ACTION_KEYS.has(actionKey)) {
+    return true;
+  }
+
+  return isEmailSendToolName(toolName);
+}
+
+export function resolveEmailAttachmentToolName(toolName: string): string {
+  if (toolName.endsWith('__send_email')) {
+    return toolName.replace(/__send_email$/, '__send_email_with_attachments');
+  }
+
+  return toolName;
+}
+
+export function mapAttachmentsForEmailProvider(
+  toolName: string,
+  attachments: LoadedEmailAttachment[],
+) {
+  const normalizedToolName = toolName.toLowerCase();
+
+  if (normalizedToolName.includes('sendgrid')) {
+    return attachments.map((attachment) => ({
+      filename: attachment.filename,
+      content: attachment.content,
+      type: attachment.contentType,
+      disposition: 'attachment',
+    }));
+  }
+
+  return attachments.map((attachment) => ({
+    filename: attachment.filename,
+    content: attachment.content,
+    ...(attachment.contentType
+      ? { content_type: attachment.contentType, type: attachment.contentType }
+      : {}),
+  }));
 }
 
 @Injectable()
@@ -60,7 +113,9 @@ export class EmailToolPreprocessorService {
       return { toolName, input: prepared };
     }
 
-    const actionKey = extractIntegrationActionKey(toolName);
+    const actionKey =
+      extractIntegrationActionKey(toolName) ??
+      extractComposioEmailActionKey(toolName);
     if (actionKey === 'send_message') {
       throw new BadRequestException(
         'Gmail does not support attachments through this tool. Connect SendGrid, Resend, or SMTP for attachments.',
@@ -68,15 +123,27 @@ export class EmailToolPreprocessorService {
     }
 
     const attachments = await this.loadAttachments(userUuid, attachmentUuids);
-    const attachmentToolName = toolName.replace(/__send_email$/, '__send_email_with_attachments');
+    const attachmentToolName = resolveEmailAttachmentToolName(toolName);
+    const usesLegacyAttachmentTool =
+      toolName.endsWith('__send_email') &&
+      attachmentToolName !== toolName;
 
-    if (attachmentToolName === toolName) {
+    if (
+      toolName.endsWith('__send_email') &&
+      attachmentToolName === toolName
+    ) {
       throw new BadRequestException('Cannot attach files with this email integration');
     }
 
     return {
       toolName: attachmentToolName,
-      input: { ...prepared, attachments },
+      input: {
+        ...prepared,
+        attachments: mapAttachmentsForEmailProvider(
+          usesLegacyAttachmentTool ? attachmentToolName : toolName,
+          attachments,
+        ),
+      },
     };
   }
 
@@ -106,7 +173,6 @@ export class EmailToolPreprocessorService {
         return {
           filename: document.filename,
           content: downloaded.buffer.toString('base64'),
-          encoding: 'base64' as const,
           contentType: document.mimetype,
         };
       }),

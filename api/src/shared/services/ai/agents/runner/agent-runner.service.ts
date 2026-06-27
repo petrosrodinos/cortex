@@ -704,7 +704,7 @@ export class AgentRunnerService {
         'The latest user message asks to send content by email.',
         'Use the data already present in this conversation — including any "Tool results from this turn" sections in earlier assistant messages — to compose the email body or attachments.',
         'If the prior assistant reply only summarized results, use the stored tool results or re-run the same organization, database, or integration tools instead of asking the user to provide the data again.',
-        'Use generated file URLs or generatedDocuments metadata from earlier output tool results when the selected email tool supports attachments or links.',
+        'When attaching a generated file, pass attachment_document_uuids with the document_uuid from output__create_* tool results or generatedDocuments metadata in the conversation.',
         'Use only the email channels listed in "Available tools for this message". If none are listed, tell the user to connect an email app in Integrations instead of claiming a specific provider is blocked.',
         'If the connected transactional email app has no default_sender_email, ask the user for their verified sender address before calling the send tool.',
         'Do not claim an email was sent until the email tool completes successfully.',
